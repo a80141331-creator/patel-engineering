@@ -28,7 +28,7 @@ try {
 let masterSecurityPasscode = localStorage.getItem('pe_master_passcode') || "RJ06CC7194";
 
 // ========================================================
-// 2. MASTER BLUEPRINT DEFAULT SCHEME
+// 2. MASTER BLUEPRINT & SETTINGS DEFAULTS
 // ========================================================
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
@@ -40,7 +40,6 @@ const defaultMasterBlueprint = {
         { text: "1 Coat Primer", selected: true }
     ],
     primUnit: "Kg",
-
     secCustomLine: "Z Purlin 200 & 150 - 2.0mm Galvanized 120 GSM, Girts & Bracings",
     secSpecs: [
         { text: "Z Purlin 200 & 150", selected: true },
@@ -48,11 +47,9 @@ const defaultMasterBlueprint = {
         { text: "Girts & Bracings", selected: true }
     ],
     secUnit: "Kg",
-
     cladCustomLine: "0.50mm TATA BlueScope / JSW Colour Coated Sheet",
     cladThickness: "0.50 mm",
     cladUnit: "Sq.Ft",
-
     accCustomLine: "Turbo Ventilators, Gutters, Down Pipes, Anchor Bolts, Nuts & Bolts",
     accessories: [
         { name: "Turbo Ventilators", qty: "", unit: "Nos", rate: "", selected: true },
@@ -61,7 +58,6 @@ const defaultMasterBlueprint = {
         { name: "Anchor Bolts", qty: "", unit: "Lot", rate: "", selected: true },
         { name: "Nuts & Bolts", qty: "", unit: "Lot", rate: "", selected: true }
     ],
-
     erectCustomLine: "Crane, Hydra, Welding Machine, Labour",
     erectSpecs: [
         { text: "Crane", selected: true },
@@ -70,10 +66,8 @@ const defaultMasterBlueprint = {
         { text: "Labour", selected: true }
     ],
     erectUnit: "Kg",
-
     moduleOrder: ['prim', 'sec', 'clad', 'acc', 'erect'],
     customModules: [],
-
     civilScopeDesc: "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS",
     civilData: {
         foundation: {
@@ -107,16 +101,16 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-// ========================================================
-// 3. MASTER SETTINGS DEFAULT SCHEME
-// ========================================================
+const defaultBannerSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 240' width='1000' height='240'><defs><linearGradient id='metalGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23ffffff'/><stop offset='50%25' stop-color='%23cbd5e1'/><stop offset='100%25' stop-color='%2364748b'/></linearGradient><linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23ca8a04'/><stop offset='100%25' stop-color='%23fef08a'/></linearGradient></defs><rect width='1000' height='240' fill='%230f2942' rx='12'/><path d='M350 40 L650 15 L950 45 L950 160 L350 160 Z' fill='%231e293b' stroke='%2394a3b8' stroke-width='3'/><path d='M420 50 L650 30 L880 55 L880 160 L420 160 Z' fill='%230f2942' stroke='%23cbd5e1' stroke-width='2'/><path d='M650 30 L650 160 M535 40 L535 160 M765 42 L765 160' stroke='%23cbd5e1' stroke-width='2' stroke-dasharray='4,4'/><text x='180' y='125' font-family='Arial, sans-serif' font-weight='900' font-size='105' fill='url(%23metalGrad)' letter-spacing='-4' text-anchor='middle'>PE</text><path d='M40 148 L960 148' stroke='url(%23gold)' stroke-width='4'/><text x='500' y='210' font-family='Arial, sans-serif' font-weight='900' font-size='52' fill='%23ffffff' letter-spacing='18' text-anchor='middle'>PATEL ENGINEERING</text></svg>`;
+
 const defaultAppSettings = {
     ownerName: "PATEL ENGINEERING",
-    companyAddr: "Bhawani Nagar, Bhilwara - 311001 (Rajasthan)",
+    companyAddr: "Bhawani Nagar, Bhilwara - 311001 (Raj.)",
     companyGst: "08AHFPL0222M2ZF",
     phone1: "+91 9799635249",
     phone2: "+91 7737734122",
     phone3: "",
+    companyEmail: "info@patelengineering.com",
     startingQuoteSeq: 1,
     paymentTerms: "• 40% Advance along with Purchase Order & Foundation drawing approval.\n• 50% Progressive payment against proforma invoice before dispatch.\n• 10% Final payment after successful completion of erection on site.",
     termsCond: "• Delivery within 4-6 weeks from approval of anchor drawings.\n• Uninterrupted water & 3-phase electricity at site under client scope.\n• All structural steel weights are estimated as per standard engineering tolerance.",
@@ -127,7 +121,6 @@ const defaultAppSettings = {
     companyDesc: "PEB Structure | Industrial Sheds | Roofing Solutions",
     pdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS",
     projectSizeHeading: "📐 PROJECT SIZE / SHED DIMENSIONS:",
-
     btnNamePrim: "1. Primary",
     btnNameSec: "2. Secondary",
     btnNameClad: "3. Cladding",
@@ -136,7 +129,6 @@ const defaultAppSettings = {
     btnNameFoundation: "1. Foundation Details",
     btnNameBrick: "2. Brick Wall Details",
     btnNameFlooring: "3. Flooring Details",
-
     headerLine1: "1. ESTIMATED STEEL WEIGHT:",
     milestoneHeading: "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):",
     headerLine2: "2. PRICE BREAKUP AS PER KG RATE:",
@@ -145,7 +137,6 @@ const defaultAppSettings = {
     civilFoundTitle: "1. FOUNDATION & RCC COLUMN DETAILS:",
     civilBrickTitle: "2. BRICK WALL, DPC & PLASTER DETAILS:",
     civilFloorTitle: "3. FLOORING & PCC WORK DETAILS:",
-
     termsTitle: "Terms & Conditions:",
     civilTermsTitle: "Civil Work Terms & Conditions:",
     thankYouText: "THANK YOU FOR YOUR BUSINESS",
@@ -167,22 +158,23 @@ let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
 // ========================================================
-// 4. CLOUD SYNC & SAFE WRITE ENGINE
+// 3. CLOUD SYNC & MASTER OVERWRITE PROTECTION
 // ========================================================
 function syncDataToCloud(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
-    if (db && isFirebaseConnected) {
+    if (db && isFirebaseConnected && isCloudInitialSyncDone) {
         db.ref(key).set(data).catch(err => console.warn("Cloud sync write error:", err));
     }
 }
 
 function initCloudFirstMasterSync() {
-    if (!db || !isFirebaseConnected) return;
+    if (!db || !isFirebaseConnected) {
+        isCloudInitialSyncDone = true;
+        return;
+    }
 
     const syncBadge = document.getElementById('cloudSyncIndicator');
-    if (syncBadge) {
-        syncBadge.innerHTML = `<span class="pulse-dot">●</span> Connecting to Cloud Master...`;
-    }
+    if (syncBadge) syncBadge.innerHTML = `<span class="pulse-dot">●</span> Connecting to Cloud Master...`;
 
     db.ref('pe_master_passcode').on('value', (snapshot) => {
         const cloudPass = snapshot.val();
@@ -194,8 +186,6 @@ function initCloudFirstMasterSync() {
                 localStorage.removeItem('pe_app_auth_token');
                 checkFirstTimeAuthentication(true);
             }
-        } else {
-            db.ref('pe_master_passcode').set(masterSecurityPasscode);
         }
     });
 
@@ -209,13 +199,8 @@ function initCloudFirstMasterSync() {
             if (appSettings.savedThemeId && THEMES_CATALOG[appSettings.savedThemeId]) {
                 applyPresetTheme(appSettings.savedThemeId);
             }
-            if (appSettings.logoData) {
-                safeSetHtml('settingsLogoPreview', `<img src="${appSettings.logoData}" style="width:100%;height:100%;object-fit:cover;">`);
-                safeSetHtml('appLogoBadge', `<img src="${appSettings.logoData}" style="width:100%;height:100%;object-fit:cover;">`);
-            }
+            updateHeaderBannersUI();
             refreshLivePdfPreviewSheet(true);
-        } else {
-            db.ref('patel_app_settings').set(appSettings);
         }
     });
 
@@ -224,32 +209,47 @@ function initCloudFirstMasterSync() {
         if (cloudBlueprint && typeof cloudBlueprint === 'object') {
             masterBlueprint = cloudBlueprint;
             localStorage.setItem('patel_master_blueprint', JSON.stringify(masterBlueprint));
-        } else {
-            db.ref('patel_master_blueprint').set(masterBlueprint);
         }
     });
 
     db.ref('patel_app_sites').on('value', (snapshot) => {
         const cloudSites = snapshot.val();
-        if (cloudSites && Array.isArray(cloudSites)) {
-            sites = cloudSites;
-            localStorage.setItem('patel_app_sites', JSON.stringify(sites));
-            renderHomeScreen();
-            if (currentSiteId && sites.find(s => s.id === currentSiteId)) {
-                refreshLivePdfPreviewSheet(true);
+        if (cloudSites) {
+            let loadedSites = [];
+            if (Array.isArray(cloudSites)) {
+                loadedSites = cloudSites.filter(Boolean);
+            } else if (typeof cloudSites === 'object') {
+                loadedSites = Object.values(cloudSites).filter(Boolean);
             }
-        } else if (sites && sites.length > 0) {
-            db.ref('patel_app_sites').set(sites);
+            if (loadedSites.length > 0) {
+                sites = loadedSites;
+                localStorage.setItem('patel_app_sites', JSON.stringify(sites));
+                renderHomeScreen();
+                if (currentSiteId && sites.find(s => s.id === currentSiteId)) {
+                    refreshLivePdfPreviewSheet(true);
+                }
+            }
         }
         isCloudInitialSyncDone = true;
-        if (syncBadge) {
-            syncBadge.innerHTML = `<span class="pulse-dot">●</span> 100% Cloud Synced (All Devices Connected)`;
-        }
+        if (syncBadge) syncBadge.innerHTML = `<span class="pulse-dot">●</span> 100% Cloud Synced (All Devices Connected)`;
     });
 }
 
+function updateHeaderBannersUI() {
+    const bannerSrc = appSettings.logoData || defaultBannerSvg;
+    const p1Img = document.getElementById('pdfHeaderBannerImg');
+    const p2Img = document.getElementById('civilPdfHeaderBannerImg');
+    if (p1Img) p1Img.src = bannerSrc;
+    if (p2Img) p2Img.src = bannerSrc;
+
+    if (appSettings.logoData) {
+        safeSetHtml('settingsLogoPreview', `<img src="${appSettings.logoData}" style="width:100%;height:100%;object-fit:cover;">`);
+        safeSetHtml('appLogoBadge', `<img src="${appSettings.logoData}" style="width:100%;height:100%;object-fit:cover;">`);
+    }
+}
+
 // ========================================================
-// 5. MASTER PASSCODE GATEWAY
+// 4. MASTER PASSCODE GATEWAY
 // ========================================================
 function checkFirstTimeAuthentication(isRemoteKick = false) {
     const savedToken = localStorage.getItem('pe_app_auth_token');
@@ -307,26 +307,18 @@ function closeChangePasscodeModal() { closeModalSafe('changePasscodeModal'); }
 function saveNewMasterPasscode() {
     const cur = (document.getElementById('inpCurrentPass')?.value || "").trim().toUpperCase();
     const nw = (document.getElementById('inpNewPass')?.value || "").trim().toUpperCase();
-    if (cur !== masterSecurityPasscode) {
-        showAppAlert("⚠️ Security Error", "Current master passcode galat hai!");
-        return;
-    }
-    if (!nw || nw.length < 4) {
-        showAppAlert("⚠️ Invalid Passcode", "Naya passcode kam se kam 4 characters ka hona chahiye.");
-        return;
-    }
+    if (cur !== masterSecurityPasscode) return showAppAlert("⚠️ Security Error", "Current passcode galat hai!");
+    if (!nw || nw.length < 4) return showAppAlert("⚠️ Invalid", "Passcode kam se kam 4 characters ka ho.");
     masterSecurityPasscode = nw;
     localStorage.setItem('pe_master_passcode', nw);
     localStorage.setItem('pe_app_auth_token', nw);
-    if (db && isFirebaseConnected) {
-        db.ref('pe_master_passcode').set(nw);
-    }
+    if (db && isFirebaseConnected) db.ref('pe_master_passcode').set(nw);
     closeChangePasscodeModal();
-    showAppAlert("✓ Success", `Master Passcode update ho gaya hai: ${nw}`);
+    showAppAlert("✓ Success", `Master Passcode update ho gaya: ${nw}`);
 }
 
 // ========================================================
-// 6. NAVIGATION & HARDWARE BACK BUTTON
+// 5. NAVIGATION & SMART ROUTING
 // ========================================================
 window.addEventListener('popstate', () => handleDeviceBackButton());
 
@@ -338,7 +330,7 @@ function handleDeviceBackButton() {
     }
     const screenCivil = document.getElementById('screenCivilDashboard');
     if (screenCivil && screenCivil.classList.contains('active')) {
-        openScreen('screenSiteDashboard', false);
+        handleCivilBackNav();
         return;
     }
     const screenSite = document.getElementById('screenSiteDashboard');
@@ -351,13 +343,20 @@ function handleDeviceBackButton() {
     }
 }
 
+function handleCivilBackNav() {
+    const site = getCurrentSite();
+    if (site && site.quoteType === 'civil') {
+        openScreen('screenHome', false);
+    } else {
+        openScreen('screenSiteDashboard', false);
+    }
+}
+
 function openModalWithHistory(modalId) {
     const m = document.getElementById(modalId);
     if (m) {
         m.classList.add('active');
-        if (window.history && window.history.pushState) {
-            history.pushState({ modal: modalId }, "");
-        }
+        if (window.history && window.history.pushState) history.pushState({ modal: modalId }, "");
     }
 }
 
@@ -366,8 +365,23 @@ function closeModalSafe(modalId) {
     if (m) m.classList.remove('active');
 }
 
+function openScreen(screenId, pushHistory = true) {
+    try {
+        if (pushHistory && window.history && window.history.pushState) history.pushState({ screen: screenId }, "");
+    } catch(e) {}
+    document.querySelectorAll('.app-view').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(screenId);
+    if (target) {
+        target.classList.add('active');
+        window.scrollTo(0, 0);
+        if (screenId === 'screenSiteDashboard' || screenId === 'screenCivilDashboard') {
+            setTimeout(autoFitPreview, 60);
+        }
+    }
+}
+
 // ========================================================
-// 7. DOM HELPERS, FORMATTERS & ANIMATIONS
+// 6. DOM HELPERS, FORMATTERS & HAPTICS
 // ========================================================
 function safeSetText(id, text) {
     const el = document.getElementById(id);
@@ -387,30 +401,12 @@ function formatRawOrDash(val) {
     if (isNaN(num) || num === 0) return "-";
     return val;
 }
-
 function showAppAlert(title, message) {
     safeSetText('alertModalTitle', title || "Alert");
     safeSetText('alertModalDesc', message || "");
     openModalWithHistory('customAlertModal');
 }
 function closeAppAlert() { closeModalSafe('customAlertModal'); }
-
-document.addEventListener('focusin', function(e) {
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
-        if (e.target.value === '0' || e.target.value === '0.00' || e.target.value === '-') {
-            e.target.value = '';
-        }
-    }
-});
-
-document.addEventListener('focus', function(e) {
-    if (e.target && e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true') {
-        const val = e.target.innerText.trim().replace(/[^0-9.]/g, '');
-        if (val === '0' || val === '0.00' || val === '-') {
-            e.target.innerText = '';
-        }
-    }
-}, true);
 
 function triggerHaptic(duration = 15) {
     if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(duration);
@@ -460,23 +456,18 @@ document.addEventListener('click', function(e) {
 });
 
 // ========================================================
-// 8. MOBILE TOUCH & DESKTOP DRAG ENGINE (FULLY FIXED)
+// 7. DRAG REORDERING
 // ========================================================
-let activeTouchDragScope = null;
-let activeTouchDragIndex = null;
-let activeTouchDragParent = null;
-let activeTouchDragElement = null;
+let activeTouchDragScope = null, activeTouchDragIndex = null, activeTouchDragParent = null, activeTouchDragElement = null;
 
 function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) {
     if (!rowEl || !handleEl) return;
-
     rowEl.setAttribute('draggable', 'true');
     rowEl.classList.add('sortable-item');
     rowEl.dataset.sortIndex = index;
     rowEl.dataset.sortScope = scope;
     if (parentCat) rowEl.dataset.sortParent = parentCat;
 
-    // Desktop Mouse Drag
     rowEl.addEventListener('dragstart', (e) => {
         activeTouchDragScope = scope;
         activeTouchDragIndex = parseInt(index, 10);
@@ -499,9 +490,7 @@ function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) 
         }
     });
 
-    rowEl.addEventListener('dragleave', () => {
-        rowEl.classList.remove('drag-over');
-    });
+    rowEl.addEventListener('dragleave', () => rowEl.classList.remove('drag-over'));
 
     rowEl.addEventListener('drop', (e) => {
         e.preventDefault();
@@ -513,7 +502,6 @@ function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) 
         }
     });
 
-    // Mobile Touch Drag
     handleEl.addEventListener('touchstart', (e) => {
         e.stopPropagation();
         activeTouchDragScope = scope;
@@ -530,7 +518,6 @@ function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) 
         const touch = e.touches[0];
         const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
         const overRow = targetElement ? targetElement.closest('.sortable-item') : null;
-
         document.querySelectorAll('.sortable-item').forEach(r => r.classList.remove('drag-over'));
         if (overRow && overRow !== activeTouchDragElement && overRow.dataset.sortIndex !== undefined && overRow.dataset.sortScope === scope) {
             overRow.classList.add('drag-over');
@@ -539,35 +526,25 @@ function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) 
 
     handleEl.addEventListener('touchend', (e) => {
         e.stopPropagation();
-        if (activeTouchDragElement) {
-            activeTouchDragElement.classList.remove('dragging');
-        }
+        if (activeTouchDragElement) activeTouchDragElement.classList.remove('dragging');
         const touch = e.changedTouches[0];
         const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
         const dropRow = targetElement ? targetElement.closest('.sortable-item') : null;
-
         document.querySelectorAll('.sortable-item').forEach(r => r.classList.remove('drag-over'));
-
         if (dropRow && dropRow.dataset.sortIndex !== undefined && dropRow.dataset.sortScope === scope) {
             const targetIdx = parseInt(dropRow.dataset.sortIndex, 10);
             if (activeTouchDragScope === scope && activeTouchDragIndex !== null && activeTouchDragIndex !== targetIdx && (parentCat === activeTouchDragParent)) {
                 handleItemsReorder(scope, activeTouchDragIndex, targetIdx, parentCat);
             }
         }
-        activeTouchDragScope = null;
-        activeTouchDragIndex = null;
-        activeTouchDragParent = null;
-        activeTouchDragElement = null;
+        activeTouchDragScope = activeTouchDragIndex = activeTouchDragParent = activeTouchDragElement = null;
     }, { passive: false });
 }
 
 function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
     const site = getCurrentSite();
     if (!site) return;
-
-    const from = parseInt(fromIndex, 10);
-    const to = parseInt(toIndex, 10);
-
+    const from = parseInt(fromIndex, 10), to = parseInt(toIndex, 10);
     if (scope === 'shed_modules') {
         const item = site.moduleOrder.splice(from, 1)[0];
         site.moduleOrder.splice(to, 0, item);
@@ -580,11 +557,8 @@ function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
             site.civilData[parentCat].items.splice(to, 0, item);
         }
     }
-
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     triggerHaptic(25);
-
     const isCivilModalOpen = document.getElementById('civilParamModal')?.classList.contains('active');
     if (isCivilModalOpen && parentCat) {
         openCivilParamModal(parentCat);
@@ -595,7 +569,7 @@ function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
 }
 
 // ========================================================
-// 9. BOOT ANIMATION
+// 8. BOOT ANIMATION & VIEW MODES
 // ========================================================
 let bootTimer = null;
 function initSamsungBootAnimation() {
@@ -607,7 +581,6 @@ function initSamsungBootAnimation() {
     if (bootTimer) clearTimeout(bootTimer);
     bootTimer = setTimeout(() => skipBootAnimation(), 2500);
 }
-
 function skipBootAnimation() {
     const splash = document.getElementById('appBootSplashScreen');
     if (!splash) return;
@@ -616,7 +589,6 @@ function skipBootAnimation() {
     splash.classList.add('boot-fade-out');
     setTimeout(() => { splash.style.display = 'none'; }, 700);
 }
-
 function replaySamsungBootAnimation() {
     const splash = document.getElementById('appBootSplashScreen');
     if (!splash) return;
@@ -625,21 +597,15 @@ function replaySamsungBootAnimation() {
     initSamsungBootAnimation();
 }
 
-// ========================================================
-// 10. VIEW MODES & UNITS
-// ========================================================
-let currentDeviceMode = "phone";
-let manualDeviceModeOverride = false;
-
+let currentDeviceMode = "phone", manualDeviceModeOverride = false;
 function setDeviceViewMode(mode, isManual = false) {
     if (isManual) manualDeviceModeOverride = true;
     currentDeviceMode = mode;
     document.body.className = "mode-" + mode;
     document.querySelectorAll('.btn-device-mode').forEach(b => b.classList.remove('active'));
-    document.getElementById('btnMode_' + mode)?.classList.add('active');
+    document.querySelectorAll('.btn-device-' + mode).forEach(b => b.classList.add('active'));
     setTimeout(autoFitPreview, 50);
 }
-
 function autoDetectDeviceMode() {
     if (manualDeviceModeOverride) return;
     const w = window.innerWidth;
@@ -678,7 +644,7 @@ function selectUnitFromThemeModal(unit) {
 function closeUnitPickerModal() { closeModalSafe('unitPickerModal'); }
 
 // ========================================================
-// 11. THEMES CATALOG
+// 9. THEMES & TAX SLABS
 // ========================================================
 const THEMES_CATALOG = {
     "customYellow": { name: "Photo Yellow + White", headerBg: "#0f2942", ribbonBg: "#ca8a04", border: "#854d0e", ribbonText: "#ffffff", tblHeader: "#0f2942", milestoneBg: "#1e293b", totalBg: "#0f2942", totalBorder: "#ca8a04", totalAmt: "#fef08a" },
@@ -718,60 +684,6 @@ function applyPresetTheme(themeId, btnElement = null) {
     }
 }
 
-// ========================================================
-// 12. BLUEPRINT CAPTURE
-// ========================================================
-function captureCurrentSiteAsMasterBlueprint() {
-    const site = getCurrentSite();
-    if (!site) return;
-
-    masterBlueprint.primCustomLine = site.primCustomLine;
-    masterBlueprint.primSpecs = JSON.parse(JSON.stringify(site.primSpecs || []));
-    masterBlueprint.primUnit = site.primUnit;
-
-    masterBlueprint.secCustomLine = site.secCustomLine;
-    masterBlueprint.secSpecs = JSON.parse(JSON.stringify(site.secSpecs || []));
-    masterBlueprint.secUnit = site.secUnit;
-
-    masterBlueprint.cladCustomLine = site.cladCustomLine;
-    masterBlueprint.cladThickness = site.cladThickness;
-    masterBlueprint.cladUnit = site.cladUnit;
-
-    masterBlueprint.accCustomLine = site.accCustomLine;
-    masterBlueprint.accessories = (site.accessories || []).map(a => ({
-        name: a.name, qty: "", unit: a.unit, rate: "", selected: a.selected
-    }));
-
-    masterBlueprint.erectCustomLine = site.erectCustomLine;
-    masterBlueprint.erectSpecs = JSON.parse(JSON.stringify(site.erectSpecs || []));
-    masterBlueprint.erectUnit = site.erectUnit;
-
-    masterBlueprint.moduleOrder = JSON.parse(JSON.stringify(site.moduleOrder || ['prim', 'sec', 'clad', 'acc', 'erect']));
-    masterBlueprint.customModules = (site.customModules || []).map(m => ({
-        id: m.id, title: m.title, desc: m.desc, unit: m.unit, qty: "", rate: "", total: 0, enabled: m.enabled
-    }));
-    masterBlueprint.civilScopeDesc = site.civilScopeDesc;
-
-    ['foundation', 'brickWall', 'flooring'].forEach(sec => {
-        if (site.civilData && site.civilData[sec]) {
-            masterBlueprint.civilData[sec].title = site.civilData[sec].title;
-            masterBlueprint.civilData[sec].items = (site.civilData[sec].items || []).map(i => ({
-                id: i.id, name: i.name, qty: "", unit: i.unit, rate: "", enabled: i.enabled
-            }));
-        }
-    });
-
-    masterBlueprint.civilCustomCategories = (site.civilCustomCategories || []).map(c => ({
-        id: c.id, categoryName: c.categoryName,
-        items: (c.items || []).map(it => ({ name: it.name, qty: "", unit: it.unit, rate: "", total: 0 }))
-    }));
-
-    syncDataToCloud('patel_master_blueprint', masterBlueprint);
-}
-
-// ========================================================
-// 13. TAX SLABS & STARTING QUOTE
-// ========================================================
 const TAX_SLABS = [
     { id: "gst18_split", name: "GST @ 18% (CGST 9% + SGST 9%)", rate: 0.18, split: true, cgstRate: 0.09, sgstRate: 0.09, desc: "Standard Intra-State (CGST 9% + SGST 9%)" },
     { id: "igst18", name: "IGST @ 18% (Inter-State)", rate: 0.18, split: false, desc: "Outside State Inter-State Supply" },
@@ -788,7 +700,7 @@ function saveStartingQuoteSeq(val) {
 }
 
 // ========================================================
-// 14. LIVE PREVIEW SCALING & UNLIMITED HEIGHT ENGINE
+// 10. PREVIEW SCALING & AUTO-HEIGHT
 // ========================================================
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
@@ -805,8 +717,13 @@ function resetPdfScale() {
 
 function applyScaleToSheet() {
     const s = appSettings.savedPdfScale || 1.0;
+    document.documentElement.style.setProperty('--pdf-scale', s);
+
     const pSheet = document.getElementById('printableA4Sheet');
     if (pSheet) pSheet.style.setProperty('--pdf-scale', s);
+    const cBox = document.getElementById('civilLiveSheetDisplayBox');
+    if (cBox) cBox.style.setProperty('--pdf-scale', s);
+
     const pct = Math.round(s * 100) + '%';
     safeSetText('scaleIndicatorText', pct);
     safeSetText('civilScaleIndicatorText', pct);
@@ -816,25 +733,47 @@ function applyScaleToSheet() {
 function autoFitPreview() {
     const viewport = document.getElementById('viewportWrap');
     const wrapper = document.getElementById('scalingWrapper');
-    if (viewport && wrapper) {
+    const sheet = document.getElementById('printableA4Sheet');
+    
+    if (viewport && wrapper && sheet) {
         const availableWidth = viewport.clientWidth || viewport.offsetWidth;
         if (availableWidth > 0) {
-            const scale = Math.min((availableWidth - 16) / 746, 1);
+            let scale = availableWidth < 746 ? (availableWidth / 746) : 1;
+            let leftOffset = availableWidth < 746 ? 0 : Math.max(0, (availableWidth - 746) / 2);
+            
+            wrapper.style.transformOrigin = 'top left';
             wrapper.style.transform = `scale(${scale})`;
-            wrapper.style.transformOrigin = 'top center';
-            viewport.style.height = Math.ceil((wrapper.scrollHeight || wrapper.offsetHeight) * scale + 50) + 'px';
+            wrapper.style.setProperty('margin-left', `${leftOffset}px`, 'important');
+            
+            const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
+            const scaledHeight = Math.ceil(unscaledHeight * scale);
+            if (scaledHeight > 0) {
+                viewport.style.setProperty('height', `${scaledHeight}px`, 'important');
+                viewport.style.setProperty('overflow', 'hidden', 'important');
+            }
         }
     }
 
     const civilVp = document.getElementById('civilViewportWrap');
     const civilWrap = document.getElementById('civilScalingWrapper');
+    const civilSheet = document.getElementById('civilLiveSheetDisplayBox');
+    
     if (civilVp && civilWrap) {
         const cWidth = civilVp.clientWidth || civilVp.offsetWidth;
         if (cWidth > 0) {
-            const cScale = Math.min((cWidth - 16) / 746, 1);
+            let cScale = cWidth < 746 ? (cWidth / 746) : 1;
+            let cLeft = cWidth < 746 ? 0 : Math.max(0, (cWidth - 746) / 2);
+            
+            civilWrap.style.transformOrigin = 'top left';
             civilWrap.style.transform = `scale(${cScale})`;
-            civilWrap.style.transformOrigin = 'top center';
-            civilVp.style.height = Math.ceil((civilWrap.scrollHeight || civilWrap.offsetHeight) * cScale + 50) + 'px';
+            civilWrap.style.setProperty('margin-left', `${cLeft}px`, 'important');
+            
+            const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
+            const cScaledHeight = Math.ceil(cUnscaledHeight * cScale);
+            if (cScaledHeight > 0) {
+                civilVp.style.setProperty('height', `${cScaledHeight}px`, 'important');
+                civilVp.style.setProperty('overflow', 'hidden', 'important');
+            }
         }
     }
 }
@@ -856,25 +795,8 @@ window.addEventListener('resize', () => {
 });
 
 // ========================================================
-// 15. SCREENS, HOMEPAGE & PROPOSAL CREATION
+// 11. HOMEPAGE & PROPOSAL CREATION
 // ========================================================
-function openScreen(screenId, pushHistory = true) {
-    try {
-        if (pushHistory && window.history && window.history.pushState) {
-            history.pushState({ screen: screenId }, "");
-        }
-    } catch(e) {}
-    document.querySelectorAll('.app-view').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(screenId);
-    if (target) {
-        target.classList.add('active');
-        window.scrollTo(0, 0);
-        if (screenId === 'screenSiteDashboard' || screenId === 'screenCivilDashboard') {
-            setTimeout(autoFitPreview, 60);
-        }
-    }
-}
-
 let tempNewQuoteType = 'both';
 function setNewSiteQuoteType(type) {
     tempNewQuoteType = type;
@@ -964,8 +886,18 @@ function saveNewBlankSiteAndOpen() {
     if (!clientNameInput) return showAppAlert("⚠️ Client Name Required", "Please enter Client Name.");
 
     const currentYear = new Date().getFullYear();
-    const baseSeq = parseInt(appSettings.startingQuoteSeq || 1, 10);
-    const autoQuoteNumber = "PE/" + currentYear + "/" + String(baseSeq + sites.length);
+    let maxSeq = parseInt(appSettings.startingQuoteSeq || 1, 10) - 1;
+    sites.forEach(s => {
+        if (s.quoteNo) {
+            const parts = s.quoteNo.split('/');
+            const lastPart = parseInt(parts[parts.length - 1], 10);
+            if (!isNaN(lastPart) && lastPart > maxSeq) {
+                maxSeq = lastPart;
+            }
+        }
+    });
+    const nextSeq = maxSeq + 1;
+    const autoQuoteNumber = "PE/" + currentYear + "/" + nextSeq;
     const bp = JSON.parse(JSON.stringify(masterBlueprint));
 
     const newSite = {
@@ -984,13 +916,17 @@ function saveNewBlankSiteAndOpen() {
         civilSelectedTaxId: "gst18_split",
         rateOnlyMode: false,
         civilRateOnlyMode: false,
-        civilEnabled: tempNewQuoteType !== 'shed',
+        
+        civilEnabled: tempNewQuoteType === 'both' || tempNewQuoteType === 'civil',
+        shedEnabled: tempNewQuoteType === 'both' || tempNewQuoteType === 'shed',
+        
         dimW: "", dimL: "", dimH: "",
-        primEnabled: tempNewQuoteType !== 'civil',
-        secEnabled: tempNewQuoteType !== 'civil',
-        cladEnabled: tempNewQuoteType !== 'civil',
-        accEnabled: tempNewQuoteType !== 'civil',
-        erectEnabled: tempNewQuoteType !== 'civil',
+        primEnabled: true,
+        secEnabled: true,
+        cladEnabled: true,
+        accEnabled: true,
+        erectEnabled: true,
+
         primCustomLine: bp.primCustomLine,
         primSpecs: bp.primSpecs,
         primWeight: "", primRate: "", primUnit: bp.primUnit || "Kg",
@@ -1014,6 +950,14 @@ function saveNewBlankSiteAndOpen() {
         }))
     };
 
+    if (tempNewQuoteType === 'shed') {
+        newSite.civilEnabled = false;
+        newSite.shedEnabled = true;
+    } else if (tempNewQuoteType === 'civil') {
+        newSite.civilEnabled = true;
+        newSite.shedEnabled = false;
+    }
+
     sites.unshift(newSite);
     syncDataToCloud('patel_app_sites', sites);
     renderHomeScreen();
@@ -1031,6 +975,16 @@ function loadSiteToDashboard(siteId) {
     if (!site.customModules) site.customModules = [];
     if (!site.quoteType) site.quoteType = 'both';
     if (site.civilRateOnlyMode === undefined) site.civilRateOnlyMode = false;
+    
+    site.civilEnabled = (site.quoteType === 'both' || site.quoteType === 'civil');
+    site.shedEnabled = (site.quoteType === 'both' || site.quoteType === 'shed');
+
+    if (site.primEnabled === undefined) site.primEnabled = true;
+    if (site.secEnabled === undefined) site.secEnabled = true;
+    if (site.cladEnabled === undefined) site.cladEnabled = true;
+    if (site.accEnabled === undefined) site.accEnabled = true;
+    if (site.erectEnabled === undefined) site.erectEnabled = true;
+
     if (!site.civilScopeDesc) site.civilScopeDesc = masterBlueprint.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS";
     if (!site.selectedTaxId) site.selectedTaxId = "gst18_split";
     if (!site.civilSelectedTaxId) site.civilSelectedTaxId = "gst18_split";
@@ -1046,19 +1000,24 @@ function loadSiteToDashboard(siteId) {
     updatePillTogglesUI();
     updateModulePillBadgesUI();
     updateTaxDisplay();
+    updateHeaderBannersUI();
     renderCustomModulesDashboardList();
     renderCivilCustomCategoriesUI();
-    renderCrossAddBannerUI();
     renderDynamicPdfActionsBar();
     calcModuleTotals();
     applyCustomButtonNamesUI();
     refreshLivePdfPreviewSheet();
-    openScreen('screenSiteDashboard');
+
+    if (site.quoteType === 'civil') {
+        openCivilDashboardScreen();
+    } else {
+        openScreen('screenSiteDashboard');
+    }
     setTimeout(attachDynamicPreviewObserver, 150);
 }
 
 // ========================================================
-// 16. CIVIL DATA & TOGGLES
+// 12. CIVIL DATA & DYNAMIC DASHBOARD TOGGLES
 // ========================================================
 function ensureCivilDataOnSite(site) {
     if (!site.civilData) site.civilData = JSON.parse(JSON.stringify(masterBlueprint.civilData));
@@ -1068,85 +1027,13 @@ function ensureCivilDataOnSite(site) {
     });
 }
 
-function renderCrossAddBannerUI() {
-    const site = getCurrentSite();
-    const banner = document.getElementById('crossAddModeBanner');
-    const shedDimBox = document.getElementById('shedDimensionsCardBox');
-    const shedModBox = document.getElementById('shedModulesBlock');
-    const jumpToShedBox = document.getElementById('civilScreenJumpToShedBox');
-    if (!banner || !site) return;
-
-    banner.innerHTML = "";
-    if (jumpToShedBox) {
-        jumpToShedBox.innerHTML = `
-            <button type="button" class="btn-main btn-3d-main btn-ripple" style="padding:12px;" onclick="openScreen('screenSiteDashboard')">
-                🏢 OPEN SHED / PEB STRUCTURE QUOTATION (PAGE 1) ➔
-            </button>
-        `;
-    }
-
-    if (site.quoteType === 'shed') {
-        if (shedDimBox) shedDimBox.style.display = 'block';
-        if (shedModBox) shedModBox.style.display = 'block';
-        banner.innerHTML = `
-            <div class="cross-add-banner">
-                <div>
-                    <strong style="color:#166534; font-size:12.5px;">Need Civil Package for this site?</strong>
-                    <div style="font-size:11px; color:#475569;">Currently in Shed Only mode. Click to include Civil Specifications.</div>
-                </div>
-                <button type="button" class="btn-secondary btn-3d-secondary btn-ripple" onclick="switchSiteToBothMode()">
-                    ➕ Add Civil Package
-                </button>
-            </div>
-        `;
-    } else if (site.quoteType === 'civil') {
-        if (shedDimBox) shedDimBox.style.display = 'none';
-        if (shedModBox) shedModBox.style.display = 'none';
-        banner.innerHTML = `
-            <div class="cross-add-banner shed-banner">
-                <div>
-                    <strong style="color:#1e40af; font-size:12.5px;">Need PEB Shed Package for this site?</strong>
-                    <div style="font-size:11px; color:#475569;">Currently in Civil Only mode. Click to include Steel Structure Shed.</div>
-                </div>
-                <button type="button" class="btn-secondary btn-3d-secondary btn-ripple" onclick="switchSiteToBothMode()">
-                    ➕ Add Shed Package
-                </button>
-            </div>
-        `;
-    } else {
-        if (shedDimBox) shedDimBox.style.display = 'block';
-        if (shedModBox) shedModBox.style.display = 'block';
-    }
-}
-
-function switchSiteToBothMode() {
-    const site = getCurrentSite();
-    if (!site) return;
-    site.quoteType = 'both';
-    site.civilEnabled = site.primEnabled = site.secEnabled = site.cladEnabled = site.accEnabled = site.erectEnabled = true;
-    syncDataToCloud('patel_app_sites', sites);
-    loadSiteToDashboard(site.id);
-}
-
 function renderDynamicPdfActionsBar() {
     const site = getCurrentSite();
     const bar = document.getElementById('dynamicPdfDownloadActionsBar');
     if (!bar || !site) return;
 
     bar.innerHTML = "";
-    if (site.quoteType === 'civil' || (site.quoteType === 'both' && site.civilEnabled && !site.primEnabled)) {
-        bar.innerHTML = `
-            <button class="btn-main btn-3d-green btn-ripple" style="width:100%; padding:14px;" onclick="downloadPDFDirectly('civil')">
-                <span style="font-size:18px;">⬇️</span> DOWNLOAD CIVIL QUOTATION PDF (0.25" MARGIN)
-            </button>
-        `;
-    } else if (site.quoteType === 'shed' || (site.quoteType === 'both' && !site.civilEnabled)) {
-        bar.innerHTML = `
-            <button class="btn-main btn-3d-main btn-ripple" style="width:100%; padding:14px;" onclick="downloadPDFDirectly('shed')">
-                <span style="font-size:18px;">⬇️</span> DOWNLOAD SHED QUOTATION PDF (0.25" MARGIN)
-            </button>
-        `;
-    } else {
+    if (site.quoteType === 'both') {
         bar.innerHTML = `
             <button class="btn-main btn-3d-main btn-ripple" style="flex:2; padding:13px;" onclick="downloadPDFDirectly('both')">
                 <span style="font-size:17px;">📑</span> COMBINED PDF (PAGE 1 & 2)
@@ -1156,6 +1043,18 @@ function renderDynamicPdfActionsBar() {
             </button>
             <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1; justify-content:center; padding:13px; font-weight:900;" onclick="downloadPDFDirectly('shed')">
                 🏢 Shed Only
+            </button>
+        `;
+    } else if (site.quoteType === 'civil') {
+        bar.innerHTML = `
+            <button class="btn-main btn-3d-green btn-ripple" style="width:100%; padding:14px;" onclick="downloadPDFDirectly('civil')">
+                <span style="font-size:18px;">⬇️</span> DOWNLOAD CIVIL QUOTATION PDF (0.25" MARGIN)
+            </button>
+        `;
+    } else {
+        bar.innerHTML = `
+            <button class="btn-main btn-3d-main btn-ripple" style="width:100%; padding:14px;" onclick="downloadPDFDirectly('shed')">
+                <span style="font-size:18px;">⬇️</span> DOWNLOAD SHED QUOTATION PDF (0.25" MARGIN)
             </button>
         `;
     }
@@ -1181,7 +1080,6 @@ function toggleModuleActiveState(modKey) {
     else if (modKey === 'acc') site.accEnabled = !site.accEnabled;
     else if (modKey === 'erect') site.erectEnabled = !site.erectEnabled;
 
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     updateModulePillBadgesUI();
     calcModuleTotals();
@@ -1231,46 +1129,39 @@ function toggleCivilRateOnlyMode() {
     refreshLivePdfPreviewSheet();
 }
 
-function toggleCivilWorks() {
-    const site = getCurrentSite();
-    if (!site) return;
-    site.civilEnabled = !site.civilEnabled;
-    syncDataToCloud('patel_app_sites', sites);
-    updatePillTogglesUI();
-    renderDynamicPdfActionsBar();
-    refreshLivePdfPreviewSheet();
-}
-
 function updatePillTogglesUI() {
     const site = getCurrentSite();
     if (!site) return;
 
     const btnRate = document.getElementById('pillBtnRateMode');
     const txtRate = document.getElementById('pillTxtRateMode');
+    const btnCivRate = document.getElementById('pillBtnCivilRateMode');
+    const txtCivRate = document.getElementById('pillTxtCivilRateMode');
+    const boxCiv = document.getElementById('civilSectionsContainer');
+
     if (btnRate && txtRate) {
         btnRate.classList.toggle('active', !!site.rateOnlyMode);
         txtRate.innerText = site.rateOnlyMode ? "Shed Rates (ON)" : "Shed BOQ";
     }
 
-    const btnCivRate = document.getElementById('pillBtnCivilRateMode');
-    const txtCivRate = document.getElementById('pillTxtCivilRateMode');
     if (btnCivRate && txtCivRate) {
         btnCivRate.classList.toggle('active', !!site.civilRateOnlyMode);
         txtCivRate.innerText = site.civilRateOnlyMode ? "Civil Rates (ON)" : "Civil BOQ";
+        btnCivRate.style.display = (site.quoteType === 'both') ? 'flex' : 'none';
     }
 
-    const btnCiv = document.getElementById('pillBtnCivilMode');
-    const txtCiv = document.getElementById('pillTxtCivilMode');
-    const boxCiv = document.getElementById('civilSectionsContainer');
-    if (btnCiv && txtCiv && boxCiv) {
-        btnCiv.classList.toggle('civil-active', !!site.civilEnabled);
-        txtCiv.innerText = site.civilEnabled ? "Civil Package (ON)" : "Civil Package (OFF)";
-        boxCiv.style.display = site.civilEnabled ? 'block' : 'none';
+    if (boxCiv) boxCiv.style.display = (site.quoteType === 'both') ? 'block' : 'none';
+
+    const civPillCivRate = document.getElementById('pillBtnCivilScreenCivRateMode');
+    const civTxtCivRate = document.getElementById('pillTxtCivilScreenCivRateMode');
+    if (civPillCivRate && civTxtCivRate) {
+        civPillCivRate.classList.toggle('active', !!site.civilRateOnlyMode);
+        civTxtCivRate.innerText = site.civilRateOnlyMode ? "Civil Rates (ON)" : "Civil BOQ";
     }
 }
 
 // ========================================================
-// 17. CIVIL DASHBOARD & SCOPE
+// 13. CIVIL DASHBOARD & SYNCHRONIZED PREVIEW
 // ========================================================
 function openCivilDashboardScreen() {
     const site = getCurrentSite();
@@ -1281,23 +1172,41 @@ function openCivilDashboardScreen() {
     safeSetText('civilScopeDescPreviewTxt', site.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS");
 
     renderCivilCustomCategoriesUI();
-    renderCrossAddBannerUI();
+    updatePillTogglesUI();
     updateTaxDisplay();
+    updateHeaderBannersUI();
     openScreen('screenCivilDashboard');
 
     setTimeout(() => {
         refreshLivePdfPreviewSheet();
-        const previewSrc = document.getElementById('civilDedicatedPageSheet');
-        const civilLiveBox = document.getElementById('civilLiveSheetDisplayBox');
-        if (previewSrc && civilLiveBox) {
-            civilLiveBox.innerHTML = "";
-            const clone = previewSrc.cloneNode(true);
-            clone.style.display = 'block';
-            clone.style.boxShadow = 'none';
-            civilLiveBox.appendChild(clone);
-            autoFitPreview();
-        }
+        syncCivilLivePreviewBox();
+        autoFitPreview();
     }, 80);
+}
+
+function syncCivilLivePreviewBox() {
+    const pSheet = document.getElementById('printableA4Sheet');
+    const civilLiveBox = document.getElementById('civilLiveSheetDisplayBox');
+    if (pSheet && civilLiveBox) {
+        civilLiveBox.innerHTML = "";
+        const clone = pSheet.cloneNode(true);
+        clone.id = 'printableA4Sheet_civilDisplayMirror';
+        clone.style.display = 'flow-root';
+
+        const cloneShed = clone.querySelector('#page1MsStructure');
+        const cloneCivil = clone.querySelector('#civilDedicatedPageSheet');
+        const cloneGap = clone.querySelector('#civilPageGapDivider');
+
+        const site = getCurrentSite();
+        const isShed = site && (site.quoteType === 'both' || site.quoteType === 'shed');
+        const isCivil = site && (site.quoteType === 'both' || site.quoteType === 'civil');
+
+        if (!isShed && cloneShed) cloneShed.remove();
+        if (!isCivil && cloneCivil) cloneCivil.remove();
+        if ((!isShed || !isCivil) && cloneGap) cloneGap.remove();
+
+        civilLiveBox.appendChild(clone);
+    }
 }
 
 function openCivilScopeModal() {
@@ -1311,8 +1220,7 @@ function saveCivilScopeModal() {
     const site = getCurrentSite();
     if (!site) return;
     const nw = (document.getElementById('inp_civilScopeDescModal')?.value || "").trim();
-    site.civilScopeDesc = masterBlueprint.civilScopeDesc = nw;
-    captureCurrentSiteAsMasterBlueprint();
+    site.civilScopeDesc = nw;
     syncDataToCloud('patel_app_sites', sites);
     safeSetText('civilScopeDescPreviewTxt', nw);
     closeCivilScopeModal();
@@ -1321,7 +1229,7 @@ function saveCivilScopeModal() {
 }
 
 // ========================================================
-// 18. CIVIL PARAMETERS MODAL
+// 14. CIVIL PARAMETERS MODAL
 // ========================================================
 let activeCivilModalType = null;
 function openCivilParamModal(type) {
@@ -1342,12 +1250,12 @@ function openCivilParamModal(type) {
         const lineTotal = (parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0);
         html += `
             <div class="civil-calc-card card-3d sortable-item" id="civCard_${type}_${idx}" data-sort-index="${idx}">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                    <div style="display:flex; align-items:center; gap:6px;">
+                <div class="acc-top-row">
+                    <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
                         <span class="drag-handle" id="handle_civ_${type}_${idx}" title="Drag to reorder">⋮⋮</span>
-                        <strong style="font-size:12px; color:#0f172a;">${idx + 1}. ${item.name}</strong>
+                        <strong style="font-size:12px; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${idx + 1}. ${item.name}</strong>
                     </div>
-                    <div style="display:flex; align-items:center; gap:6px;">
+                    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
                         <span class="acc-total-pill">${lineTotal > 0 ? '₹ ' + Math.round(lineTotal).toLocaleString('en-IN') : '-'}</span>
                         <button type="button" class="btn-del-pro btn-ripple" onclick="deleteCivilItem('${type}', ${idx})">🗑️</button>
                     </div>
@@ -1386,7 +1294,6 @@ function deleteCivilItem(type, idx) {
     const site = getCurrentSite();
     if (!site?.civilData[type]?.items) return;
     site.civilData[type].items.splice(idx, 1);
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     openCivilParamModal(type);
     refreshLivePdfPreviewSheet();
@@ -1396,7 +1303,6 @@ function updateCivilSecTitle(section, val) {
     const site = getCurrentSite();
     if (!site) return;
     site.civilData[section].title = val;
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     refreshLivePdfPreviewSheet();
 }
@@ -1405,7 +1311,6 @@ function updateCivilItemField(section, idx, field, val) {
     const site = getCurrentSite();
     if (!site?.civilData[section]?.items[idx]) return;
     site.civilData[section].items[idx][field] = val;
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     refreshLivePdfPreviewSheet();
 }
@@ -1423,7 +1328,6 @@ function addCivilRowDirectly(secKey) {
         rate: "",
         enabled: true
     });
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     refreshLivePdfPreviewSheet();
 }
@@ -1441,10 +1345,9 @@ function closeCivilParamModal() {
 }
 
 // ========================================================
-// 19. UNIVERSAL MODULE ADDER
+// 15. UNIVERSAL MODULE ADDER
 // ========================================================
-let universalModMode = 'shed';
-let universalModUnit = 'Lot';
+let universalModMode = 'shed', universalModUnit = 'Lot';
 
 function openAddUniversalModuleModal(mode) {
     universalModMode = mode;
@@ -1511,7 +1414,6 @@ function saveUniversalModule() {
         renderCustomModulesDashboardList();
         calcModuleTotals();
     }
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     closeUniversalModuleModal();
     refreshLivePdfPreviewSheet();
@@ -1541,7 +1443,6 @@ function deleteCustomCivilCategory(cIdx) {
     const site = getCurrentSite();
     if (!site?.civilCustomCategories) return;
     site.civilCustomCategories.splice(cIdx, 1);
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     renderCivilCustomCategoriesUI();
     refreshLivePdfPreviewSheet();
@@ -1575,7 +1476,6 @@ function toggleCustomModuleActive(modId) {
     const mod = (site?.customModules || []).find(m => m.id === modId);
     if (mod) {
         mod.enabled = !(mod.enabled !== false);
-        captureCurrentSiteAsMasterBlueprint();
         syncDataToCloud('patel_app_sites', sites);
         renderCustomModulesDashboardList();
         calcModuleTotals();
@@ -1588,7 +1488,6 @@ function deleteCustomModule(modId) {
     if (!site) return;
     site.customModules = (site.customModules || []).filter(m => m.id !== modId);
     if (site.moduleOrder) site.moduleOrder = site.moduleOrder.filter(id => id !== modId);
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     renderCustomModulesDashboardList();
     calcModuleTotals();
@@ -1609,7 +1508,7 @@ function autoSaveAndUpdate() {
 }
 
 // ========================================================
-// 20. STRUCTURE MODULE MODALS
+// 16. STRUCTURE MODULE MODALS
 // ========================================================
 let activeModType = null;
 function openModuleModal(type) {
@@ -1690,7 +1589,6 @@ function openThemeUnitPickerForMod(modType) {
         else if (modType === 'sec') site.secUnit = u;
         else if (modType === 'clad') site.cladUnit = u;
         else if (modType === 'erect') site.erectUnit = u;
-        captureCurrentSiteAsMasterBlueprint();
         syncDataToCloud('patel_app_sites', sites);
         openModuleModal(modType);
         calcModuleTotals();
@@ -1724,7 +1622,6 @@ function updateStandardChecklistItemName(idx, newText) {
     let targetList = activeModType === 'prim' ? site.primSpecs : activeModType === 'sec' ? site.secSpecs : site.erectSpecs;
     if (targetList[idx]) {
         targetList[idx].text = newText;
-        captureCurrentSiteAsMasterBlueprint();
         syncDataToCloud('patel_app_sites', sites);
         refreshLivePdfPreviewSheet();
     }
@@ -1770,12 +1667,14 @@ function renderAccessoriesChecklist() {
         container.innerHTML += `
             <div class="acc-item-card ${isSelected ? 'selected' : ''}" id="accCardBox_${idx}">
                 <div class="acc-top-row">
-                    <div style="display:flex; align-items:center; gap:10px; flex:1;" onclick="toggleAccessoryTick(${idx})">
+                    <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;" onclick="toggleAccessoryTick(${idx})">
                         <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation(); toggleAccessoryTick(${idx})">${isSelected ? '✓' : ''}</div>
-                        <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx}, 'name', this.value)" style="border:none; background:transparent; font-size:13px; font-weight:800; color:#0f172a; flex:1; outline:none;">
+                        <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx}, 'name', this.value)" style="border:none; background:transparent; font-size:13px; font-weight:800; color:#0f172a; flex:1; min-width:0; outline:none;">
                     </div>
-                    <span class="acc-total-pill" id="accBadgePill_${idx}">${lineTotal > 0 ? '₹ ' + Math.round(lineTotal).toLocaleString('en-IN') : '-'}</span>
-                    <button class="btn-del-pro btn-ripple" onclick="deleteAccessoryItem(${idx})">🗑️</button>
+                    <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+                        <span class="acc-total-pill" id="accBadgePill_${idx}">${lineTotal > 0 ? '₹ ' + Math.round(lineTotal).toLocaleString('en-IN') : '-'}</span>
+                        <button class="btn-del-pro btn-ripple" onclick="deleteAccessoryItem(${idx})">🗑️</button>
+                    </div>
                 </div>
                 <div class="acc-inputs-row">
                     <div class="acc-input-cell"><input type="number" inputmode="decimal" step="any" placeholder="Qty" value="${acc.qty || ''}" oninput="updateAccessoryFieldFast(${idx}, 'qty', this.value)"></div>
@@ -1793,7 +1692,6 @@ function updateAccessoryFieldFast(idx, field, val) {
     const lineTot = (parseFloat(site.accessories[idx].qty) || 0) * (parseFloat(site.accessories[idx].rate) || 0);
     safeSetText('accBadgePill_' + idx, lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-');
     safeSetText('accCalcTxt_' + idx, lineTot > 0 ? '= ₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '= -');
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -1805,7 +1703,6 @@ function openThemeUnitPickerForAcc(accIdx) {
     openThemeUnitPicker(site.accessories[accIdx].unit || 'Nos', (u) => {
         site.accessories[accIdx].unit = u;
         safeSetText('accBtnUnit_' + accIdx, u + " ▾");
-        captureCurrentSiteAsMasterBlueprint();
         syncDataToCloud('patel_app_sites', sites);
         calcModuleTotals();
         refreshLivePdfPreviewSheet();
@@ -1847,14 +1744,13 @@ function autoSaveModuleChanges() {
         site.erectCustomLine = customLineVal;
         site.erectRate = document.getElementById('modalInputRt')?.value || "";
     }
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
 // ========================================================
-// 21. TAX SELECTION & CALCULATIONS
+// 17. TAX SELECTION & CALCULATIONS
 // ========================================================
 let activeTaxPickerTarget = 'shed';
 function openTaxPickerModal(target = 'shed') {
@@ -1934,14 +1830,13 @@ function calcModuleTotals() {
 }
 
 // ========================================================
-// 22. IN-PREVIEW LIVE SYNC & EDITS
+// 18. IN-PREVIEW LIVE SYNC & EDITS
 // ========================================================
 function openCivilUnitPicker(secKey, idx) {
     const site = getCurrentSite();
     if (!site?.civilData[secKey]?.items[idx]) return;
     openThemeUnitPicker(site.civilData[secKey].items[idx].unit, (newUnit) => {
         site.civilData[secKey].items[idx].unit = newUnit;
-        captureCurrentSiteAsMasterBlueprint();
         syncDataToCloud('patel_app_sites', sites);
         refreshLivePdfPreviewSheet();
     });
@@ -1951,7 +1846,6 @@ function openCivilCustomCatUnitPicker(catIdx, itemIdx) {
     if (!site?.civilCustomCategories[catIdx]?.items[itemIdx]) return;
     openThemeUnitPicker(site.civilCustomCategories[catIdx].items[itemIdx].unit, (newUnit) => {
         site.civilCustomCategories[catIdx].items[itemIdx].unit = newUnit;
-        captureCurrentSiteAsMasterBlueprint();
         syncDataToCloud('patel_app_sites', sites);
         refreshLivePdfPreviewSheet();
     });
@@ -1965,7 +1859,6 @@ function openShedUnitPicker(modKey) {
         else if (modKey === 'sec') site.secUnit = newUnit;
         else if (modKey === 'clad') site.cladUnit = newUnit;
         else if (modKey === 'erect') site.erectUnit = newUnit;
-        captureCurrentSiteAsMasterBlueprint();
         syncDataToCloud('patel_app_sites', sites);
         refreshLivePdfPreviewSheet();
     });
@@ -1983,7 +1876,6 @@ function syncPreviewTitleEdit(el, modKey, cModId = null) {
         const mod = (site.customModules || []).find(m => m.id === cModId);
         if (mod) mod.title = newTitle;
     }
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
 }
 
@@ -1991,7 +1883,6 @@ function syncCivilTitleEdit(el, secKey, idx) {
     const site = getCurrentSite();
     if (!site?.civilData[secKey]?.items[idx]) return;
     site.civilData[secKey].items[idx].name = el.innerText.trim();
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
 }
 
@@ -2038,7 +1929,6 @@ function syncAccTitleEdit(idx, el) {
     const site = getCurrentSite();
     if (!site?.accessories[idx]) return;
     site.accessories[idx].name = el.innerText.trim();
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
 }
 
@@ -2052,7 +1942,6 @@ function addNewAccessoryDirectly() {
         rate: "0",
         selected: true
     });
-    captureCurrentSiteAsMasterBlueprint();
     syncDataToCloud('patel_app_sites', sites);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -2076,7 +1965,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
 }
 
 // ========================================================
-// 23. LIVE PDF ENGINE (PAGE 1 & 2)
+// 19. LIVE PREVIEW ENGINE WITH 3D DETAILS & LOGO
 // ========================================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
@@ -2084,24 +1973,30 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const isRateOnly = site.rateOnlyMode === true;
     const isCivilRateOnly = site.civilRateOnlyMode === true;
 
-    const compName = appSettings.ownerName || "PATEL ENGINEERING";
-    const compTag = appSettings.companyDesc || "";
-    const compAddr = appSettings.companyAddr || "";
-    const compGst = appSettings.companyGst || "";
+    const compTag = appSettings.companyDesc || "PEB Structure | Industrial Sheds | Roofing Solutions";
+    const compAddr = appSettings.companyAddr || "Bhawani Nagar, Bhilwara - 311001 (Raj.)";
+    const compGst = appSettings.companyGst || "08AHFPL0222M2ZF";
+    const compPhones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean).join(" | ") || "+91 9799635249";
+    const compEmail = appSettings.companyEmail || "info@patelengineering.com";
+    const compWeb = appSettings.footerWeb || "www.patelengineering.com";
 
-    safeSetText('pdfCompanyName', compName);
+    // Update 3D Details on Page 1
     safeSetText('pdfCompanyTag', compTag);
     safeSetText('pdfCompanyAddr', compAddr);
+    safeSetText('pdfHeaderPhones', compPhones);
+    safeSetText('pdfHeaderEmail', compEmail);
+    safeSetText('pdfHeaderWeb', compWeb);
     safeSetText('pdfCompanyGst', compGst);
 
-    safeSetText('civilPdfCompanyName', compName);
-    safeSetText('civilPdfCompanyTag', compTag);
+    // Update 3D Details on Page 2 (Civil)
+    safeSetText('civilPdfCompanyTag', "Civil Infrastructure & Construction Engineering");
     safeSetText('civilPdfCompanyAddr', compAddr);
+    safeSetText('civilPdfHeaderPhones', compPhones);
+    safeSetText('civilPdfHeaderEmail', compEmail);
+    safeSetText('civilPdfHeaderWeb', compWeb);
     safeSetText('civilPdfCompanyGst', compGst);
 
-    const logoContent = appSettings.logoData ? `<img src="${appSettings.logoData}" style="width:100%;height:100%;object-fit:cover;">` : `PE`;
-    safeSetHtml('displayLogoBox', logoContent);
-    safeSetHtml('civilDisplayLogoBox', logoContent);
+    updateHeaderBannersUI();
 
     safeSetText('pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
     safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION - CIVIL WORK SPECIFICATIONS");
@@ -2136,15 +2031,18 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('civilPdfClientGst', site.custGST || "-");
     safeSetText('civilPdfClientAddr', site.custAddress || "-");
 
+    const isShedActive = (site.quoteType === 'both' || site.quoteType === 'shed');
+    const isCivilActive = (site.quoteType === 'both' || site.quoteType === 'civil');
+
     // PAGE 1: SHED
     const page1ShedSheet = document.getElementById('page1MsStructure');
     let shedGrandTotal = 0;
     let autoTotalSteelWeightKg = 0;
 
-    if (site.quoteType === 'civil') {
-        if (page1ShedSheet) page1ShedSheet.style.display = 'none';
+    if (!isShedActive) {
+        if (page1ShedSheet) page1ShedSheet.style.setProperty('display', 'none', 'important');
     } else {
-        if (page1ShedSheet) page1ShedSheet.style.display = 'block';
+        if (page1ShedSheet) page1ShedSheet.style.setProperty('display', 'flow-root', 'important');
         safeSetText('displayHeaderLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
 
         const s1Tbody = document.getElementById('pdfSection1TableBody');
@@ -2256,8 +2154,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const eUnit = site.erectUnit || "Kg";
 
         const tbody = document.getElementById('pdfTableBody');
-        let customTot = 0;
-        let sNoCounter = 1;
+        let customTot = 0, sNoCounter = 1;
 
         if (tbody) {
             tbody.innerHTML = "";
@@ -2339,14 +2236,13 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const civilPageBlock = document.getElementById('civilDedicatedPageSheet');
     const pageGapDivider = document.getElementById('civilPageGapDivider');
     let civilGrandTotal = 0;
-    const isCivilCompletelyOff = (site.quoteType === 'shed') || (site.civilEnabled === false);
 
-    if (isCivilCompletelyOff) {
-        if (civilPageBlock) civilPageBlock.style.display = 'none';
-        if (pageGapDivider) pageGapDivider.style.display = 'none';
+    if (!isCivilActive) {
+        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'none', 'important');
+        if (pageGapDivider) pageGapDivider.style.setProperty('display', 'none', 'important');
     } else {
-        if (civilPageBlock) civilPageBlock.style.display = 'block';
-        if (pageGapDivider) pageGapDivider.style.display = (site.quoteType === 'both') ? 'block' : 'none';
+        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'flow-root', 'important');
+        if (pageGapDivider) pageGapDivider.style.setProperty('display', (isShedActive ? 'block' : 'none'), 'important');
         ensureCivilDataOnSite(site);
         const civ = site.civilData;
         let civilTotalBasic = 0;
@@ -2434,7 +2330,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     // COMBINED PACKAGE STRIP
     const p1CombBox = document.getElementById('pdfCombinedPackageBox');
     const p2CombBox = document.getElementById('civilPdfCombinedPackageBox');
-    if (site.quoteType === 'both' && site.civilEnabled) {
+    if (isShedActive && isCivilActive) {
         const totalComb = shedGrandTotal + civilGrandTotal;
         const combRate = sqft > 0 ? Math.round(totalComb / sqft) : 0;
         const combHtml = `
@@ -2447,11 +2343,14 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         if (p1CombBox) p1CombBox.style.display = 'none';
         if (p2CombBox) p2CombBox.style.display = 'none';
     }
+
+    syncCivilLivePreviewBox();
+
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
 // ========================================================
-// 24. 0.25 INCH (6.35 mm) CAPACITY PACKER
+// 20. PDF PAGINATION & DIRECT DOWNLOAD ENGINE
 // ========================================================
 function createCleanPageBox(hasPageBreak = true) {
     const p = document.createElement('div');
@@ -2644,7 +2543,6 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
                     for (let r = startRow; r < allRows.length; r++) p2Tbody.appendChild(allRows[r].cloneNode(true));
                     p2Table.appendChild(p2Tbody);
                     p2TableWrap.appendChild(p2Table);
-                    page2.appendChild(p2TableWrap);
                     lockTableBottomBorder(p2Table);
                 }
             }
@@ -2663,9 +2561,6 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
     }
 }
 
-// ========================================================
-// 25. 0.25 INCH (6.35 mm) CUT MARGIN PDF EXPORT ENGINE
-// ========================================================
 function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2700,14 +2595,15 @@ function downloadPDFDirectly(mode = 'both') {
     const p1 = clone.querySelector('#page1MsStructure');
     const p2 = clone.querySelector('#civilDedicatedPageSheet');
 
-    if (mode === 'shed' || mode === 'both') {
-        if (p1) paginateQuoteSection(p1, outputContainer, site.quoteNo, 'SHED');
+    const shouldIncludeShed = (site.quoteType === 'both' && (mode === 'shed' || mode === 'both')) || (site.quoteType === 'shed');
+    const shouldIncludeCivil = (site.quoteType === 'both' && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
+
+    if (shouldIncludeShed && p1) {
+        paginateQuoteSection(p1, outputContainer, site.quoteNo, 'SHED');
     }
-    if (mode === 'civil' || mode === 'both') {
-        if (p2) {
-            p2.style.display = 'block';
-            paginateQuoteSection(p2, outputContainer, site.quoteNo, 'CIVIL');
-        }
+    if (shouldIncludeCivil && p2) {
+        p2.style.display = 'block';
+        paginateQuoteSection(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
     const lastPage = outputContainer.querySelector('.a4-page-box:last-child');
@@ -2753,10 +2649,9 @@ function downloadPDFDirectly(mode = 'both') {
 }
 
 // ========================================================
-// 26. PERMANENT TEXTS MODAL & HEADINGS SYNC
+// 21. PERMANENT TEXTS MODAL & HEADINGS SYNC
 // ========================================================
 function openPermanentTextsModal() {
-    safeSetVal('pt_ownerName', appSettings.ownerName || "");
     safeSetVal('pt_companyDesc', appSettings.companyDesc || "");
     safeSetVal('pt_companyAddr', appSettings.companyAddr || "");
     safeSetVal('pt_companyGst', appSettings.companyGst || "");
@@ -2816,7 +2711,6 @@ function loadPhoneSettingsUI() {
     safeSetVal('setPhone2', appSettings.phone2 || "");
     safeSetVal('setPhone3', appSettings.phone3 || "");
     safeSetVal('setStartingQuoteNo', appSettings.startingQuoteSeq || 1);
-    safeSetText('subOwnerName', appSettings.ownerName || "PATEL ENGINEERING");
 }
 
 let currentSettingKey = '';
@@ -2841,21 +2735,23 @@ function handleLogoUpload(input) {
         reader.onload = function(e) {
             appSettings.logoData = e.target.result;
             syncDataToCloud('patel_app_settings', appSettings);
-            safeSetHtml('settingsLogoPreview', `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`);
-            safeSetHtml('appLogoBadge', `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`);
+            
+            updateHeaderBannersUI();
+            
             const fav = document.getElementById('dynamicAppFavicon');
             const appleFav = document.getElementById('dynamicAppleIcon');
             if (fav) fav.href = e.target.result;
             if (appleFav) appleFav.href = e.target.result;
+            
             refreshLivePdfPreviewSheet();
-            showAppAlert("✓ App Icon Updated", "Company logo updated successfully!");
+            showAppAlert("✓ Banner Updated", "Company Header Banner & Logo updated successfully!");
         };
         reader.readAsDataURL(input.files[0]);
     }
 }
 
 // ========================================================
-// 27. DIGITAL SIGNATURE
+// 22. DIGITAL SIGNATURE & WINDOW ONLOAD
 // ========================================================
 let canvas, ctx, isDrawing = false, sigEventsAttached = false;
 function openSignatureModal() {
@@ -2914,9 +2810,6 @@ function saveSignature() {
     showAppAlert("✓ Success", "Digital Signature Saved Successfully!");
 }
 
-// ========================================================
-// 28. WINDOW ONLOAD
-// ========================================================
 window.onload = function() {
     checkFirstTimeAuthentication();
     initCloudFirstMasterSync();
@@ -2924,6 +2817,7 @@ window.onload = function() {
     loadPhoneSettingsUI();
     applyScaleToSheet();
     autoDetectDeviceMode();
+    updateHeaderBannersUI();
     if (appSettings.logoData) {
         const fav = document.getElementById('dynamicAppFavicon');
         const appleFav = document.getElementById('dynamicAppleIcon');
@@ -2933,6 +2827,5 @@ window.onload = function() {
     if (appSettings.savedThemeId && THEMES_CATALOG[appSettings.savedThemeId]) {
         applyPresetTheme(appSettings.savedThemeId);
     }
-    initSamsungBootAnimation();
-    setTimeout(attachDynamicPreviewObserver, 200);
+    initSamsungBootAnimation();setTimeout(attachDynamicPreviewObserver, 200);
 };
