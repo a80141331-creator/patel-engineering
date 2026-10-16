@@ -57,6 +57,45 @@ html, body {
 }
 
 /* ========================================================
+   FLOATING CORPORATE TOAST NOTIFICATION
+   ======================================================== */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+.toast-message {
+    background: linear-gradient(135deg, #0c1e30 0%, #1e3a5f 100%);
+    color: #ffffff;
+    border: 1.5px solid #38bdf8;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: auto;
+    animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.toast-message.toast-fade-out {
+    animation: toastSlideOut 0.3s ease forwards;
+}
+@keyframes toastSlideOut {
+    to { opacity: 0; transform: translateY(-15px) scale(0.92); }
+}
+
+/* ========================================================
    FIRST-TIME MASTER PASSCODE LOCK SCREEN
    ======================================================== */
 .master-auth-overlay {
@@ -270,6 +309,15 @@ html, body {
     border-bottom-width: 1.5px !important;
 }
 
+.btn-pulse {
+    animation: pulseButton 2.2s infinite;
+}
+@keyframes pulseButton {
+    0% { box-shadow: 0 4px 10px rgba(12, 30, 48, 0.3); }
+    50% { box-shadow: 0 4px 20px rgba(56, 189, 248, 0.5); }
+    100% { box-shadow: 0 4px 10px rgba(12, 30, 48, 0.3); }
+}
+
 .btn-3d-secondary {
     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
     color: #0f172a !important;
@@ -332,6 +380,11 @@ html, body {
     cursor: pointer;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
+    transition: all 0.15s ease;
+}
+.btn-del-pro:hover {
+    background: #fca5a5;
+    color: #991b1b;
 }
 .btn-site-delete {
     background: #fee2e2;
@@ -360,6 +413,53 @@ html, body {
     height: 38px;
 }
 
+/* ⭐ EDIT CUSTOMER DETAILS TRIGGER BUTTON ⭐ */
+.btn-edit-cust-trigger {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    border: 1.5px solid #0c1e30;
+    border-left: 5px solid #0c1e30;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(12, 30, 48, 0.08);
+    transition: all 0.2s ease;
+}
+.btn-edit-cust-trigger:hover {
+    background: #eff6ff;
+    border-color: #2563eb;
+    border-left-color: #2563eb;
+    transform: translateY(-1px);
+}
+.btn-edit-cust-trigger .icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+.btn-edit-cust-trigger .text-wrap {
+    text-align: left;
+    flex: 1;
+}
+.btn-edit-cust-trigger .text-wrap strong {
+    font-size: 12px;
+    font-weight: 900;
+    color: #0c1e30;
+    display: block;
+}
+.btn-edit-cust-trigger .text-wrap small {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+}
+.btn-edit-cust-trigger .arrow {
+    font-size: 14px;
+    font-weight: 900;
+    color: #0c1e30;
+}
+
 .card-3d {
     background: #ffffff;
     border: 1.5px solid #cbd5e1 !important;
@@ -384,6 +484,51 @@ html, body {
 .logo-3d { box-shadow: 0 3px 8px rgba(0,0,0,0.25); }
 .pill-3d { box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
 .modal-3d { border-top: 3.5px solid var(--gold-primary); }
+
+/* ========================================================
+   ⭐ HIGH-PROFESSIONAL DYNAMIC PHONE INPUTS IN SETTINGS ⭐
+   ======================================================== */
+.phone-row-dynamic {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 5px 8px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+    transition: all 0.15s ease;
+}
+.phone-row-dynamic:focus-within {
+    border-color: #0c1e30;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(12, 30, 48, 0.15);
+}
+.phone-badge-prefix {
+    background: #0c1e30;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 4px 8px;
+    border-radius: 5px;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    user-select: none;
+    flex-shrink: 0;
+}
+.phone-row-dynamic input {
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    padding: 5px 0 !important;
+    width: 100% !important;
+}
 
 /* ========================================================
    SETTINGS SCREEN & CONTROLS
@@ -583,7 +728,7 @@ html, body {
 }
 
 /* ========================================================
-   ⭐ DESKTOP & TABLET MODE: 50/50 SPLIT SCREEN ENGINE ⭐
+   DESKTOP & TABLET MODE: 50/50 SPLIT SCREEN ENGINE
    ======================================================== */
 body.mode-phone .app-view { max-width: 480px; }
 body.mode-tab .app-view { max-width: 860px; }
@@ -948,7 +1093,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 }
 
 /* ========================================================
-   ⭐ CONTINUATION PAGE THEME HEADER (PAGE 2 & 4 OF PDF) ⭐
+   CONTINUATION PAGE THEME HEADER (PAGE 2 & 4 OF PDF)
    ======================================================== */
 .continuation-header-bar {
     width: 100% !important;
@@ -975,7 +1120,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 }
 
 /* ========================================================
-   2. CUSTOMER DETAILS & SPECIFICATIONS
+   2. CUSTOMER DETAILS & SPECIFICATIONS (DIRECT EDITABLE)
    ======================================================== */
 .customer-details-block {
     margin: 0 !important;
@@ -1165,6 +1310,20 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     margin: 1.5px 2px !important;
 }
 
+/* ⭐ CLADDING THICKNESS HIGHLIGHT BADGE ⭐ */
+.spec-highlight-pill {
+    display: inline-block !important;
+    background: #e0f2fe !important;
+    color: #0c1e30 !important;
+    font-weight: 900 !important;
+    border: 1.5px solid #0284c7 !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    margin-top: 3px !important;
+    letter-spacing: 0.3px !important;
+    box-shadow: 0 1px 3px rgba(2, 132, 199, 0.15) !important;
+}
+
 /* CIVIL RIBBONS */
 .civil-job-details-ribbon {
     background: var(--th-primary) !important;
@@ -1214,7 +1373,6 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 .terms-column h4 { font-size: calc(10.5px * var(--pdf-scale)) !important; font-weight: 900; color: var(--th-primary); text-transform: uppercase; margin-bottom: 4px; }
 .payment-terms-block { margin-bottom: calc(4px * var(--pdf-scale)); }
 
-/* ⭐ BADA AUR THICK/BOLD FONT FOR TERMS AND CONDITIONS ⭐ */
 .terms-column p, .editable-terms-preview-box p { 
     font-size: calc(10px * var(--pdf-scale)) !important; 
     color: #000000 !important; 
@@ -1231,12 +1389,29 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 .calc-row-unit { display: flex; justify-content: space-between; padding: 2.5px 4px; font-size: calc(10.5px * var(--pdf-scale)) !important; font-weight: 900 !important; color: #000000 !important; }
 
 .tax-breakdown-vertical { width: 100%; display: flex; flex-direction: column; gap: 1px; margin: 2px 0; padding: 2px 0; border-top: 1.5px dashed var(--border-col); border-bottom: 1.5px dashed var(--border-col); }
-.tax-split-row { display: flex; justify-content: space-between; align-items: center; font-size: calc(10px * var(--pdf-scale)); font-weight: 800; color: #000000; padding: 1px 0; }
-.tax-split-row span.tax-lbl { color: #1e293b; font-weight: 800; }
-.tax-split-row span.tax-amt { color: #000000; font-weight: 900; }
 
-/* SOLID TOTAL BAR WITH PURE WHITE AMOUNT */
+/* ⭐ GST TEXT EXTRA DARK, THICK & LARGER FONT ⭐ */
+.tax-split-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 1.5px 0; 
+}
+.tax-split-row span.tax-lbl { 
+    color: #000000 !important; 
+    font-weight: 900 !important; 
+    font-size: calc(11px * var(--pdf-scale)) !important;
+    letter-spacing: 0.2px;
+}
+.tax-split-row span.tax-amt { 
+    color: #000000 !important; 
+    font-weight: 900 !important; 
+    font-size: calc(11px * var(--pdf-scale)) !important;
+}
+
+/* ⭐ SOLID TOTAL BAR WITH SHIMMER LUXURY ANIMATION ⭐ */
 .solid-navy-total-bar {
+    position: relative;
     background: #0c1e30 !important;
     color: #ffffff !important;
     font-weight: 900;
@@ -1248,6 +1423,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     border-radius: 4px;
     margin-top: 3px;
     border: 1.5px solid #000000 !important;
+    overflow: hidden;
 }
 .solid-navy-total-bar span.total-amt { 
     color: #ffffff !important;
@@ -1255,6 +1431,23 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     font-family: 'Space Grotesk', sans-serif !important;
     font-weight: 900 !important; 
     letter-spacing: 0.5px;
+}
+.solid-navy-total-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.35), transparent);
+    transform: skewX(-25deg);
+}
+.solid-navy-total-bar.shimmer-active::after {
+    animation: totalBarShimmer 1.4s ease-out;
+}
+@keyframes totalBarShimmer {
+    0% { left: -150%; }
+    100% { left: 200%; }
 }
 
 .shed-avg-rate-pill {
@@ -1326,7 +1519,6 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     user-select: none;
 }
 
-/* ⭐ THEME #12 STYLED PREVIEW ADD BUTTONS ⭐ */
 .btn-preview-add-inline, .btn-acc-preview-add {
     font-size: 9.5px !important;
     font-weight: 900 !important;
@@ -1339,9 +1531,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
     letter-spacing: 0.3px !important;
 }
-.btn-preview-add-inline:active, .btn-acc-preview-add:active {
-    transform: translateY(1px);
-}
+.btn-preview-add-inline:active, .btn-acc-preview-add:active { transform: translateY(1px); }
 
 .rate-prefix { font-weight: 900; color: #000000; user-select: none; }
 .live-edit-hint-pill {
@@ -1358,7 +1548,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     gap: 6px;
 }
 
-/* ⭐ PROFESSIONAL COMFORTABLE PREVIEW INPUT FOCUS ⭐ */
+/* PROFESSIONAL PREVIEW INPUT FOCUS */
 [contenteditable="true"] {
     outline: none;
     border-radius: 4px;
@@ -1376,16 +1566,17 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 }
 
 /* ========================================================
-   5. DUAL SIGNATURE BLOCK (ABOVE FOOTER - DASH LINE HIDDEN)
+   5. DUAL SIGNATURE BLOCK (ABOVE FOOTER)
+   ⭐ CLEAN SOLID SIGNATURE RULE LINE RESTORED ⭐
    ======================================================== */
 .signature-dual-grid {
-    padding: calc(8px * var(--pdf-scale)) 24px calc(10px * var(--pdf-scale)) 24px !important;
+    padding: calc(10px * var(--pdf-scale)) 24px calc(12px * var(--pdf-scale)) 24px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: flex-end !important;
-    margin-top: 4px !important;
+    margin-top: 6px !important;
     background: #ffffff !important;
-    border-top: 1.5px dashed var(--border-col) !important;
+    border-top: none !important; /* Top dashed line removed */
     box-sizing: border-box;
     width: 100% !important;
 }
@@ -1405,12 +1596,14 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     justify-content: center;
 }
 
-/* ⭐ DASH LINE COMPLETELY HIDDEN ⭐ */
+/* ⭐ CLEAN PHYSICAL SIGNATURE RULE LINE ⭐ */
 .sign-rule-line {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    margin: 0 !important;
+    display: block !important;
+    visibility: visible !important;
+    width: 170px !important;
+    height: 1.5px !important;
+    background: #000000 !important;
+    margin: 4px auto 6px auto !important;
 }
 
 .sign-heading-main {
@@ -1419,7 +1612,6 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     color: #000000 !important;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-top: 6px;
 }
 
 .sign-sub-caption {
