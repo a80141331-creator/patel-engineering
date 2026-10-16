@@ -11,10 +11,7 @@ const firebaseConfig = {
     appId: "1:261245424222:web:126273db274b515f8cdacf"
 };
 
-let db = null;
-let isFirebaseConnected = false;
-let isCloudInitialSyncDone = false;
-
+let db = null, isFirebaseConnected = false, isCloudInitialSyncDone = false;
 try {
     if (typeof firebase !== 'undefined' && firebase.initializeApp) {
         firebase.initializeApp(firebaseConfig);
@@ -28,7 +25,7 @@ try {
 let masterSecurityPasscode = localStorage.getItem('pe_master_passcode') || "RJ06CC7194";
 
 // ========================================================
-// ⭐ HIGH-PROFESSIONAL WEB AUDIO SOUND ENGINE ⭐
+// 2. AUDIO FEEDBACK & FLOATING TOASTS
 // ========================================================
 let audioCtx = null;
 function playAppSound(type = 'click') {
@@ -62,9 +59,6 @@ function playAppSound(type = 'click') {
     } catch(e) {}
 }
 
-// ========================================================
-// ⭐ FLOATING CORPORATE TOAST NOTIFICATION ⭐
-// ========================================================
 function showCorporateToast(message, icon = '✓') {
     const box = document.getElementById('appToastContainer');
     if (!box) return;
@@ -80,7 +74,7 @@ function showCorporateToast(message, icon = '✓') {
 }
 
 // ========================================================
-// 2. MASTER BLUEPRINT & SETTINGS DEFAULTS
+// 3. MASTER BLUEPRINT & AUTO-LEARNING ENGINE
 // ========================================================
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
@@ -214,8 +208,77 @@ if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
+// ⭐ AUTO-LEARNING: Updates Master Blueprint whenever any item or title is modified ⭐
+function syncSiteStructureToMasterBlueprint(site) {
+    if (!site) return;
+    try {
+        masterBlueprint.primCustomLine = site.primCustomLine || masterBlueprint.primCustomLine;
+        if (site.primSpecs) masterBlueprint.primSpecs = JSON.parse(JSON.stringify(site.primSpecs));
+        masterBlueprint.primUnit = site.primUnit || "Kg";
+
+        masterBlueprint.secCustomLine = site.secCustomLine || masterBlueprint.secCustomLine;
+        if (site.secSpecs) masterBlueprint.secSpecs = JSON.parse(JSON.stringify(site.secSpecs));
+        masterBlueprint.secUnit = site.secUnit || "Kg";
+
+        masterBlueprint.cladCustomLine = site.cladCustomLine || masterBlueprint.cladCustomLine;
+        masterBlueprint.cladThickness = site.cladThickness || masterBlueprint.cladThickness;
+        masterBlueprint.cladUnit = site.cladUnit || "Sq.Ft";
+
+        masterBlueprint.accCustomLine = site.accCustomLine || masterBlueprint.accCustomLine;
+        if (site.accessories) {
+            masterBlueprint.accessories = site.accessories.map(a => ({
+                name: a.name, qty: "", unit: a.unit || "Nos", rate: "", selected: a.selected !== false
+            }));
+        }
+
+        masterBlueprint.erectCustomLine = site.erectCustomLine || masterBlueprint.erectCustomLine;
+        if (site.erectSpecs) masterBlueprint.erectSpecs = JSON.parse(JSON.stringify(site.erectSpecs));
+        masterBlueprint.erectUnit = site.erectUnit || "Kg";
+
+        if (site.moduleOrder) masterBlueprint.moduleOrder = [...site.moduleOrder];
+        if (site.customModules) {
+            masterBlueprint.customModules = site.customModules.map(m => ({
+                id: m.id, title: m.title, desc: m.desc || "", unit: m.unit || "Lot", qty: "", rate: "", total: 0, enabled: m.enabled !== false
+            }));
+        }
+
+        masterBlueprint.civilScopeDesc = site.civilScopeDesc || masterBlueprint.civilScopeDesc;
+
+        if (site.civilData) {
+            ['foundation', 'brickWall', 'flooring'].forEach(sec => {
+                if (site.civilData[sec]) {
+                    if (!masterBlueprint.civilData[sec]) masterBlueprint.civilData[sec] = { title: "", enabled: true, items: [] };
+                    masterBlueprint.civilData[sec].title = site.civilData[sec].title;
+                    masterBlueprint.civilData[sec].enabled = site.civilData[sec].enabled !== false;
+                    masterBlueprint.civilData[sec].items = (site.civilData[sec].items || []).map(it => ({
+                        id: it.id, name: it.name, unit: it.unit || "Lot", qty: "", rate: "", enabled: it.enabled !== false
+                    }));
+                }
+            });
+        }
+
+        if (site.civilCustomCategories) {
+            masterBlueprint.civilCustomCategories = site.civilCustomCategories.map(c => ({
+                id: c.id,
+                categoryName: c.categoryName,
+                enabled: c.enabled !== false,
+                items: (c.items || []).map(it => ({
+                    name: it.name, unit: it.unit || "Lot", qty: "", rate: "", enabled: it.enabled !== false
+                }))
+            }));
+        }
+
+        localStorage.setItem('patel_master_blueprint', JSON.stringify(masterBlueprint));
+        if (db && isFirebaseConnected) {
+            db.ref('patel_master_blueprint').set(masterBlueprint).catch(() => {});
+        }
+    } catch(err) {
+        console.warn("Master blueprint sync notice:", err);
+    }
+}
+
 // ========================================================
-// 3. CLOUD SYNC & MASTER OVERWRITE PROTECTION
+// 4. CLOUD SYNC & MASTER PROTECTION
 // ========================================================
 function syncDataToCloud(key, data) {
     try {
@@ -233,7 +296,6 @@ function initCloudFirstMasterSync() {
         isCloudInitialSyncDone = true;
         return;
     }
-
     const syncBadge = document.getElementById('cloudSyncIndicator');
     if (syncBadge) syncBadge.innerHTML = `<span class="pulse-dot">●</span> Connecting to Cloud Master...`;
 
@@ -281,11 +343,8 @@ function initCloudFirstMasterSync() {
         const cloudSites = snapshot.val();
         if (cloudSites) {
             let loadedSites = [];
-            if (Array.isArray(cloudSites)) {
-                loadedSites = cloudSites.filter(Boolean);
-            } else if (typeof cloudSites === 'object') {
-                loadedSites = Object.values(cloudSites).filter(Boolean);
-            }
+            if (Array.isArray(cloudSites)) loadedSites = cloudSites.filter(Boolean);
+            else if (typeof cloudSites === 'object') loadedSites = Object.values(cloudSites).filter(Boolean);
             if (loadedSites.length > 0) {
                 sites = loadedSites;
                 try {
@@ -322,7 +381,7 @@ function updateHeaderBannersUI() {
 }
 
 // ========================================================
-// 4. MASTER PASSCODE GATEWAY
+// 5. MASTER PASSCODE GATEWAY
 // ========================================================
 function checkFirstTimeAuthentication(isRemoteKick = false) {
     const savedToken = localStorage.getItem('pe_app_auth_token');
@@ -392,7 +451,7 @@ function saveNewMasterPasscode() {
 }
 
 // ========================================================
-// 5. NAVIGATION & SMART ROUTING
+// 6. NAVIGATION & ROUTING
 // ========================================================
 window.addEventListener('popstate', () => handleDeviceBackButton());
 
@@ -455,7 +514,7 @@ function openScreen(screenId, pushHistory = true) {
 }
 
 // ========================================================
-// 6. DOM HELPERS, FORMATTERS & HAPTICS
+// 7. DOM HELPERS, FORMATTERS & 1200MS NUMBER ROLL
 // ========================================================
 function safeSetText(id, text) {
     const el = document.getElementById(id);
@@ -489,7 +548,6 @@ function fireConfettiCelebration() {
     if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
 }
 
-// ⭐ SMOOTHER & SLOWER NUMBER ROLL EFFECT (1200ms DURATION) ⭐
 function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const el = document.getElementById(elemId);
     if (!el) return;
@@ -499,12 +557,12 @@ function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const start = parseInt(currentText, 10) || 0;
     if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN') + suffix; return; }
 
-    const duration = 1200; // Smooth and slower calculation effect
+    const duration = 1200; // Smooth slower calculation effect
     const startTime = performance.now();
     function step(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
+        const ease = 1 - Math.pow(1 - progress, 3);
         const currentVal = Math.floor(start + (target - start) * ease);
         el.innerText = prefix + (progress < 1 ? currentVal.toLocaleString('en-IN') : target.toLocaleString('en-IN')) + suffix;
         if (progress < 1) requestAnimationFrame(step);
@@ -512,17 +570,15 @@ function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     requestAnimationFrame(step);
 }
 
-// ⭐ TRIGGER LUXURY SHIMMER ON GRAND TOTAL BAR ⭐
 function triggerTotalBarShimmer() {
     const bars = document.querySelectorAll('.solid-navy-total-bar');
     bars.forEach(bar => {
         bar.classList.remove('shimmer-active');
-        void bar.offsetWidth; // re-flow
+        void bar.offsetWidth;
         bar.classList.add('shimmer-active');
     });
 }
 
-// ⭐ PREVIEW INPUT CLICK PAR DASH AUTO-REMOVE ⭐
 function handlePreviewInputFocus(el) {
     if (el && el.innerText.trim() === '-') {
         el.innerText = '';
@@ -549,7 +605,7 @@ document.addEventListener('click', function(e) {
 });
 
 // ========================================================
-// 7. DRAG REORDERING
+// 8. DRAG & DROP REORDERING
 // ========================================================
 let activeTouchDragScope = null, activeTouchDragIndex = null, activeTouchDragParent = null, activeTouchDragElement = null;
 
@@ -651,6 +707,7 @@ function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
         }
     }
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     triggerHaptic(25);
     const isCivilModalOpen = document.getElementById('civilParamModal')?.classList.contains('active');
     if (isCivilModalOpen && parentCat) {
@@ -662,7 +719,7 @@ function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
 }
 
 // ========================================================
-// 8. BOOT ANIMATION & VIEW MODES
+// 9. BOOT ANIMATION & VIEW MODES
 // ========================================================
 let bootTimer = null;
 function initSamsungBootAnimation() {
@@ -852,7 +909,7 @@ window.addEventListener('resize', () => {
 });
 
 // ========================================================
-// 11. HOMEPAGE & PROPOSAL CREATION
+// 11. HOMEPAGE & PROPOSAL CREATION (INHERITS MASTER)
 // ========================================================
 let tempNewQuoteType = 'both';
 function setNewSiteQuoteType(type) {
@@ -981,25 +1038,25 @@ function saveNewBlankSiteAndOpen() {
         floorEnabled: true,
 
         primCustomLine: bp.primCustomLine,
-        primSpecs: bp.primSpecs,
+        primSpecs: bp.primSpecs ? JSON.parse(JSON.stringify(bp.primSpecs)) : [],
         primWeight: "", primRate: "", primUnit: bp.primUnit || "Kg",
         secCustomLine: bp.secCustomLine,
-        secSpecs: bp.secSpecs,
+        secSpecs: bp.secSpecs ? JSON.parse(JSON.stringify(bp.secSpecs)) : [],
         secWeight: "", secRate: "", secUnit: bp.secUnit || "Kg",
         cladCustomLine: bp.cladCustomLine,
         cladThickness: bp.cladThickness || "",
         cladSqFt: "", cladRate: "", cladUnit: bp.cladUnit || "Sq.Ft",
         accCustomLine: bp.accCustomLine,
-        accessories: bp.accessories.map(a => ({ name: a.name, qty: "", unit: a.unit, rate: "", selected: a.selected })),
+        accessories: (bp.accessories || []).map(a => ({ name: a.name, qty: "", unit: a.unit, rate: "", selected: a.selected !== false })),
         erectCustomLine: bp.erectCustomLine,
-        erectSpecs: bp.erectSpecs,
+        erectSpecs: bp.erectSpecs ? JSON.parse(JSON.stringify(bp.erectSpecs)) : [],
         erectRate: "", erectUnit: bp.erectUnit || "Kg",
-        moduleOrder: bp.moduleOrder || ['prim', 'sec', 'clad', 'acc', 'erect'],
+        moduleOrder: bp.moduleOrder ? [...bp.moduleOrder] : ['prim', 'sec', 'clad', 'acc', 'erect'],
         customModules: (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })),
         civilScopeDesc: bp.civilScopeDesc,
-        civilData: bp.civilData,
+        civilData: bp.civilData ? JSON.parse(JSON.stringify(bp.civilData)) : {},
         civilCustomCategories: (bp.civilCustomCategories || []).map(c => ({
-            ...c, enabled: true, items: (c.items || []).map(it => ({ ...it, qty: "", rate: "", total: 0, enabled: true }))
+            ...c, enabled: true, items: (c.items || []).map(it => ({ ...it, qty: "", rate: "", total: 0, enabled: it.enabled !== false }))
         }))
     };
 
@@ -1068,7 +1125,7 @@ function loadSiteToDashboard(siteId) {
     applyCustomButtonNamesUI();
     refreshLivePdfPreviewSheet();
 
-    // ⭐ AUTO-ROUTE TO APPROPRIATE DASHBOARD ⭐
+    // Auto-route to corresponding dashboard
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1078,7 +1135,7 @@ function loadSiteToDashboard(siteId) {
 }
 
 // ========================================================
-// ⭐ 12. EDIT CUSTOMER DETAILS (WITH INSTANT SCREEN SWITCH) ⭐
+// 12. EDIT CUSTOMER DETAILS (WITH INSTANT SCREEN SWITCH)
 // ========================================================
 let tempEditQuoteType = 'both';
 function openEditCustomerModal() {
@@ -1121,7 +1178,6 @@ function saveEditCustomerDetails() {
     site.custGST = (document.getElementById('editCustGST')?.value || "").trim();
     site.custEmail = (document.getElementById('editCustEmail')?.value || "").trim();
     
-    // Save new mode
     site.quoteType = tempEditQuoteType;
     site.civilEnabled = (site.quoteType === 'both' || site.quoteType === 'civil');
     site.shedEnabled = (site.quoteType === 'both' || site.quoteType === 'shed');
@@ -1139,7 +1195,7 @@ function saveEditCustomerDetails() {
     refreshLivePdfPreviewSheet();
     closeEditCustomerModal();
 
-    // ⭐ CRITICAL FIX: DASHBOARD AUTO-SWITCH ACCORDING TO QUOTE TYPE ⭐
+    // ⭐ AUTO-SWITCH DASHBOARD WHEN QUOTE TYPE CHANGES ⭐
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1264,6 +1320,7 @@ function toggleCivilModuleActiveState(secKey) {
     else if (secKey === 'flooring') site.floorEnabled = !site.floorEnabled;
 
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     updateCivilModulePillBadgesUI();
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -1405,6 +1462,7 @@ function saveCivilScopeModal() {
     const nw = (document.getElementById('inp_civilScopeDescModal')?.value || "").trim();
     site.civilScopeDesc = nw;
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     safeSetText('civilScopeDescPreviewTxt', nw);
     closeCivilScopeModal();
     refreshLivePdfPreviewSheet();
@@ -1480,6 +1538,7 @@ function toggleCivilItemTick(type, idx) {
     if (!site?.civilData[type]?.items[idx]) return;
     site.civilData[type].items[idx].enabled = !(site.civilData[type].items[idx].enabled !== false);
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     openCivilParamModal(type);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -1490,6 +1549,7 @@ function deleteCivilItem(type, idx) {
     if (!site?.civilData[type]?.items) return;
     site.civilData[type].items.splice(idx, 1);
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     openCivilParamModal(type);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -1500,6 +1560,7 @@ function updateCivilSecTitle(section, val) {
     if (!site) return;
     site.civilData[section].title = val;
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     refreshLivePdfPreviewSheet();
 }
 
@@ -1508,6 +1569,7 @@ function updateCivilItemField(section, idx, field, val) {
     if (!site?.civilData[section]?.items[idx]) return;
     site.civilData[section].items[idx][field] = val;
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
@@ -1526,6 +1588,7 @@ function addCivilRowDirectly(secKey) {
         enabled: true
     });
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
@@ -1614,6 +1677,7 @@ function saveUniversalModule() {
         renderCustomModulesDashboardList();
     }
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site); // Auto-learns new module for future quotes
     calcModuleTotals();
     closeUniversalModuleModal();
     refreshLivePdfPreviewSheet();
@@ -1647,6 +1711,7 @@ function toggleCustomCivilCategoryActive(cIdx) {
     if (!site?.civilCustomCategories[cIdx]) return;
     site.civilCustomCategories[cIdx].enabled = !(site.civilCustomCategories[cIdx].enabled !== false);
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     renderCivilCustomCategoriesUI();
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -1657,6 +1722,7 @@ function deleteCustomCivilCategory(cIdx) {
     if (!site?.civilCustomCategories) return;
     site.civilCustomCategories.splice(cIdx, 1);
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     renderCivilCustomCategoriesUI();
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -1691,6 +1757,7 @@ function toggleCustomModuleActive(modId) {
     if (mod) {
         mod.enabled = !(mod.enabled !== false);
         syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
         renderCustomModulesDashboardList();
         calcModuleTotals();
         refreshLivePdfPreviewSheet();
@@ -1703,6 +1770,7 @@ function deleteCustomModule(modId) {
     site.customModules = (site.customModules || []).filter(m => m.id !== modId);
     if (site.moduleOrder) site.moduleOrder = site.moduleOrder.filter(id => id !== modId);
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     renderCustomModulesDashboardList();
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
@@ -1804,6 +1872,7 @@ function openThemeUnitPickerForMod(modType) {
         else if (modType === 'clad') site.cladUnit = u;
         else if (modType === 'erect') site.erectUnit = u;
         syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
         openModuleModal(modType);
         calcModuleTotals();
         refreshLivePdfPreviewSheet();
@@ -1841,6 +1910,7 @@ function updateStandardChecklistItemName(idx, newText) {
     if (targetList[idx]) {
         targetList[idx].text = newText;
         syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
         refreshLivePdfPreviewSheet();
     }
 }
@@ -1911,6 +1981,7 @@ function updateAccessoryFieldFast(idx, field, val) {
     safeSetText('accBadgePill_' + idx, lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-');
     safeSetText('accCalcTxt_' + idx, lineTot > 0 ? '= ₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '= -');
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
@@ -1922,6 +1993,7 @@ function openThemeUnitPickerForAcc(accIdx) {
         site.accessories[accIdx].unit = u;
         safeSetText('accBtnUnit_' + accIdx, u + " ▾");
         syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
         calcModuleTotals();
         refreshLivePdfPreviewSheet();
     });
@@ -1963,6 +2035,7 @@ function autoSaveModuleChanges() {
         site.erectRate = document.getElementById('modalInputRt')?.value || "";
     }
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
@@ -2105,6 +2178,7 @@ function openCivilUnitPicker(secKey, idx) {
     openThemeUnitPicker(site.civilData[secKey].items[idx].unit, (newUnit) => {
         site.civilData[secKey].items[idx].unit = newUnit;
         syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
         refreshLivePdfPreviewSheet();
     });
 }
@@ -2114,6 +2188,7 @@ function openCivilCustomCatUnitPicker(catIdx, itemIdx) {
     openThemeUnitPicker(site.civilCustomCategories[catIdx].items[itemIdx].unit, (newUnit) => {
         site.civilCustomCategories[catIdx].items[itemIdx].unit = newUnit;
         syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
         refreshLivePdfPreviewSheet();
     });
 }
@@ -2127,6 +2202,7 @@ function openShedUnitPicker(modKey) {
         else if (modKey === 'clad') site.cladUnit = newUnit;
         else if (modKey === 'erect') site.erectUnit = newUnit;
         syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
         refreshLivePdfPreviewSheet();
     });
 }
@@ -2144,6 +2220,7 @@ function syncPreviewTitleEdit(el, modKey, cModId = null) {
         if (mod) mod.title = newTitle;
     }
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
 }
 
 function syncCivilTitleEdit(el, secKey, idx) {
@@ -2151,6 +2228,7 @@ function syncCivilTitleEdit(el, secKey, idx) {
     if (!site?.civilData[secKey]?.items[idx]) return;
     site.civilData[secKey].items[idx].name = el.innerText.trim();
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
 }
 
 function syncPreviewEdit(el, targetField) {
@@ -2197,6 +2275,7 @@ function syncAccTitleEdit(idx, el) {
     if (!site?.accessories[idx]) return;
     site.accessories[idx].name = el.innerText.trim();
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
 }
 
 function syncPreviewTermsEdit(key, el) {
@@ -2216,11 +2295,11 @@ function addNewAccessoryDirectly() {
         selected: true
     });
     syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
-// ⭐ GST SPLIT ROWS EXTRA DARK, THICK & LARGER FONT ⭐
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     if (!taxSlab || taxSlab.rate === 0 || basicCost === 0) {
         return `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">-</span></div>`;
@@ -2253,13 +2332,11 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const compEmail = (appSettings.companyEmail || "").trim();
     const compWeb = (appSettings.footerWeb || "").trim();
 
-    // Substrip Bar Sync
     safeSetText('pdfSubstripAddr', compAddr);
     safeSetText('civilPdfSubstripAddr', compAddr);
     safeSetText('pdfSubstripGst', compGst);
     safeSetText('civilPdfSubstripGst', compGst);
 
-    // Footer Info
     safeSetText('pdfFooterPhones', compPhones);
     safeSetText('civilPdfFooterPhones', compPhones);
     safeSetText('pdfCompanyGst', compGst);
@@ -2267,7 +2344,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('pdfFooterAddrMini', compAddr);
     safeSetText('civilPdfFooterAddrMini', compAddr);
 
-    // Email & Web Blank Hide Logic
     const pEmailWrap = document.getElementById('pdfFooterEmailWrap');
     const cEmailWrap = document.getElementById('civilPdfFooterEmailWrap');
     if (compEmail) {
