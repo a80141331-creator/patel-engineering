@@ -12,13 +12,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="PATEL ENGINEERING">
-    <meta name="theme-color" content="#0f2942">
+    <meta name="theme-color" content="#0c1e30">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="mode-phone">
@@ -243,517 +243,481 @@
                 <span>●</span> Real-Time Auto-Save & Cloud Sync Active
             </div>
 
-            <!-- TOGGLE BAR -->
-            <div class="compact-toggle-bar" id="shedCompactToggleBar">
-                <div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnRateMode" onclick="toggleRateOnlyMode()">
-                    <span id="pillTxtRateMode">Shed BOQ</span>
-                    <span class="pill-indicator"></span>
-                </div>
-                <div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnCivilRateMode" onclick="toggleCivilRateOnlyMode()" style="display:none;">
-                    <span id="pillTxtCivilRateMode">Civil BOQ</span>
-                    <span class="pill-indicator"></span>
-                </div>
-            </div>
-
-            <!-- COMBINE MODE CIVIL BUTTON -->
-            <div id="civilSectionsContainer" style="display: none; margin-bottom: 12px;">
-                <button type="button" class="btn-enter-civil-hub btn-3d-green btn-ripple" onclick="openCivilDashboardScreen()">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span style="font-size: 20px;">🏗️</span>
-                        <div style="text-align:left;">
-                            <div style="font-size: 13px; font-weight: 900;">CONFIGURE CIVIL SPECIFICATIONS (PAGE 2)</div>
-                            <span style="font-size: 10.5px; opacity: 0.95; font-weight: 700;">Foundation, Brick Wall, Flooring Parameters</span>
+            <!-- RESPONSIVE SPLIT CONTAINER: WIDE SCREENS ME LEFT CONTROLS, RIGHT PREVIEW -->
+            <div class="dashboard-split-layout">
+                <!-- LEFT CONTROLS PANE -->
+                <div class="dash-controls-pane">
+                    <!-- TOGGLE BAR -->
+                    <div class="compact-toggle-bar" id="shedCompactToggleBar">
+                        <div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnRateMode" onclick="toggleRateOnlyMode()">
+                            <span id="pillTxtRateMode">Shed BOQ</span>
+                            <span class="pill-indicator"></span>
+                        </div>
+                        <div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnCivilRateMode" onclick="toggleCivilRateOnlyMode()" style="display:none;">
+                            <span id="pillTxtCivilRateMode">Civil BOQ</span>
+                            <span class="pill-indicator"></span>
                         </div>
                     </div>
-                    <span style="font-size: 16px;">➔</span>
-                </button>
-            </div>
 
-            <!-- SHED DIMENSIONS CARD -->
-            <div id="shedDimensionsCardBox" class="card card-accent-top card-3d">
-                <label class="form-head-label">📐 Shed Dimensions (Width x Length x Height)</label>
-                <div class="row-3" style="margin-top: 8px;">
-                    <div class="form-group">
-                        <label>Width (Ft)</label>
-                        <input type="number" step="any" id="dimW" placeholder="0" oninput="autoSaveAndUpdate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Length (Ft)</label>
-                        <input type="number" step="any" id="dimL" placeholder="0" oninput="autoSaveAndUpdate()">
-                    </div>
-                    <div class="form-group">
-                        <label>Height (Ft)</label>
-                        <input type="number" step="any" id="dimH" placeholder="0" oninput="autoSaveAndUpdate()">
-                    </div>
-                </div>
-                <div class="area-badge">
-                    Calculated Area: <span id="dashSqFtText">0 Sq.Ft</span>
-                </div>
-            </div>
-
-            <!-- STRUCTURE MODULES -->
-            <div id="shedModulesBlock">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin: 14px 0 8px;">
-                    <h3 class="section-title" style="margin:0;">Structure Modules</h3>
-                    <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 6px 12px; font-size:11px;" onclick="openAddUniversalModuleModal('shed')">
-                        ➕ Add Custom Module
-                    </button>
-                </div>
-
-                <div class="modules-grid-container" id="shedModulesGridContainer">
-                    <div class="module-grid-card card-3d-press btn-ripple" id="cardModPrim" onclick="openModuleModal('prim')">
-                        <span class="mod-switch-pill on" id="badgePrimStatus" onclick="event.stopPropagation(); toggleModuleActiveState('prim')">ON</span>
-                        <div>
-                            <div class="mod-card-top"><span class="mod-card-icon">🏗️</span><span class="mod-card-title" id="dashBtnTitlePrim">1. Primary</span></div>
-                            <span class="mod-card-tag" id="primTagText">FE 345 Steel, Cutting</span>
-                        </div>
-                        <span class="mod-card-badge" id="badgePrimTotal">Rs. 0</span>
-                    </div>
-
-                    <div class="module-grid-card card-3d-press btn-ripple" id="cardModSec" onclick="openModuleModal('sec')">
-                        <span class="mod-switch-pill on" id="badgeSecStatus" onclick="event.stopPropagation(); toggleModuleActiveState('sec')">ON</span>
-                        <div>
-                            <div class="mod-card-top"><span class="mod-card-icon">⚙️</span><span class="mod-card-title" id="dashBtnTitleSec">2. Secondary</span></div>
-                            <span class="mod-card-tag" id="secTagText">Z Purlin 200 & 150</span>
-                        </div>
-                        <span class="mod-card-badge" id="badgeSecTotal">Rs. 0</span>
-                    </div>
-
-                    <div class="module-grid-card card-3d-press btn-ripple" id="cardModClad" onclick="openModuleModal('clad')">
-                        <span class="mod-switch-pill on" id="badgeCladStatus" onclick="event.stopPropagation(); toggleModuleActiveState('clad')">ON</span>
-                        <div>
-                            <div class="mod-card-top"><span class="mod-card-icon">🛡️</span><span class="mod-card-title" id="dashBtnTitleClad">3. Cladding</span></div>
-                            <span class="mod-card-tag" id="cladTagText">0.50mm TATA / JSW</span>
-                        </div>
-                        <span class="mod-card-badge" id="badgeCladTotal">Rs. 0</span>
-                    </div>
-
-                    <div class="module-grid-card card-3d-press btn-ripple" id="cardModAcc" onclick="openModuleModal('acc')">
-                        <span class="mod-switch-pill on" id="badgeAccStatus" onclick="event.stopPropagation(); toggleModuleActiveState('acc')">ON</span>
-                        <div>
-                            <div class="mod-card-top"><span class="mod-card-icon">📦</span><span class="mod-card-title" id="dashBtnTitleAcc">4. Accessories</span></div>
-                            <span class="mod-card-tag" id="accTagText">Ventilators, Gutters</span>
-                        </div>
-                        <span class="mod-card-badge" id="badgeAccTotal">Rs. 0</span>
-                    </div>
-
-                    <div class="module-grid-card card-3d-press btn-ripple" id="cardModErect" onclick="openModuleModal('erect')">
-                        <span class="mod-switch-pill on" id="badgeErectStatus" onclick="event.stopPropagation(); toggleModuleActiveState('erect')">ON</span>
-                        <div>
-                            <div class="mod-card-top"><span class="mod-card-icon">🚜</span><span class="mod-card-title" id="dashBtnTitleErect">5. Erection</span></div>
-                            <span class="mod-card-tag" id="erectTagText">Crane, Hydra, Labour</span>
-                        </div>
-                        <span class="mod-card-badge" id="badgeErectTotal">Rs. 0</span>
-                    </div>
-
-                    <div class="module-grid-card card-3d-press btn-ripple" style="border-color: var(--header-bg); background: #f8fafc;" onclick="openTaxPickerModal('shed')">
-                        <div>
-                            <div class="mod-card-top"><span class="mod-card-icon">🏷️</span><span class="mod-card-title" id="selectedTaxNameText">GST @ 18%</span></div>
-                            <span class="mod-card-tag" id="selectedTaxDescText">Tax Rate</span>
-                        </div>
-                        <span class="mod-card-badge" style="background:#475569;">Change ▾</span>
-                    </div>
-                </div>
-
-                <div id="customModulesListContainer" class="modules-grid-container" style="margin-top:-4px;"></div>
-            </div>
-
-            <!-- PREVIEW VIEWPORT -->
-            <div class="pdf-section-wrapper">
-                <div class="theme-strip-box card-3d">
-                    <div style="font-size:10.5px; font-weight:900; text-transform:uppercase; margin-bottom:5px; color:#cbd5e1;">
-                        🎨 1-Click Live Theme Switcher:
-                    </div>
-                    <div class="theme-scroll-strip">
-                        <button class="btn-swatch active btn-ripple" onclick="applyPresetTheme('customYellow', this)">1. Photo Yellow + White</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('4', this)">2. Midnight Amber</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('1', this)">3. Dark Blue + Yellow</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('6', this)">4. Tata BlueScope</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('5', this)">5. Charcoal + Yellow</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('7', this)">6. Slate + Yellow</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('8', this)">7. Gunmetal Yellow</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('9', this)">8. Pitch Black Gold</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('11', this)">9. Eco Green</button>
-                        <button class="btn-swatch btn-ripple" onclick="applyPresetTheme('12', this)">10. Classic PEB</button>
-                    </div>
-                </div>
-
-                <div class="font-scale-bar card-3d">
-                    <span style="font-size:11.5px; font-weight:800;">🔍 Screen Preview Zoom:</span>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.04)">A -</button>
-                        <span id="scaleIndicatorText" style="font-size:12px; font-weight:900; min-width:44px; text-align:center; color:var(--gold-light);">100%</span>
-                        <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.04)">A +</button>
-                        <button class="btn-font-ctrl btn-ripple" style="font-size:10px; padding:4px 6px;" onclick="resetPdfScale()">Reset</button>
-                    </div>
-                </div>
-
-                <div class="live-edit-hint-pill">
-                    ✏️ <strong>Live Preview:</strong> Numbers & Titles par direct click karke edit karein. PDF चारों तरफ़ 0.25" बराबर मार्जिन पर डाउनलोड होगी।
-                </div>
-
-                <!-- PREVIEW CONTAINER -->
-                <div class="pdf-sheet-frame card-3d">
-                    <div class="mobile-preview-viewport" id="viewportWrap">
-                        <div id="scalingWrapper">
-                            <div id="printableA4Sheet">
-
-                                <!-- PAGE 1: MS STRUCTURE QUOTATION -->
-                                <div class="a4-page-box" id="page1MsStructure">
-                                    
-                                    <!-- 1. 3D FLOWING RIBBON & 49%/51% SPLIT HERO SECTION (CSS BACKGROUND BASED) -->
-                                    <div class="theme-top-hero">
-                                        <!-- LEFT 49%: BRAND LOGO BANNER (150px MAX HEIGHT) -->
-                                        <div class="hero-left-logo-box">
-                                            <img id="pdfHeaderBannerImg" class="brand-banner-img" 
-                                                 src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 240' width='1000' height='240'><defs><linearGradient id='metalGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23ffffff'/><stop offset='50%25' stop-color='%23cbd5e1'/><stop offset='100%25' stop-color='%2364748b'/></linearGradient><linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23ca8a04'/><stop offset='100%25' stop-color='%23fef08a'/></linearGradient></defs><rect width='1000' height='240' fill='%230f2942' rx='12'/><path d='M350 40 L650 15 L950 45 L950 160 L350 160 Z' fill='%231e293b' stroke='%2394a3b8' stroke-width='3'/><path d='M420 50 L650 30 L880 55 L880 160 L420 160 Z' fill='%230f2942' stroke='%23cbd5e1' stroke-width='2'/><path d='M650 30 L650 160 M535 40 L535 160 M765 42 L765 160' stroke='%23cbd5e1' stroke-width='2' stroke-dasharray='4,4'/><text x='180' y='125' font-family='Arial, sans-serif' font-weight='900' font-size='105' fill='url(%23metalGrad)' letter-spacing='-4' text-anchor='middle'>PE</text><path d='M40 148 L960 148' stroke='url(%23gold)' stroke-width='4'/><text x='500' y='210' font-family='Arial, sans-serif' font-weight='900' font-size='52' fill='%23ffffff' letter-spacing='18' text-anchor='middle'>PATEL ENGINEERING</text></svg>" 
-                                                 alt="PATEL ENGINEERING">
-                                        </div>
-
-                                        <!-- RIGHT 51%: 3D ELEVATED COMPANY DETAILS PLAQUE -->
-                                        <div class="hero-right-details-box">
-                                            <div class="details-3d-card">
-                                                <div class="hero-tagline-3d" id="pdfCompanyTag">PEB Structure | Industrial Sheds | Roofing Solutions</div>
-                                                
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">📍</div>
-                                                    <span class="txt" id="pdfCompanyAddr">Bhawani Nagar, Bhilwara - 311001 (Raj.)</span>
-                                                </div>
-
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">📞</div>
-                                                    <span class="txt" id="pdfHeaderPhones">+91 9799635249 | +91 7737734122</span>
-                                                </div>
-
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">✉️</div>
-                                                    <span class="txt" id="pdfHeaderEmail">info@patelengineering.com</span>
-                                                </div>
-
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">🌐</div>
-                                                    <span class="txt" id="pdfHeaderWeb">www.patelengineering.com</span>
-                                                </div>
-
-                                                <div class="gst-pill-3d">
-                                                    <span>📑 GSTIN:</span>
-                                                    <span id="pdfCompanyGst">08AHFPL0222M2ZF</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="clean-quotation-meta-bar">
-                                        <div class="clean-quotation-title" id="pdfRibbonTitle">QUOTATION</div>
-                                        <div class="clean-meta-right">
-                                            <div>Quote Ref: <b id="pdfQuoteNo">#PE/2026/01</b></div>
-                                            <div>|</div>
-                                            <div>Issue Date: <b id="pdfCurrentDate">08 Oct 2026</b></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="customer-details-block">
-                                        <div class="scope-left-column">
-                                            <div class="scope-heading-dark" id="pdfScopeTitle">
-                                                QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS
-                                            </div>
-                                            <div class="project-size-heading-label" id="pdfProjectSizeHeading">
-                                                📐 PROJECT SIZE / SHED DIMENSIONS:
-                                            </div>
-                                            <div class="project-dim-columns">
-                                                <div class="dim-col-item"><span class="dim-lbl">Width</span><span class="dim-val" id="dimWVal">-</span></div>
-                                                <span class="dim-col-sep">×</span>
-                                                <div class="dim-col-item"><span class="dim-lbl">Length</span><span class="dim-val" id="dimLVal">-</span></div>
-                                                <span class="dim-col-sep">×</span>
-                                                <div class="dim-col-item"><span class="dim-lbl">Height</span><span class="dim-val" id="dimHVal">-</span></div>
-                                                <span class="dim-col-sep">=</span>
-                                                <div class="dim-col-item area-col"><span class="dim-lbl">Total Area</span><span class="dim-val" id="dimAreaVal">-</span></div>
-                                            </div>
-                                        </div>
-
-                                        <div class="client-right-list">
-                                            <div class="client-list-row"><span class="label">Client:</span><span class="val" id="pdfClientName">-</span></div>
-                                            <div class="client-list-row"><span class="label">Contact Person:</span><span class="val" id="pdfContactPersonDisplay">-</span></div>
-                                            <div class="client-list-row"><span class="label">Contact Number:</span><span class="val" id="pdfClientPhone">-</span></div>
-                                            <div class="client-list-row"><span class="label">Customer GST:</span><span class="val" id="pdfClientGst">-</span></div>
-                                            <div class="client-list-row"><span class="label">Site Address:</span><span class="val" id="pdfClientAddr">-</span></div>
-                                        </div>
-                                    </div>
-
-                                    <!-- SECTION 1: STEEL WEIGHT -->
-                                    <div class="section-header-bar">
-                                        <span id="displayHeaderLine1">1. ESTIMATED STEEL WEIGHT:</span>
-                                        <span style="font-size:9.5px; font-weight:800;">Engineering Estimate</span>
-                                    </div>
-                                    <div class="table-wrapper">
-                                        <table class="theme-data-table">
-                                            <thead>
-                                                <tr>
-                                                    <th style="width: 70%; text-align: left;">DESCRIPTION</th>
-                                                    <th style="width: 30%; text-align: right;">ESTIMATED WEIGHT / AREA</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="pdfSection1TableBody"></tbody>
-                                        </table>
-                                    </div>
-
-                                    <!-- SECTION 2: PRICE BREAKUP -->
-                                    <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center;">
-                                        <span id="displayHeaderLine2">2. PRICE BREAKUP AS PER KG RATE:</span>
-                                        <button type="button" class="btn-preview-add-inline btn-ripple" onclick="openAddUniversalModuleModal('shed')">+ Add Module / Item</button>
-                                    </div>
-                                    <div class="table-wrapper">
-                                        <table class="theme-data-table">
-                                            <thead id="pdfTableHead"></thead>
-                                            <tbody id="pdfTableBody"></tbody>
-                                        </table>
-                                    </div>
-
-                                    <!-- SECTION 3: ACCESSORIES BREAKDOWN -->
-                                    <div id="pdfAccBreakdownContainer" style="display: none;">
-                                        <div class="section-header-bar" style="margin-top: 5px; display:flex; justify-content:space-between; align-items:center;">
-                                            <span id="pdfAccSectionHeading">3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:</span>
-                                            <button type="button" class="btn-acc-preview-add btn-ripple" onclick="addNewAccessoryDirectly()">+ Add Item</button>
-                                        </div>
-                                        <div class="table-wrapper">
-                                            <table class="theme-data-table">
-                                                <thead id="pdfAccTableHead"></thead>
-                                                <tbody id="pdfAccBreakdownBody"></tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                    <!-- TERMS & COMMERCIAL SUMMARY (PAGE 1) -->
-                                    <div class="theme-bottom-summary-grid">
-                                        <div class="terms-column">
-                                            <h4 id="pdfTermsHeaderDisplay">Terms & Conditions:</h4>
-                                            <div id="pdfTermsContainer"></div>
-                                            <div class="thank-you-line" id="pdfThankYouDisplay">THANK YOU FOR YOUR BUSINESS</div>
-                                        </div>
-
-                                        <div class="calculation-column">
-                                            <div id="financialStandardBox">
-                                                <div class="calc-row-unit"><span>Total Basic Cost:</span><b id="pdfFinBasic">-</b></div>
-                                                <div id="pdfTaxBreakdownRows" class="tax-breakdown-vertical"></div>
-
-                                                <div class="solid-navy-total-bar">
-                                                    <span>GRAND TOTAL WITH GST:</span>
-                                                    <span class="total-amt" id="pdfFinGrand">-</span>
-                                                </div>
-
-                                                <div id="pdfShedAvgRateBox" class="shed-avg-rate-pill" style="display:none;">
-                                                    <span>SHED RATE / SQ.FT:</span>
-                                                    <b id="pdfShedAvgRateVal">-</b>
-                                                </div>
-
-                                                <div id="pdfCombinedPackageBox" class="combined-package-summary-box" style="display:none;"></div>
-                                            </div>
-
-                                            <div id="rateOnlyNoticeBox" class="rate-only-contract-bar">
-                                                <b>🏷️ RATE CONTRACT BASIS QUOTATION</b>
-                                                <span>Quotation prepared on Rate Contract Basis. Amounts & Grand Total excluded as per client request.</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- FOOTER ZONE -->
-                                    <div class="theme-footer-zone">
-                                        <div class="footer-social-icons">
-                                            <div><span>📞</span> <span id="pdfFooterPhones">+91 9799635249 | +91 7737734122</span></div>
-                                            <div><span>🌐</span> <span id="pdfFooterWebDisplay">www.patelengineering.com</span></div>
-                                            <div><span>📍</span> <span id="pdfFooterAddrMini">Bhawani Nagar, Bhilwara (Raj.)</span></div>
-                                        </div>
-
-                                        <div class="signatories-dual-container">
-                                            <div class="signatory-column">
-                                                <div class="sign-graphic-area"></div>
-                                                <div class="sign-divider-line"></div>
-                                                <b id="pdfCustSignHeader">CUSTOMER ACCEPTANCE</b>
-                                                <span id="pdfCustSignSub">Signature & Stamp</span>
-                                            </div>
-
-                                            <div class="signatory-column">
-                                                <div class="sign-graphic-area" id="pdfSignImgBox"></div>
-                                                <div class="sign-divider-line"></div>
-                                                <b id="pdfSignCompanyHeader">For PATEL ENGINEERING</b>
-                                                <span id="pdfSignatoryTitleDisplay">Authorized Signatory</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="bottom-geometric-footer"></div>
+                    <!-- COMBINE MODE CIVIL BUTTON -->
+                    <div id="civilSectionsContainer" style="display: none; margin-bottom: 12px;">
+                        <button type="button" class="btn-enter-civil-hub btn-3d-green btn-ripple" onclick="openCivilDashboardScreen()">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="font-size: 20px;">🏗️</span>
+                                <div style="text-align:left;">
+                                    <div style="font-size: 13px; font-weight: 900;">CONFIGURE CIVIL SPECIFICATIONS (PAGE 2)</div>
+                                    <span style="font-size: 10.5px; opacity: 0.95; font-weight: 700;">Foundation, Brick Wall, Flooring Parameters</span>
                                 </div>
+                            </div>
+                            <span style="font-size: 16px;">➔</span>
+                        </button>
+                    </div>
 
-                                <div class="page-physical-gap" id="civilPageGapDivider" style="display: none;"></div>
+                    <!-- SHED DIMENSIONS CARD -->
+                    <div id="shedDimensionsCardBox" class="card card-accent-top card-3d">
+                        <label class="form-head-label">📐 Shed Dimensions (Width x Length x Height)</label>
+                        <div class="row-3" style="margin-top: 8px;">
+                            <div class="form-group">
+                                <label>Width (Ft)</label>
+                                <input type="number" step="any" id="dimW" placeholder="0" oninput="autoSaveAndUpdate()">
+                            </div>
+                            <div class="form-group">
+                                <label>Length (Ft)</label>
+                                <input type="number" step="any" id="dimL" placeholder="0" oninput="autoSaveAndUpdate()">
+                            </div>
+                            <div class="form-group">
+                                <label>Height (Ft)</label>
+                                <input type="number" step="any" id="dimH" placeholder="0" oninput="autoSaveAndUpdate()">
+                            </div>
+                        </div>
+                        <div class="area-badge">
+                            Calculated Area: <span id="dashSqFtText">0 Sq.Ft</span>
+                        </div>
+                    </div>
 
-                                <!-- PAGE 2: CIVIL SPECIFICATIONS -->
-                                <div class="a4-page-box civil-dedicated-page" id="civilDedicatedPageSheet" style="display: none;">
-                                    
-                                    <!-- CIVIL TOP HERO (3D RIBBON & 49%/51% SPLIT VIA CSS BACKGROUND) -->
-                                    <div class="theme-top-hero">
-                                        <!-- LEFT 49%: BRAND LOGO BANNER -->
-                                        <div class="hero-left-logo-box">
-                                            <img id="civilPdfHeaderBannerImg" class="brand-banner-img" 
-                                                 src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 240' width='1000' height='240'><defs><linearGradient id='metalGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23ffffff'/><stop offset='50%25' stop-color='%23cbd5e1'/><stop offset='100%25' stop-color='%2364748b'/></linearGradient><linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23ca8a04'/><stop offset='100%25' stop-color='%23fef08a'/></linearGradient></defs><rect width='1000' height='240' fill='%230f2942' rx='12'/><path d='M350 40 L650 15 L950 45 L950 160 L350 160 Z' fill='%231e293b' stroke='%2394a3b8' stroke-width='3'/><path d='M420 50 L650 30 L880 55 L880 160 L420 160 Z' fill='%230f2942' stroke='%23cbd5e1' stroke-width='2'/><path d='M650 30 L650 160 M535 40 L535 160 M765 42 L765 160' stroke='%23cbd5e1' stroke-width='2' stroke-dasharray='4,4'/><text x='180' y='125' font-family='Arial, sans-serif' font-weight='900' font-size='105' fill='url(%23metalGrad)' letter-spacing='-4' text-anchor='middle'>PE</text><path d='M40 148 L960 148' stroke='url(%23gold)' stroke-width='4'/><text x='500' y='210' font-family='Arial, sans-serif' font-weight='900' font-size='52' fill='%23ffffff' letter-spacing='18' text-anchor='middle'>PATEL ENGINEERING</text></svg>" 
-                                                 alt="PATEL ENGINEERING">
-                                        </div>
+                    <!-- STRUCTURE MODULES -->
+                    <div id="shedModulesBlock">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin: 14px 0 8px;">
+                            <h3 class="section-title" style="margin:0;">Structure Modules</h3>
+                            <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 6px 12px; font-size:11px;" onclick="openAddUniversalModuleModal('shed')">
+                                ➕ Add Custom Module
+                            </button>
+                        </div>
 
-                                        <!-- RIGHT 51%: 3D ELEVATED DETAILS PLAQUE -->
-                                        <div class="hero-right-details-box">
-                                            <div class="details-3d-card">
-                                                <div class="hero-tagline-3d" id="civilPdfCompanyTag">Civil Infrastructure & Construction Engineering</div>
-                                                
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">📍</div>
-                                                    <span class="txt" id="civilPdfCompanyAddr">Bhawani Nagar, Bhilwara - 311001 (Raj.)</span>
-                                                </div>
-
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">📞</div>
-                                                    <span class="txt" id="civilPdfHeaderPhones">+91 9799635249 | +91 7737734122</span>
-                                                </div>
-
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">✉️</div>
-                                                    <span class="txt" id="civilPdfHeaderEmail">info@patelengineering.com</span>
-                                                </div>
-
-                                                <div class="detail-row-3d">
-                                                    <div class="icon-3d-badge">🌐</div>
-                                                    <span class="txt" id="civilPdfHeaderWeb">www.patelengineering.com</span>
-                                                </div>
-
-                                                <div class="gst-pill-3d">
-                                                    <span>📑 GSTIN:</span>
-                                                    <span id="civilPdfCompanyGst">08AHFPL0222M2ZF</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="clean-quotation-meta-bar">
-                                        <div class="clean-quotation-title" id="civilPdfRibbonTitle">QUOTATION - CIVIL WORK SPECIFICATIONS</div>
-                                        <div class="clean-meta-right">
-                                            <div>Quote Ref: <b id="civilPdfQuoteNo">#PE/2026/01</b></div>
-                                            <div>|</div>
-                                            <div>Issue Date: <b id="civilPdfCurrentDate">08 Oct 2026</b></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="customer-details-block">
-                                        <div class="scope-left-column">
-                                            <div class="scope-heading-dark" id="civilPdfScopeTitle">
-                                                TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS
-                                            </div>
-                                            <div style="font-size:9.5px; color:#64748b; font-weight:700; margin-top:3px;">
-                                                Detailed Engineering Estimate & Material Specifications
-                                            </div>
-                                        </div>
-
-                                        <div class="client-right-list">
-                                            <div class="client-list-row"><span class="label">Client:</span><span class="val" id="civilPdfClientName">-</span></div>
-                                            <div class="client-list-row"><span class="label">Contact Person:</span><span class="val" id="civilPdfContactPersonDisplay">-</span></div>
-                                            <div class="client-list-row"><span class="label">Contact Number:</span><span class="val" id="civilPdfClientPhone">-</span></div>
-                                            <div class="client-list-row"><span class="label">Customer GST:</span><span class="val" id="civilPdfClientGst">-</span></div>
-                                            <div class="client-list-row"><span class="label">Site Address:</span><span class="val" id="civilPdfClientAddr">-</span></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="civil-job-details-ribbon" id="civilJobTitleDisplay">JOB DETAILS & TECHNICAL SPECIFICATIONS</div>
-
-                                    <!-- SECTION 1: FOUNDATION -->
-                                    <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
-                                        <span id="civilFoundTitle">1. FOUNDATION & RCC COLUMN DETAILS:</span>
-                                        <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('foundation')">+ Add Item</button>
-                                    </div>
-                                    <div class="table-wrapper">
-                                        <table class="civil-schedule-table">
-                                            <thead id="civilFoundationTableHead"></thead>
-                                            <tbody id="civilFoundationTableBody"></tbody>
-                                        </table>
-                                    </div>
-
-                                    <!-- SECTION 2: BRICK WALL -->
-                                    <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
-                                        <span id="civilBrickTitle">2. BRICK WALL, DPC & PLASTER DETAILS:</span>
-                                        <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('brickWall')">+ Add Item</button>
-                                    </div>
-                                    <div class="table-wrapper">
-                                        <table class="civil-schedule-table">
-                                            <thead id="civilBrickWallTableHead"></thead>
-                                            <tbody id="civilBrickWallTableBody"></tbody>
-                                        </table>
-                                    </div>
-
-                                    <!-- SECTION 3: FLOORING -->
-                                    <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
-                                        <span id="civilFloorTitle">3. FLOORING & PCC WORK DETAILS:</span>
-                                        <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('flooring')">+ Add Item</button>
-                                    </div>
-                                    <div class="table-wrapper">
-                                        <table class="civil-schedule-table">
-                                            <thead id="civilFlooringTableHead"></thead>
-                                            <tbody id="civilFlooringTableBody"></tbody>
-                                        </table>
-                                    </div>
-
-                                    <!-- CUSTOM CIVIL MODULES -->
-                                    <div id="civilCustomCategoriesPage2Wrapper"></div>
-
-                                    <!-- DEDICATED CIVIL TERMS -->
-                                    <div class="theme-bottom-summary-grid">
-                                        <div class="terms-column">
-                                            <h4 id="civilPdfTermsHeaderDisplay">Civil Work Terms & Conditions:</h4>
-                                            <div id="civilPdfTermsContainer"></div>
-                                            <div class="thank-you-line" id="civilPdfThankYouDisplay">THANK YOU FOR YOUR CIVIL CONTRACT</div>
-                                        </div>
-
-                                        <div class="calculation-column">
-                                            <div id="civilFinancialBox">
-                                                <div class="calc-row-unit"><span>Civil Basic Total:</span><b id="civilFinBasic">-</b></div>
-                                                <div id="civilPdfTaxBreakdownRows" class="tax-breakdown-vertical"></div>
-                                                <div class="solid-navy-total-bar">
-                                                    <span>CIVIL GRAND TOTAL:</span>
-                                                    <span class="total-amt" id="civilFinGrand">-</span>
-                                                </div>
-                                                <div id="civilPdfCombinedPackageBox" class="combined-package-summary-box" style="display:none;"></div>
-                                            </div>
-
-                                            <div id="civilRateOnlyNoticeBox" class="rate-only-contract-bar" style="display:none;">
-                                                <b>🏷️ CIVIL RATE CONTRACT BASIS QUOTATION</b>
-                                                <span>Civil Work prepared on Unit Rate basis. Final billing as per actual joint site measurements.</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- PAGE 2 FOOTER -->
-                                    <div class="theme-footer-zone">
-                                        <div class="footer-social-icons">
-                                            <div><span>📞</span> <span id="civilPdfFooterPhones">+91 9799635249 | +91 7737734122</span></div>
-                                            <div><span>🌐</span> <span id="civilPdfFooterWebDisplay">www.patelengineering.com</span></div>
-                                            <div><span>📍</span> <span id="civilPdfFooterAddrMini">Bhawani Nagar, Bhilwara (Raj.)</span></div>
-                                        </div>
-
-                                        <div class="signatories-dual-container">
-                                            <div class="signatory-column">
-                                                <div class="sign-graphic-area"></div>
-                                                <div class="sign-divider-line"></div>
-                                                <b id="civilCustSignHeader">CUSTOMER ACCEPTANCE</b>
-                                                <span id="civilCustSignSub">Signature & Stamp</span>
-                                            </div>
-
-                                            <div class="signatory-column">
-                                                <div class="sign-graphic-area" id="civilPdfSignImgBox"></div>
-                                                <div class="sign-divider-line"></div>
-                                                <b id="civilSignCompanyHeader">For PATEL ENGINEERING</b>
-                                                <span id="civilSignatoryTitleDisplay">Authorized Signatory</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="bottom-geometric-footer"></div>
+                        <div class="modules-grid-container" id="shedModulesGridContainer">
+                            <div class="module-grid-card card-3d-press btn-ripple" id="cardModPrim" onclick="openModuleModal('prim')">
+                                <span class="mod-switch-pill on" id="badgePrimStatus" onclick="event.stopPropagation(); toggleModuleActiveState('prim')">ON</span>
+                                <div>
+                                    <div class="mod-card-top"><span class="mod-card-icon">🏗️</span><span class="mod-card-title" id="dashBtnTitlePrim">1. Primary</span></div>
+                                    <span class="mod-card-tag" id="primTagText">FE 345 Steel, Cutting</span>
                                 </div>
+                                <span class="mod-card-badge" id="badgePrimTotal">Rs. 0</span>
+                            </div>
 
+                            <div class="module-grid-card card-3d-press btn-ripple" id="cardModSec" onclick="openModuleModal('sec')">
+                                <span class="mod-switch-pill on" id="badgeSecStatus" onclick="event.stopPropagation(); toggleModuleActiveState('sec')">ON</span>
+                                <div>
+                                    <div class="mod-card-top"><span class="mod-card-icon">⚙️</span><span class="mod-card-title" id="dashBtnTitleSec">2. Secondary</span></div>
+                                    <span class="mod-card-tag" id="secTagText">Z Purlin 200 & 150</span>
+                                </div>
+                                <span class="mod-card-badge" id="badgeSecTotal">Rs. 0</span>
+                            </div>
+
+                            <div class="module-grid-card card-3d-press btn-ripple" id="cardModClad" onclick="openModuleModal('clad')">
+                                <span class="mod-switch-pill on" id="badgeCladStatus" onclick="event.stopPropagation(); toggleModuleActiveState('clad')">ON</span>
+                                <div>
+                                    <div class="mod-card-top"><span class="mod-card-icon">🛡️</span><span class="mod-card-title" id="dashBtnTitleClad">3. Cladding</span></div>
+                                    <span class="mod-card-tag" id="cladTagText">0.50mm TATA / JSW</span>
+                                </div>
+                                <span class="mod-card-badge" id="badgeCladTotal">Rs. 0</span>
+                            </div>
+
+                            <div class="module-grid-card card-3d-press btn-ripple" id="cardModAcc" onclick="openModuleModal('acc')">
+                                <span class="mod-switch-pill on" id="badgeAccStatus" onclick="event.stopPropagation(); toggleModuleActiveState('acc')">ON</span>
+                                <div>
+                                    <div class="mod-card-top"><span class="mod-card-icon">📦</span><span class="mod-card-title" id="dashBtnTitleAcc">4. Accessories</span></div>
+                                    <span class="mod-card-tag" id="accTagText">Ventilators, Gutters</span>
+                                </div>
+                                <span class="mod-card-badge" id="badgeAccTotal">Rs. 0</span>
+                            </div>
+
+                            <div class="module-grid-card card-3d-press btn-ripple" id="cardModErect" onclick="openModuleModal('erect')">
+                                <span class="mod-switch-pill on" id="badgeErectStatus" onclick="event.stopPropagation(); toggleModuleActiveState('erect')">ON</span>
+                                <div>
+                                    <div class="mod-card-top"><span class="mod-card-icon">🚜</span><span class="mod-card-title" id="dashBtnTitleErect">5. Erection</span></div>
+                                    <span class="mod-card-tag" id="erectTagText">Crane, Hydra, Labour</span>
+                                </div>
+                                <span class="mod-card-badge" id="badgeErectTotal">Rs. 0</span>
+                            </div>
+
+                            <div class="module-grid-card card-3d-press btn-ripple" style="border-color: var(--header-bg); background: #f8fafc;" onclick="openTaxPickerModal('shed')">
+                                <div>
+                                    <div class="mod-card-top"><span class="mod-card-icon">🏷️</span><span class="mod-card-title" id="selectedTaxNameText">GST @ 18%</span></div>
+                                    <span class="mod-card-tag" id="selectedTaxDescText">Tax Rate</span>
+                                </div>
+                                <span class="mod-card-badge" style="background:#475569;">Change ▾</span>
+                            </div>
+                        </div>
+
+                        <div id="customModulesListContainer" class="modules-grid-container" style="margin-top:-4px;"></div>
+                    </div>
+                </div>
+
+                <!-- RIGHT PREVIEW PANE -->
+                <div class="dash-preview-pane">
+                    <!-- PREVIEW VIEWPORT -->
+                    <div class="pdf-section-wrapper">
+                        <div class="font-scale-bar card-3d">
+                            <span style="font-size:11.5px; font-weight:800;">🔍 Screen Preview Zoom:</span>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.04)">A -</button>
+                                <span id="scaleIndicatorText" style="font-size:12px; font-weight:900; min-width:44px; text-align:center; color:var(--gold-light);">100%</span>
+                                <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.04)">A +</button>
+                                <button class="btn-font-ctrl btn-ripple" style="font-size:10px; padding:4px 6px;" onclick="resetPdfScale()">Reset</button>
+                            </div>
+                        </div>
+
+                        <div class="live-edit-hint-pill">
+                            ✏️ <strong>Live Preview:</strong> Numbers, Titles & Terms par click karke direct edit karein. PDF चारों तरफ़ 0.25" बराबर मार्जिन पर डाउनलोड होगी।
+                        </div>
+
+                        <!-- PREVIEW CONTAINER -->
+                        <div class="pdf-sheet-frame card-3d">
+                            <div class="mobile-preview-viewport" id="viewportWrap">
+                                <div id="scalingWrapper">
+                                    <div id="printableA4Sheet">
+
+                                        <!-- ========================================================
+                                             PAGE 1: MS STRUCTURE QUOTATION (THEME 12 BLUEPRINT)
+                                             ======================================================== -->
+                                        <div class="a4-page-box" id="page1MsStructure">
+                                            
+                                            <!-- 1. ANGLED GEOMETRIC HEADER -->
+                                            <div class="geo-header-wrapper">
+                                                <div class="top-accent-bar"></div>
+
+                                                <div class="header-logo-area">
+                                                    <img id="pdfHeaderBannerImg" class="brand-banner-img" 
+                                                         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 240' width='700' height='240'><g fill='%230f172a'><path d='M30,120 Q30,30 160,30 L260,30 Q330,30 330,80 Q330,125 250,130 L110,130 L110,210 L30,210 Z M110,75 L110,95 L220,95 Q250,95 250,85 Q250,75 220,75 Z'/><path d='M340,30 L430,30 L430,210 L340,210 Z M430,30 L600,30 L600,75 L430,75 Z M430,105 L560,105 L560,145 L430,145 Z M430,170 L600,170 L600,210 L430,210 Z'/><rect x='30' y='218' width='640' height='8' fill='%230c1e30'/><text x='350' y='240' font-family='Arial,sans-serif' font-weight='900' font-size='22' letter-spacing='14' text-anchor='middle'>PATEL ENGINEERING</text></g><g stroke='%230c1e30' stroke-width='4' fill='none'><path d='M250 15 L500 5 L680 25 L680 130 L250 130 Z'/><path d='M320 20 L500 12 L640 28 L640 130'/><path d='M500 12 L500 130 M410 16 L410 130 M570 20 L570 130' stroke-dasharray='5,5'/></g></svg>" 
+                                                         alt="PATEL ENGINEERING">
+                                                </div>
+
+                                                <div class="header-quote-poly-block">
+                                                    <div class="quote-main-heading" id="pdfRibbonTitle">QUOTATION</div>
+                                                    <div class="quote-meta-list">
+                                                        <div>Quote Ref: <b id="pdfQuoteNo">PE/2026/01</b></div>
+                                                        <div>Issue Date: <b id="pdfCurrentDate">16 Oct 2026</b></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- ⭐ HIGH-CONTRAST COMPANY SUBSTRIP BAR (ADDRESS & GSTIN) ⭐ -->
+                                            <div class="company-substrip-bar">
+                                                <div class="substrip-addr">
+                                                    <span>📍</span>
+                                                    <span><b>Works & Office:</b> <span id="pdfSubstripAddr">Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)</span></span>
+                                                </div>
+                                                <div class="substrip-gst">
+                                                    <span>📑 <b>GSTIN:</b> <span id="pdfSubstripGst">08AHFPL0222M2ZF</span></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- 2. CUSTOMER DETAILS & SHED SPECIFICATIONS -->
+                                            <div class="customer-details-block">
+                                                <div class="scope-left-column">
+                                                    <div class="scope-heading-dark" id="pdfScopeTitle">
+                                                        QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS
+                                                    </div>
+                                                    <div class="project-size-heading-label" id="pdfProjectSizeHeading">
+                                                        📐 PROJECT SIZE / SHED DIMENSIONS:
+                                                    </div>
+                                                    <div class="project-dim-columns">
+                                                        <div class="dim-col-item"><span class="dim-lbl">Width</span><span class="dim-val" id="dimWVal">-</span></div>
+                                                        <span class="dim-col-sep">×</span>
+                                                        <div class="dim-col-item"><span class="dim-lbl">Length</span><span class="dim-val" id="dimLVal">-</span></div>
+                                                        <span class="dim-col-sep">×</span>
+                                                        <div class="dim-col-item"><span class="dim-lbl">Height</span><span class="dim-val" id="dimHVal">-</span></div>
+                                                        <span class="dim-col-sep">=</span>
+                                                        <div class="dim-col-item area-col"><span class="dim-lbl">Total Area</span><span class="dim-val" id="dimAreaVal">-</span></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="client-right-list">
+                                                    <div class="client-list-row"><span class="label">Client:</span><span class="val" id="pdfClientName">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Contact Person:</span><span class="val" id="pdfContactPersonDisplay">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Contact Number:</span><span class="val" id="pdfClientPhone">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Customer GST:</span><span class="val" id="pdfClientGst">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Site Address:</span><span class="val" id="pdfClientAddr">-</span></div>
+                                                </div>
+                                            </div>
+
+                                            <!-- SECTION 1: STEEL WEIGHT -->
+                                            <div class="section-header-bar">
+                                                <span id="displayHeaderLine1">1. ESTIMATED STEEL WEIGHT:</span>
+                                                <span style="font-size:9.5px; font-weight:800;">Engineering Estimate</span>
+                                            </div>
+                                            <div class="table-wrapper">
+                                                <table class="theme-data-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 70%; text-align: left;">DESCRIPTION</th>
+                                                            <th style="width: 30%; text-align: right;">ESTIMATED WEIGHT / AREA</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="pdfSection1TableBody"></tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- SECTION 2: PRICE BREAKUP -->
+                                            <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center;">
+                                                <span id="displayHeaderLine2">2. PRICE BREAKUP AS PER KG RATE:</span>
+                                                <button type="button" class="btn-preview-add-inline btn-ripple" onclick="openAddUniversalModuleModal('shed')">+ Add Module / Item</button>
+                                            </div>
+                                            <div class="table-wrapper">
+                                                <table class="theme-data-table">
+                                                    <thead id="pdfTableHead"></thead>
+                                                    <tbody id="pdfTableBody"></tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- SECTION 3: ACCESSORIES BREAKDOWN -->
+                                            <div id="pdfAccBreakdownContainer" style="display: none;">
+                                                <div class="section-header-bar" style="margin-top: 5px; display:flex; justify-content:space-between; align-items:center;">
+                                                    <span id="pdfAccSectionHeading">3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:</span>
+                                                    <button type="button" class="btn-acc-preview-add btn-ripple" onclick="addNewAccessoryDirectly()">+ Add Item</button>
+                                                </div>
+                                                <div class="table-wrapper">
+                                                    <table class="theme-data-table">
+                                                        <thead id="pdfAccTableHead"></thead>
+                                                        <tbody id="pdfAccBreakdownBody"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <!-- TERMS & COMMERCIAL SUMMARY (PAGE 1) -->
+                                            <div class="theme-bottom-summary-grid">
+                                                <div class="terms-column">
+                                                    <h4 id="pdfTermsHeaderDisplay">Terms & Conditions:</h4>
+                                                    <div id="pdfTermsContainer" class="editable-terms-preview-box"></div>
+                                                    <div class="thank-you-line" id="pdfThankYouDisplay">THANK YOU FOR YOUR BUSINESS WITH US.</div>
+                                                </div>
+
+                                                <div class="calculation-column">
+                                                    <div id="financialStandardBox">
+                                                        <div class="calc-row-unit"><span>Total Basic Cost:</span><b id="pdfFinBasic">-</b></div>
+                                                        <div id="pdfTaxBreakdownRows" class="tax-breakdown-vertical"></div>
+
+                                                        <div class="solid-navy-total-bar">
+                                                            <span>GRAND TOTAL WITH GST:</span>
+                                                            <span class="total-amt" id="pdfFinGrand">-</span>
+                                                        </div>
+
+                                                        <div id="pdfShedAvgRateBox" class="shed-avg-rate-pill" style="display:none;">
+                                                            <span>SHED RATE / SQ.FT:</span>
+                                                            <b id="pdfShedAvgRateVal">-</b>
+                                                        </div>
+
+                                                        <!-- FIXED COMBINED PACKAGE SUMMARY BOX -->
+                                                        <div id="pdfCombinedPackageBox" class="combined-package-summary-box" style="display:none;"></div>
+                                                    </div>
+
+                                                    <div id="rateOnlyNoticeBox" class="rate-only-contract-bar">
+                                                        <b>🏷️ RATE CONTRACT BASIS QUOTATION</b>
+                                                        <span>Quotation prepared on Rate Contract Basis. Amounts & Grand Total excluded as per client request.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- DUAL SIGNATURE BLOCK (CLEAN & BLANK WHEN NOT SIGNED - NO DASH LINE) -->
+                                            <div class="signature-dual-grid">
+                                                <div class="sign-box-col">
+                                                    <div class="sign-stamp-area"></div>
+                                                    <b class="sign-heading-main" id="pdfCustSignHeader">CUSTOMER ACCEPTANCE</b>
+                                                    <span class="sign-sub-caption" id="pdfCustSignSub">Authorized Signature & Stamp</span>
+                                                </div>
+
+                                                <div class="sign-box-col">
+                                                    <div class="sign-stamp-area" id="pdfSignImgBox"></div>
+                                                    <b class="sign-heading-main" id="pdfSignCompanyHeader">FOR PATEL ENGINEERING</b>
+                                                    <span class="sign-sub-caption" id="pdfSignatoryTitleDisplay">Authorized Signatory</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- 100% FULL-WIDTH BLUE FOOTER BAR -->
+                                            <div class="geo-footer-wrapper">
+                                                <div class="footer-full-bar">
+                                                    <div class="footer-row-item">
+                                                        <span>📞 <b>Phones:</b> <span id="pdfFooterPhones">+91 9799635249, +91 7737734122, +91 9829111111</span></span>
+                                                        <span class="gstin-pill-inline">📑 GSTIN: <b id="pdfCompanyGst">08AHFPL0222M2ZF</b></span>
+                                                    </div>
+                                                    <div class="footer-row-item">
+                                                        <span>📍 <span id="pdfFooterAddrMini">Bhawani Nagar, Bhilwara - 311001 (Raj.)</span></span>
+                                                        <span>✉️ <span id="pdfFooterEmail">info@patelengineering.com</span></span>
+                                                        <span>🌐 <span id="pdfFooterWebDisplay">www.patelengineering.com</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="page-physical-gap" id="civilPageGapDivider" style="display: none;"></div>
+
+                                        <!-- ========================================================
+                                             PAGE 2: CIVIL SPECIFICATIONS (THEME 12 BLUEPRINT)
+                                             ======================================================== -->
+                                        <div class="a4-page-box civil-dedicated-page" id="civilDedicatedPageSheet" style="display: none;">
+                                            
+                                            <!-- 1. HEADER (CIVIL - SAYS "QUOTATION") -->
+                                            <div class="geo-header-wrapper">
+                                                <div class="top-accent-bar"></div>
+
+                                                <div class="header-logo-area">
+                                                    <img id="civilPdfHeaderBannerImg" class="brand-banner-img" 
+                                                         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 240' width='700' height='240'><g fill='%230f172a'><path d='M30,120 Q30,30 160,30 L260,30 Q330,30 330,80 Q330,125 250,130 L110,130 L110,210 L30,210 Z M110,75 L110,95 L220,95 Q250,95 250,85 Q250,75 220,75 Z'/><path d='M340,30 L430,30 L430,210 L340,210 Z M430,30 L600,30 L600,75 L430,75 Z M430,105 L560,105 L560,145 L430,145 Z M430,170 L600,170 L600,210 L430,210 Z'/><rect x='30' y='218' width='640' height='8' fill='%230c1e30'/><text x='350' y='240' font-family='Arial,sans-serif' font-weight='900' font-size='22' letter-spacing='14' text-anchor='middle'>PATEL ENGINEERING</text></g><g stroke='%230c1e30' stroke-width='4' fill='none'><path d='M250 15 L500 5 L680 25 L680 130 L250 130 Z'/><path d='M320 20 L500 12 L640 28 L640 130'/><path d='M500 12 L500 130 M410 16 L410 130 M570 20 L570 130' stroke-dasharray='5,5'/></g></svg>" 
+                                                         alt="PATEL ENGINEERING">
+                                                </div>
+
+                                                <div class="header-quote-poly-block">
+                                                    <div class="quote-main-heading" id="civilPdfRibbonTitle">QUOTATION</div>
+                                                    <div class="quote-meta-list">
+                                                        <div>Quote Ref: <b id="civilPdfQuoteNo">PE/2026/01</b></div>
+                                                        <div>Issue Date: <b id="civilPdfCurrentDate">16 Oct 2026</b></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- ⭐ HIGH-CONTRAST COMPANY SUBSTRIP BAR (CIVIL) ⭐ -->
+                                            <div class="company-substrip-bar">
+                                                <div class="substrip-addr">
+                                                    <span>📍</span>
+                                                    <span><b>Works & Office:</b> <span id="civilPdfSubstripAddr">Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)</span></span>
+                                                </div>
+                                                <div class="substrip-gst">
+                                                    <span>📑 <b>GSTIN:</b> <span id="civilPdfSubstripGst">08AHFPL0222M2ZF</span></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- 2. CUSTOMER DETAILS & CIVIL SCOPE -->
+                                            <div class="customer-details-block">
+                                                <div class="scope-left-column">
+                                                    <div class="scope-heading-dark" id="civilPdfScopeTitle">
+                                                        TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS
+                                                    </div>
+                                                    <div style="font-size:9.5px; color:#64748b; font-weight:700; margin-top:3px;">
+                                                        Detailed Engineering Estimate & Material Specifications
+                                                    </div>
+                                                </div>
+
+                                                <div class="client-right-list">
+                                                    <div class="client-list-row"><span class="label">Client:</span><span class="val" id="civilPdfClientName">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Contact Person:</span><span class="val" id="civilPdfContactPersonDisplay">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Contact Number:</span><span class="val" id="civilPdfClientPhone">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Customer GST:</span><span class="val" id="civilPdfClientGst">-</span></div>
+                                                    <div class="client-list-row"><span class="label">Site Address:</span><span class="val" id="civilPdfClientAddr">-</span></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="civil-job-details-ribbon" id="civilJobTitleDisplay">JOB DETAILS & TECHNICAL SPECIFICATIONS</div>
+
+                                            <!-- SECTION 1: FOUNDATION -->
+                                            <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
+                                                <span id="civilFoundTitle">1. FOUNDATION & RCC COLUMN DETAILS:</span>
+                                                <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('foundation')">+ Add Item</button>
+                                            </div>
+                                            <div class="table-wrapper">
+                                                <table class="civil-schedule-table">
+                                                    <thead id="civilFoundationTableHead"></thead>
+                                                    <tbody id="civilFoundationTableBody"></tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- SECTION 2: BRICK WALL -->
+                                            <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
+                                                <span id="civilBrickTitle">2. BRICK WALL, DPC & PLASTER DETAILS:</span>
+                                                <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('brickWall')">+ Add Item</button>
+                                            </div>
+                                            <div class="table-wrapper">
+                                                <table class="civil-schedule-table">
+                                                    <thead id="civilBrickWallTableHead"></thead>
+                                                    <tbody id="civilBrickWallTableBody"></tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- SECTION 3: FLOORING -->
+                                            <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
+                                                <span id="civilFloorTitle">3. FLOORING & PCC WORK DETAILS:</span>
+                                                <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('flooring')">+ Add Item</button>
+                                            </div>
+                                            <div class="table-wrapper">
+                                                <table class="civil-schedule-table">
+                                                    <thead id="civilFlooringTableHead"></thead>
+                                                    <tbody id="civilFlooringTableBody"></tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- CUSTOM CIVIL MODULES -->
+                                            <div id="civilCustomCategoriesPage2Wrapper"></div>
+
+                                            <!-- DEDICATED CIVIL TERMS -->
+                                            <div class="theme-bottom-summary-grid">
+                                                <div class="terms-column">
+                                                    <h4 id="civilPdfTermsHeaderDisplay">Civil Work Terms & Conditions:</h4>
+                                                    <div id="civilPdfTermsContainer" class="editable-terms-preview-box"></div>
+                                                    <div class="thank-you-line" id="civilPdfThankYouDisplay">THANK YOU FOR YOUR CIVIL CONTRACT.</div>
+                                                </div>
+
+                                                <div class="calculation-column">
+                                                    <div id="civilFinancialBox">
+                                                        <div class="calc-row-unit"><span>Civil Basic Total:</span><b id="civilFinBasic">-</b></div>
+                                                        <div id="civilPdfTaxBreakdownRows" class="tax-breakdown-vertical"></div>
+                                                        <div class="solid-navy-total-bar">
+                                                            <span>CIVIL GRAND TOTAL:</span>
+                                                            <span class="total-amt" id="civilFinGrand">-</span>
+                                                        </div>
+                                                        <div id="civilPdfCombinedPackageBox" class="combined-package-summary-box" style="display:none;"></div>
+                                                    </div>
+
+                                                    <div id="civilRateOnlyNoticeBox" class="rate-only-contract-bar" style="display:none;">
+                                                        <b>🏷️ CIVIL RATE CONTRACT BASIS QUOTATION</b>
+                                                        <span>Civil Work prepared on Unit Rate basis. Final billing as per actual joint site measurements.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- DUAL SIGNATURE BLOCK (CIVIL - NO DASH LINE) -->
+                                            <div class="signature-dual-grid">
+                                                <div class="sign-box-col">
+                                                    <div class="sign-stamp-area"></div>
+                                                    <b class="sign-heading-main" id="civilCustSignHeader">CUSTOMER ACCEPTANCE</b>
+                                                    <span class="sign-sub-caption" id="civilCustSignSub">Authorized Signature & Stamp</span>
+                                                </div>
+
+                                                <div class="sign-box-col">
+                                                    <div class="sign-stamp-area" id="civilPdfSignImgBox"></div>
+                                                    <b class="sign-heading-main" id="civilSignCompanyHeader">FOR PATEL ENGINEERING</b>
+                                                    <span class="sign-sub-caption" id="civilSignatoryTitleDisplay">Authorized Signatory</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- 100% FULL-WIDTH BLUE FOOTER BAR (CIVIL) -->
+                                            <div class="geo-footer-wrapper">
+                                                <div class="footer-full-bar">
+                                                    <div class="footer-row-item">
+                                                        <span>📞 <b>Phones:</b> <span id="civilPdfFooterPhones">+91 9799635249, +91 7737734122, +91 9829111111</span></span>
+                                                        <span class="gstin-pill-inline">📑 GSTIN: <b id="civilPdfCompanyGst">08AHFPL0222M2ZF</b></span>
+                                                    </div>
+                                                    <div class="footer-row-item">
+                                                        <span>📍 <span id="civilPdfFooterAddrMini">Bhawani Nagar, Bhilwara - 311001 (Raj.)</span></span>
+                                                        <span>✉️ <span id="civilPdfFooterEmail">info@patelengineering.com</span></span>
+                                                        <span>🌐 <span id="civilPdfFooterWebDisplay">www.patelengineering.com</span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -788,99 +752,111 @@
         </header>
 
         <div class="content">
-            <div class="compact-toggle-bar" id="civilCompactToggleBar" style="margin-bottom: 12px;">
-                <div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnCivilScreenCivRateMode" onclick="toggleCivilRateOnlyMode()">
-                    <span id="pillTxtCivilScreenCivRateMode">Civil BOQ</span>
-                    <span class="pill-indicator"></span>
-                </div>
-            </div>
-
-            <div class="card card-accent-top card-3d">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <span class="card-eyebrow">Civil Scope (Page Header)</span>
-                        <h4 id="civilScopeDescPreviewTxt" style="font-size:12.5px; font-weight:800; color:#0f172a; margin-top:3px;">
-                            TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS
-                        </h4>
+            <div class="dashboard-split-layout">
+                <!-- LEFT CONTROLS -->
+                <div class="dash-controls-pane">
+                    <div class="compact-toggle-bar" id="civilCompactToggleBar" style="margin-bottom: 12px;">
+                        <div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnCivilScreenCivRateMode" onclick="toggleCivilRateOnlyMode()">
+                            <span id="pillTxtCivilScreenCivRateMode">Civil BOQ</span>
+                            <span class="pill-indicator"></span>
+                        </div>
                     </div>
-                    <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding:6px 12px; font-size:11.5px;" onclick="openCivilScopeModal()">
-                        📝 Edit Scope
-                    </button>
-                </div>
-            </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; margin: 14px 0 8px;">
-                <h3 class="section-title" style="margin:0;">Civil Specifications Cards</h3>
-                <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 6px 12px; font-size:11px;" onclick="openAddUniversalModuleModal('civil')">
-                    ➕ Add Civil Module
-                </button>
-            </div>
-            
-            <div class="modules-grid-container">
-                <div class="module-grid-card card-3d-press btn-ripple" style="border-left: 4px solid #16a34a;" onclick="openCivilParamModal('foundation')">
-                    <div>
-                        <div class="mod-card-top"><span class="mod-card-icon">🧱</span><span class="mod-card-title" id="dashBtnTitleFoundation">1. Foundation Details</span></div>
-                        <span class="mod-card-tag">Footing, RCC Column, Steel</span>
+                    <div class="card card-accent-top card-3d">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <span class="card-eyebrow">Civil Scope (Page Header)</span>
+                                <h4 id="civilScopeDescPreviewTxt" style="font-size:12.5px; font-weight:800; color:#0f172a; margin-top:3px;">
+                                    TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS
+                                </h4>
+                            </div>
+                            <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding:6px 12px; font-size:11.5px;" onclick="openCivilScopeModal()">
+                                📝 Edit Scope
+                            </button>
+                        </div>
                     </div>
-                    <span class="mod-card-badge" style="background:#166534;">Edit ➔</span>
-                </div>
 
-                <div class="module-grid-card card-3d-press btn-ripple" style="border-left: 4px solid #16a34a;" onclick="openCivilParamModal('brickWall')">
-                    <div>
-                        <div class="mod-card-top"><span class="mod-card-icon">🧱</span><span class="mod-card-title" id="dashBtnTitleBrick">2. Brick Wall Details</span></div>
-                        <span class="mod-card-tag">Stone Foundation, DPC, Plaster</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin: 14px 0 8px;">
+                        <h3 class="section-title" style="margin:0;">Civil Specifications Cards</h3>
+                        <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 6px 12px; font-size:11px;" onclick="openAddUniversalModuleModal('civil')">
+                            ➕ Add Civil Module
+                        </button>
                     </div>
-                    <span class="mod-card-badge" style="background:#166534;">Edit ➔</span>
-                </div>
+                    
+                    <!-- CIVIL MODULES GRID WITH ON/OFF SWITCHES -->
+                    <div class="modules-grid-container">
+                        <div class="module-grid-card card-3d-press btn-ripple" id="cardCivFound" style="border-left: 4px solid #16a34a;" onclick="openCivilParamModal('foundation')">
+                            <span class="mod-switch-pill on" id="badgeCivFoundStatus" onclick="event.stopPropagation(); toggleCivilModuleActiveState('foundation')">ON</span>
+                            <div>
+                                <div class="mod-card-top"><span class="mod-card-icon">🧱</span><span class="mod-card-title" id="dashBtnTitleFoundation">1. Foundation Details</span></div>
+                                <span class="mod-card-tag">Footing, RCC Column, Steel</span>
+                            </div>
+                            <span class="mod-card-badge" id="badgeCivFoundTotal" style="background:#166534;">Edit ➔</span>
+                        </div>
 
-                <div class="module-grid-card card-3d-press btn-ripple" style="border-left: 4px solid #16a34a;" onclick="openCivilParamModal('flooring')">
-                    <div>
-                        <div class="mod-card-top"><span class="mod-card-icon">🏗️</span><span class="mod-card-title" id="dashBtnTitleFlooring">3. Flooring Details</span></div>
-                        <span class="mod-card-tag">Soil Filling & PCC Ballast</span>
+                        <div class="module-grid-card card-3d-press btn-ripple" id="cardCivBrick" style="border-left: 4px solid #16a34a;" onclick="openCivilParamModal('brickWall')">
+                            <span class="mod-switch-pill on" id="badgeCivBrickStatus" onclick="event.stopPropagation(); toggleCivilModuleActiveState('brickWall')">ON</span>
+                            <div>
+                                <div class="mod-card-top"><span class="mod-card-icon">🧱</span><span class="mod-card-title" id="dashBtnTitleBrick">2. Brick Wall Details</span></div>
+                                <span class="mod-card-tag">Stone Foundation, DPC, Plaster</span>
+                            </div>
+                            <span class="mod-card-badge" id="badgeCivBrickTotal" style="background:#166534;">Edit ➔</span>
+                        </div>
+
+                        <div class="module-grid-card card-3d-press btn-ripple" id="cardCivFloor" style="border-left: 4px solid #16a34a;" onclick="openCivilParamModal('flooring')">
+                            <span class="mod-switch-pill on" id="badgeCivFloorStatus" onclick="event.stopPropagation(); toggleCivilModuleActiveState('flooring')">ON</span>
+                            <div>
+                                <div class="mod-card-top"><span class="mod-card-icon">🏗️</span><span class="mod-card-title" id="dashBtnTitleFlooring">3. Flooring Details</span></div>
+                                <span class="mod-card-tag">Soil Filling & PCC Ballast</span>
+                            </div>
+                            <span class="mod-card-badge" id="badgeCivFloorTotal" style="background:#166534;">Edit ➔</span>
+                        </div>
+
+                        <div class="module-grid-card card-3d-press btn-ripple" style="border-color: #166534; background: #f0fdf4;" onclick="openTaxPickerModal('civil')">
+                            <div>
+                                <div class="mod-card-top"><span class="mod-card-icon">🏷️</span><span class="mod-card-title" id="civilSelectedTaxNameText">GST @ 18%</span></div>
+                                <span class="mod-card-tag" id="civilSelectedTaxDescText">Civil Tax Rate</span>
+                            </div>
+                            <span class="mod-card-badge" style="background:#166534;">Change ▾</span>
+                        </div>
                     </div>
-                    <span class="mod-card-badge" style="background:#166534;">Edit ➔</span>
-                </div>
 
-                <div class="module-grid-card card-3d-press btn-ripple" style="border-color: #166534; background: #f0fdf4;" onclick="openTaxPickerModal('civil')">
-                    <div>
-                        <div class="mod-card-top"><span class="mod-card-icon">🏷️</span><span class="mod-card-title" id="civilSelectedTaxNameText">GST @ 18%</span></div>
-                        <span class="mod-card-tag" id="civilSelectedTaxDescText">Civil Tax Rate</span>
+                    <div id="civilCustomCategoriesGrid" class="modules-grid-container" style="margin-top:-4px;"></div>
+
+                    <div style="display:flex; gap:10px; margin-top: 16px;">
+                        <button class="btn-main btn-3d-green btn-ripple" style="flex:2;" onclick="downloadPDFDirectly('civil')">
+                            ⬇️ DOWNLOAD CIVIL PDF
+                        </button>
+                        <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1; justify-content:center; font-weight:900;" onclick="handleCivilBackNav()">
+                            ➔ Return
+                        </button>
                     </div>
-                    <span class="mod-card-badge" style="background:#166534;">Change ▾</span>
                 </div>
-            </div>
 
-            <div id="civilCustomCategoriesGrid" class="modules-grid-container" style="margin-top:-4px;"></div>
+                <!-- RIGHT PREVIEW -->
+                <div class="dash-preview-pane">
+                    <div class="font-scale-bar card-3d">
+                        <span style="font-size:11.5px; font-weight:800;">🔍 Civil Preview Zoom:</span>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.04)">A -</button>
+                            <span id="civilScaleIndicatorText" style="font-size:12px; font-weight:900; min-width:44px; text-align:center; color:var(--gold-light);">100%</span>
+                            <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.04)">A +</button>
+                            <button class="btn-font-ctrl btn-ripple" style="font-size:10px; padding:4px 6px;" onclick="resetPdfScale()">Reset</button>
+                        </div>
+                    </div>
 
-            <div class="font-scale-bar card-3d" style="margin-top: 14px;">
-                <span style="font-size:11.5px; font-weight:800;">🔍 Civil Preview Zoom:</span>
-                <div style="display:flex; align-items:center; gap:6px;">
-                    <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.04)">A -</button>
-                    <span id="civilScaleIndicatorText" style="font-size:12px; font-weight:900; min-width:44px; text-align:center; color:var(--gold-light);">100%</span>
-                    <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.04)">A +</button>
-                    <button class="btn-font-ctrl btn-ripple" style="font-size:10px; padding:4px 6px;" onclick="resetPdfScale()">Reset</button>
-                </div>
-            </div>
-
-            <!-- CIVIL PREVIEW -->
-            <div class="pdf-section-wrapper" style="margin-top: 8px;">
-                <h3 class="section-title">Civil Sheet Live Preview</h3>
-                <div class="pdf-sheet-frame card-3d">
-                    <div class="mobile-preview-viewport" id="civilViewportWrap">
-                        <div id="civilScalingWrapper">
-                            <div id="civilLiveSheetDisplayBox"></div>
+                    <!-- CIVIL PREVIEW -->
+                    <div class="pdf-section-wrapper" style="margin-top: 8px;">
+                        <h3 class="section-title">Civil Sheet Live Preview</h3>
+                        <div class="pdf-sheet-frame card-3d">
+                            <div class="mobile-preview-viewport" id="civilViewportWrap">
+                                <div id="civilScalingWrapper">
+                                    <div id="civilLiveSheetDisplayBox"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div style="display:flex; gap:10px; margin-top: 16px;">
-                <button class="btn-main btn-3d-green btn-ripple" style="flex:2;" onclick="downloadPDFDirectly('civil')">
-                    ⬇️ DOWNLOAD CIVIL PDF
-                </button>
-                <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1; justify-content:center; font-weight:900;" onclick="handleCivilBackNav()">
-                    ➔ Return
-                </button>
             </div>
         </div>
     </div>
@@ -906,15 +882,16 @@
                 </button>
             </div>
 
+            <!-- LIVE RUNNING QUOTATION SEQUENCE -->
             <div class="card card-3d">
-                <label class="form-head-label">🔢 Quotation Sequence Starting Point</label>
+                <label class="form-head-label">🔢 Next Quotation Starting Number (Live Auto-Sync)</label>
                 <div class="row-2" style="margin-top:6px; align-items:center;">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label>Start Sequence At</label>
-                        <input type="number" id="setStartingQuoteNo" min="1" placeholder="e.g. 1, 24, 2356" oninput="saveStartingQuoteSeq(this.value)">
+                        <label>Next Quote Seq No.</label>
+                        <input type="number" id="setStartingQuoteNo" min="1" placeholder="e.g. 7" oninput="saveStartingQuoteSeq(this.value)">
                     </div>
                     <p style="font-size:11px; color:#64748b; margin:0;">
-                        Jaise 24 set karne par naya quotation <b>PE/2026/24</b> banega.
+                        Ye automatically agle naye quotation ka sequence number show karta hai.
                     </p>
                 </div>
             </div>
@@ -927,12 +904,13 @@
                     <button class="btn-secondary btn-3d-secondary btn-ripple" onclick="document.getElementById('logoUploadInput').click()">
                         🖼️ Upload Header Banner Image & Logo
                     </button>
-                    <p style="font-size: 11px; color: #64748b; margin-top: 4px;">PDF Header Left Box (49% / 150px) & App Icon par auto-sync hoga</p>
+                    <p style="font-size: 11px; color: #64748b; margin-top: 4px;">PDF Header Left Box & App Icon par auto-sync hoga</p>
                 </div>
             </div>
 
+            <!-- OFFICIAL CONTACT & DIGITAL LINKS (INCLUDES EMAIL & WEBSITE) -->
             <div class="card card-3d">
-                <label class="form-head-label">Official Phone Numbers (Auto-Saved)</label>
+                <label class="form-head-label">Official Contacts & Web (Auto-Saved to Cloud)</label>
                 <div class="form-group" style="margin-top:6px;">
                     <label>Phone 1 (Sales / Calling)</label>
                     <input type="text" id="setPhone1" oninput="savePhoneSetting(1, this.value)" placeholder="+91 9799635249">
@@ -941,9 +919,19 @@
                     <label>Phone 2 (Site Engineer)</label>
                     <input type="text" id="setPhone2" oninput="savePhoneSetting(2, this.value)" placeholder="+91 7737734122">
                 </div>
-                <div class="form-group" style="margin-bottom:0;">
+                <div class="form-group">
                     <label>Phone 3 (Accounts / Alternate)</label>
                     <input type="text" id="setPhone3" oninput="savePhoneSetting(3, this.value)" placeholder="+91 9829111111">
+                </div>
+                <div class="row-2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Company Email</label>
+                        <input type="email" id="setCompanyEmail" oninput="saveCompanyEmailSetting(this.value)" placeholder="info@patelengineering.com">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Company Website</label>
+                        <input type="text" id="setFooterWeb" oninput="saveFooterWebSetting(this.value)" placeholder="www.patelengineering.com">
+                    </div>
                 </div>
             </div>
 
@@ -1006,7 +994,7 @@
         </div>
     </div>
 
-    <!-- MODAL: CIVIL PARAMETERS -->
+    <!-- MODAL: CIVIL PARAMETERS (WITH TICK / CHECKLIST SUPPORT) -->
     <div id="civilParamModal" class="modal">
         <div class="modal-body modal-3d" style="max-height: 94vh;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
