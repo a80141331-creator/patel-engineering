@@ -28,6 +28,58 @@ try {
 let masterSecurityPasscode = localStorage.getItem('pe_master_passcode') || "RJ06CC7194";
 
 // ========================================================
+// ⭐ HIGH-PROFESSIONAL WEB AUDIO SOUND ENGINE ⭐
+// ========================================================
+let audioCtx = null;
+function playAppSound(type = 'click') {
+    try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, now);
+            osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+            osc.start(now);
+            osc.stop(now + 0.04);
+        } else if (type === 'chime') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.08);
+            osc.frequency.setValueAtTime(783.99, now + 0.16);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            osc.start(now);
+            osc.stop(now + 0.35);
+        }
+    } catch(e) {}
+}
+
+// ========================================================
+// ⭐ FLOATING CORPORATE TOAST NOTIFICATION ⭐
+// ========================================================
+function showCorporateToast(message, icon = '✓') {
+    const box = document.getElementById('appToastContainer');
+    if (!box) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.innerHTML = `<span style="color:#38bdf8; font-size:16px;">${icon}</span><span>${message}</span>`;
+    box.appendChild(toast);
+    playAppSound('chime');
+    setTimeout(() => {
+        toast.classList.add('toast-fade-out');
+        setTimeout(() => toast.remove(), 320);
+    }, 2800);
+}
+
+// ========================================================
 // 2. MASTER BLUEPRINT & SETTINGS DEFAULTS
 // ========================================================
 const defaultMasterBlueprint = {
@@ -110,9 +162,7 @@ const defaultAppSettings = {
     ownerName: "PATEL ENGINEERING",
     companyAddr: "Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)",
     companyGst: "08AHFPL0222M2ZF",
-    phone1: "+91 9799635249",
-    phone2: "+91 7737734122",
-    phone3: "+91 9829111111",
+    phones: ["+91 9799635249", "+91 7737734122", "+91 9829111111"],
     companyEmail: "info@patelengineering.com",
     footerWeb: "www.patelengineering.com",
     startingQuoteSeq: 1,
@@ -156,6 +206,11 @@ const defaultAppSettings = {
 
 let masterBlueprint = JSON.parse(localStorage.getItem('patel_master_blueprint') || JSON.stringify(defaultMasterBlueprint));
 let appSettings = JSON.parse(localStorage.getItem('patel_app_settings') || JSON.stringify(defaultAppSettings));
+if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
+    appSettings.phones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean);
+    if (appSettings.phones.length === 0) appSettings.phones = ["+91 9799635249", "+91 7737734122"];
+}
+
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
@@ -199,6 +254,9 @@ function initCloudFirstMasterSync() {
         const cloudSettings = snapshot.val();
         if (cloudSettings && typeof cloudSettings === 'object') {
             appSettings = Object.assign({}, defaultAppSettings, cloudSettings);
+            if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
+                appSettings.phones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean);
+            }
             try {
                 localStorage.setItem('patel_app_settings', JSON.stringify(appSettings));
             } catch(e) {}
@@ -290,6 +348,7 @@ function verifyMasterPasscode() {
     const errorEl = document.getElementById('authErrorMsg');
     if (entered === masterSecurityPasscode) {
         triggerHaptic(50);
+        playAppSound('chime');
         fireConfettiCelebration();
         localStorage.setItem('pe_app_auth_token', masterSecurityPasscode);
         const lockScreen = document.getElementById('appFirstTimeLockScreen');
@@ -329,7 +388,7 @@ function saveNewMasterPasscode() {
     localStorage.setItem('pe_app_auth_token', nw);
     if (db && isFirebaseConnected) db.ref('pe_master_passcode').set(nw);
     closeChangePasscodeModal();
-    showAppAlert("✓ Success", `Master Passcode update ho gaya: ${nw}`);
+    showCorporateToast(`Master Passcode updated: ${nw}`);
 }
 
 // ========================================================
@@ -430,7 +489,7 @@ function fireConfettiCelebration() {
     if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
 }
 
-// ⭐ SMOOTHER & SLOWER NUMBER ROLL EFFECT (APPLIED ACROSS ALL BADGES & SUMS) ⭐
+// ⭐ SMOOTHER & SLOWER NUMBER ROLL EFFECT (1200ms DURATION) ⭐
 function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const el = document.getElementById(elemId);
     if (!el) return;
@@ -440,7 +499,7 @@ function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const start = parseInt(currentText, 10) || 0;
     if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN') + suffix; return; }
 
-    const duration = 950; // Smooth & slow duration as requested
+    const duration = 1200; // Smooth and slower calculation effect
     const startTime = performance.now();
     function step(currentTime) {
         const elapsed = currentTime - startTime;
@@ -453,7 +512,17 @@ function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     requestAnimationFrame(step);
 }
 
-// ⭐ PREVIEW INPUT CLICK PAR DASH AUTO-REMOVE & PROFESIONAL SIZING ⭐
+// ⭐ TRIGGER LUXURY SHIMMER ON GRAND TOTAL BAR ⭐
+function triggerTotalBarShimmer() {
+    const bars = document.querySelectorAll('.solid-navy-total-bar');
+    bars.forEach(bar => {
+        bar.classList.remove('shimmer-active');
+        void bar.offsetWidth; // re-flow
+        bar.classList.add('shimmer-active');
+    });
+}
+
+// ⭐ PREVIEW INPUT CLICK PAR DASH AUTO-REMOVE ⭐
 function handlePreviewInputFocus(el) {
     if (el && el.innerText.trim() === '-') {
         el.innerText = '';
@@ -463,6 +532,7 @@ function handlePreviewInputFocus(el) {
 document.addEventListener('click', function(e) {
     const targetBtn = e.target.closest('.btn-ripple');
     if (!targetBtn) return;
+    playAppSound('click');
     triggerHaptic(10);
     const rect = targetBtn.getBoundingClientRect();
     const circle = document.createElement('span');
@@ -666,7 +736,6 @@ function selectUnitFromThemeModal(unit) {
 }
 function closeUnitPickerModal() { closeModalSafe('unitPickerModal'); }
 
-// ⭐ LIVE NEXT QUOTATION SEQUENCE LOGIC ⭐
 function getNextQuoteSequenceNumber() {
     let maxSeq = parseInt(appSettings.startingQuoteSeq || 1, 10) - 1;
     sites.forEach(s => {
@@ -852,6 +921,7 @@ function resolveCustomConfirm(isConfirmed) {
         syncDataToCloud('patel_app_sites', sites);
         renderHomeScreen();
         loadPhoneSettingsUI();
+        showCorporateToast("Quotation deleted successfully", "🗑️");
     }
     pendingDeleteId = null;
     closeModalSafe('customConfirmModal');
@@ -906,7 +976,6 @@ function saveNewBlankSiteAndOpen() {
         accEnabled: true,
         erectEnabled: true,
 
-        // ⭐ CIVIL MODULES ENABLED BY DEFAULT ⭐
         foundEnabled: true,
         brickEnabled: true,
         floorEnabled: true,
@@ -947,6 +1016,7 @@ function saveNewBlankSiteAndOpen() {
     renderHomeScreen();
     loadPhoneSettingsUI();
     loadSiteToDashboard(newSite.id);
+    showCorporateToast(`New Proposal ${autoQuoteNumber} created!`);
 }
 
 function getCurrentSite() { return sites.find(s => s.id === currentSiteId); }
@@ -998,6 +1068,7 @@ function loadSiteToDashboard(siteId) {
     applyCustomButtonNamesUI();
     refreshLivePdfPreviewSheet();
 
+    // ⭐ AUTO-ROUTE TO APPROPRIATE DASHBOARD ⭐
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1007,7 +1078,89 @@ function loadSiteToDashboard(siteId) {
 }
 
 // ========================================================
-// 12. CIVIL DATA & DYNAMIC DASHBOARD TOGGLES
+// ⭐ 12. EDIT CUSTOMER DETAILS (WITH INSTANT SCREEN SWITCH) ⭐
+// ========================================================
+let tempEditQuoteType = 'both';
+function openEditCustomerModal() {
+    const site = getCurrentSite();
+    if (!site) return;
+
+    safeSetVal('editCustName', site.clientName || "");
+    safeSetVal('editCustContactPerson', site.custContactPerson || "");
+    safeSetVal('editCustRole', site.custRole || "");
+    safeSetVal('editCustNumber1', site.custNumber1 || "");
+    safeSetVal('editCustNumber2', site.custNumber2 || "");
+    safeSetVal('editCustAddress', site.custAddress || "");
+    safeSetVal('editCustGST', site.custGST || "");
+    safeSetVal('editCustEmail', site.custEmail || "");
+
+    setEditSiteQuoteType(site.quoteType || 'both');
+    openModalWithHistory('editCustomerModal');
+}
+function closeEditCustomerModal() { closeModalSafe('editCustomerModal'); }
+
+function setEditSiteQuoteType(type) {
+    tempEditQuoteType = type;
+    document.querySelectorAll('#editCustomerModal .quote-type-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('editCardQuoteType_' + type)?.classList.add('active');
+}
+
+function saveEditCustomerDetails() {
+    const site = getCurrentSite();
+    if (!site) return;
+
+    const name = (document.getElementById('editCustName')?.value || "").trim();
+    if (!name) return showAppAlert("⚠️ Client Name Required", "Please enter Client Name.");
+
+    site.clientName = name;
+    site.custContactPerson = (document.getElementById('editCustContactPerson')?.value || "").trim();
+    site.custRole = (document.getElementById('editCustRole')?.value || "").trim();
+    site.custNumber1 = (document.getElementById('editCustNumber1')?.value || "").trim();
+    site.custNumber2 = (document.getElementById('editCustNumber2')?.value || "").trim();
+    site.custAddress = (document.getElementById('editCustAddress')?.value || "").trim();
+    site.custGST = (document.getElementById('editCustGST')?.value || "").trim();
+    site.custEmail = (document.getElementById('editCustEmail')?.value || "").trim();
+    
+    // Save new mode
+    site.quoteType = tempEditQuoteType;
+    site.civilEnabled = (site.quoteType === 'both' || site.quoteType === 'civil');
+    site.shedEnabled = (site.quoteType === 'both' || site.quoteType === 'shed');
+
+    syncDataToCloud('patel_app_sites', sites);
+
+    safeSetText('dashSiteName', site.clientName);
+    safeSetText('dashQuoteNo', site.quoteNo + (site.custAddress ? (" | " + site.custAddress) : ""));
+    safeSetText('civilDashSiteName', site.clientName);
+    safeSetText('civilDashQuoteNo', site.quoteNo);
+
+    updatePillTogglesUI();
+    renderDynamicPdfActionsBar();
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet();
+    closeEditCustomerModal();
+
+    // ⭐ CRITICAL FIX: DASHBOARD AUTO-SWITCH ACCORDING TO QUOTE TYPE ⭐
+    if (site.quoteType === 'civil') {
+        openCivilDashboardScreen();
+    } else {
+        openScreen('screenSiteDashboard');
+    }
+
+    showCorporateToast("Quotation & Customer Details Updated!", "👤");
+}
+
+function syncPreviewCustEdit(field, el) {
+    const site = getCurrentSite();
+    if (!site) return;
+    site[field] = el.innerText.trim();
+    syncDataToCloud('patel_app_sites', sites);
+    safeSetText('dashSiteName', site.clientName);
+    safeSetText('civilDashSiteName', site.clientName);
+    refreshLivePdfPreviewSheet(true);
+}
+
+// ========================================================
+// 13. CIVIL DATA & DYNAMIC DASHBOARD TOGGLES
 // ========================================================
 function ensureCivilDataOnSite(site) {
     if (!site.civilData) site.civilData = JSON.parse(JSON.stringify(masterBlueprint.civilData));
@@ -1103,7 +1256,6 @@ function updateModulePillBadgesUI() {
     setBadge('badgeErectStatus', 'cardModErect', site.erectEnabled !== false);
 }
 
-// ⭐ CIVIL MODULES ON / OFF SWITCH LOGIC ⭐
 function toggleCivilModuleActiveState(secKey) {
     const site = getCurrentSite();
     if (!site) return;
@@ -1113,6 +1265,7 @@ function toggleCivilModuleActiveState(secKey) {
 
     syncDataToCloud('patel_app_sites', sites);
     updateCivilModulePillBadgesUI();
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
@@ -1189,7 +1342,7 @@ function updatePillTogglesUI() {
 }
 
 // ========================================================
-// 13. CIVIL DASHBOARD & SYNCHRONIZED PREVIEW
+// 14. CIVIL DASHBOARD & SYNCHRONIZED PREVIEW
 // ========================================================
 function openCivilDashboardScreen() {
     const site = getCurrentSite();
@@ -1204,6 +1357,7 @@ function openCivilDashboardScreen() {
     updateCivilModulePillBadgesUI();
     updateTaxDisplay();
     updateHeaderBannersUI();
+    calcModuleTotals();
     openScreen('screenCivilDashboard');
 
     setTimeout(() => {
@@ -1258,7 +1412,7 @@ function saveCivilScopeModal() {
 }
 
 // ========================================================
-// 14. CIVIL PARAMETERS MODAL (WITH ITEM TICK / UNTICK SUPPORT)
+// 15. CIVIL PARAMETERS MODAL (WITH ITEM TICK SUPPORT)
 // ========================================================
 let activeCivilModalType = null;
 function openCivilParamModal(type) {
@@ -1283,7 +1437,6 @@ function openCivilParamModal(type) {
                 <div class="acc-top-row">
                     <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;" onclick="toggleCivilItemTick('${type}', ${idx})">
                         <span class="drag-handle" id="handle_civ_${type}_${idx}" onclick="event.stopPropagation()" title="Drag to reorder">⋮⋮</span>
-                        <!-- ⭐ ITEM TICK CHECKBOX ⭐ -->
                         <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation(); toggleCivilItemTick('${type}', ${idx})">${isSelected ? '✓' : ''}</div>
                         <strong style="font-size:12px; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${idx + 1}. ${item.name}</strong>
                     </div>
@@ -1328,6 +1481,7 @@ function toggleCivilItemTick(type, idx) {
     site.civilData[type].items[idx].enabled = !(site.civilData[type].items[idx].enabled !== false);
     syncDataToCloud('patel_app_sites', sites);
     openCivilParamModal(type);
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
@@ -1337,6 +1491,7 @@ function deleteCivilItem(type, idx) {
     site.civilData[type].items.splice(idx, 1);
     syncDataToCloud('patel_app_sites', sites);
     openCivilParamModal(type);
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
@@ -1353,6 +1508,7 @@ function updateCivilItemField(section, idx, field, val) {
     if (!site?.civilData[section]?.items[idx]) return;
     site.civilData[section].items[idx][field] = val;
     syncDataToCloud('patel_app_sites', sites);
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
@@ -1370,6 +1526,7 @@ function addCivilRowDirectly(secKey) {
         enabled: true
     });
     syncDataToCloud('patel_app_sites', sites);
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
@@ -1381,12 +1538,13 @@ function addCustomRowToActiveCivilSection() {
 
 function closeCivilParamModal() {
     closeModalSafe('civilParamModal');
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
     setTimeout(() => openCivilDashboardScreen(), 50);
 }
 
 // ========================================================
-// 15. UNIVERSAL MODULE ADDER
+// 16. UNIVERSAL MODULE ADDER
 // ========================================================
 let universalModMode = 'shed', universalModUnit = 'Lot';
 
@@ -1454,11 +1612,12 @@ function saveUniversalModule() {
         if (!site.moduleOrder) site.moduleOrder = ['prim', 'sec', 'clad', 'acc', 'erect'];
         site.moduleOrder.push(newModId);
         renderCustomModulesDashboardList();
-        calcModuleTotals();
     }
     syncDataToCloud('patel_app_sites', sites);
+    calcModuleTotals();
     closeUniversalModuleModal();
     refreshLivePdfPreviewSheet();
+    showCorporateToast(`Module "${title}" Added!`);
 }
 
 function renderCivilCustomCategoriesUI() {
@@ -1489,6 +1648,7 @@ function toggleCustomCivilCategoryActive(cIdx) {
     site.civilCustomCategories[cIdx].enabled = !(site.civilCustomCategories[cIdx].enabled !== false);
     syncDataToCloud('patel_app_sites', sites);
     renderCivilCustomCategoriesUI();
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
@@ -1498,6 +1658,7 @@ function deleteCustomCivilCategory(cIdx) {
     site.civilCustomCategories.splice(cIdx, 1);
     syncDataToCloud('patel_app_sites', sites);
     renderCivilCustomCategoriesUI();
+    calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
 
@@ -1561,7 +1722,7 @@ function autoSaveAndUpdate() {
 }
 
 // ========================================================
-// 16. STRUCTURE MODULE MODALS
+// 17. STRUCTURE MODULE MODALS
 // ========================================================
 let activeModType = null;
 function openModuleModal(type) {
@@ -1604,7 +1765,7 @@ function openModuleModal(type) {
         customLineInput.value = site.cladCustomLine || "";
         checklistTitle.style.display = addRowBox.style.display = 'none';
         inputsBox.innerHTML = `
-            <div class="form-group"><label>Sheet Thickness</label><input type="text" id="modalInputThick" value="${site.cladThickness || ''}" oninput="autoSaveModuleChanges()"></div>
+            <div class="form-group"><label>Sheet Thickness (e.g. 0.50 mm)</label><input type="text" id="modalInputThick" value="${site.cladThickness || ''}" placeholder="0.50 mm" oninput="autoSaveModuleChanges()"></div>
             <div class="row-3">
                 <div class="form-group" style="margin:0;"><label>Unit</label><button type="button" class="theme-unit-btn btn-3d-secondary btn-ripple" onclick="openThemeUnitPickerForMod('clad')">${site.cladUnit || 'Sq.Ft'} ▾</button></div>
                 <div class="form-group" style="margin:0;"><label>Total Coverage</label><input type="number" inputmode="decimal" step="any" id="modalInputSqFt" value="${site.cladSqFt}" oninput="autoSaveModuleChanges()"></div>
@@ -1648,7 +1809,11 @@ function openThemeUnitPickerForMod(modType) {
         refreshLivePdfPreviewSheet();
     });
 }
-function closeModuleModal() { closeModalSafe('moduleSelectionModal'); }
+function closeModuleModal() { 
+    closeModalSafe('moduleSelectionModal'); 
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet();
+}
 
 function renderStandardChecklist(list) {
     const container = document.getElementById('modItemsCheckContainer');
@@ -1803,7 +1968,7 @@ function autoSaveModuleChanges() {
 }
 
 // ========================================================
-// 17. TAX SELECTION & CALCULATIONS
+// 18. TAX SELECTION & CALCULATIONS
 // ========================================================
 const TAX_SLABS = [
     { id: "gst18_split", name: "GST @ 18% (CGST 9% + SGST 9%)", rate: 0.18, split: true, cgstRate: 0.09, sgstRate: 0.09, desc: "Standard Intra-State (CGST 9% + SGST 9%)" },
@@ -1899,10 +2064,40 @@ function calcModuleTotals() {
     if (site.erectEnabled === false) safeSetText('badgeErectTotal', 'Disabled');
     else if (isRateOnly) safeSetText('badgeErectTotal', '₹ ' + (site.erectRate || '-') + '/Kg');
     else animateNumberRoll('badgeErectTotal', eTot, "Rs. ");
+
+    // Civil Badges update
+    if (site.civilData) {
+        const getSecTotal = (secKey) => {
+            let tot = 0;
+            (site.civilData[secKey]?.items || []).forEach(it => {
+                if (it.enabled !== false) tot += (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0);
+            });
+            return tot;
+        };
+
+        const fTot = getSecTotal('foundation');
+        const bTot = getSecTotal('brickWall');
+        const flTot = getSecTotal('flooring');
+
+        if (site.foundEnabled === false) safeSetText('badgeCivFoundTotal', 'Disabled');
+        else if (site.civilRateOnlyMode) safeSetText('badgeCivFoundTotal', 'Unit Rates');
+        else if (fTot > 0) animateNumberRoll('badgeCivFoundTotal', fTot, "Rs. ");
+        else safeSetText('badgeCivFoundTotal', 'Edit ➔');
+
+        if (site.brickEnabled === false) safeSetText('badgeCivBrickTotal', 'Disabled');
+        else if (site.civilRateOnlyMode) safeSetText('badgeCivBrickTotal', 'Unit Rates');
+        else if (bTot > 0) animateNumberRoll('badgeCivBrickTotal', bTot, "Rs. ");
+        else safeSetText('badgeCivBrickTotal', 'Edit ➔');
+
+        if (site.floorEnabled === false) safeSetText('badgeCivFloorTotal', 'Disabled');
+        else if (site.civilRateOnlyMode) safeSetText('badgeCivFloorTotal', 'Unit Rates');
+        else if (flTot > 0) animateNumberRoll('badgeCivFloorTotal', flTot, "Rs. ");
+        else safeSetText('badgeCivFloorTotal', 'Edit ➔');
+    }
 }
 
 // ========================================================
-// 18. IN-PREVIEW LIVE SYNC & EDITS
+// 19. IN-PREVIEW LIVE SYNC & EDITS
 // ========================================================
 function openCivilUnitPicker(secKey, idx) {
     const site = getCurrentSite();
@@ -2004,7 +2199,6 @@ function syncAccTitleEdit(idx, el) {
     syncDataToCloud('patel_app_sites', sites);
 }
 
-// ⭐ TERMS & CONDITIONS DIRECT IN-PREVIEW LIVE EDIT ⭐
 function syncPreviewTermsEdit(key, el) {
     const val = el.innerText.trim();
     appSettings[key] = val;
@@ -2026,6 +2220,7 @@ function addNewAccessoryDirectly() {
     refreshLivePdfPreviewSheet();
 }
 
+// ⭐ GST SPLIT ROWS EXTRA DARK, THICK & LARGER FONT ⭐
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     if (!taxSlab || taxSlab.rate === 0 || basicCost === 0) {
         return `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">-</span></div>`;
@@ -2044,7 +2239,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
 }
 
 // ========================================================
-// 19. LIVE PREVIEW ENGINE (HIGH-CONTRAST THEME 12 SYNC)
+// 20. LIVE PREVIEW ENGINE (HIGH-CONTRAST THEME 12 SYNC)
 // ========================================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
@@ -2054,9 +2249,9 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 
     const compAddr = appSettings.companyAddr || "Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)";
     const compGst = appSettings.companyGst || "08AHFPL0222M2ZF";
-    const compPhones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean).join(", ") || "+91 9799635249";
-    const compEmail = appSettings.companyEmail || "info@patelengineering.com";
-    const compWeb = appSettings.footerWeb || "www.patelengineering.com";
+    const compPhones = (appSettings.phones || []).filter(Boolean).join(", ") || "+91 9799635249";
+    const compEmail = (appSettings.companyEmail || "").trim();
+    const compWeb = (appSettings.footerWeb || "").trim();
 
     // Substrip Bar Sync
     safeSetText('pdfSubstripAddr', compAddr);
@@ -2071,10 +2266,31 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('civilPdfCompanyGst', compGst);
     safeSetText('pdfFooterAddrMini', compAddr);
     safeSetText('civilPdfFooterAddrMini', compAddr);
-    safeSetText('pdfFooterEmail', compEmail);
-    safeSetText('civilPdfFooterEmail', compEmail);
-    safeSetText('pdfFooterWebDisplay', compWeb);
-    safeSetText('civilPdfFooterWebDisplay', compWeb);
+
+    // Email & Web Blank Hide Logic
+    const pEmailWrap = document.getElementById('pdfFooterEmailWrap');
+    const cEmailWrap = document.getElementById('civilPdfFooterEmailWrap');
+    if (compEmail) {
+        safeSetText('pdfFooterEmail', compEmail);
+        safeSetText('civilPdfFooterEmail', compEmail);
+        if (pEmailWrap) pEmailWrap.style.display = 'inline-flex';
+        if (cEmailWrap) cEmailWrap.style.display = 'inline-flex';
+    } else {
+        if (pEmailWrap) pEmailWrap.style.display = 'none';
+        if (cEmailWrap) cEmailWrap.style.display = 'none';
+    }
+
+    const pWebWrap = document.getElementById('pdfFooterWebWrap');
+    const cWebWrap = document.getElementById('civilPdfFooterWebWrap');
+    if (compWeb) {
+        safeSetText('pdfFooterWebDisplay', compWeb);
+        safeSetText('civilPdfFooterWebDisplay', compWeb);
+        if (pWebWrap) pWebWrap.style.display = 'inline-flex';
+        if (cWebWrap) cWebWrap.style.display = 'inline-flex';
+    } else {
+        if (pWebWrap) pWebWrap.style.display = 'none';
+        if (cWebWrap) cWebWrap.style.display = 'none';
+    }
 
     updateHeaderBannersUI();
 
@@ -2161,9 +2377,10 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             if (site.cladEnabled !== false) {
                 const cSq = parseFloat(site.cladSqFt) || 0;
                 const cUnit = site.cladUnit || "Sq.Ft";
+                const thickBadge = site.cladThickness ? `<span class="spec-highlight-pill" style="margin-left:8px;">📐 Thickness: ${site.cladThickness}</span>` : '';
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span></td>
+                        <td><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td>
                         <td style="text-align: right; font-weight: 900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td>
                     </tr>`;
             }
@@ -2259,7 +2476,10 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             (site.moduleOrder || ['prim', 'sec', 'clad', 'acc', 'erect']).forEach(mKey => {
                 if (mKey === 'prim' && site.primEnabled !== false) addRow("Primary Structure", site.primCustomLine, pRt, pWt, pTot, 'prim', pUnit, false, helperSpecs(site.primSpecs), 'prim');
                 else if (mKey === 'sec' && site.secEnabled !== false) addRow("Secondary Structure", site.secCustomLine, sRt, sWt, sTot, 'sec', sUnit, false, helperSpecs(site.secSpecs), 'sec');
-                else if (mKey === 'clad' && site.cladEnabled !== false) addRow("Roof & Wall Cladding", site.cladCustomLine, cRt, cSq, cTot, 'clad', cUnit, false, "", 'clad');
+                else if (mKey === 'clad' && site.cladEnabled !== false) {
+                    const thickBullet = site.cladThickness ? `<div class="item-specs-bullets"><span class="spec-highlight-pill">📐 Thickness: ${site.cladThickness}</span></div>` : '';
+                    addRow("Roof & Wall Cladding", site.cladCustomLine, cRt, cSq, cTot, 'clad', cUnit, false, thickBullet, 'clad');
+                }
                 else if (mKey === 'acc' && site.accEnabled !== false) addRow("Accessories Package", site.accCustomLine, `Itemized Below`, `Package`, aTot, 'acc', '', false, "", 'acc');
                 else if (mKey === 'erect' && site.erectEnabled !== false) addRow("Erection & Installation", site.erectCustomLine, eRt, eWt, eTot, 'erect', eUnit, false, helperSpecs(site.erectSpecs), 'erect');
                 else {
@@ -2281,6 +2501,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             animateNumberRoll('pdfFinBasic', basic, "Rs. ");
             safeSetHtml('pdfTaxBreakdownRows', renderVerticalTaxRowsHtml(basic, tax));
             animateNumberRoll('pdfFinGrand', grand, "Rs. ");
+            triggerTotalBarShimmer();
 
             const shedAvgBox = document.getElementById('pdfShedAvgRateBox');
             if (shedAvgBox) {
@@ -2297,7 +2518,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             }
         }
 
-        // ⭐ TERMS DIRECT IN-PREVIEW EDITABLE ⭐
+        // Terms preview editable
         safeSetHtml('pdfTermsContainer', `
             <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('paymentTerms', this)">${(appSettings.paymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
             <div class="general-terms-block"><p>2. <b>General Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('termsCond', this)">${(appSettings.termsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
@@ -2308,7 +2529,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
         safeSetText('pdfSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
 
-        // ⭐ SIGNATURE BLANK WHEN EMPTY (NO TEXT) ⭐
         safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 28px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
@@ -2406,6 +2626,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         animateNumberRoll('civilFinBasic', civilTotalBasic, "Rs. ");
         safeSetHtml('civilPdfTaxBreakdownRows', renderVerticalTaxRowsHtml(civilTotalBasic, civilTax));
         animateNumberRoll('civilFinGrand', civGrand, "Rs. ");
+        triggerTotalBarShimmer();
 
         const civFinBox = document.getElementById('civilFinancialBox');
         const civRateNotice = document.getElementById('civilRateOnlyNoticeBox');
@@ -2453,7 +2674,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 }
 
 // ========================================================
-// 20. PDF PAGINATION & DIRECT DOWNLOAD ENGINE
+// 21. PDF PAGINATION & DIRECT DOWNLOAD ENGINE
 // ========================================================
 function createCleanPageBox(hasPageBreak = true) {
     const p = document.createElement('div');
@@ -2537,8 +2758,6 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
         outputContainer.appendChild(page1);
 
         const page2 = createCleanPageBox(true);
-        
-        // ⭐ COLORFUL THEME CONTINUATION HEADER (PAGE 2) ⭐
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
         contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE 2)</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
@@ -2627,8 +2846,6 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
         outputContainer.appendChild(page1);
 
         const page2 = createCleanPageBox(true);
-        
-        // ⭐ COLORFUL THEME CONTINUATION HEADER (PAGE 4 / CIVIL PAGE 2) ⭐
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
         contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE 2)</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
@@ -2678,6 +2895,7 @@ function downloadPDFDirectly(mode = 'both') {
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const fileName = `${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
     triggerHaptic(50);
+    playAppSound('chime');
     fireConfettiCelebration();
 
     if (typeof html2pdf === 'undefined') {
@@ -2760,7 +2978,7 @@ function downloadPDFDirectly(mode = 'both') {
 }
 
 // ========================================================
-// 21. PERMANENT TEXTS MODAL & HEADINGS SYNC
+// 22. PERMANENT TEXTS MODAL & HEADINGS SYNC
 // ========================================================
 function openPermanentTextsModal() {
     safeSetVal('pt_companyDesc', appSettings.companyDesc || "");
@@ -2811,13 +3029,46 @@ function autoSavePermanentText(fieldKey, val) {
     refreshLivePdfPreviewSheet();
 }
 
-function savePhoneSetting(numIndex, val) {
-    appSettings['phone' + numIndex] = val;
+// ⭐ PROFESSIONAL DYNAMIC PHONE NUMBERS IN SETTINGS ⭐
+function renderSettingsPhonesUI() {
+    const box = document.getElementById('settingsPhonesListContainer');
+    if (!box) return;
+    box.innerHTML = "";
+
+    (appSettings.phones || []).forEach((phone, idx) => {
+        box.innerHTML += `
+            <div class="phone-row-dynamic">
+                <span class="phone-badge-prefix">📞 #${idx + 1}</span>
+                <input type="tel" value="${phone}" placeholder="Enter phone number..." oninput="updatePhoneSetting(${idx}, this.value)">
+                <button type="button" class="btn-del-pro btn-ripple" onclick="deletePhoneSetting(${idx})">🗑️</button>
+            </div>
+        `;
+    });
+}
+
+function addPhoneRowInSettings() {
+    if (!appSettings.phones) appSettings.phones = [];
+    appSettings.phones.push("+91 ");
+    syncDataToCloud('patel_app_settings', appSettings);
+    renderSettingsPhonesUI();
+    refreshLivePdfPreviewSheet();
+}
+
+function updatePhoneSetting(idx, val) {
+    if (!appSettings.phones) appSettings.phones = [];
+    appSettings.phones[idx] = val;
     syncDataToCloud('patel_app_settings', appSettings);
     refreshLivePdfPreviewSheet();
 }
 
-// ⭐ EMAIL & WEBSITE SETTINGS SYNC ⭐
+function deletePhoneSetting(idx) {
+    if (!appSettings.phones) return;
+    appSettings.phones.splice(idx, 1);
+    syncDataToCloud('patel_app_settings', appSettings);
+    renderSettingsPhonesUI();
+    refreshLivePdfPreviewSheet();
+}
+
 function saveCompanyEmailSetting(val) {
     appSettings.companyEmail = val.trim();
     syncDataToCloud('patel_app_settings', appSettings);
@@ -2831,9 +3082,7 @@ function saveFooterWebSetting(val) {
 }
 
 function loadPhoneSettingsUI() {
-    safeSetVal('setPhone1', appSettings.phone1 || "");
-    safeSetVal('setPhone2', appSettings.phone2 || "");
-    safeSetVal('setPhone3', appSettings.phone3 || "");
+    renderSettingsPhonesUI();
     safeSetVal('setCompanyEmail', appSettings.companyEmail || "");
     safeSetVal('setFooterWeb', appSettings.footerWeb || "");
     safeSetVal('setStartingQuoteNo', getNextQuoteSequenceNumber());
@@ -2846,7 +3095,11 @@ function openLargeInput(key, title) {
     safeSetVal('largeInputTextarea', appSettings[key] || "");
     openModalWithHistory('largeInputModal');
 }
-function closeLargeInput() { closeModalSafe('largeInputModal'); }
+function closeLargeInput() { 
+    closeModalSafe('largeInputModal'); 
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet();
+}
 function autoSaveLargeInputLive() {
     appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
     syncDataToCloud('patel_app_settings', appSettings);
@@ -2855,7 +3108,7 @@ function autoSaveLargeInputLive() {
     refreshLivePdfPreviewSheet();
 }
 
-// AUTO COMPRESSOR ENGINE (PREVENTS STORAGE QUOTA CRASHES)
+// AUTO COMPRESSOR ENGINE
 function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -2899,14 +3152,14 @@ function handleLogoUpload(input) {
             if (fav) fav.href = optimizedBase64;
             if (appleFav) appleFav.href = optimizedBase64;
             
-            showAppAlert("✓ Banner Updated", "Company Header Banner & Logo updated successfully!");
+            showCorporateToast("Company Header Banner Updated!", "🖼️");
             input.value = '';
         });
     }
 }
 
 // ========================================================
-// 22. DIGITAL SIGNATURE & WINDOW ONLOAD
+// 23. DIGITAL SIGNATURE & WINDOW ONLOAD
 // ========================================================
 let canvas, ctx, isDrawing = false, sigEventsAttached = false;
 function openSignatureModal() {
@@ -2962,7 +3215,7 @@ function saveSignature() {
     syncDataToCloud('patel_app_settings', appSettings);
     closeSigModal();
     refreshLivePdfPreviewSheet();
-    showAppAlert("✓ Success", "Digital Signature Saved Successfully!");
+    showCorporateToast("Digital Signature Saved Successfully!", "✍️");
 }
 
 window.onload = function() {
