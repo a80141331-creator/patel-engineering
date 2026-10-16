@@ -72,6 +72,7 @@ const defaultMasterBlueprint = {
     civilData: {
         foundation: {
             title: "1. FOUNDATION & RCC COLUMN DETAILS",
+            enabled: true,
             items: [
                 { id: "f1", name: "Column Foundation / Footing Work", qty: "", unit: "Nos", rate: "", enabled: true },
                 { id: "f2", name: "RCC Column Shuttering & Casting", qty: "", unit: "Sq.Ft", rate: "", enabled: true },
@@ -82,6 +83,7 @@ const defaultMasterBlueprint = {
         },
         brickWall: {
             title: "2. BRICK WALL, DPC & PLASTER DETAILS",
+            enabled: true,
             items: [
                 { id: "b1", name: "Stone Masonry Foundation Work", qty: "", unit: "Sq.Ft", rate: "", enabled: true },
                 { id: "b2", name: "Plinth / Brick Foundation Work", qty: "", unit: "R.Ft", rate: "", enabled: true },
@@ -92,6 +94,7 @@ const defaultMasterBlueprint = {
         },
         flooring: {
             title: "3. FLOORING & PCC WORK DETAILS",
+            enabled: true,
             items: [
                 { id: "fl1", name: "Soil Filling & Stone Soling Work", qty: "", unit: "Cu.Ft", rate: "", enabled: true },
                 { id: "fl2", name: "PCC Concrete Flooring (M25) Work", qty: "", unit: "Sq.Ft", rate: "", enabled: true }
@@ -101,23 +104,24 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-const defaultBannerSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 240' width='1000' height='240'><defs><linearGradient id='metalGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' stop-color='%23ffffff'/><stop offset='50%25' stop-color='%23cbd5e1'/><stop offset='100%25' stop-color='%2364748b'/></linearGradient><linearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='0%25'><stop offset='0%25' stop-color='%23ca8a04'/><stop offset='100%25' stop-color='%23fef08a'/></linearGradient></defs><rect width='1000' height='240' fill='%230f2942' rx='12'/><path d='M350 40 L650 15 L950 45 L950 160 L350 160 Z' fill='%231e293b' stroke='%2394a3b8' stroke-width='3'/><path d='M420 50 L650 30 L880 55 L880 160 L420 160 Z' fill='%230f2942' stroke='%23cbd5e1' stroke-width='2'/><path d='M650 30 L650 160 M535 40 L535 160 M765 42 L765 160' stroke='%23cbd5e1' stroke-width='2' stroke-dasharray='4,4'/><text x='180' y='125' font-family='Arial, sans-serif' font-weight='900' font-size='105' fill='url(%23metalGrad)' letter-spacing='-4' text-anchor='middle'>PE</text><path d='M40 148 L960 148' stroke='url(%23gold)' stroke-width='4'/><text x='500' y='210' font-family='Arial, sans-serif' font-weight='900' font-size='52' fill='%23ffffff' letter-spacing='18' text-anchor='middle'>PATEL ENGINEERING</text></svg>`;
+const defaultBannerSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 240' width='700' height='240'><g fill='%230f172a'><path d='M30,120 Q30,30 160,30 L260,30 Q330,30 330,80 Q330,125 250,130 L110,130 L110,210 L30,210 Z M110,75 L110,95 L220,95 Q250,95 250,85 Q250,75 220,75 Z'/><path d='M340,30 L430,30 L430,210 L340,210 Z M430,30 L600,30 L600,75 L430,75 Z M430,105 L560,105 L560,145 L430,145 Z M430,170 L600,170 L600,210 L430,210 Z'/><rect x='30' y='218' width='640' height='8' fill='%230c1e30'/><text x='350' y='240' font-family='Arial,sans-serif' font-weight='900' font-size='22' letter-spacing='14' text-anchor='middle'>PATEL ENGINEERING</text></g><g stroke='%230c1e30' stroke-width='4' fill='none'><path d='M250 15 L500 5 L680 25 L680 130 L250 130 Z'/><path d='M320 20 L500 12 L640 28 L640 130'/><path d='M500 12 L500 130 M410 16 L410 130 M570 20 L570 130' stroke-dasharray='5,5'/></g></svg>`;
 
 const defaultAppSettings = {
     ownerName: "PATEL ENGINEERING",
-    companyAddr: "Bhawani Nagar, Bhilwara - 311001 (Raj.)",
+    companyAddr: "Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)",
     companyGst: "08AHFPL0222M2ZF",
     phone1: "+91 9799635249",
     phone2: "+91 7737734122",
-    phone3: "",
+    phone3: "+91 9829111111",
     companyEmail: "info@patelengineering.com",
+    footerWeb: "www.patelengineering.com",
     startingQuoteSeq: 1,
     paymentTerms: "• 40% Advance along with Purchase Order & Foundation drawing approval.\n• 50% Progressive payment against proforma invoice before dispatch.\n• 10% Final payment after successful completion of erection on site.",
     termsCond: "• Delivery within 4-6 weeks from approval of anchor drawings.\n• Uninterrupted water & 3-phase electricity at site under client scope.\n• All structural steel weights are estimated as per standard engineering tolerance.",
     civilPaymentTerms: "• 30% Advance along with formal Civil Work order confirmation.\n• 50% Running progressive payment based on site progress (Plinth/DPC/Wall).\n• 20% Final payment upon successful completion of Flooring & PCC work.",
     civilTermsCond: "• Water & 3-phase electricity connection to be provided free of charge by client at site.\n• Unforeseen hard-rock excavation or dewatering if required will be extra as per mutual consent.\n• Adequate secured storage space for cement & steel reinforcement to be provided at site.",
     pdfRibbonTitle: "QUOTATION",
-    civilPdfRibbonTitle: "QUOTATION - CIVIL WORK SPECIFICATIONS",
+    civilPdfRibbonTitle: "QUOTATION",
     companyDesc: "PEB Structure | Industrial Sheds | Roofing Solutions",
     pdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS",
     projectSizeHeading: "📐 PROJECT SIZE / SHED DIMENSIONS:",
@@ -139,17 +143,15 @@ const defaultAppSettings = {
     civilFloorTitle: "3. FLOORING & PCC WORK DETAILS:",
     termsTitle: "Terms & Conditions:",
     civilTermsTitle: "Civil Work Terms & Conditions:",
-    thankYouText: "THANK YOU FOR YOUR BUSINESS",
-    civilThankYouText: "THANK YOU FOR YOUR CIVIL CONTRACT",
+    thankYouText: "THANK YOU FOR YOUR BUSINESS WITH US.",
+    civilThankYouText: "THANK YOU FOR YOUR CIVIL CONTRACT.",
     custAcceptanceTitle: "CUSTOMER ACCEPTANCE",
-    custAcceptanceSub: "Signature & Stamp",
-    signCompHeader: "For PATEL ENGINEERING",
+    custAcceptanceSub: "Authorized Signature & Stamp",
+    signCompHeader: "FOR PATEL ENGINEERING",
     pdfSignatoryText: "Authorized Signatory",
-    footerWeb: "www.patelengineering.com",
     signatureData: "",
     logoData: "",
-    savedPdfScale: 1.0,
-    savedThemeId: "customYellow"
+    savedPdfScale: 1.0
 };
 
 let masterBlueprint = JSON.parse(localStorage.getItem('patel_master_blueprint') || JSON.stringify(defaultMasterBlueprint));
@@ -161,7 +163,11 @@ let currentSiteId = null;
 // 3. CLOUD SYNC & MASTER OVERWRITE PROTECTION
 // ========================================================
 function syncDataToCloud(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
+    try {
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch (err) {
+        console.warn("Storage quota warning for " + key, err);
+    }
     if (db && isFirebaseConnected && isCloudInitialSyncDone) {
         db.ref(key).set(data).catch(err => console.warn("Cloud sync write error:", err));
     }
@@ -193,12 +199,11 @@ function initCloudFirstMasterSync() {
         const cloudSettings = snapshot.val();
         if (cloudSettings && typeof cloudSettings === 'object') {
             appSettings = Object.assign({}, defaultAppSettings, cloudSettings);
-            localStorage.setItem('patel_app_settings', JSON.stringify(appSettings));
+            try {
+                localStorage.setItem('patel_app_settings', JSON.stringify(appSettings));
+            } catch(e) {}
             loadPhoneSettingsUI();
             applyCustomButtonNamesUI();
-            if (appSettings.savedThemeId && THEMES_CATALOG[appSettings.savedThemeId]) {
-                applyPresetTheme(appSettings.savedThemeId);
-            }
             updateHeaderBannersUI();
             refreshLivePdfPreviewSheet(true);
         }
@@ -208,7 +213,9 @@ function initCloudFirstMasterSync() {
         const cloudBlueprint = snapshot.val();
         if (cloudBlueprint && typeof cloudBlueprint === 'object') {
             masterBlueprint = cloudBlueprint;
-            localStorage.setItem('patel_master_blueprint', JSON.stringify(masterBlueprint));
+            try {
+                localStorage.setItem('patel_master_blueprint', JSON.stringify(masterBlueprint));
+            } catch(e) {}
         }
     });
 
@@ -223,8 +230,11 @@ function initCloudFirstMasterSync() {
             }
             if (loadedSites.length > 0) {
                 sites = loadedSites;
-                localStorage.setItem('patel_app_sites', JSON.stringify(sites));
+                try {
+                    localStorage.setItem('patel_app_sites', JSON.stringify(sites));
+                } catch(e) {}
                 renderHomeScreen();
+                loadPhoneSettingsUI();
                 if (currentSiteId && sites.find(s => s.id === currentSiteId)) {
                     refreshLivePdfPreviewSheet(true);
                 }
@@ -241,6 +251,11 @@ function updateHeaderBannersUI() {
     const p2Img = document.getElementById('civilPdfHeaderBannerImg');
     if (p1Img) p1Img.src = bannerSrc;
     if (p2Img) p2Img.src = bannerSrc;
+
+    const mirrorP1 = document.querySelector('#printableA4Sheet_civilDisplayMirror #pdfHeaderBannerImg');
+    const mirrorP2 = document.querySelector('#printableA4Sheet_civilDisplayMirror #civilPdfHeaderBannerImg');
+    if (mirrorP1) mirrorP1.src = bannerSrc;
+    if (mirrorP2) mirrorP2.src = bannerSrc;
 
     if (appSettings.logoData) {
         safeSetHtml('settingsLogoPreview', `<img src="${appSettings.logoData}" style="width:100%;height:100%;object-fit:cover;">`);
@@ -415,26 +430,34 @@ function fireConfettiCelebration() {
     if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
 }
 
-function animateNumberRoll(elemId, targetNumber, prefix = "₹ ") {
+// ⭐ SMOOTHER & SLOWER NUMBER ROLL EFFECT (APPLIED ACROSS ALL BADGES & SUMS) ⭐
+function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const el = document.getElementById(elemId);
     if (!el) return;
     const target = Math.round(targetNumber) || 0;
     if (target === 0) { el.innerText = "-"; return; }
     const currentText = el.innerText.replace(/[^0-9]/g, '');
     const start = parseInt(currentText, 10) || 0;
-    if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN'); return; }
+    if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN') + suffix; return; }
 
-    const duration = 500;
+    const duration = 950; // Smooth & slow duration as requested
     const startTime = performance.now();
     function step(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const ease = 1 - Math.pow(1 - progress, 3);
+        const ease = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
         const currentVal = Math.floor(start + (target - start) * ease);
-        el.innerText = prefix + (progress < 1 ? currentVal.toLocaleString('en-IN') : target.toLocaleString('en-IN'));
+        el.innerText = prefix + (progress < 1 ? currentVal.toLocaleString('en-IN') : target.toLocaleString('en-IN')) + suffix;
         if (progress < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
+}
+
+// ⭐ PREVIEW INPUT CLICK PAR DASH AUTO-REMOVE & PROFESIONAL SIZING ⭐
+function handlePreviewInputFocus(el) {
+    if (el && el.innerText.trim() === '-') {
+        el.innerText = '';
+    }
 }
 
 document.addEventListener('click', function(e) {
@@ -643,55 +666,20 @@ function selectUnitFromThemeModal(unit) {
 }
 function closeUnitPickerModal() { closeModalSafe('unitPickerModal'); }
 
-// ========================================================
-// 9. THEMES & TAX SLABS
-// ========================================================
-const THEMES_CATALOG = {
-    "customYellow": { name: "Photo Yellow + White", headerBg: "#0f2942", ribbonBg: "#ca8a04", border: "#854d0e", ribbonText: "#ffffff", tblHeader: "#0f2942", milestoneBg: "#1e293b", totalBg: "#0f2942", totalBorder: "#ca8a04", totalAmt: "#fef08a" },
-    "4": { name: "Midnight Amber", headerBg: "#1e1b4b", ribbonBg: "#f59e0b", border: "#78350f", ribbonText: "#1e1b4b", tblHeader: "#1e1b4b", milestoneBg: "#2e1065", totalBg: "#1e1b4b", totalBorder: "#f59e0b", totalAmt: "#fef08a" },
-    "1": { name: "Dark Blue + Yellow", headerBg: "#0f2942", ribbonBg: "#facc15", border: "#ca8a04", ribbonText: "#000000", tblHeader: "#0f2942", milestoneBg: "#1e293b", totalBg: "#0f2942", totalBorder: "#facc15", totalAmt: "#fef08a" },
-    "6": { name: "Tata BlueScope", headerBg: "#0f2942", ribbonBg: "#0f2942", border: "#f59e0b", ribbonText: "#ffffff", tblHeader: "#133854", milestoneBg: "#0a1f33", totalBg: "#0f2942", totalBorder: "#f59e0b", totalAmt: "#fef08a" },
-    "5": { name: "Charcoal + Yellow", headerBg: "#18181b", ribbonBg: "#facc15", border: "#a16207", ribbonText: "#000000", tblHeader: "#18181b", milestoneBg: "#27272a", totalBg: "#18181b", totalBorder: "#facc15", totalAmt: "#fef08a" },
-    "7": { name: "Slate + Yellow", headerBg: "#334155", ribbonBg: "#eab308", border: "#1e293b", ribbonText: "#000000", tblHeader: "#334155", milestoneBg: "#1e293b", totalBg: "#334155", totalBorder: "#eab308", totalAmt: "#fef08a" },
-    "8": { name: "Gunmetal Yellow", headerBg: "#1f2937", ribbonBg: "#fde047", border: "#ca8a04", ribbonText: "#000000", tblHeader: "#1f2937", milestoneBg: "#111827", totalBg: "#1f2937", totalBorder: "#ca8a04", totalAmt: "#fef08a" },
-    "9": { name: "Pitch Black Gold", headerBg: "#000000", ribbonBg: "#374151", border: "#facc15", ribbonText: "#ffffff", tblHeader: "#000000", milestoneBg: "#1f2937", totalBg: "#000000", totalBorder: "#facc15", totalAmt: "#fef08a" },
-    "11": { name: "Eco Green", headerBg: "#064e3b", ribbonBg: "#064e3b", border: "#10b981", ribbonText: "#ffffff", tblHeader: "#065f46", milestoneBg: "#022c22", totalBg: "#064e3b", totalBorder: "#10b981", totalAmt: "#a7f3d0" },
-    "12": { name: "Classic PEB", headerBg: "#0d1b2a", ribbonBg: "#facc15", border: "#ca8a04", ribbonText: "#0d1b2a", tblHeader: "#0d1b2a", milestoneBg: "#1b263b", totalBg: "#0d1b2a", totalBorder: "#facc15", totalAmt: "#fef08a" }
-};
-
-function applyPresetTheme(themeId, btnElement = null) {
-    const t = THEMES_CATALOG[themeId];
-    if (!t) return;
-    document.documentElement.style.setProperty('--header-bg', t.headerBg);
-    document.documentElement.style.setProperty('--ribbon-bg', t.ribbonBg);
-    document.documentElement.style.setProperty('--ribbon-border-color', t.border);
-    document.documentElement.style.setProperty('--ribbon-text', t.ribbonText);
-    document.documentElement.style.setProperty('--table-header-bg', t.tblHeader);
-    document.documentElement.style.setProperty('--milestone-bg', t.milestoneBg);
-    document.documentElement.style.setProperty('--total-bar-bg', t.totalBg);
-    document.documentElement.style.setProperty('--total-bar-border', t.totalBorder);
-    document.documentElement.style.setProperty('--total-text-color', t.totalAmt);
-
-    appSettings.savedThemeId = themeId;
-    syncDataToCloud('patel_app_settings', appSettings);
-
-    document.querySelectorAll('.btn-swatch').forEach(b => b.classList.remove('active'));
-    if (btnElement) {
-        btnElement.classList.add('active');
-    } else {
-        const found = Array.from(document.querySelectorAll('.btn-swatch')).find(b => b.getAttribute('onclick')?.includes(`'${themeId}'`));
-        if (found) found.classList.add('active');
-    }
+// ⭐ LIVE NEXT QUOTATION SEQUENCE LOGIC ⭐
+function getNextQuoteSequenceNumber() {
+    let maxSeq = parseInt(appSettings.startingQuoteSeq || 1, 10) - 1;
+    sites.forEach(s => {
+        if (s.quoteNo) {
+            const parts = s.quoteNo.split('/');
+            const lastPart = parseInt(parts[parts.length - 1], 10);
+            if (!isNaN(lastPart) && lastPart > maxSeq) {
+                maxSeq = lastPart;
+            }
+        }
+    });
+    return maxSeq + 1;
 }
-
-const TAX_SLABS = [
-    { id: "gst18_split", name: "GST @ 18% (CGST 9% + SGST 9%)", rate: 0.18, split: true, cgstRate: 0.09, sgstRate: 0.09, desc: "Standard Intra-State (CGST 9% + SGST 9%)" },
-    { id: "igst18", name: "IGST @ 18% (Inter-State)", rate: 0.18, split: false, desc: "Outside State Inter-State Supply" },
-    { id: "gst12_works", name: "GST @ 12% (CGST 6% + SGST 6%)", rate: 0.12, split: true, cgstRate: 0.06, sgstRate: 0.06, desc: "Works Contract Scheme" },
-    { id: "gst28_high", name: "GST @ 28% (CGST 14% + SGST 14%)", rate: 0.28, split: true, cgstRate: 0.14, sgstRate: 0.14, desc: "High Slab Rate" },
-    { id: "gst5_jobwork", name: "GST @ 5% (CGST 2.5% + SGST 2.5%)", rate: 0.05, split: true, cgstRate: 0.025, sgstRate: 0.025, desc: "Jobwork / Concessional Rate" },
-    { id: "zero_export", name: "0% GST (Zero Tax)", rate: 0.00, split: false, desc: "Zero Tax Billing" }
-];
 
 function saveStartingQuoteSeq(val) {
     const num = parseInt(val, 10);
@@ -863,6 +851,7 @@ function resolveCustomConfirm(isConfirmed) {
         sites = sites.filter(s => s.id !== pendingDeleteId);
         syncDataToCloud('patel_app_sites', sites);
         renderHomeScreen();
+        loadPhoneSettingsUI();
     }
     pendingDeleteId = null;
     closeModalSafe('customConfirmModal');
@@ -886,17 +875,7 @@ function saveNewBlankSiteAndOpen() {
     if (!clientNameInput) return showAppAlert("⚠️ Client Name Required", "Please enter Client Name.");
 
     const currentYear = new Date().getFullYear();
-    let maxSeq = parseInt(appSettings.startingQuoteSeq || 1, 10) - 1;
-    sites.forEach(s => {
-        if (s.quoteNo) {
-            const parts = s.quoteNo.split('/');
-            const lastPart = parseInt(parts[parts.length - 1], 10);
-            if (!isNaN(lastPart) && lastPart > maxSeq) {
-                maxSeq = lastPart;
-            }
-        }
-    });
-    const nextSeq = maxSeq + 1;
+    const nextSeq = getNextQuoteSequenceNumber();
     const autoQuoteNumber = "PE/" + currentYear + "/" + nextSeq;
     const bp = JSON.parse(JSON.stringify(masterBlueprint));
 
@@ -927,6 +906,11 @@ function saveNewBlankSiteAndOpen() {
         accEnabled: true,
         erectEnabled: true,
 
+        // ⭐ CIVIL MODULES ENABLED BY DEFAULT ⭐
+        foundEnabled: true,
+        brickEnabled: true,
+        floorEnabled: true,
+
         primCustomLine: bp.primCustomLine,
         primSpecs: bp.primSpecs,
         primWeight: "", primRate: "", primUnit: bp.primUnit || "Kg",
@@ -946,7 +930,7 @@ function saveNewBlankSiteAndOpen() {
         civilScopeDesc: bp.civilScopeDesc,
         civilData: bp.civilData,
         civilCustomCategories: (bp.civilCustomCategories || []).map(c => ({
-            ...c, items: (c.items || []).map(it => ({ ...it, qty: "", rate: "", total: 0 }))
+            ...c, enabled: true, items: (c.items || []).map(it => ({ ...it, qty: "", rate: "", total: 0, enabled: true }))
         }))
     };
 
@@ -961,6 +945,7 @@ function saveNewBlankSiteAndOpen() {
     sites.unshift(newSite);
     syncDataToCloud('patel_app_sites', sites);
     renderHomeScreen();
+    loadPhoneSettingsUI();
     loadSiteToDashboard(newSite.id);
 }
 
@@ -985,6 +970,10 @@ function loadSiteToDashboard(siteId) {
     if (site.accEnabled === undefined) site.accEnabled = true;
     if (site.erectEnabled === undefined) site.erectEnabled = true;
 
+    if (site.foundEnabled === undefined) site.foundEnabled = true;
+    if (site.brickEnabled === undefined) site.brickEnabled = true;
+    if (site.floorEnabled === undefined) site.floorEnabled = true;
+
     if (!site.civilScopeDesc) site.civilScopeDesc = masterBlueprint.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS";
     if (!site.selectedTaxId) site.selectedTaxId = "gst18_split";
     if (!site.civilSelectedTaxId) site.civilSelectedTaxId = "gst18_split";
@@ -999,6 +988,7 @@ function loadSiteToDashboard(siteId) {
 
     updatePillTogglesUI();
     updateModulePillBadgesUI();
+    updateCivilModulePillBadgesUI();
     updateTaxDisplay();
     updateHeaderBannersUI();
     renderCustomModulesDashboardList();
@@ -1024,6 +1014,9 @@ function ensureCivilDataOnSite(site) {
     ['foundation', 'brickWall', 'flooring'].forEach(sec => {
         if (!site.civilData[sec]) site.civilData[sec] = JSON.parse(JSON.stringify(masterBlueprint.civilData[sec]));
         if (!site.civilData[sec].items) site.civilData[sec].items = JSON.parse(JSON.stringify(masterBlueprint.civilData[sec].items));
+        site.civilData[sec].items.forEach(it => {
+            if (it.enabled === undefined) it.enabled = true;
+        });
     });
 }
 
@@ -1110,6 +1103,41 @@ function updateModulePillBadgesUI() {
     setBadge('badgeErectStatus', 'cardModErect', site.erectEnabled !== false);
 }
 
+// ⭐ CIVIL MODULES ON / OFF SWITCH LOGIC ⭐
+function toggleCivilModuleActiveState(secKey) {
+    const site = getCurrentSite();
+    if (!site) return;
+    if (secKey === 'foundation') site.foundEnabled = !site.foundEnabled;
+    else if (secKey === 'brickWall') site.brickEnabled = !site.brickEnabled;
+    else if (secKey === 'flooring') site.floorEnabled = !site.floorEnabled;
+
+    syncDataToCloud('patel_app_sites', sites);
+    updateCivilModulePillBadgesUI();
+    refreshLivePdfPreviewSheet();
+}
+
+function updateCivilModulePillBadgesUI() {
+    const site = getCurrentSite();
+    if (!site) return;
+
+    const setCivBadge = (badgeId, cardId, isEnabled) => {
+        const badge = document.getElementById(badgeId);
+        const card = document.getElementById(cardId);
+        if (badge) {
+            badge.innerText = isEnabled ? "ON" : "OFF";
+            badge.className = "mod-switch-pill " + (isEnabled ? "on" : "");
+        }
+        if (card) {
+            if (!isEnabled) card.classList.add('disabled-mod');
+            else card.classList.remove('disabled-mod');
+        }
+    };
+
+    setCivBadge('badgeCivFoundStatus', 'cardCivFound', site.foundEnabled !== false);
+    setCivBadge('badgeCivBrickStatus', 'cardCivBrick', site.brickEnabled !== false);
+    setCivBadge('badgeCivFloorStatus', 'cardCivFloor', site.floorEnabled !== false);
+}
+
 function toggleRateOnlyMode() {
     const site = getCurrentSite();
     if (!site) return;
@@ -1173,6 +1201,7 @@ function openCivilDashboardScreen() {
 
     renderCivilCustomCategoriesUI();
     updatePillTogglesUI();
+    updateCivilModulePillBadgesUI();
     updateTaxDisplay();
     updateHeaderBannersUI();
     openScreen('screenCivilDashboard');
@@ -1229,7 +1258,7 @@ function saveCivilScopeModal() {
 }
 
 // ========================================================
-// 14. CIVIL PARAMETERS MODAL
+// 14. CIVIL PARAMETERS MODAL (WITH ITEM TICK / UNTICK SUPPORT)
 // ========================================================
 let activeCivilModalType = null;
 function openCivilParamModal(type) {
@@ -1247,16 +1276,19 @@ function openCivilParamModal(type) {
 
     let html = "";
     (secData.items || []).forEach((item, idx) => {
-        const lineTotal = (parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0);
+        const isSelected = item.enabled !== false;
+        const lineTotal = isSelected ? ((parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0)) : 0;
         html += `
-            <div class="civil-calc-card card-3d sortable-item" id="civCard_${type}_${idx}" data-sort-index="${idx}">
+            <div class="civil-calc-card card-3d sortable-item ${isSelected ? '' : 'disabled-mod'}" id="civCard_${type}_${idx}" data-sort-index="${idx}">
                 <div class="acc-top-row">
-                    <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:0;">
-                        <span class="drag-handle" id="handle_civ_${type}_${idx}" title="Drag to reorder">⋮⋮</span>
+                    <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:0;" onclick="toggleCivilItemTick('${type}', ${idx})">
+                        <span class="drag-handle" id="handle_civ_${type}_${idx}" onclick="event.stopPropagation()" title="Drag to reorder">⋮⋮</span>
+                        <!-- ⭐ ITEM TICK CHECKBOX ⭐ -->
+                        <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation(); toggleCivilItemTick('${type}', ${idx})">${isSelected ? '✓' : ''}</div>
                         <strong style="font-size:12px; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${idx + 1}. ${item.name}</strong>
                     </div>
                     <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
-                        <span class="acc-total-pill">${lineTotal > 0 ? '₹ ' + Math.round(lineTotal).toLocaleString('en-IN') : '-'}</span>
+                        <span class="acc-total-pill">${lineTotal > 0 ? '₹ ' + Math.round(lineTotal).toLocaleString('en-IN') : (isSelected ? '-' : 'OFF')}</span>
                         <button type="button" class="btn-del-pro btn-ripple" onclick="deleteCivilItem('${type}', ${idx})">🗑️</button>
                     </div>
                 </div>
@@ -1288,6 +1320,15 @@ function openCivilParamModal(type) {
         if (row && handle) setupUniversalReorder(row, handle, 'civil_items', idx, type);
     });
     openModalWithHistory('civilParamModal');
+}
+
+function toggleCivilItemTick(type, idx) {
+    const site = getCurrentSite();
+    if (!site?.civilData[type]?.items[idx]) return;
+    site.civilData[type].items[idx].enabled = !(site.civilData[type].items[idx].enabled !== false);
+    syncDataToCloud('patel_app_sites', sites);
+    openCivilParamModal(type);
+    refreshLivePdfPreviewSheet();
 }
 
 function deleteCivilItem(type, idx) {
@@ -1393,7 +1434,8 @@ function saveUniversalModule() {
         site.civilCustomCategories.push({
             id: 'civcat_' + Date.now(),
             categoryName: title,
-            items: [{ name: descVal || title, qty: qtyVal, unit: universalModUnit, rate: rateVal, total: totalVal }]
+            enabled: true,
+            items: [{ name: descVal || title, qty: qtyVal, unit: universalModUnit, rate: rateVal, total: totalVal, enabled: true }]
         });
         renderCivilCustomCategoriesUI();
     } else {
@@ -1425,8 +1467,10 @@ function renderCivilCustomCategoriesUI() {
     if (!box || !site) return;
     box.innerHTML = "";
     (site.civilCustomCategories || []).forEach((cat, cIdx) => {
+        const isEnabled = cat.enabled !== false;
         box.innerHTML += `
-            <div class="module-grid-card card-3d-press btn-ripple" style="border-left: 4px solid #16a34a;">
+            <div class="module-grid-card card-3d-press btn-ripple ${!isEnabled ? 'disabled-mod' : ''}" style="border-left: 4px solid #16a34a;">
+                <span class="mod-switch-pill ${isEnabled ? 'on' : ''}" onclick="event.stopPropagation(); toggleCustomCivilCategoryActive(${cIdx})">${isEnabled ? 'ON' : 'OFF'}</span>
                 <div>
                     <div class="mod-card-top"><span class="mod-card-icon">🏗️</span><span class="mod-card-title">${4 + cIdx}. ${cat.categoryName}</span></div>
                     <span class="mod-card-tag">${(cat.items || []).length} Items</span>
@@ -1437,6 +1481,15 @@ function renderCivilCustomCategoriesUI() {
                 </div>
             </div>`;
     });
+}
+
+function toggleCustomCivilCategoryActive(cIdx) {
+    const site = getCurrentSite();
+    if (!site?.civilCustomCategories[cIdx]) return;
+    site.civilCustomCategories[cIdx].enabled = !(site.civilCustomCategories[cIdx].enabled !== false);
+    syncDataToCloud('patel_app_sites', sites);
+    renderCivilCustomCategoriesUI();
+    refreshLivePdfPreviewSheet();
 }
 
 function deleteCustomCivilCategory(cIdx) {
@@ -1752,6 +1805,15 @@ function autoSaveModuleChanges() {
 // ========================================================
 // 17. TAX SELECTION & CALCULATIONS
 // ========================================================
+const TAX_SLABS = [
+    { id: "gst18_split", name: "GST @ 18% (CGST 9% + SGST 9%)", rate: 0.18, split: true, cgstRate: 0.09, sgstRate: 0.09, desc: "Standard Intra-State (CGST 9% + SGST 9%)" },
+    { id: "igst18", name: "IGST @ 18% (Inter-State)", rate: 0.18, split: false, desc: "Outside State Inter-State Supply" },
+    { id: "gst12_works", name: "GST @ 12% (CGST 6% + SGST 6%)", rate: 0.12, split: true, cgstRate: 0.06, sgstRate: 0.06, desc: "Works Contract Scheme" },
+    { id: "gst28_high", name: "GST @ 28% (CGST 14% + SGST 14%)", rate: 0.28, split: true, cgstRate: 0.14, sgstRate: 0.14, desc: "High Slab Rate" },
+    { id: "gst5_jobwork", name: "GST @ 5% (CGST 2.5% + SGST 2.5%)", rate: 0.05, split: true, cgstRate: 0.025, sgstRate: 0.025, desc: "Jobwork / Concessional Rate" },
+    { id: "zero_export", name: "0% GST (Zero Tax)", rate: 0.00, split: false, desc: "Zero Tax Billing" }
+];
+
 let activeTaxPickerTarget = 'shed';
 function openTaxPickerModal(target = 'shed') {
     activeTaxPickerTarget = target;
@@ -1808,13 +1870,19 @@ function calcModuleTotals() {
     const isRateOnly = site.rateOnlyMode;
 
     const pTot = (site.primEnabled !== false) ? (parseFloat(site.primWeight) || 0) * (parseFloat(site.primRate) || 0) : 0;
-    safeSetText('badgePrimTotal', (site.primEnabled === false) ? 'Disabled' : (isRateOnly ? ('₹ ' + (site.primRate || '-') + '/Kg') : (pTot > 0 ? "Rs. " + Math.round(pTot).toLocaleString('en-IN') : '-')));
+    if (site.primEnabled === false) safeSetText('badgePrimTotal', 'Disabled');
+    else if (isRateOnly) safeSetText('badgePrimTotal', '₹ ' + (site.primRate || '-') + '/Kg');
+    else animateNumberRoll('badgePrimTotal', pTot, "Rs. ");
 
     const sTot = (site.secEnabled !== false) ? (parseFloat(site.secWeight) || 0) * (parseFloat(site.secRate) || 0) : 0;
-    safeSetText('badgeSecTotal', (site.secEnabled === false) ? 'Disabled' : (isRateOnly ? ('₹ ' + (site.secRate || '-') + '/Kg') : (sTot > 0 ? "Rs. " + Math.round(sTot).toLocaleString('en-IN') : '-')));
+    if (site.secEnabled === false) safeSetText('badgeSecTotal', 'Disabled');
+    else if (isRateOnly) safeSetText('badgeSecTotal', '₹ ' + (site.secRate || '-') + '/Kg');
+    else animateNumberRoll('badgeSecTotal', sTot, "Rs. ");
 
     const cTot = (site.cladEnabled !== false) ? (parseFloat(site.cladSqFt) || 0) * (parseFloat(site.cladRate) || 0) : 0;
-    safeSetText('badgeCladTotal', (site.cladEnabled === false) ? 'Disabled' : (isRateOnly ? ('₹ ' + (site.cladRate || '-') + '/Sq.Ft') : (cTot > 0 ? "Rs. " + Math.round(cTot).toLocaleString('en-IN') : '-')));
+    if (site.cladEnabled === false) safeSetText('badgeCladTotal', 'Disabled');
+    else if (isRateOnly) safeSetText('badgeCladTotal', '₹ ' + (site.cladRate || '-') + '/Sq.Ft');
+    else animateNumberRoll('badgeCladTotal', cTot, "Rs. ");
 
     let aTot = 0;
     if (site.accEnabled !== false) {
@@ -1822,11 +1890,15 @@ function calcModuleTotals() {
             if (a.selected === true) aTot += (parseFloat(a.qty) || 0) * (parseFloat(a.rate) || 0);
         });
     }
-    safeSetText('badgeAccTotal', (site.accEnabled === false) ? 'Disabled' : (isRateOnly ? 'Package' : (aTot > 0 ? "Rs. " + Math.round(aTot).toLocaleString('en-IN') : '-')));
+    if (site.accEnabled === false) safeSetText('badgeAccTotal', 'Disabled');
+    else if (isRateOnly) safeSetText('badgeAccTotal', 'Package');
+    else animateNumberRoll('badgeAccTotal', aTot, "Rs. ");
 
     const autoWt = ((site.primEnabled !== false) ? (parseFloat(site.primWeight) || 0) : 0) + ((site.secEnabled !== false) ? (parseFloat(site.secWeight) || 0) : 0);
     const eTot = (site.erectEnabled !== false) ? autoWt * (parseFloat(site.erectRate) || 0) : 0;
-    safeSetText('badgeErectTotal', (site.erectEnabled === false) ? 'Disabled' : (isRateOnly ? ('₹ ' + (site.erectRate || '-') + '/Kg') : (eTot > 0 ? "Rs. " + Math.round(eTot).toLocaleString('en-IN') : '-')));
+    if (site.erectEnabled === false) safeSetText('badgeErectTotal', 'Disabled');
+    else if (isRateOnly) safeSetText('badgeErectTotal', '₹ ' + (site.erectRate || '-') + '/Kg');
+    else animateNumberRoll('badgeErectTotal', eTot, "Rs. ");
 }
 
 // ========================================================
@@ -1932,6 +2004,13 @@ function syncAccTitleEdit(idx, el) {
     syncDataToCloud('patel_app_sites', sites);
 }
 
+// ⭐ TERMS & CONDITIONS DIRECT IN-PREVIEW LIVE EDIT ⭐
+function syncPreviewTermsEdit(key, el) {
+    const val = el.innerText.trim();
+    appSettings[key] = val;
+    syncDataToCloud('patel_app_settings', appSettings);
+}
+
 function addNewAccessoryDirectly() {
     const site = getCurrentSite();
     if (!site) return;
@@ -1965,7 +2044,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
 }
 
 // ========================================================
-// 19. LIVE PREVIEW ENGINE WITH 3D DETAILS & LOGO
+// 19. LIVE PREVIEW ENGINE (HIGH-CONTRAST THEME 12 SYNC)
 // ========================================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
@@ -1973,35 +2052,36 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const isRateOnly = site.rateOnlyMode === true;
     const isCivilRateOnly = site.civilRateOnlyMode === true;
 
-    const compTag = appSettings.companyDesc || "PEB Structure | Industrial Sheds | Roofing Solutions";
-    const compAddr = appSettings.companyAddr || "Bhawani Nagar, Bhilwara - 311001 (Raj.)";
+    const compAddr = appSettings.companyAddr || "Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)";
     const compGst = appSettings.companyGst || "08AHFPL0222M2ZF";
-    const compPhones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean).join(" | ") || "+91 9799635249";
+    const compPhones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean).join(", ") || "+91 9799635249";
     const compEmail = appSettings.companyEmail || "info@patelengineering.com";
     const compWeb = appSettings.footerWeb || "www.patelengineering.com";
 
-    // Update 3D Details on Page 1
-    safeSetText('pdfCompanyTag', compTag);
-    safeSetText('pdfCompanyAddr', compAddr);
-    safeSetText('pdfHeaderPhones', compPhones);
-    safeSetText('pdfHeaderEmail', compEmail);
-    safeSetText('pdfHeaderWeb', compWeb);
-    safeSetText('pdfCompanyGst', compGst);
+    // Substrip Bar Sync
+    safeSetText('pdfSubstripAddr', compAddr);
+    safeSetText('civilPdfSubstripAddr', compAddr);
+    safeSetText('pdfSubstripGst', compGst);
+    safeSetText('civilPdfSubstripGst', compGst);
 
-    // Update 3D Details on Page 2 (Civil)
-    safeSetText('civilPdfCompanyTag', "Civil Infrastructure & Construction Engineering");
-    safeSetText('civilPdfCompanyAddr', compAddr);
-    safeSetText('civilPdfHeaderPhones', compPhones);
-    safeSetText('civilPdfHeaderEmail', compEmail);
-    safeSetText('civilPdfHeaderWeb', compWeb);
+    // Footer Info
+    safeSetText('pdfFooterPhones', compPhones);
+    safeSetText('civilPdfFooterPhones', compPhones);
+    safeSetText('pdfCompanyGst', compGst);
     safeSetText('civilPdfCompanyGst', compGst);
+    safeSetText('pdfFooterAddrMini', compAddr);
+    safeSetText('civilPdfFooterAddrMini', compAddr);
+    safeSetText('pdfFooterEmail', compEmail);
+    safeSetText('civilPdfFooterEmail', compEmail);
+    safeSetText('pdfFooterWebDisplay', compWeb);
+    safeSetText('civilPdfFooterWebDisplay', compWeb);
 
     updateHeaderBannersUI();
 
-    safeSetText('pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
-    safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION - CIVIL WORK SPECIFICATIONS");
-    safeSetText('pdfQuoteNo', site.quoteNo || "#PE/2026/01");
-    safeSetText('civilPdfQuoteNo', site.quoteNo || "#PE/2026/01");
+    safeSetText('pdfRibbonTitle', "QUOTATION");
+    safeSetText('civilPdfRibbonTitle', "QUOTATION");
+    safeSetText('pdfQuoteNo', site.quoteNo || "PE/2026/01");
+    safeSetText('civilPdfQuoteNo', site.quoteNo || "PE/2026/01");
 
     const issueDateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     safeSetText('pdfCurrentDate', issueDateStr);
@@ -2055,7 +2135,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 autoTotalSteelWeightKg += inKg;
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewTitleEdit(this, 'prim')">${(site.primCustomLine || "").trim()}</span></td>
+                        <td><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'prim')">${(site.primCustomLine || "").trim()}</span></td>
                         <td style="text-align: right; font-weight: 900;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
                     </tr>`;
             }
@@ -2067,7 +2147,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 autoTotalSteelWeightKg += inKg;
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewTitleEdit(this, 'sec')">${(site.secCustomLine || "").trim()}</span></td>
+                        <td><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'sec')">${(site.secCustomLine || "").trim()}</span></td>
                         <td style="text-align: right; font-weight: 900;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
                     </tr>`;
             }
@@ -2083,8 +2163,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 const cUnit = site.cladUnit || "Sq.Ft";
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span></td>
-                        <td style="text-align: right; font-weight: 900;"><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, 'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td>
+                        <td><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span></td>
+                        <td style="text-align: right; font-weight: 900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td>
                     </tr>`;
             }
         }
@@ -2136,8 +2216,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tr.className = "sortable-item";
                         tr.dataset.sortIndex = aIdx;
                         tr.innerHTML = isRateOnly ?
-                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right; font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td>` :
-                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onblur="syncPreviewAccEdit(${aIdx}, 'qty', this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right; font-weight:900;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
+                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right; font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td>` :
+                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'qty', this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right; font-weight:900;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
                         breakdownTbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'accessories', aIdx);
                     }
@@ -2160,13 +2240,13 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             tbody.innerHTML = "";
             const helperSpecs = (specs) => (!specs || !Array.isArray(specs)) ? "" : `<div class="item-specs-bullets">${specs.filter(s => s.selected === true).map(s => `<span>• ${s.text || s}</span>`).join('')}</div>`;
             const addRow = (catTitle, line, uRate, qty, amt, fPrefix, uLabel, isCust = false, bullets = "", mKey = "") => {
-                const descHtml = `<div class="row-item-title">${catTitle}:</div><div class="row-item-subtitle editable-preview-title" contenteditable="true" onblur="syncPreviewTitleEdit(this, '${fPrefix}', '${mKey}')">${(line || "").trim()}</div>${bullets}`;
+                const descHtml = `<div class="row-item-title">${catTitle}:</div><div class="row-item-subtitle editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, '${fPrefix}', '${mKey}')">${(line || "").trim()}</div>${bullets}`;
                 const tr = document.createElement('tr');
                 tr.className = "sortable-item";
                 tr.dataset.sortIndex = sNoCounter - 1;
                 tr.innerHTML = isRateOnly ?
-                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td>` :
-                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align: center; font-weight: 900;"><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, '${fPrefix === 'clad' ? 'cladSqFt' : `${fPrefix}Weight`}')">${formatRawOrDash(qty)}</span></td><td style="text-align: center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td><td style="text-align: right; font-weight: 900;">${amt > 0 ? 'Rs. ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td>` :
+                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align: center; font-weight: 900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix === 'clad' ? 'cladSqFt' : `${fPrefix}Weight`}')">${formatRawOrDash(qty)}</span></td><td style="text-align: center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td><td style="text-align: right; font-weight: 900;">${amt > 0 ? 'Rs. ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
                 tbody.appendChild(tr);
 
                 const curIdx = site.moduleOrder.indexOf(mKey);
@@ -2217,19 +2297,19 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             }
         }
 
+        // ⭐ TERMS DIRECT IN-PREVIEW EDITABLE ⭐
         safeSetHtml('pdfTermsContainer', `
-            <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br>${(appSettings.paymentTerms || '').replace(/\n/g, '<br>')}</p></div>
-            <div class="general-terms-block"><p>2. <b>General Terms:</b><br>${(appSettings.termsCond || '').replace(/\n/g, '<br>')}</p></div>`);
+            <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('paymentTerms', this)">${(appSettings.paymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
+            <div class="general-terms-block"><p>2. <b>General Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('termsCond', this)">${(appSettings.termsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
         safeSetText('pdfTermsHeaderDisplay', appSettings.termsTitle || "Terms & Conditions:");
-        safeSetText('pdfThankYouDisplay', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS");
+        safeSetText('pdfThankYouDisplay', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS WITH US.");
         safeSetText('pdfCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-        safeSetText('pdfCustSignSub', appSettings.custAcceptanceSub || "Signature & Stamp");
-        safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader || ("For " + (appSettings.ownerName || "PATEL ENGINEERING")));
+        safeSetText('pdfCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
+        safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
         safeSetText('pdfSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
-        safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 20px;">` : ``);
-        safeSetText('pdfFooterPhones', [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean).join(" | "));
-        safeSetText('pdfFooterWebDisplay', appSettings.footerWeb || "");
-        safeSetText('pdfFooterAddrMini', appSettings.companyAddr || "");
+
+        // ⭐ SIGNATURE BLANK WHEN EMPTY (NO TEXT) ⭐
+        safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 28px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
     // PAGE 2: CIVIL
@@ -2255,54 +2335,70 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetHtml('civilBrickWallTableHead', cleanCivHead);
         safeSetHtml('civilFlooringTableHead', cleanCivHead);
 
-        const renderCivSection = (secKey, secPrefix, tbodyId, titleKey, defaultTitle) => {
+        const renderCivSection = (secKey, secPrefix, tbodyId, titleKey, defaultTitle, isEnabled) => {
             const sec = civ[secKey];
             const finalTitle = appSettings[titleKey] || sec.title || defaultTitle;
             safeSetText(titleKey, finalTitle);
-            safeSetText(titleKey + 'Display', finalTitle);
+            const titleEl = document.getElementById(titleKey)?.parentElement;
             const tbody = document.getElementById(tbodyId);
+            const tblWrap = tbody?.closest('.table-wrapper');
+
+            if (!isEnabled) {
+                if (titleEl) titleEl.style.display = 'none';
+                if (tblWrap) tblWrap.style.display = 'none';
+                return;
+            }
+            if (titleEl) titleEl.style.display = 'flex';
+            if (tblWrap) tblWrap.style.display = 'block';
+
             if (!tbody) return;
             tbody.innerHTML = "";
             let sIdx = 1;
             (sec.items || []).forEach((item, idx) => {
-                const amt = (parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0);
-                civilTotalBasic += amt;
-                const tr = document.createElement('tr');
-                tr.className = "sortable-item";
-                tr.dataset.sortIndex = idx;
-                tr.innerHTML = isCivilRateOnly ?
-                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
-                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
-                tbody.appendChild(tr);
-                setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'civil_items', idx, secKey);
+                if (item.enabled !== false) {
+                    const amt = (parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0);
+                    civilTotalBasic += amt;
+                    const tr = document.createElement('tr');
+                    tr.className = "sortable-item";
+                    tr.dataset.sortIndex = idx;
+                    tr.innerHTML = isCivilRateOnly ?
+                        `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
+                        `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                    tbody.appendChild(tr);
+                    setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'civil_items', idx, secKey);
+                }
             });
         };
 
-        renderCivSection('foundation', '1', 'civilFoundationTableBody', 'civilFoundTitle', "1. FOUNDATION & RCC COLUMN DETAILS:");
-        renderCivSection('brickWall', '2', 'civilBrickWallTableBody', 'civilBrickTitle', "2. BRICK WALL, DPC & PLASTER DETAILS:");
-        renderCivSection('flooring', '3', 'civilFlooringTableBody', 'civilFloorTitle', "3. FLOORING & PCC WORK DETAILS:");
+        renderCivSection('foundation', '1', 'civilFoundationTableBody', 'civilFoundTitle', "1. FOUNDATION & RCC COLUMN DETAILS:", site.foundEnabled !== false);
+        renderCivSection('brickWall', '2', 'civilBrickWallTableBody', 'civilBrickTitle', "2. BRICK WALL, DPC & PLASTER DETAILS:", site.brickEnabled !== false);
+        renderCivSection('flooring', '3', 'civilFlooringTableBody', 'civilFloorTitle', "3. FLOORING & PCC WORK DETAILS:", site.floorEnabled !== false);
 
         const customCivWrapper = document.getElementById('civilCustomCategoriesPage2Wrapper');
         if (customCivWrapper) {
             customCivWrapper.innerHTML = "";
             (site.civilCustomCategories || []).forEach((cat, cIdx) => {
-                let rowsHtml = "";
-                (cat.items || []).forEach((it, idx) => {
-                    const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0);
-                    civilTotalBasic += tot;
-                    rowsHtml += isCivilRateOnly ?
-                        `<tr><td style="text-align:center; font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right; font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` :
-                        `<tr><td style="text-align:center; font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true">${it.name}</div></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
-                });
-                customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span>${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
+                if (cat.enabled !== false) {
+                    let rowsHtml = "";
+                    (cat.items || []).forEach((it, idx) => {
+                        if (it.enabled !== false) {
+                            const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0);
+                            civilTotalBasic += tot;
+                            rowsHtml += isCivilRateOnly ?
+                                `<tr><td style="text-align:center; font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right; font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` :
+                                `<tr><td style="text-align:center; font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                        }
+                    });
+                    customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span>${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
+                }
             });
         }
 
         safeSetHtml('civilPdfTermsContainer', `
-            <div class="payment-terms-block"><p>1. <b>Civil Schedule:</b><br>${(appSettings.civilPaymentTerms || '').replace(/\n/g, '<br>')}</p></div>
-            <div class="general-terms-block"><p>2. <b>Civil Terms:</b><br>${(appSettings.civilTermsCond || '').replace(/\n/g, '<br>')}</p></div>`);
+            <div class="payment-terms-block"><p>1. <b>Civil Schedule:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilPaymentTerms', this)">${(appSettings.civilPaymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
+            <div class="general-terms-block"><p>2. <b>Civil Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilTermsCond', this)">${(appSettings.civilTermsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
         safeSetText('civilPdfTermsHeaderDisplay', appSettings.civilTermsTitle || "Civil Work Terms & Conditions:");
-        safeSetText('civilPdfThankYouDisplay', appSettings.civilThankYouText || "THANK YOU FOR YOUR CIVIL CONTRACT");
+        safeSetText('civilPdfThankYouDisplay', appSettings.civilThankYouText || "THANK YOU FOR YOUR CIVIL CONTRACT.");
 
         const civilTax = getActiveTaxSlab('civil');
         const civGrand = civilTotalBasic + (civilTotalBasic * civilTax.rate);
@@ -2318,13 +2414,11 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             civRateNotice.style.display = isCivilRateOnly ? 'block' : 'none';
         }
         safeSetText('civilCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-        safeSetText('civilCustSignSub', appSettings.custAcceptanceSub || "Signature & Stamp");
-        safeSetText('civilSignCompanyHeader', appSettings.signCompHeader || ("For " + (appSettings.ownerName || "PATEL ENGINEERING")));
+        safeSetText('civilCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
+        safeSetText('civilSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
         safeSetText('civilSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
-        safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 20px;">` : ``);
-        safeSetText('civilPdfFooterPhones', [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean).join(" | "));
-        safeSetText('civilPdfFooterWebDisplay', appSettings.footerWeb || "");
-        safeSetText('civilPdfFooterAddrMini', appSettings.companyAddr || "");
+
+        safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 28px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
     // COMBINED PACKAGE STRIP
@@ -2334,9 +2428,18 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const totalComb = shedGrandTotal + civilGrandTotal;
         const combRate = sqft > 0 ? Math.round(totalComb / sqft) : 0;
         const combHtml = `
-            <div class="comb-row"><span>Shed Area:</span><b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b></div>
-            <div class="comb-row"><span>Combined Total:</span><b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b></div>
-            <div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') + ' / Sq.Ft' : '-'}</b></div>`;
+            <div class="comb-row">
+                <span>Shed Project Area:</span>
+                <b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b>
+            </div>
+            <div class="comb-row">
+                <span>Combined Contract Total (Shed + Civil):</span>
+                <b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b>
+            </div>
+            <div class="comb-rate-pill">
+                <span>COMBINED RATE / SQ.FT:</span>
+                <b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') : '-'} / Sq.Ft</b>
+            </div>`;
         if (p1CombBox) { p1CombBox.innerHTML = combHtml; p1CombBox.style.display = isRateOnly ? 'none' : 'flex'; }
         if (p2CombBox) { p2CombBox.innerHTML = combHtml; p2CombBox.style.display = isCivilRateOnly ? 'none' : 'flex'; }
     } else {
@@ -2361,7 +2464,7 @@ function createCleanPageBox(hasPageBreak = true) {
 
 function lockTableBottomBorder(tableEl) {
     const lastRow = tableEl?.querySelector('tbody tr:last-child');
-    if (lastRow) Array.from(lastRow.children).forEach(td => td.style.borderBottom = '2px solid #0f172a');
+    if (lastRow) Array.from(lastRow.children).forEach(td => td.style.borderBottom = '2px solid #000000');
 }
 
 function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) {
@@ -2386,11 +2489,11 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
 
     if (sectionType === 'SHED') {
         const page1 = createCleanPageBox(true);
-        const hero = sectionEl.querySelector('.theme-top-hero')?.cloneNode(true);
-        const meta = sectionEl.querySelector('.clean-quotation-meta-bar')?.cloneNode(true);
+        const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
+        const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
         const cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
         if (hero) page1.appendChild(hero);
-        if (meta) page1.appendChild(meta);
+        if (substrip) page1.appendChild(substrip);
         if (cust) page1.appendChild(cust);
 
         const sec1Head = sectionEl.querySelector('#displayHeaderLine1')?.parentElement?.cloneNode(true);
@@ -2434,9 +2537,11 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
         outputContainer.appendChild(page1);
 
         const page2 = createCleanPageBox(true);
+        
+        // ⭐ COLORFUL THEME CONTINUATION HEADER (PAGE 2) ⭐
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
-        contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE 2)</span><span>Quote Ref: ${quoteNo}</span>`;
+        contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE 2)</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
         page2.appendChild(contBar);
 
         if (splitIdx < origRows.length) {
@@ -2457,21 +2562,23 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
 
         const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
         if (summary) page2.appendChild(summary);
-        const footer = sectionEl.querySelector('.theme-footer-zone')?.cloneNode(true);
+        
+        const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
+        if (sigs) page2.appendChild(sigs);
+
+        const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
         if (footer) page2.appendChild(footer);
-        const geoLine = sectionEl.querySelector('.bottom-geometric-footer')?.cloneNode(true);
-        if (geoLine) page2.appendChild(geoLine);
 
         outputContainer.appendChild(page2);
 
     } else if (sectionType === 'CIVIL') {
         const page1 = createCleanPageBox(true);
-        const hero = sectionEl.querySelector('.theme-top-hero')?.cloneNode(true);
-        const meta = sectionEl.querySelector('.clean-quotation-meta-bar')?.cloneNode(true);
+        const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
+        const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
         const cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
         const jobRibbon = sectionEl.querySelector('.civil-job-details-ribbon')?.cloneNode(true);
         if (hero) page1.appendChild(hero);
-        if (meta) page1.appendChild(meta);
+        if (substrip) page1.appendChild(substrip);
         if (cust) page1.appendChild(cust);
         if (jobRibbon) page1.appendChild(jobRibbon);
 
@@ -2480,15 +2587,15 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
         document.body.appendChild(testStage);
 
         const secConfigs = [
-            { titleEl: sectionEl.querySelector('#civilFoundTitle')?.parentElement || sectionEl.querySelector('#civilFoundTitleDisplay')?.parentElement, tblWrap: sectionEl.querySelector('#civilFoundationTableBody')?.closest('.table-wrapper') },
-            { titleEl: sectionEl.querySelector('#civilBrickTitle')?.parentElement || sectionEl.querySelector('#civilBrickTitleDisplay')?.parentElement, tblWrap: sectionEl.querySelector('#civilBrickWallTableBody')?.closest('.table-wrapper') },
-            { titleEl: sectionEl.querySelector('#civilFloorTitle')?.parentElement || sectionEl.querySelector('#civilFloorTitleDisplay')?.parentElement, tblWrap: sectionEl.querySelector('#civilFlooringTableBody')?.closest('.table-wrapper') }
+            { titleEl: sectionEl.querySelector('#civilFoundTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFoundationTableBody')?.closest('.table-wrapper') },
+            { titleEl: sectionEl.querySelector('#civilBrickTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilBrickWallTableBody')?.closest('.table-wrapper') },
+            { titleEl: sectionEl.querySelector('#civilFloorTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFlooringTableBody')?.closest('.table-wrapper') }
         ];
 
         let p2SecStart = -1, p2RowStart = 0;
         for (let s = 0; s < secConfigs.length; s++) {
             const conf = secConfigs[s];
-            if (!conf.tblWrap) continue;
+            if (!conf.tblWrap || conf.tblWrap.style.display === 'none') continue;
             const tHead = conf.tblWrap.querySelector('thead')?.cloneNode(true);
             const allRows = Array.from(conf.tblWrap.querySelectorAll('tbody tr'));
             const curTableWrap = document.createElement('div');
@@ -2520,15 +2627,17 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
         outputContainer.appendChild(page1);
 
         const page2 = createCleanPageBox(true);
+        
+        // ⭐ COLORFUL THEME CONTINUATION HEADER (PAGE 4 / CIVIL PAGE 2) ⭐
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
-        contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE 2)</span><span>Quote Ref: ${quoteNo}</span>`;
+        contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE 2)</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
         page2.appendChild(contBar);
 
         if (p2SecStart !== -1) {
             for (let s = p2SecStart; s < secConfigs.length; s++) {
                 const conf = secConfigs[s];
-                if (!conf.tblWrap) continue;
+                if (!conf.tblWrap || conf.tblWrap.style.display === 'none') continue;
                 const tHead = conf.tblWrap.querySelector('thead')?.cloneNode(true);
                 const allRows = Array.from(conf.tblWrap.querySelectorAll('tbody tr'));
                 const startRow = (s === p2SecStart) ? p2RowStart : 0;
@@ -2552,10 +2661,12 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
 
         const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
         if (summary) page2.appendChild(summary);
-        const footer = sectionEl.querySelector('.theme-footer-zone')?.cloneNode(true);
+
+        const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
+        if (sigs) page2.appendChild(sigs);
+
+        const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
         if (footer) page2.appendChild(footer);
-        const geoLine = sectionEl.querySelector('.bottom-geometric-footer')?.cloneNode(true);
-        if (geoLine) page2.appendChild(geoLine);
 
         outputContainer.appendChild(page2);
     }
@@ -2657,7 +2768,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_companyGst', appSettings.companyGst || "");
     safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
 
-    safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
+    safeSetVal('pt_pdfRibbonTitle', "QUOTATION");
     safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle || "");
     safeSetVal('pt_projectSizeHeading', appSettings.projectSizeHeading || "📐 PROJECT SIZE / SHED DIMENSIONS:");
     safeSetVal('pt_headerLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
@@ -2665,7 +2776,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_headerLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
     safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
 
-    safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION - CIVIL WORK SPECIFICATIONS");
+    safeSetVal('pt_civilPdfRibbonTitle', "QUOTATION");
     safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
     safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
     safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
@@ -2682,10 +2793,10 @@ function openPermanentTextsModal() {
 
     safeSetVal('pt_termsTitle', appSettings.termsTitle || "Terms & Conditions:");
     safeSetVal('pt_civilTermsTitle', appSettings.civilTermsTitle || "Civil Work Terms & Conditions:");
-    safeSetVal('pt_thankYouText', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS");
-    safeSetVal('pt_civilThankYouText', appSettings.civilThankYouText || "THANK YOU FOR YOUR CIVIL CONTRACT");
+    safeSetVal('pt_thankYouText', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS WITH US.");
+    safeSetVal('pt_civilThankYouText', appSettings.civilThankYouText || "THANK YOU FOR YOUR CIVIL CONTRACT.");
     safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-    safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Signature & Stamp");
+    safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
     safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
     safeSetVal('pt_pdfSignatoryText', appSettings.pdfSignatoryText || "Authorized Signatory");
 
@@ -2706,11 +2817,26 @@ function savePhoneSetting(numIndex, val) {
     refreshLivePdfPreviewSheet();
 }
 
+// ⭐ EMAIL & WEBSITE SETTINGS SYNC ⭐
+function saveCompanyEmailSetting(val) {
+    appSettings.companyEmail = val.trim();
+    syncDataToCloud('patel_app_settings', appSettings);
+    refreshLivePdfPreviewSheet();
+}
+
+function saveFooterWebSetting(val) {
+    appSettings.footerWeb = val.trim();
+    syncDataToCloud('patel_app_settings', appSettings);
+    refreshLivePdfPreviewSheet();
+}
+
 function loadPhoneSettingsUI() {
     safeSetVal('setPhone1', appSettings.phone1 || "");
     safeSetVal('setPhone2', appSettings.phone2 || "");
     safeSetVal('setPhone3', appSettings.phone3 || "");
-    safeSetVal('setStartingQuoteNo', appSettings.startingQuoteSeq || 1);
+    safeSetVal('setCompanyEmail', appSettings.companyEmail || "");
+    safeSetVal('setFooterWeb', appSettings.footerWeb || "");
+    safeSetVal('setStartingQuoteNo', getNextQuoteSequenceNumber());
 }
 
 let currentSettingKey = '';
@@ -2729,24 +2855,53 @@ function autoSaveLargeInputLive() {
     refreshLivePdfPreviewSheet();
 }
 
+// AUTO COMPRESSOR ENGINE (PREVENTS STORAGE QUOTA CRASHES)
+function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const isPng = file.type === 'image/png';
+            const optimizedBase64 = canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', quality);
+            callback(optimizedBase64);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
 function handleLogoUpload(input) {
     if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            appSettings.logoData = e.target.result;
+        const file = input.files[0];
+        compressAndOptimizeBanner(file, 1000, 0.85, function(optimizedBase64) {
+            appSettings.logoData = optimizedBase64;
             syncDataToCloud('patel_app_settings', appSettings);
             
             updateHeaderBannersUI();
+            refreshLivePdfPreviewSheet();
             
             const fav = document.getElementById('dynamicAppFavicon');
             const appleFav = document.getElementById('dynamicAppleIcon');
-            if (fav) fav.href = e.target.result;
-            if (appleFav) appleFav.href = e.target.result;
+            if (fav) fav.href = optimizedBase64;
+            if (appleFav) appleFav.href = optimizedBase64;
             
-            refreshLivePdfPreviewSheet();
             showAppAlert("✓ Banner Updated", "Company Header Banner & Logo updated successfully!");
-        };
-        reader.readAsDataURL(input.files[0]);
+            input.value = '';
+        });
     }
 }
 
@@ -2824,8 +2979,6 @@ window.onload = function() {
         if (fav) fav.href = appSettings.logoData;
         if (appleFav) appleFav.href = appSettings.logoData;
     }
-    if (appSettings.savedThemeId && THEMES_CATALOG[appSettings.savedThemeId]) {
-        applyPresetTheme(appSettings.savedThemeId);
-    }
-    initSamsungBootAnimation();setTimeout(attachDynamicPreviewObserver, 200);
+    initSamsungBootAnimation();
+    setTimeout(attachDynamicPreviewObserver, 200);
 };
