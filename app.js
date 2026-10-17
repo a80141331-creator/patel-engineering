@@ -208,7 +208,6 @@ if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
-// ⭐ AUTO-LEARNING: Updates Master Blueprint whenever any item or title is modified ⭐
 function syncSiteStructureToMasterBlueprint(site) {
     if (!site) return;
     try {
@@ -557,7 +556,7 @@ function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const start = parseInt(currentText, 10) || 0;
     if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN') + suffix; return; }
 
-    const duration = 1200; // Smooth slower calculation effect
+    const duration = 1200;
     const startTime = performance.now();
     function step(currentTime) {
         const elapsed = currentTime - startTime;
@@ -814,7 +813,7 @@ function saveStartingQuoteSeq(val) {
 }
 
 // ========================================================
-// 10. PREVIEW SCALING & AUTO-HEIGHT
+// ⭐ 10. PREVIEW SCALING & DESKTOP ZOOM CORRECTION ⭐
 // ========================================================
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
@@ -830,7 +829,7 @@ function resetPdfScale() {
 }
 
 function applyScaleToSheet() {
-    const s = appSettings.savedPdfScale || 1.0;
+    const s = parseFloat(appSettings.savedPdfScale) || 1.0;
     document.documentElement.style.setProperty('--pdf-scale', s);
 
     const pSheet = document.getElementById('printableA4Sheet');
@@ -845,6 +844,8 @@ function applyScaleToSheet() {
 }
 
 function autoFitPreview() {
+    const userZoom = parseFloat(appSettings.savedPdfScale) || 1.0;
+
     const viewport = document.getElementById('viewportWrap');
     const wrapper = document.getElementById('scalingWrapper');
     const sheet = document.getElementById('printableA4Sheet');
@@ -852,18 +853,18 @@ function autoFitPreview() {
     if (viewport && wrapper && sheet) {
         const availableWidth = viewport.clientWidth || viewport.offsetWidth;
         if (availableWidth > 0) {
-            let scale = availableWidth < 746 ? (availableWidth / 746) : 1;
-            let leftOffset = availableWidth < 746 ? 0 : Math.max(0, (availableWidth - 746) / 2);
+            let baseFit = availableWidth < 746 ? (availableWidth / 746) : 1.0;
+            let totalScale = Math.round(baseFit * userZoom * 100) / 100;
+            let leftOffset = (availableWidth < (746 * totalScale)) ? 0 : Math.max(0, (availableWidth - (746 * totalScale)) / 2);
             
             wrapper.style.transformOrigin = 'top left';
-            wrapper.style.transform = `scale(${scale})`;
+            wrapper.style.transform = `scale(${totalScale})`;
             wrapper.style.setProperty('margin-left', `${leftOffset}px`, 'important');
             
             const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
-            const scaledHeight = Math.ceil(unscaledHeight * scale);
+            const scaledHeight = Math.ceil(unscaledHeight * totalScale);
             if (scaledHeight > 0) {
                 viewport.style.setProperty('height', `${scaledHeight}px`, 'important');
-                viewport.style.setProperty('overflow', 'hidden', 'important');
             }
         }
     }
@@ -875,18 +876,18 @@ function autoFitPreview() {
     if (civilVp && civilWrap) {
         const cWidth = civilVp.clientWidth || civilVp.offsetWidth;
         if (cWidth > 0) {
-            let cScale = cWidth < 746 ? (cWidth / 746) : 1;
-            let cLeft = cWidth < 746 ? 0 : Math.max(0, (cWidth - 746) / 2);
+            let cBaseFit = cWidth < 746 ? (cWidth / 746) : 1.0;
+            let cTotalScale = Math.round(cBaseFit * userZoom * 100) / 100;
+            let cLeft = (cWidth < (746 * cTotalScale)) ? 0 : Math.max(0, (cWidth - (746 * cTotalScale)) / 2);
             
             civilWrap.style.transformOrigin = 'top left';
-            civilWrap.style.transform = `scale(${cScale})`;
+            civilWrap.style.transform = `scale(${cTotalScale})`;
             civilWrap.style.setProperty('margin-left', `${cLeft}px`, 'important');
             
             const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
-            const cScaledHeight = Math.ceil(cUnscaledHeight * cScale);
+            const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
             if (cScaledHeight > 0) {
                 civilVp.style.setProperty('height', `${cScaledHeight}px`, 'important');
-                civilVp.style.setProperty('overflow', 'hidden', 'important');
             }
         }
     }
@@ -1125,7 +1126,7 @@ function loadSiteToDashboard(siteId) {
     applyCustomButtonNamesUI();
     refreshLivePdfPreviewSheet();
 
-    // Auto-route to corresponding dashboard
+    // Auto-route according to quote type
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1195,7 +1196,7 @@ function saveEditCustomerDetails() {
     refreshLivePdfPreviewSheet();
     closeEditCustomerModal();
 
-    // ⭐ AUTO-SWITCH DASHBOARD WHEN QUOTE TYPE CHANGES ⭐
+    // ⭐ AUTO-SWITCH DASHBOARD SCREEN INSTANTLY ⭐
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1677,7 +1678,7 @@ function saveUniversalModule() {
         renderCustomModulesDashboardList();
     }
     syncDataToCloud('patel_app_sites', sites);
-    syncSiteStructureToMasterBlueprint(site); // Auto-learns new module for future quotes
+    syncSiteStructureToMasterBlueprint(site);
     calcModuleTotals();
     closeUniversalModuleModal();
     refreshLivePdfPreviewSheet();
@@ -2300,6 +2301,7 @@ function addNewAccessoryDirectly() {
     refreshLivePdfPreviewSheet();
 }
 
+// ⭐ GST SPLIT ROWS EXTRA DARK, THICK & LARGER FONT ⭐
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     if (!taxSlab || taxSlab.rate === 0 || basicCost === 0) {
         return `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">-</span></div>`;
@@ -2344,6 +2346,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('pdfFooterAddrMini', compAddr);
     safeSetText('civilPdfFooterAddrMini', compAddr);
 
+    // Email & Web Blank Hide Logic
     const pEmailWrap = document.getElementById('pdfFooterEmailWrap');
     const cEmailWrap = document.getElementById('civilPdfFooterEmailWrap');
     if (compEmail) {
@@ -2750,12 +2753,12 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 }
 
 // ========================================================
-// 21. PDF PAGINATION & DIRECT DOWNLOAD ENGINE
+// ⭐ 21. PDF PAGINATION & DESKTOP RENDER LOCK ENGINE ⭐
 // ========================================================
 function createCleanPageBox(hasPageBreak = true) {
     const p = document.createElement('div');
     p.className = 'a4-page-box';
-    p.style.cssText = `width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box; display: flow-root !important; ${hasPageBreak ? 'page-break-after: always; break-after: page;' : 'page-break-after: avoid; break-after: avoid;'}`;
+    p.style.cssText = `width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box; display: flow-root !important; overflow: hidden !important; ${hasPageBreak ? 'page-break-after: always; break-after: page;' : 'page-break-after: avoid; break-after: avoid;'}`;
     return p;
 }
 
@@ -2765,7 +2768,7 @@ function lockTableBottomBorder(tableEl) {
 }
 
 function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_CAPACITY = 1045;
+    const MAX_CAPACITY = 1005; // Locked safe height prevents footer cut-off
     const testStage = document.createElement('div');
     testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
     const initialClone = sectionEl.cloneNode(true);
@@ -2907,7 +2910,7 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
             let rowAdded = 0;
             for (let r = 0; r < allRows.length; r++) {
                 curTbody.appendChild(allRows[r].cloneNode(true));
-                if (page1.offsetHeight > (MAX_CAPACITY - 45) && (rowAdded > 0 || s > 0)) {
+                if (page1.offsetHeight > (MAX_CAPACITY - 50) && (rowAdded > 0 || s > 0)) {
                     curTbody.removeChild(curTbody.lastChild);
                     p2SecStart = s;
                     p2RowStart = r;
@@ -3017,6 +3020,7 @@ function downloadPDFDirectly(mode = 'both') {
     stage.appendChild(outputContainer);
     document.body.appendChild(stage);
 
+    // ⭐ DESKTOP RENDERING LOCK: windowWidth: 1200 PREVENTS NARROW WRAPPING ⭐
     const opt = {
         margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
@@ -3026,10 +3030,8 @@ function downloadPDFDirectly(mode = 'both') {
             useCORS: true,
             scrollX: 0,
             scrollY: 0,
-            x: 0,
-            y: 0,
             width: 746,
-            windowWidth: 746,
+            windowWidth: 1200,
             letterRendering: true,
             logging: false
         },
@@ -3105,7 +3107,6 @@ function autoSavePermanentText(fieldKey, val) {
     refreshLivePdfPreviewSheet();
 }
 
-// ⭐ PROFESSIONAL DYNAMIC PHONE NUMBERS IN SETTINGS ⭐
 function renderSettingsPhonesUI() {
     const box = document.getElementById('settingsPhonesListContainer');
     if (!box) return;
