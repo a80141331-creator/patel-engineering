@@ -73,7 +73,7 @@ function showCorporateToast(message, icon = '✓') {
     }, 2800);
 }
 
-// ⭐ SMOOTH SCROLL ARROWS LOGIC (SCROLLS ONLY PREVIEW) ⭐
+// ⭐ SMOOTH SCROLL ARROWS FUNCTION (PREVIEW ONLY) ⭐
 function scrollPreviewPane(delta) {
     const vp = document.getElementById('viewportWrap');
     if (vp) {
@@ -227,7 +227,7 @@ if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
-// Auto-learns changes from any proposal into the master blueprint
+// ⭐ AUTO-LEARNING: Propagates any new item/module to future sites ⭐
 function syncSiteStructureToMasterBlueprint(site) {
     if (!site) return;
     try {
@@ -470,7 +470,7 @@ function saveNewMasterPasscode() {
 }
 
 // ========================================================
-// 6. NAVIGATION & ROUTING
+// 6. NAVIGATION & 3-TIER DEVICE MODE SYSTEM
 // ========================================================
 window.addEventListener('popstate', () => handleDeviceBackButton());
 
@@ -530,6 +530,25 @@ function openScreen(screenId, pushHistory = true) {
             setTimeout(autoFitPreview, 60);
         }
     }
+}
+
+let currentDeviceMode = "phone", manualDeviceModeOverride = false;
+function setDeviceViewMode(mode, isManual = false) {
+    if (isManual) manualDeviceModeOverride = true;
+    currentDeviceMode = mode;
+    document.body.className = "mode-" + mode;
+    document.querySelectorAll('.btn-device-mode').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.btn-device-' + mode).forEach(b => b.classList.add('active'));
+    setTimeout(autoFitPreview, 50);
+}
+
+// ⭐ DEDICATED 3-TIER RESOLUTION DETECTION ⭐
+function autoDetectDeviceMode() {
+    if (manualDeviceModeOverride) return;
+    const w = window.innerWidth;
+    if (w >= 1025) setDeviceViewMode('desktop', false);
+    else if (w >= 768) setDeviceViewMode('tab', false); // Tablet mode (clean full-width)
+    else setDeviceViewMode('phone', false);
 }
 
 // ========================================================
@@ -766,23 +785,6 @@ function replaySamsungBootAnimation() {
     initSamsungBootAnimation();
 }
 
-let currentDeviceMode = "phone", manualDeviceModeOverride = false;
-function setDeviceViewMode(mode, isManual = false) {
-    if (isManual) manualDeviceModeOverride = true;
-    currentDeviceMode = mode;
-    document.body.className = "mode-" + mode;
-    document.querySelectorAll('.btn-device-mode').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.btn-device-' + mode).forEach(b => b.classList.add('active'));
-    setTimeout(autoFitPreview, 50);
-}
-function autoDetectDeviceMode() {
-    if (manualDeviceModeOverride) return;
-    const w = window.innerWidth;
-    if (w >= 1024) setDeviceViewMode('desktop', false);
-    else if (w >= 700) setDeviceViewMode('tab', false);
-    else setDeviceViewMode('phone', false);
-}
-
 const MASTER_UNITS = [
     "Ft", "Inch", "R.Ft", "mm", "Mtr", "Sq.Ft", "Sq.Mtr", "Cu.Ft", 
     "Cu.Mtr", "Nos", "Pcs", "Kg", "MT", "Lot", "Set", "Pair", 
@@ -865,7 +867,6 @@ function applyScaleToSheet() {
 
 function autoFitPreview() {
     const userZoom = parseFloat(appSettings.savedPdfScale) || 1.0;
-
     const viewport = document.getElementById('viewportWrap');
     const wrapper = document.getElementById('scalingWrapper');
     const sheet = document.getElementById('printableA4Sheet');
@@ -1756,7 +1757,7 @@ function renderCustomModulesDashboardList() {
         const amt = (parseFloat(mod.qty) || 0) * (parseFloat(mod.rate) || 0);
         const isEnabled = mod.enabled !== false;
         container.innerHTML += `
-            <div class="module-grid-card card-3d-press ${!isEnabled ? 'disabled-mod' : ''}" style="border-left: 4px solid var(--header-bg);">
+            <div class="module-grid-card card-3d-press ${!isEnabled ? 'disabled-mod' : ''} btn-ripple" style="border-left: 4px solid var(--header-bg);">
                 <span class="mod-switch-pill ${isEnabled ? 'on' : ''}" onclick="event.stopPropagation(); toggleCustomModuleActive('${mod.id}')">${isEnabled ? 'ON' : 'OFF'}</span>
                 <div>
                     <div class="mod-card-top"><span class="mod-card-icon">✨</span><span class="mod-card-title">${6 + idx}. ${mod.title}</span></div>
@@ -2157,7 +2158,6 @@ function calcModuleTotals() {
     else if (isRateOnly) safeSetText('badgeErectTotal', '₹ ' + (site.erectRate || '-') + '/Kg');
     else animateNumberRoll('badgeErectTotal', eTot, "Rs. ");
 
-    // Civil Badges update
     if (site.civilData) {
         const getSecTotal = (secKey) => {
             let tot = 0;
@@ -2784,7 +2784,7 @@ function lockTableBottomBorder(tableEl) {
 }
 
 function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_CAPACITY = 1045; // ⭐ 1045px Standard Limit: Prevents cutting Civil footer on Page 1 ⭐
+    const MAX_CAPACITY = 1045; // Standard 1045px: Guarantees single-page fit without dropping footer
     const testStage = document.createElement('div');
     testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
     const initialClone = sectionEl.cloneNode(true);
@@ -2868,7 +2868,6 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
             for (let j = splitIdx; j < origRows.length; j++) p2Tbody.appendChild(origRows[j].cloneNode(true));
             p2Table.appendChild(p2Tbody);
             p2TableWrap.appendChild(p2Table);
-            page2.appendChild(p2TableWrap);
             lockTableBottomBorder(p2Table);
         }
         const accBox = sectionEl.querySelector('#pdfAccBreakdownContainer');
@@ -2988,7 +2987,10 @@ function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const fileName = `${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
+    
+    // Dedicated Company Folder Filename
+    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
+    
     triggerHaptic(50);
     playAppSound('chime');
     fireConfettiCelebration();
@@ -3003,9 +3005,9 @@ function downloadPDFDirectly(mode = 'both') {
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    // ⭐ ZERO-OFFSET ABSOLUTE STAGE (FIXES DESKTOP SQUISH & CROP BUG) ⭐
+    // Zero-Offset Stage: Prevents Left Shift & Desktop Crop Bug
     const stage = document.createElement('div');
-    stage.style.cssText = 'position: absolute; left: 0; top: 0; width: 746px; background: #fff; z-index: -99999; margin: 0; padding: 0; overflow: hidden;';
+    stage.style.cssText = 'position: fixed; left: 0; top: 0; width: 746px; background: #ffffff; z-index: -99999; margin: 0; padding: 0; overflow: hidden;';
     
     const clone = source.cloneNode(true);
     clone.style.setProperty('--pdf-scale', '1.0');
@@ -3029,7 +3031,7 @@ function downloadPDFDirectly(mode = 'both') {
         paginateQuoteSection(p1, outputContainer, site.quoteNo, 'SHED');
     }
     if (shouldIncludeCivil && p2) {
-        p2.style.display = 'block';
+        p2.style.display = 'block'; // Ensure non-zero height
         paginateQuoteSection(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
@@ -3039,7 +3041,7 @@ function downloadPDFDirectly(mode = 'both') {
     stage.appendChild(outputContainer);
     document.body.appendChild(stage);
 
-    // ⭐ EXACT 746PX VIRTUAL CAPTURE (ELIMINATES DESKTOP LEFT CROP) ⭐
+    // ⭐ 100% PHONE-IDENTICAL RENDERING OPTIONS (NO SHIFTING, NO CROPPING) ⭐
     const opt = {
         margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
@@ -3050,25 +3052,32 @@ function downloadPDFDirectly(mode = 'both') {
             letterRendering: true,
             scrollY: 0,
             scrollX: 0,
+            width: 746,
+            windowWidth: 746,
+            x: 0,
+            y: 0,
             logging: false
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-        pagebreak: { mode: ['css'] }
+        pagebreak: { mode: ['css', 'legacy'] }
     };
 
     html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
         const base64Data = pdfObj.output('datauristring').split(',')[1];
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
+
         if (window.PatelNativeEngine?.savePdfToPatelFolder) {
             window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
         } else {
             pdfObj.save(fileName);
+            showCorporateToast("✓ PDF Downloaded Successfully!");
         }
     }).catch(function(err) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
-        window.print();
+        // Fallback standard save
+        html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
     });
 }
 
