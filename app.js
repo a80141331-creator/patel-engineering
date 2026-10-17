@@ -2343,7 +2343,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
 }
 
 // ========================================================
-// 20. LIVE PREVIEW ENGINE
+// 20. LIVE PREVIEW ENGINE (UNIFIED 10px FONT MAPPING)
 // ========================================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
@@ -2774,7 +2774,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 }
 
 // ========================================================
-// 21. BULLETPROOF PAGINATION ENGINE (PC-ISOLATED GUARD)
+// 21. BULLETPROOF PAGINATION & SEPARATION ENGINE
 // ========================================================
 function createCleanPageBox() {
     const p = document.createElement('div');
@@ -2783,119 +2783,32 @@ function createCleanPageBox() {
     return p;
 }
 
+function lockTableBottomBorder(tableEl) {
+    const lastRow = tableEl?.querySelector('tbody tr:last-child');
+    if (lastRow) Array.from(lastRow.children).forEach(td => td.style.borderBottom = '2px solid #000000');
+}
+
 function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
-    const isComputer = window.innerWidth >= 1025 && !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+    const PAGE_HEIGHT_LIMIT = 1045; // Exact A4 physical limit (guarantees zero cut)
+    const testStage = document.createElement('div');
+    testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
     
-    // ⭐ TABLET & PHONE ENGINE (100% UNTOUCHED, RUNS AS-IS) ⭐
-    if (!isComputer) {
-        const testStage = document.createElement('div');
-        testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
-        const clone = sectionEl.cloneNode(true);
-        clone.style.display = 'block';
-        testStage.appendChild(clone);
-        document.body.appendChild(testStage);
-        const measuredHeight = clone.offsetHeight;
-        document.body.removeChild(testStage);
+    const clone = sectionEl.cloneNode(true);
+    clone.style.display = 'block';
+    testStage.appendChild(clone);
+    document.body.appendChild(testStage);
+    const measuredHeight = clone.offsetHeight;
+    document.body.removeChild(testStage);
 
-        if (measuredHeight <= 1045) {
-            const page = createCleanPageBox();
-            page.appendChild(clone);
-            outputContainer.appendChild(page);
-            return;
-        }
-
-        if (sectionType === 'SHED') {
-            const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
-            const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
-            const cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
-            const sec1Head = sectionEl.querySelector('#displayHeaderLine1')?.parentElement?.cloneNode(true);
-            const sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
-            const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true);
-            const sec2Tbl = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper')?.cloneNode(true);
-            const sec3Acc = sectionEl.querySelector('#pdfAccBreakdownContainer');
-            const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
-            const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
-            const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
-
-            const p1 = createCleanPageBox();
-            if (hero) p1.appendChild(hero.cloneNode(true));
-            if (substrip) p1.appendChild(substrip.cloneNode(true));
-            if (cust) p1.appendChild(cust.cloneNode(true));
-            if (sec1Head) p1.appendChild(sec1Head.cloneNode(true));
-            if (sec1Tbl) p1.appendChild(sec1Tbl.cloneNode(true));
-            if (sec2Head) p1.appendChild(sec2Head.cloneNode(true));
-            if (sec2Tbl) p1.appendChild(sec2Tbl.cloneNode(true));
-            outputContainer.appendChild(p1);
-
-            const pb = document.createElement('div');
-            pb.className = 'html2pdf__page-break';
-            pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
-            outputContainer.appendChild(pb);
-
-            const p2 = createCleanPageBox();
-            const contBar = document.createElement('div');
-            contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — SHED SPECIFICATIONS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-            p2.appendChild(contBar);
-
-            if (sec3Acc && sec3Acc.style.display !== 'none') p2.appendChild(sec3Acc.cloneNode(true));
-            if (summary) p2.appendChild(summary.cloneNode(true));
-            if (sigs) p2.appendChild(sigs.cloneNode(true));
-            if (footer) p2.appendChild(footer.cloneNode(true));
-            outputContainer.appendChild(p2);
-
-        } else if (sectionType === 'CIVIL') {
-            const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
-            const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
-            const cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
-            const jobRibbon = sectionEl.querySelector('.civil-job-details-ribbon')?.cloneNode(true);
-
-            const secConfigs = [
-                { titleEl: sectionEl.querySelector('#civilFoundTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFoundationTableBody')?.closest('.table-wrapper') },
-                { titleEl: sectionEl.querySelector('#civilBrickTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilBrickWallTableBody')?.closest('.table-wrapper') },
-                { titleEl: sectionEl.querySelector('#civilFloorTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFlooringTableBody')?.closest('.table-wrapper') }
-            ];
-
-            const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
-            const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
-            const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
-            const customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
-
-            const p1 = createCleanPageBox();
-            if (hero) p1.appendChild(hero.cloneNode(true));
-            if (substrip) p1.appendChild(substrip.cloneNode(true));
-            if (cust) p1.appendChild(cust.cloneNode(true));
-            if (jobRibbon) p1.appendChild(jobRibbon.cloneNode(true));
-            if (secConfigs[0].titleEl) p1.appendChild(secConfigs[0].titleEl.cloneNode(true));
-            if (secConfigs[0].tblWrap) p1.appendChild(secConfigs[0].tblWrap.cloneNode(true));
-            if (secConfigs[1].titleEl) p1.appendChild(secConfigs[1].titleEl.cloneNode(true));
-            if (secConfigs[1].tblWrap) p1.appendChild(secConfigs[1].tblWrap.cloneNode(true));
-            outputContainer.appendChild(p1);
-
-            const pb = document.createElement('div');
-            pb.className = 'html2pdf__page-break';
-            pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
-            outputContainer.appendChild(pb);
-
-            const p2 = createCleanPageBox();
-            const contBar = document.createElement('div');
-            contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS & COMMERCIALS</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-            p2.appendChild(contBar);
-
-            if (secConfigs[2].titleEl) p2.appendChild(secConfigs[2].titleEl.cloneNode(true));
-            if (secConfigs[2].tblWrap) p2.appendChild(secConfigs[2].tblWrap.cloneNode(true));
-            if (customWrapper && customWrapper.children.length > 0) p2.appendChild(customWrapper.cloneNode(true));
-            if (summary) p2.appendChild(summary.cloneNode(true));
-            if (sigs) p2.appendChild(sigs.cloneNode(true));
-            if (footer) p2.appendChild(footer.cloneNode(true));
-            outputContainer.appendChild(p2);
-        }
+    // ⭐ 1. IF IT FITS IN ONE PAGE: KEEP 100% IN SINGLE CLEAN PAGE ⭐
+    if (measuredHeight <= PAGE_HEIGHT_LIMIT) {
+        const page = createCleanPageBox();
+        page.appendChild(clone);
+        outputContainer.appendChild(page);
         return;
     }
 
-    // ⭐ COMPUTER (PC/LAPTOP) SPECIFIC ISOLATED ENGINE ⭐
-    // Neutralizes Windows 125%/150% scaling so PC creates exact same 4 pages without breaks
+    // ⭐ 2. MULTI-PAGE OVERFLOW ENGINE (NO SPLIT CUTS) ⭐
     if (sectionType === 'SHED') {
         const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
         const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
@@ -2904,14 +2817,14 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         const sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
         const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true);
         const sec2Tbl = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper')?.cloneNode(true);
+        
         const sec3Acc = sectionEl.querySelector('#pdfAccBreakdownContainer');
         const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
         const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
         const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
 
-        // PC Page 1 (Shed Main)
+        // PAGE 1: Standard Executive Summary
         const p1 = createCleanPageBox();
-        p1.classList.add('pc-render-mode');
         if (hero) p1.appendChild(hero.cloneNode(true));
         if (substrip) p1.appendChild(substrip.cloneNode(true));
         if (cust) p1.appendChild(cust.cloneNode(true));
@@ -2921,23 +2834,26 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         if (sec2Tbl) p1.appendChild(sec2Tbl.cloneNode(true));
         outputContainer.appendChild(p1);
 
+        // PAGE BREAK
         const pb = document.createElement('div');
         pb.className = 'html2pdf__page-break';
         pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
         outputContainer.appendChild(pb);
 
-        // PC Page 2 (Shed Summary)
+        // PAGE 2: Specifications, Accessories & Commercials
         const p2 = createCleanPageBox();
-        p2.classList.add('pc-render-mode');
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
         contBar.innerHTML = `<span>PATEL ENGINEERING — SHED SPECIFICATIONS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
         p2.appendChild(contBar);
 
-        if (sec3Acc && sec3Acc.style.display !== 'none') p2.appendChild(sec3Acc.cloneNode(true));
+        if (sec3Acc && sec3Acc.style.display !== 'none') {
+            p2.appendChild(sec3Acc.cloneNode(true));
+        }
         if (summary) p2.appendChild(summary.cloneNode(true));
         if (sigs) p2.appendChild(sigs.cloneNode(true));
         if (footer) p2.appendChild(footer.cloneNode(true));
+
         outputContainer.appendChild(p2);
 
     } else if (sectionType === 'CIVIL') {
@@ -2957,27 +2873,28 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
         const customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
 
-        // PC Page 3 (Civil Page 1: Foundation + Full Brick Wall)
+        // Civil Page 1
         const p1 = createCleanPageBox();
-        p1.classList.add('pc-render-mode');
         if (hero) p1.appendChild(hero.cloneNode(true));
         if (substrip) p1.appendChild(substrip.cloneNode(true));
         if (cust) p1.appendChild(cust.cloneNode(true));
         if (jobRibbon) p1.appendChild(jobRibbon.cloneNode(true));
+
+        // Add foundation and brick wall to Page 1
         if (secConfigs[0].titleEl) p1.appendChild(secConfigs[0].titleEl.cloneNode(true));
         if (secConfigs[0].tblWrap) p1.appendChild(secConfigs[0].tblWrap.cloneNode(true));
         if (secConfigs[1].titleEl) p1.appendChild(secConfigs[1].titleEl.cloneNode(true));
         if (secConfigs[1].tblWrap) p1.appendChild(secConfigs[1].tblWrap.cloneNode(true));
         outputContainer.appendChild(p1);
 
+        // PAGE BREAK
         const pb = document.createElement('div');
         pb.className = 'html2pdf__page-break';
         pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
         outputContainer.appendChild(pb);
 
-        // PC Page 4 (Civil Page 2: Flooring + Terms + Summary + Signatures + Footer)
+        // Civil Page 2: Flooring + Custom Categories + Summary + Signatures + Footer
         const p2 = createCleanPageBox();
-        p2.classList.add('pc-render-mode');
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
         contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS & COMMERCIALS</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
@@ -2985,16 +2902,19 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
 
         if (secConfigs[2].titleEl) p2.appendChild(secConfigs[2].titleEl.cloneNode(true));
         if (secConfigs[2].tblWrap) p2.appendChild(secConfigs[2].tblWrap.cloneNode(true));
-        if (customWrapper && customWrapper.children.length > 0) p2.appendChild(customWrapper.cloneNode(true));
+        if (customWrapper && customWrapper.children.length > 0) {
+            p2.appendChild(customWrapper.cloneNode(true));
+        }
         if (summary) p2.appendChild(summary.cloneNode(true));
         if (sigs) p2.appendChild(sigs.cloneNode(true));
         if (footer) p2.appendChild(footer.cloneNode(true));
+
         outputContainer.appendChild(p2);
     }
 }
 
 // ========================================================
-// 22. DIRECT DOWNLOAD ENGINE
+// 22. DIRECT DOWNLOAD ENGINE (PC, TABLET, PHONE & APP)
 // ========================================================
 function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
@@ -3016,26 +2936,10 @@ function downloadPDFDirectly(mode = 'both') {
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    const isComputer = window.innerWidth >= 1025 && !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
-
-    // ISOLATED STAGE
+    // ISOLATED STAGE: 100% immune to screen size and viewport DPI
     const stage = document.createElement('div');
     stage.style.cssText = 'position: fixed; left: 0; top: 0; width: 746px !important; max-width: 746px !important; background: #ffffff; z-index: -99999; margin: 0; padding: 0; overflow: hidden;';
     
-    // PC-ONLY STYLE INJECTION (PHONE/TAB MEIN INJECT NAHI HOGA)
-    if (isComputer) {
-        const pcStyle = document.createElement('style');
-        pcStyle.innerHTML = `
-            .pc-render-mode { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important; }
-            .pc-render-mode .theme-data-table td, .pc-render-mode .civil-schedule-table td { padding: 4px 6px !important; line-height: 1.25 !important; font-size: 9.5px !important; }
-            .pc-render-mode .geo-header-wrapper { min-height: 120px !important; }
-            .pc-render-mode .customer-details-block { padding: 7px 14px !important; }
-            .pc-render-mode .theme-bottom-summary-grid { padding: 5px 14px !important; }
-            .pc-render-mode .signature-dual-grid { padding: 5px 16px !important; }
-        `;
-        stage.appendChild(pcStyle);
-    }
-
     const clone = source.cloneNode(true);
     clone.style.setProperty('--pdf-scale', '1.0');
     clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
@@ -3059,7 +2963,7 @@ function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     }
 
-    // 2. HARD PAGE BREAK BETWEEN SHED AND CIVIL
+    // 2. HARD PAGE BREAK BETWEEN SHED AND CIVIL (NO MIXING!)
     if (shouldIncludeShed && shouldIncludeCivil) {
         const breakBetween = document.createElement('div');
         breakBetween.className = 'html2pdf__page-break';
@@ -3067,7 +2971,7 @@ function downloadPDFDirectly(mode = 'both') {
         outputContainer.appendChild(breakBetween);
     }
 
-    // 3. BUILD CIVIL
+    // 3. BUILD CIVIL (STARTS ON A BRAND NEW PAGE)
     if (shouldIncludeCivil && p2) {
         p2.style.display = 'block';
         buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
