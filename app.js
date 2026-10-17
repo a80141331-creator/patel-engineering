@@ -73,11 +73,20 @@ function showCorporateToast(message, icon = '✓') {
     }, 2800);
 }
 
-// ⭐ DESKTOP PANE SMOOTH SCROLL ARROWS FUNCTION ⭐
-function scrollPaneSmooth(paneId, delta) {
-    const el = document.getElementById(paneId);
-    if (el) {
-        el.scrollBy({ top: delta, behavior: 'smooth' });
+// ⭐ SMOOTH SCROLL ARROWS LOGIC (SCROLLS ONLY PREVIEW) ⭐
+function scrollPreviewPane(delta) {
+    const vp = document.getElementById('viewportWrap');
+    if (vp) {
+        vp.scrollBy({ top: delta, behavior: 'smooth' });
+        playAppSound('click');
+        triggerHaptic(10);
+    }
+}
+
+function scrollCivilPreviewPane(delta) {
+    const vp = document.getElementById('civilViewportWrap');
+    if (vp) {
+        vp.scrollBy({ top: delta, behavior: 'smooth' });
         playAppSound('click');
         triggerHaptic(10);
     }
@@ -218,6 +227,7 @@ if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
+// Auto-learns changes from any proposal into the master blueprint
 function syncSiteStructureToMasterBlueprint(site) {
     if (!site) return;
     try {
@@ -566,7 +576,7 @@ function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const start = parseInt(currentText, 10) || 0;
     if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN') + suffix; return; }
 
-    const duration = 1200;
+    const duration = 1200; // Smooth slower calculation effect
     const startTime = performance.now();
     function step(currentTime) {
         const elapsed = currentTime - startTime;
@@ -823,7 +833,7 @@ function saveStartingQuoteSeq(val) {
 }
 
 // ========================================================
-// 10. PREVIEW SCALING & DESKTOP CENTER-ZOOM LOGIC
+// 10. PREVIEW SCALING & DESKTOP CENTER ZOOM LOGIC
 // ========================================================
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
@@ -1134,6 +1144,7 @@ function loadSiteToDashboard(siteId) {
     applyCustomButtonNamesUI();
     refreshLivePdfPreviewSheet();
 
+    // Auto-route according to quote type
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1143,7 +1154,7 @@ function loadSiteToDashboard(siteId) {
 }
 
 // ========================================================
-// 12. EDIT CUSTOMER DETAILS (WITH INSTANT DASHBOARD SWITCH)
+// 12. EDIT CUSTOMER DETAILS (WITH INSTANT SCREEN SWITCH)
 // ========================================================
 let tempEditQuoteType = 'both';
 function openEditCustomerModal() {
@@ -1203,7 +1214,7 @@ function saveEditCustomerDetails() {
     refreshLivePdfPreviewSheet();
     closeEditCustomerModal();
 
-    // Instant switch to selected dashboard
+    // Instant switch to corresponding dashboard
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1745,7 +1756,7 @@ function renderCustomModulesDashboardList() {
         const amt = (parseFloat(mod.qty) || 0) * (parseFloat(mod.rate) || 0);
         const isEnabled = mod.enabled !== false;
         container.innerHTML += `
-            <div class="module-grid-card card-3d-press ${!isEnabled ? 'disabled-mod' : ''} btn-ripple" style="border-left: 4px solid var(--header-bg);">
+            <div class="module-grid-card card-3d-press ${!isEnabled ? 'disabled-mod' : ''}" style="border-left: 4px solid var(--header-bg);">
                 <span class="mod-switch-pill ${isEnabled ? 'on' : ''}" onclick="event.stopPropagation(); toggleCustomModuleActive('${mod.id}')">${isEnabled ? 'ON' : 'OFF'}</span>
                 <div>
                     <div class="mod-card-top"><span class="mod-card-icon">✨</span><span class="mod-card-title">${6 + idx}. ${mod.title}</span></div>
@@ -2308,6 +2319,7 @@ function addNewAccessoryDirectly() {
     refreshLivePdfPreviewSheet();
 }
 
+// ⭐ GST SPLIT ROWS EXTRA DARK, THICK & LARGER FONT ⭐
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     if (!taxSlab || taxSlab.rate === 0 || basicCost === 0) {
         return `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">-</span></div>`;
@@ -2602,7 +2614,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             }
         }
 
-        // Terms preview editable
         safeSetHtml('pdfTermsContainer', `
             <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('paymentTerms', this)">${(appSettings.paymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
             <div class="general-terms-block"><p>2. <b>General Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('termsCond', this)">${(appSettings.termsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
@@ -2773,7 +2784,7 @@ function lockTableBottomBorder(tableEl) {
 }
 
 function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_CAPACITY = 995; // 995px safe capacity guarantees no cut on footer
+    const MAX_CAPACITY = 1045; // ⭐ 1045px Standard Limit: Prevents cutting Civil footer on Page 1 ⭐
     const testStage = document.createElement('div');
     testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
     const initialClone = sectionEl.cloneNode(true);
@@ -3028,7 +3039,7 @@ function downloadPDFDirectly(mode = 'both') {
     stage.appendChild(outputContainer);
     document.body.appendChild(stage);
 
-    // EXACT 746PX SCALE (NO VIEWPORT CROP)
+    // ⭐ EXACT 746PX VIRTUAL CAPTURE (ELIMINATES DESKTOP LEFT CROP) ⭐
     const opt = {
         margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
