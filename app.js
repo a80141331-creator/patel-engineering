@@ -3207,11 +3207,6 @@ function addPhoneRowInSettings() {
     if (!appSettings.phones) appSettings.phones = [];
     appSettings.phones.push("+91 ");
     syncDataToCloud('patel_app_settings', appSettings);
-    renderSettingsPhonesUI
-function addPhoneRowInSettings() {
-    if (!appSettings.phones) appSettings.phones = [];
-    appSettings.phones.push("+91 ");
-    syncDataToCloud('patel_app_settings', appSettings);
     renderSettingsPhonesUI();
     refreshLivePdfPreviewSheet();
 }
