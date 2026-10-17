@@ -243,16 +243,8 @@
 
             <div class="dashboard-split-layout">
                 <!-- LEFT CONTROLS PANE -->
-                <div class="dash-controls-pane" id="dashControlsPaneShed">
-                    <div class="pane-scroll-nav">
-                        <span class="pane-title-badge">⚙️ Controls & Modules</span>
-                        <div class="scroll-btns-wrap">
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashControlsPaneShed', -280)" title="Scroll Up">▲</button>
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashControlsPaneShed', 280)" title="Scroll Down">▼</button>
-                        </div>
-                    </div>
-
-                    <!-- EDIT CUSTOMER TRIGGER BUTTON -->
+                <div class="dash-controls-pane">
+                    <!-- EDIT CUSTOMER DETAILS TRIGGER -->
                     <button type="button" class="btn-edit-cust-trigger btn-ripple" onclick="openEditCustomerModal()">
                         <span class="icon">👤</span>
                         <div class="text-wrap">
@@ -379,18 +371,19 @@
                 </div>
 
                 <!-- RIGHT PREVIEW PANE -->
-                <div class="dash-preview-pane" id="dashPreviewPaneShed">
+                <div class="dash-preview-pane">
+                    <!-- PREVIEW TOP NAV STRIP (ARROWS SCROLL ONLY PREVIEW) -->
                     <div class="pane-scroll-nav">
-                        <span class="pane-title-badge">📑 Live PDF Document Preview</span>
+                        <span class="pane-title-badge">📑 Document Preview</span>
                         <div class="scroll-btns-wrap">
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashPreviewPaneShed', -350)" title="Scroll Preview Up">▲</button>
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashPreviewPaneShed', 350)" title="Scroll Preview Down">▼</button>
+                            <button type="button" class="btn-pane-scroll" onclick="scrollPreviewPane(-320)" title="Scroll Preview Up">▲ Upar</button>
+                            <button type="button" class="btn-pane-scroll" onclick="scrollPreviewPane(320)" title="Scroll Preview Down">▼ Neeche</button>
                         </div>
                     </div>
 
                     <div class="pdf-section-wrapper">
                         <div class="font-scale-bar card-3d">
-                            <span style="font-size:11.5px; font-weight:800;">🔍 Screen Preview Zoom:</span>
+                            <span style="font-size:11.5px; font-weight:800;">🔍 Preview Zoom:</span>
                             <div style="display:flex; align-items:center; gap:6px;">
                                 <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.05)">A -</button>
                                 <span id="scaleIndicatorText" style="font-size:12px; font-weight:900; min-width:44px; text-align:center; color:var(--gold-light);">100%</span>
@@ -434,7 +427,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- 2. CUSTOMER DETAILS (FLEXBOX LOCKED NO SQUISHING) -->
+                                            <!-- 2. CUSTOMER DETAILS (DIRECT IN-PREVIEW EDITABLE) -->
                                             <div class="customer-details-block">
                                                 <div class="scope-left-column">
                                                     <div class="scope-heading-dark" id="pdfScopeTitle">
@@ -539,7 +532,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- DUAL SIGNATURE BLOCK (WITH CLEAN SIGNATURE RULE LINE) -->
+                                            <!-- DUAL SIGNATURE BLOCK (WITH PHYSICAL RULE LINE) -->
                                             <div class="signature-dual-grid">
                                                 <div class="sign-box-col">
                                                     <div class="sign-stamp-area"></div>
@@ -756,15 +749,7 @@
 
         <div class="content">
             <div class="dashboard-split-layout">
-                <div class="dash-controls-pane" id="dashControlsPaneCivil">
-                    <div class="pane-scroll-nav">
-                        <span class="pane-title-badge">🧱 Civil Controls</span>
-                        <div class="scroll-btns-wrap">
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashControlsPaneCivil', -280)" title="Scroll Up">▲</button>
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashControlsPaneCivil', 280)" title="Scroll Down">▼</button>
-                        </div>
-                    </div>
-
+                <div class="dash-controls-pane">
                     <!-- EDIT CUSTOMER DETAILS BUTTON IN CIVIL -->
                     <button type="button" class="btn-edit-cust-trigger btn-ripple" onclick="openEditCustomerModal()">
                         <span class="icon">👤</span>
@@ -852,12 +837,13 @@
                     </div>
                 </div>
 
-                <div class="dash-preview-pane" id="dashPreviewPaneCivil">
+                <!-- RIGHT PREVIEW PANE (CIVIL) -->
+                <div class="dash-preview-pane">
                     <div class="pane-scroll-nav">
                         <span class="pane-title-badge">📑 Civil Document Preview</span>
                         <div class="scroll-btns-wrap">
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashPreviewPaneCivil', -350)" title="Scroll Preview Up">▲</button>
-                            <button type="button" class="btn-pane-scroll" onclick="scrollPaneSmooth('dashPreviewPaneCivil', 350)" title="Scroll Preview Down">▼</button>
+                            <button type="button" class="btn-pane-scroll" onclick="scrollCivilPreviewPane(-320)" title="Scroll Preview Up">▲ Upar</button>
+                            <button type="button" class="btn-pane-scroll" onclick="scrollCivilPreviewPane(320)" title="Scroll Preview Down">▼ Neeche</button>
                         </div>
                     </div>
 
@@ -1085,7 +1071,7 @@
         </div>
     </div>
 
-    <!-- MODAL: CIVIL PARAMETERS (WITH TICK / CHECKLIST SUPPORT) -->
+    <!-- MODAL: CIVIL PARAMETERS -->
     <div id="civilParamModal" class="modal">
         <div class="modal-body modal-3d" style="max-height: 94vh;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
