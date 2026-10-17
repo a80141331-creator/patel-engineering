@@ -73,7 +73,7 @@ function showCorporateToast(message, icon = '✓') {
     }, 2800);
 }
 
-// ⭐ SMOOTH SCROLL ARROWS FUNCTION (PREVIEW ONLY) ⭐
+// ⭐ SMOOTH SCROLL ARROWS (PREVIEW ONLY) ⭐
 function scrollPreviewPane(delta) {
     const vp = document.getElementById('viewportWrap');
     if (vp) {
@@ -227,7 +227,6 @@ if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
-// ⭐ AUTO-LEARNING: Propagates any new item/module to future sites ⭐
 function syncSiteStructureToMasterBlueprint(site) {
     if (!site) return;
     try {
@@ -542,12 +541,11 @@ function setDeviceViewMode(mode, isManual = false) {
     setTimeout(autoFitPreview, 50);
 }
 
-// ⭐ DEDICATED 3-TIER RESOLUTION DETECTION ⭐
 function autoDetectDeviceMode() {
     if (manualDeviceModeOverride) return;
     const w = window.innerWidth;
     if (w >= 1025) setDeviceViewMode('desktop', false);
-    else if (w >= 768) setDeviceViewMode('tab', false); // Tablet mode (clean full-width)
+    else if (w >= 768) setDeviceViewMode('tab', false);
     else setDeviceViewMode('phone', false);
 }
 
@@ -595,7 +593,7 @@ function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const start = parseInt(currentText, 10) || 0;
     if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN') + suffix; return; }
 
-    const duration = 1200; // Smooth slower calculation effect
+    const duration = 1200;
     const startTime = performance.now();
     function step(currentTime) {
         const elapsed = currentTime - startTime;
@@ -835,7 +833,7 @@ function saveStartingQuoteSeq(val) {
 }
 
 // ========================================================
-// 10. PREVIEW SCALING & DESKTOP CENTER ZOOM LOGIC
+// 10. PREVIEW SCALING & VIEWPORT FIT
 // ========================================================
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
@@ -867,6 +865,8 @@ function applyScaleToSheet() {
 
 function autoFitPreview() {
     const userZoom = parseFloat(appSettings.savedPdfScale) || 1.0;
+    const isDesktop = document.body.classList.contains('mode-desktop');
+
     const viewport = document.getElementById('viewportWrap');
     const wrapper = document.getElementById('scalingWrapper');
     const sheet = document.getElementById('printableA4Sheet');
@@ -881,10 +881,14 @@ function autoFitPreview() {
             wrapper.style.transform = `scale(${totalScale})`;
             wrapper.style.setProperty('margin', '0 auto', 'important');
             
-            const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
-            const scaledHeight = Math.ceil(unscaledHeight * totalScale);
-            if (scaledHeight > 0) {
-                viewport.style.setProperty('height', `${scaledHeight + 35}px`, 'important');
+            if (!isDesktop) {
+                const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
+                const scaledHeight = Math.ceil(unscaledHeight * totalScale);
+                if (scaledHeight > 0) {
+                    viewport.style.height = `${scaledHeight + 35}px`;
+                }
+            } else {
+                viewport.style.height = '100%';
             }
         }
     }
@@ -903,10 +907,14 @@ function autoFitPreview() {
             civilWrap.style.transform = `scale(${cTotalScale})`;
             civilWrap.style.setProperty('margin', '0 auto', 'important');
             
-            const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
-            const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
-            if (cScaledHeight > 0) {
-                civilVp.style.setProperty('height', `${cScaledHeight + 35}px`, 'important');
+            if (!isDesktop) {
+                const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
+                const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
+                if (cScaledHeight > 0) {
+                    civilVp.style.height = `${cScaledHeight + 35}px`;
+                }
+            } else {
+                civilVp.style.height = '100%';
             }
         }
     }
@@ -1145,7 +1153,6 @@ function loadSiteToDashboard(siteId) {
     applyCustomButtonNamesUI();
     refreshLivePdfPreviewSheet();
 
-    // Auto-route according to quote type
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1155,7 +1162,7 @@ function loadSiteToDashboard(siteId) {
 }
 
 // ========================================================
-// 12. EDIT CUSTOMER DETAILS (WITH INSTANT SCREEN SWITCH)
+// 12. EDIT CUSTOMER DETAILS
 // ========================================================
 let tempEditQuoteType = 'both';
 function openEditCustomerModal() {
@@ -1215,7 +1222,6 @@ function saveEditCustomerDetails() {
     refreshLivePdfPreviewSheet();
     closeEditCustomerModal();
 
-    // Instant switch to corresponding dashboard
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1236,7 +1242,7 @@ function syncPreviewCustEdit(field, el) {
 }
 
 // ========================================================
-// 13. CIVIL DATA & DYNAMIC DASHBOARD TOGGLES
+// 13. CIVIL DATA & TOGGLES
 // ========================================================
 function ensureCivilDataOnSite(site) {
     if (!site.civilData) site.civilData = JSON.parse(JSON.stringify(masterBlueprint.civilData));
@@ -1419,7 +1425,7 @@ function updatePillTogglesUI() {
 }
 
 // ========================================================
-// 14. CIVIL DASHBOARD & SYNCHRONIZED PREVIEW
+// 14. CIVIL DASHBOARD
 // ========================================================
 function openCivilDashboardScreen() {
     const site = getCurrentSite();
@@ -1490,7 +1496,7 @@ function saveCivilScopeModal() {
 }
 
 // ========================================================
-// 15. CIVIL PARAMETERS MODAL (WITH ITEM TICK SUPPORT)
+// 15. CIVIL PARAMETERS MODAL
 // ========================================================
 let activeCivilModalType = null;
 function openCivilParamModal(type) {
@@ -2189,7 +2195,7 @@ function calcModuleTotals() {
 }
 
 // ========================================================
-// 19. IN-PREVIEW LIVE SYNC & EDITS
+// 19. IN-PREVIEW LIVE SYNC
 // ========================================================
 function openCivilUnitPicker(secKey, idx) {
     const site = getCurrentSite();
@@ -2319,7 +2325,6 @@ function addNewAccessoryDirectly() {
     refreshLivePdfPreviewSheet();
 }
 
-// ⭐ GST SPLIT ROWS EXTRA DARK, THICK & LARGER FONT ⭐
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     if (!taxSlab || taxSlab.rate === 0 || basicCost === 0) {
         return `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">-</span></div>`;
@@ -2338,7 +2343,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
 }
 
 // ========================================================
-// 20. LIVE PREVIEW ENGINE (HIGH-CONTRAST THEME 12 SYNC)
+// 20. LIVE PREVIEW ENGINE
 // ========================================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
@@ -2769,7 +2774,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 }
 
 // ========================================================
-// 21. PDF PAGINATION & ZERO-OFFSET ENGINE (PREVENTS CROPPING)
+// 21. PDF PAGINATION & ZERO-OFFSET ENGINE
 // ========================================================
 function createCleanPageBox(hasPageBreak = true) {
     const p = document.createElement('div');
@@ -2784,7 +2789,7 @@ function lockTableBottomBorder(tableEl) {
 }
 
 function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_CAPACITY = 1045; // Standard 1045px: Guarantees single-page fit without dropping footer
+    const MAX_CAPACITY = 1080;
     const testStage = document.createElement('div');
     testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
     const initialClone = sectionEl.cloneNode(true);
@@ -2983,12 +2988,11 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
     }
 }
 
+// ⭐ UNIVERSAL DOWNLOAD ENGINE (WORKS ON PC, TABLET & MOBILE BROWSER + ANDROID APP) ⭐
 function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    
-    // Dedicated Company Folder Filename
     const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
     
     triggerHaptic(50);
@@ -3005,7 +3009,6 @@ function downloadPDFDirectly(mode = 'both') {
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    // Zero-Offset Stage: Prevents Left Shift & Desktop Crop Bug
     const stage = document.createElement('div');
     stage.style.cssText = 'position: fixed; left: 0; top: 0; width: 746px; background: #ffffff; z-index: -99999; margin: 0; padding: 0; overflow: hidden;';
     
@@ -3031,7 +3034,7 @@ function downloadPDFDirectly(mode = 'both') {
         paginateQuoteSection(p1, outputContainer, site.quoteNo, 'SHED');
     }
     if (shouldIncludeCivil && p2) {
-        p2.style.display = 'block'; // Ensure non-zero height
+        p2.style.display = 'block';
         paginateQuoteSection(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
@@ -3041,13 +3044,12 @@ function downloadPDFDirectly(mode = 'both') {
     stage.appendChild(outputContainer);
     document.body.appendChild(stage);
 
-    // ⭐ 100% PHONE-IDENTICAL RENDERING OPTIONS (NO SHIFTING, NO CROPPING) ⭐
     const opt = {
         margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
-        image: { type: 'jpeg', quality: 1.0 },
+        image: { type: 'jpeg', quality: 0.98 },
         html2canvas: {
-            scale: 2.5,
+            scale: 2.0,
             useCORS: true,
             letterRendering: true,
             scrollY: 0,
@@ -3063,20 +3065,37 @@ function downloadPDFDirectly(mode = 'both') {
     };
 
     html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
-        const base64Data = pdfObj.output('datauristring').split(',')[1];
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
 
+        // 1. Android App Native Bridge
         if (window.PatelNativeEngine?.savePdfToPatelFolder) {
+            const base64Data = pdfObj.output('datauristring').split(',')[1];
             window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
-        } else {
-            pdfObj.save(fileName);
+            return;
+        }
+
+        // 2. Mobile & Tablet Universal Direct Blob Trigger
+        try {
+            const blob = pdfObj.output('blob');
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = blobUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(blobUrl);
+            }, 1000);
             showCorporateToast("✓ PDF Downloaded Successfully!");
+        } catch(e) {
+            pdfObj.save(fileName);
         }
     }).catch(function(err) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
-        // Fallback standard save
         html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
     });
 }
@@ -3211,7 +3230,6 @@ function autoSaveLargeInputLive() {
     refreshLivePdfPreviewSheet();
 }
 
-// AUTO COMPRESSOR ENGINE
 function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
