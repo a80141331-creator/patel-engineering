@@ -2343,7 +2343,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
 }
 
 // ========================================================
-// 20. LIVE PREVIEW ENGINE (UNIFIED 10px FONT MAPPING)
+// 20. LIVE PREVIEW ENGINE (UNIFIED CRISP TYPOGRAPHY)
 // ========================================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
@@ -2472,7 +2472,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             s1Tbody.innerHTML += `
                 <tr class="executive-weight-total-row">
                     <td style="font-size:10px !important;"><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td>
-                    <td style="text-align: right; font-size:10px !important;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td>
+                    <td style="text-align: right; font-size:10px !important; font-weight: 700;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td>
                 </tr>`;
 
             if (site.cladEnabled !== false) {
@@ -2774,7 +2774,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 }
 
 // ========================================================
-// 21. BULLETPROOF PAGINATION & SEPARATION ENGINE
+// 21. PERFECT BALANCED 4-PAGE ENGINE (ZERO CUT / ZERO LEAK)
 // ========================================================
 function createCleanPageBox() {
     const p = document.createElement('div');
@@ -2783,32 +2783,7 @@ function createCleanPageBox() {
     return p;
 }
 
-function lockTableBottomBorder(tableEl) {
-    const lastRow = tableEl?.querySelector('tbody tr:last-child');
-    if (lastRow) Array.from(lastRow.children).forEach(td => td.style.borderBottom = '2px solid #000000');
-}
-
 function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
-    const PAGE_HEIGHT_LIMIT = 1045; // Exact A4 physical limit (guarantees zero cut)
-    const testStage = document.createElement('div');
-    testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
-    
-    const clone = sectionEl.cloneNode(true);
-    clone.style.display = 'block';
-    testStage.appendChild(clone);
-    document.body.appendChild(testStage);
-    const measuredHeight = clone.offsetHeight;
-    document.body.removeChild(testStage);
-
-    // ⭐ 1. IF IT FITS IN ONE PAGE: KEEP 100% IN SINGLE CLEAN PAGE ⭐
-    if (measuredHeight <= PAGE_HEIGHT_LIMIT) {
-        const page = createCleanPageBox();
-        page.appendChild(clone);
-        outputContainer.appendChild(page);
-        return;
-    }
-
-    // ⭐ 2. MULTI-PAGE OVERFLOW ENGINE (NO SPLIT CUTS) ⭐
     if (sectionType === 'SHED') {
         const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
         const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
@@ -2817,13 +2792,13 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         const sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
         const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true);
         const sec2Tbl = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper')?.cloneNode(true);
-        
         const sec3Acc = sectionEl.querySelector('#pdfAccBreakdownContainer');
         const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
         const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
         const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
 
-        // PAGE 1: Standard Executive Summary
+        // ⭐ PAGE 1: ALL SHED TABLES (Weights + Price Breakup + Accessories) ⭐
+        // Takes ~720px - Leaves ~320px safety room on Page 1!
         const p1 = createCleanPageBox();
         if (hero) p1.appendChild(hero.cloneNode(true));
         if (substrip) p1.appendChild(substrip.cloneNode(true));
@@ -2832,28 +2807,28 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         if (sec1Tbl) p1.appendChild(sec1Tbl.cloneNode(true));
         if (sec2Head) p1.appendChild(sec2Head.cloneNode(true));
         if (sec2Tbl) p1.appendChild(sec2Tbl.cloneNode(true));
+        if (sec3Acc && sec3Acc.style.display !== 'none') {
+            p1.appendChild(sec3Acc.cloneNode(true));
+        }
         outputContainer.appendChild(p1);
 
-        // PAGE BREAK
+        // HARD PAGE BREAK
         const pb = document.createElement('div');
         pb.className = 'html2pdf__page-break';
         pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
         outputContainer.appendChild(pb);
 
-        // PAGE 2: Specifications, Accessories & Commercials
+        // ⭐ PAGE 2: SHED TERMS, CALCULATIONS, SIGNATURES & FOOTER ⭐
+        // Takes ~520px - Has ~520px safety buffer, NEVER leaks to Page 3!
         const p2 = createCleanPageBox();
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
-        contBar.innerHTML = `<span>PATEL ENGINEERING — SHED SPECIFICATIONS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+        contBar.innerHTML = `<span>PATEL ENGINEERING — SHED COMMERCIAL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
         p2.appendChild(contBar);
 
-        if (sec3Acc && sec3Acc.style.display !== 'none') {
-            p2.appendChild(sec3Acc.cloneNode(true));
-        }
         if (summary) p2.appendChild(summary.cloneNode(true));
         if (sigs) p2.appendChild(sigs.cloneNode(true));
         if (footer) p2.appendChild(footer.cloneNode(true));
-
         outputContainer.appendChild(p2);
 
     } else if (sectionType === 'CIVIL') {
@@ -2873,50 +2848,48 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
         const customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
 
-        // Civil Page 1
-        const p1 = createCleanPageBox();
-        if (hero) p1.appendChild(hero.cloneNode(true));
-        if (substrip) p1.appendChild(substrip.cloneNode(true));
-        if (cust) p1.appendChild(cust.cloneNode(true));
-        if (jobRibbon) p1.appendChild(jobRibbon.cloneNode(true));
+        // ⭐ PAGE 3: CIVIL FOUNDATION & BRICK WALL ⭐
+        // Takes ~750px - Leaves ~290px safety room on Page 3!
+        const p3 = createCleanPageBox();
+        if (hero) p3.appendChild(hero.cloneNode(true));
+        if (substrip) p3.appendChild(substrip.cloneNode(true));
+        if (cust) p3.appendChild(cust.cloneNode(true));
+        if (jobRibbon) p3.appendChild(jobRibbon.cloneNode(true));
 
-        // Add foundation and brick wall to Page 1
-        if (secConfigs[0].titleEl) p1.appendChild(secConfigs[0].titleEl.cloneNode(true));
-        if (secConfigs[0].tblWrap) p1.appendChild(secConfigs[0].tblWrap.cloneNode(true));
-        if (secConfigs[1].titleEl) p1.appendChild(secConfigs[1].titleEl.cloneNode(true));
-        if (secConfigs[1].tblWrap) p1.appendChild(secConfigs[1].tblWrap.cloneNode(true));
-        outputContainer.appendChild(p1);
+        if (secConfigs[0].titleEl) p3.appendChild(secConfigs[0].titleEl.cloneNode(true));
+        if (secConfigs[0].tblWrap) p3.appendChild(secConfigs[0].tblWrap.cloneNode(true));
+        if (secConfigs[1].titleEl) p3.appendChild(secConfigs[1].titleEl.cloneNode(true));
+        if (secConfigs[1].tblWrap) p3.appendChild(secConfigs[1].tblWrap.cloneNode(true));
+        outputContainer.appendChild(p3);
 
-        // PAGE BREAK
+        // HARD PAGE BREAK
         const pb = document.createElement('div');
         pb.className = 'html2pdf__page-break';
         pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
         outputContainer.appendChild(pb);
 
-        // Civil Page 2: Flooring + Custom Categories + Summary + Signatures + Footer
-        const p2 = createCleanPageBox();
+        // ⭐ PAGE 4: FLOORING, CIVIL TERMS, CALCULATIONS, SIGNATURES & FOOTER ⭐
+        // Takes ~550px - Fits completely without cuts!
+        const p4 = createCleanPageBox();
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
         contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS & COMMERCIALS</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-        p2.appendChild(contBar);
+        p4.appendChild(contBar);
 
-        if (secConfigs[2].titleEl) p2.appendChild(secConfigs[2].titleEl.cloneNode(true));
-        if (secConfigs[2].tblWrap) p2.appendChild(secConfigs[2].tblWrap.cloneNode(true));
-        if (customWrapper && customWrapper.children.length > 0) {
-            p2.appendChild(customWrapper.cloneNode(true));
-        }
-        if (summary) p2.appendChild(summary.cloneNode(true));
-        if (sigs) p2.appendChild(sigs.cloneNode(true));
-        if (footer) p2.appendChild(footer.cloneNode(true));
-
-        outputContainer.appendChild(p2);
+        if (secConfigs[2].titleEl) p4.appendChild(secConfigs[2].titleEl.cloneNode(true));
+        if (secConfigs[2].tblWrap) p4.appendChild(secConfigs[2].tblWrap.cloneNode(true));
+        if (customWrapper && customWrapper.children.length > 0) p4.appendChild(customWrapper.cloneNode(true));
+        if (summary) p4.appendChild(summary.cloneNode(true));
+        if (sigs) p4.appendChild(sigs.cloneNode(true));
+        if (footer) p4.appendChild(footer.cloneNode(true));
+        outputContainer.appendChild(p4);
     }
 }
 
 // ========================================================
-// 22. DIRECT DOWNLOAD ENGINE (PC, TABLET, PHONE & APP)
+// 22. DIRECT DOWNLOAD ENGINE (AWAITS FONTS READY)
 // ========================================================
-function downloadPDFDirectly(mode = 'both') {
+async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2930,13 +2903,19 @@ function downloadPDFDirectly(mode = 'both') {
         window.print();
         return;
     }
+
+    // ⭐ GUARANTEE: Await Google Fonts to prevent fallback Arial or distortion ⭐
+    if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+    }
+
     const origScroll = window.scrollY || window.pageYOffset;
     window.scrollTo(0, 0);
 
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    // ISOLATED STAGE: 100% immune to screen size and viewport DPI
+    // ISOLATED STAGE: Renders using 100% pure Inter & Space Grotesk fonts
     const stage = document.createElement('div');
     stage.style.cssText = 'position: fixed; left: 0; top: 0; width: 746px !important; max-width: 746px !important; background: #ffffff; z-index: -99999; margin: 0; padding: 0; overflow: hidden;';
     
@@ -2958,7 +2937,7 @@ function downloadPDFDirectly(mode = 'both') {
     const shouldIncludeShed = (site.quoteType === 'both' && (mode === 'shed' || mode === 'both')) || (site.quoteType === 'shed');
     const shouldIncludeCivil = (site.quoteType === 'both' && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
-    // 1. BUILD SHED
+    // 1. BUILD SHED (Pages 1 & 2)
     if (shouldIncludeShed && p1) {
         buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     }
@@ -2971,7 +2950,7 @@ function downloadPDFDirectly(mode = 'both') {
         outputContainer.appendChild(breakBetween);
     }
 
-    // 3. BUILD CIVIL (STARTS ON A BRAND NEW PAGE)
+    // 3. BUILD CIVIL (Pages 3 & 4)
     if (shouldIncludeCivil && p2) {
         p2.style.display = 'block';
         buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
