@@ -705,25 +705,46 @@ html, body {
 }
 
 /* ========================================================
-   ⭐ DESKTOP & TABLET MODE: CLEAN SPLIT WITH SCROLL ARROWS ⭐
+   ⭐ 3-TIER DEDICATED RESPONSIVE SYSTEM (PHONE / TAB / DESKTOP) ⭐
    ======================================================== */
-body.mode-phone .app-view { max-width: 480px; }
-body.mode-tab .app-view { max-width: 860px; }
-body.mode-desktop .app-view { max-width: 1440px; }
 
-.dashboard-split-layout {
-    display: block;
-    width: 100%;
+/* 1. PHONE MODE (< 768px): Compact, Single-Column Stacked */
+body.mode-phone .app-view { max-width: 480px; margin: 0 auto; }
+body.mode-phone .dashboard-split-layout { display: block !important; width: 100%; }
+body.mode-phone .modules-grid-container { grid-template-columns: 1fr 1fr !important; }
+body.mode-phone .settings-grid { grid-template-columns: 1fr !important; }
+body.mode-phone .pane-scroll-nav { display: none !important; }
+
+/* 2. TABLET MODE (768px - 1024px): Spacious, Natural Scale (NO NARROW SPLIT) */
+body.mode-tab .app-view { max-width: 880px; margin: 0 auto; }
+body.mode-tab .dashboard-split-layout { 
+    display: block !important; /* Stacked naturally for tablets */
+    width: 100% !important; 
 }
+body.mode-tab .dash-controls-pane { width: 100% !important; margin-bottom: 20px !important; }
+body.mode-tab .dash-preview-pane { width: 100% !important; position: static !important; }
+body.mode-tab .modules-grid-container { grid-template-columns: repeat(3, 1fr) !important; }
+body.mode-tab .settings-grid { grid-template-columns: repeat(2, 1fr) !important; }
+body.mode-tab .pane-scroll-nav { display: none !important; }
 
-body.mode-desktop .dashboard-split-layout,
-body.mode-tab .dashboard-split-layout {
+/* 3. DESKTOP MODE (>= 1025px): Widescreen 44% Controls / 56% Sticky Preview */
+body.mode-desktop .app-view { max-width: 1440px; margin: 0 auto; }
+body.mode-desktop .dashboard-split-layout {
     display: grid !important;
     grid-template-columns: 44% 56% !important;
     gap: 16px !important;
     align-items: start !important;
     width: 100% !important;
 }
+body.mode-desktop .dash-controls-pane { width: 100% !important; }
+body.mode-desktop .dash-preview-pane { 
+    width: 100% !important; 
+    position: sticky !important; 
+    top: 72px !important; 
+}
+body.mode-desktop .modules-grid-container { grid-template-columns: repeat(2, 1fr) !important; }
+body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !important; }
+body.mode-desktop .pane-scroll-nav { display: flex !important; }
 
 /* PANE TOP NAV STRIP (ARROW SCROLL CONTROLS) */
 .pane-scroll-nav {
@@ -736,10 +757,6 @@ body.mode-tab .dashboard-split-layout {
     margin-bottom: 8px;
     border: 1px solid #38bdf8;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-body.mode-desktop .pane-scroll-nav,
-body.mode-tab .pane-scroll-nav {
-    display: flex !important;
 }
 .pane-title-badge {
     font-size: 11px;
@@ -771,19 +788,6 @@ body.mode-tab .pane-scroll-nav {
 .btn-pane-scroll:active {
     transform: scale(0.92);
 }
-
-body.mode-desktop .dash-controls-pane {
-    width: 100% !important;
-}
-
-body.mode-desktop .dash-preview-pane {
-    width: 100% !important;
-    position: sticky !important;
-    top: 72px !important;
-}
-
-body.mode-desktop .modules-grid-container { grid-template-columns: repeat(2, 1fr) !important; }
-body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !important; }
 
 .app-view {
     display: none;
