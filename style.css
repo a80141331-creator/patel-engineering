@@ -388,7 +388,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .btn-enter-civil-hub { width: 100%; padding: 12px 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 
 /* ========================================================
-   A4 SHEET & DYNAMIC MULTI-PAGE FLOW ENGINE
+   A4 SHEET & DYNAMIC MULTI-PAGE FLOW ENGINE (PERFECT PAGE FIT)
    ======================================================== */
 .a4-page-box {
     width: 746px !important;
@@ -406,19 +406,27 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border: 2px solid #000000 !important;
     display: flow-root !important;
     height: auto !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .page-physical-gap { height: 16px; background: #1e293b; width: 746px; margin: 0 auto; }
 
-/* HARD PAGE-BREAK ISOLATION */
+/* HARD PAGE-BREAK ISOLATION (FORCED SEPARATION BETWEEN PAGES) */
 .html2pdf__page-break {
+    page-break-before: always !important;
     page-break-after: always !important;
+    break-before: page !important;
     break-after: page !important;
     height: 0 !important;
+    min-height: 0 !important;
     line-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
+    border: none !important;
     display: block !important;
+    clear: both !important;
 }
 
 /* 1. ANGLED MAIN HEADER */
@@ -430,6 +438,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     background: #ffffff !important;
     border-bottom: 3px solid var(--th-primary) !important;
     overflow: hidden !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .top-accent-bar {
@@ -508,6 +518,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     font-weight: 800 !important;
     box-sizing: border-box !important;
     width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 .substrip-addr { display: flex !important; align-items: center !important; gap: 5px !important; color: #ffffff !important; }
 .substrip-addr span { color: #ffffff !important; }
@@ -517,12 +529,12 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     display: inline-flex !important; align-items: center !important; gap: 4px !important;
 }
 
-/* CONTINUATION HEADER STRIP (ON ALL SUBSEQUENT PAGES) */
+/* CONTINUATION HEADER STRIP (PINNED CLEANLY ON NEXT PAGES) */
 .continuation-header-bar {
     width: 100% !important;
     background: linear-gradient(135deg, #0c1e30 0%, #1e3a5f 100%) !important;
     color: #ffffff !important;
-    padding: calc(5px * var(--pdf-scale)) 14px !important;
+    padding: calc(6px * var(--pdf-scale)) 14px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -532,6 +544,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     letter-spacing: 0.6px !important;
     text-transform: uppercase !important;
     box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 .continuation-header-bar span.ref-pill {
     background: rgba(255, 255, 255, 0.15) !important;
@@ -552,6 +566,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border-bottom: 2px solid #000000 !important;
     box-sizing: border-box !important;
     width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .scope-left-column { 
@@ -641,7 +657,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     padding-left: 4px !important;
 }
 
-/* 3. ENGINEERING TABLES (CLOSED BORDERS & PROPER HEADERS) */
+/* 3. ENGINEERING TABLES (CLOSED BORDERS & SAFE ROWS) */
 .section-header-bar {
     margin: 0 !important;
     background: #e2e8f0 !important;
@@ -659,6 +675,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     align-items: center;
     box-sizing: border-box;
     width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .table-wrapper { 
@@ -682,6 +700,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 
 .theme-data-table thead, .civil-schedule-table thead {
     display: table-header-group !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .theme-data-table th, .civil-schedule-table th {
@@ -698,7 +718,12 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 .theme-data-table th:last-child, .civil-schedule-table th:last-child { border-right: none !important; }
 
-/* CRISP TABULAR NUMBERS & TEXT */
+/* TABLE ROW BREAK-INSIDE PROTECTION */
+.theme-data-table tr, .civil-schedule-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+}
+
 .theme-data-table td, .civil-schedule-table td {
     padding: calc(4.5px * var(--pdf-scale)) 6px !important;
     border-bottom: 1px solid var(--border-col) !important;
@@ -719,7 +744,11 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .row-item-subtitle { font-size: 9.5px !important; font-weight: 600 !important; color: #1e293b !important; }
 .civil-item-title { font-size: 10px !important; font-weight: 700 !important; color: #000000 !important; }
 
-.executive-weight-total-row { background: #cbd5e1 !important; }
+.executive-weight-total-row { 
+    background: #cbd5e1 !important; 
+    page-break-inside: avoid !important; 
+    break-inside: avoid !important; 
+}
 .executive-weight-total-row td { 
     padding: calc(4.5px * var(--pdf-scale)) 6px !important; 
     border-top: 2px solid #000000 !important; 
@@ -739,18 +768,21 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .civil-job-details-ribbon {
     background: var(--th-primary) !important; color: #ffffff !important; padding: calc(4.5px * var(--pdf-scale)) 12px !important;
     font-size: 9.5px !important; font-weight: 900 !important; text-transform: uppercase; letter-spacing: 0.6px; margin: 0 !important; border-bottom: 1.5px solid #000000; box-sizing: border-box; width: 100% !important;
+    page-break-inside: avoid !important; break-inside: avoid !important;
 }
 
 .civil-category-title-bar {
     margin: 0 !important; background: #e2e8f0 !important; border-top: 1.5px solid #000000 !important; border-bottom: 1.5px solid #000000 !important;
     border-left: 6px solid var(--th-primary) !important; border-right: none; padding: calc(3.5px * var(--pdf-scale)) 12px !important;
     font-size: 9px !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; box-sizing: border-box; width: 100% !important;
+    page-break-inside: avoid !important; break-inside: avoid !important;
 }
 
 /* 4. TERMS & COMMERCIAL SUMMARY */
 .theme-bottom-summary-grid { 
     padding: calc(6px * var(--pdf-scale)) 14px calc(4px * var(--pdf-scale)) 14px !important; 
     display: grid !important; grid-template-columns: 54% 46% !important; gap: 12px !important; align-items: flex-start; box-sizing: border-box; width: 100% !important; margin: 0 !important;
+    page-break-inside: avoid !important; break-inside: avoid !important;
 }
 
 .terms-column { width: 100%; padding-right: 4px; }
@@ -828,6 +860,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     padding: calc(6px * var(--pdf-scale)) 16px calc(8px * var(--pdf-scale)) 16px !important;
     display: flex !important; justify-content: space-between !important; align-items: flex-end !important; margin-top: 3px !important;
     background: #ffffff !important; border-top: none !important; box-sizing: border-box; width: 100% !important;
+    page-break-inside: avoid !important; break-inside: avoid !important;
 }
 
 .sign-box-col { width: 180px !important; text-align: center; display: flex; flex-direction: column; align-items: center; }
@@ -840,6 +873,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .geo-footer-wrapper {
     position: relative; width: 100% !important; background: #ffffff; border-top: 2px solid #000000 !important;
     overflow: hidden; display: flex;
+    page-break-inside: avoid !important; break-inside: avoid !important;
 }
 
 .footer-full-bar {
@@ -901,14 +935,15 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     width: 746px !important; min-width: 746px !important; max-width: 746px !important; display: flow-root !important; height: auto !important; margin: 0 auto !important;
 }
 
-/* PRINT MEDIA */
+/* PRINT MEDIA CONFIGURATION */
 @media print {
     @page { size: A4 portrait; margin: 0.25in !important; }
     html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; color: #000000 !important; }
     body * { visibility: hidden !important; }
     #printableA4Sheet, #printableA4Sheet * { visibility: visible !important; }
     #printableA4Sheet { position: absolute !important; left: 0 !important; top: 0 !important; width: 746px !important; margin: 0 auto !important; padding: 0 !important; box-shadow: none !important; }
-    .a4-page-box { box-shadow: none !important; width: 746px !important; padding: 0 !important; border: 2px solid #000000 !important; }
+    .a4-page-box { box-shadow: none !important; width: 746px !important; padding: 0 !important; border: 2px solid #000000 !important; page-break-after: always !important; }
+    .a4-page-box:last-child { page-break-after: auto !important; }
     .page-physical-gap { display: none !important; }
     .fixed-bottom-bar, .top-bar { display: none !important; }
     .shed-assembly-overlay { display: none !important; }
