@@ -56,7 +56,9 @@ html, body {
     width: 100%;
 }
 
-/* FLOATING TOAST */
+/* ========================================================
+   FLOATING CORPORATE TOAST NOTIFICATION
+   ======================================================== */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -93,7 +95,9 @@ html, body {
     to { opacity: 0; transform: translateY(-15px) scale(0.92); }
 }
 
-/* MASTER AUTH OVERLAY */
+/* ========================================================
+   FIRST-TIME MASTER PASSCODE LOCK SCREEN
+   ======================================================== */
 .master-auth-overlay {
     position: fixed;
     inset: 0;
@@ -162,7 +166,9 @@ html, body {
     margin-top: 6px;
 }
 
-/* 3D BOOT ANIMATION */
+/* ========================================================
+   3D PEB TIN SHED OPEN ANIMATION
+   ======================================================== */
 .shed-assembly-overlay {
     position: fixed;
     inset: 0;
@@ -273,7 +279,9 @@ html, body {
 }
 @keyframes beamExpand { to { width: 320px; } }
 
-/* 3D BUTTONS */
+/* ========================================================
+   PHYSICAL 3D BUTTONS & CARDS
+   ======================================================== */
 .btn-ripple { position: relative; overflow: hidden; user-select: none; }
 .btn-ripple:active { transform: translateY(2px); }
 
@@ -708,7 +716,7 @@ body.mode-tab .modules-grid-container { grid-template-columns: repeat(3, 1fr) !i
 body.mode-tab .settings-grid { grid-template-columns: repeat(2, 1fr) !important; }
 body.mode-tab .pane-scroll-nav { display: none !important; }
 
-/* 3. DESKTOP MODE (>= 1025px): INDEPENDENT DUAL PANE SCROLL LOCK */
+/* 3. DESKTOP MODE (>= 1025px): INDEPENDENT DUAL-PANE VIEWPORT LOCK */
 body.mode-desktop .app-view { 
     max-width: 1460px; 
     margin: 0 auto; 
@@ -734,7 +742,7 @@ body.mode-desktop .dashboard-split-layout {
     overflow: hidden !important;
 }
 
-/* LEFT CONTROLS: PERSONAL SCROLL */
+/* LEFT CONTROLS: PERSONAL SCROLLBAR */
 body.mode-desktop .dash-controls-pane { 
     width: 100% !important;
     height: 100% !important;
@@ -746,7 +754,7 @@ body.mode-desktop .dash-controls-pane {
     scrollbar-width: thin;
 }
 
-/* RIGHT PREVIEW: PERSONAL SCROLL */
+/* RIGHT PREVIEW: PERSONAL SCROLLBAR */
 body.mode-desktop .dash-preview-pane { 
     width: 100% !important; 
     height: 100% !important;
@@ -1177,7 +1185,6 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 
 /* ========================================================
    ⭐ 2. CUSTOMER DETAILS: BULLETPROOF TABLE ARCHITECTURE ⭐
-   (Isse html2canvas mein text kabhi single-letter vertical nahi hoga!)
    ======================================================== */
 .customer-details-block {
     margin: 0 !important;
@@ -1235,7 +1242,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .dim-col-item.area-col .dim-lbl { color: #0369a1; }
 .dim-col-item.area-col .dim-val { color: #0c1e30; font-size: calc(12px * var(--pdf-scale)); }
 
-/* TABLE STRUCTURE PREVENTS SQUISHING */
+/* RIGID COLUMN LOCK */
 .client-right-list {
     display: table-cell !important;
     width: 48% !important;
@@ -1636,6 +1643,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border-top: none !important;
     box-sizing: border-box;
     width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .sign-box-col {
