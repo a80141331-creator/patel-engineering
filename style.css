@@ -1,13 +1,13 @@
 :root {
     /* THEME #12: MIDNIGHT NAVY & PURE WHITE HIGH-CONTRAST */
-    --th-primary: #0c1e30;        /* Deep Industrial Midnight Navy */
-    --th-accent: #1e3a5f;         /* Accent Navy Slate */
-    --th-steel: #334155;          /* Heavy Shed Steel Gray */
-    --th-light-bg: #f8fafc;       /* Light Paper Tint */
-    --border-dark: #000000;       /* Razor Sharp Black Border */
-    --border-col: #94a3b8;        /* Solid Vertical Column Lines */
-    --th-text-dark: #000000;      /* 100% Solid Black Text for Laser Print */
-    --th-text-muted: #1e293b;     /* Dark Charcoal Secondary */
+    --th-primary: #0c1e30;
+    --th-accent: #1e3a5f;
+    --th-steel: #334155;
+    --th-light-bg: #f8fafc;
+    --border-dark: #000000;
+    --border-col: #94a3b8;
+    --th-text-dark: #000000;
+    --th-text-muted: #1e293b;
 
     --header-bg: #0c1e30;
     --header-text: #ffffff;
@@ -21,7 +21,7 @@
     --milestone-val-color: #000000;
     --total-bar-bg: #0c1e30;
     --total-bar-border: #000000;
-    --total-text-color: #ffffff;   /* Pure White Final Total */
+    --total-text-color: #ffffff;
 
     --gold-primary: #ca8a04;
     --gold-light: #fef08a;
@@ -56,9 +56,7 @@ html, body {
     width: 100%;
 }
 
-/* ========================================================
-   FLOATING CORPORATE TOAST NOTIFICATION
-   ======================================================== */
+/* FLOATING TOAST */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -95,9 +93,7 @@ html, body {
     to { opacity: 0; transform: translateY(-15px) scale(0.92); }
 }
 
-/* ========================================================
-   FIRST-TIME MASTER PASSCODE LOCK SCREEN
-   ======================================================== */
+/* MASTER AUTH OVERLAY */
 .master-auth-overlay {
     position: fixed;
     inset: 0;
@@ -166,9 +162,7 @@ html, body {
     margin-top: 6px;
 }
 
-/* ========================================================
-   3D PEB TIN SHED OPEN ANIMATION
-   ======================================================== */
+/* 3D BOOT ANIMATION */
 .shed-assembly-overlay {
     position: fixed;
     inset: 0;
@@ -279,9 +273,7 @@ html, body {
 }
 @keyframes beamExpand { to { width: 320px; } }
 
-/* ========================================================
-   PHYSICAL 3D BUTTONS & CARDS
-   ======================================================== */
+/* 3D BUTTONS */
 .btn-ripple { position: relative; overflow: hidden; user-select: none; }
 .btn-ripple:active { transform: translateY(2px); }
 
@@ -462,9 +454,7 @@ html, body {
 .pill-3d { box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
 .modal-3d { border-top: 3.5px solid var(--gold-primary); }
 
-/* ========================================================
-   DYNAMIC PHONE INPUTS IN SETTINGS
-   ======================================================== */
+/* PHONE INPUTS */
 .phone-row-dynamic {
     background: #f8fafc;
     border: 1.5px solid #cbd5e1;
@@ -507,9 +497,7 @@ html, body {
     width: 100% !important;
 }
 
-/* ========================================================
-   SETTINGS SCREEN & CONTROLS
-   ======================================================== */
+/* SETTINGS GRID */
 .settings-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -537,9 +525,7 @@ html, body {
 .setting-grid-card .title { font-size: 13px; font-weight: 900; color: #0f172a; line-height: 1.25; }
 .setting-grid-card .subtitle { font-size: 11px; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ========================================================
-   CHECKLIST TICK CARDS
-   ======================================================== */
+/* CHECKLIST TICK CARDS */
 .tick-item-card {
     background: #ffffff;
     border: 1.5px solid #e2e8f0;
@@ -574,9 +560,7 @@ html, body {
     color: #ffffff;
 }
 
-/* ========================================================
-   ACCESSORIES & MODULE CARDS
-   ======================================================== */
+/* ACCESSORIES */
 .acc-item-card {
     background: #ffffff;
     border: 1.5px solid #cbd5e1;
@@ -663,7 +647,7 @@ html, body {
 .calc-summary-strip { margin-top: 8px; background: #0c1e30; color: #ffffff; padding: 8px 12px; border-radius: 6px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--th-accent); }
 .amt-gold { color: #38bdf8; font-weight: 900; font-size: 12.5px; }
 
-/* TOUCH & MOUSE DRAG REORDERING */
+/* DRAG REORDERING */
 .drag-handle {
     cursor: grab !important;
     padding: 3px 6px !important;
@@ -705,50 +689,96 @@ html, body {
 }
 
 /* ========================================================
-   ⭐ 3-TIER DEDICATED RESPONSIVE SYSTEM (PHONE / TAB / DESKTOP) ⭐
+   ⭐ 3-TIER RESPONSIVE ARCHITECTURE ⭐
    ======================================================== */
 
-/* 1. PHONE MODE (< 768px): Compact, Single-Column Stacked */
+/* 1. PHONE MODE (< 768px) */
 body.mode-phone .app-view { max-width: 480px; margin: 0 auto; }
 body.mode-phone .dashboard-split-layout { display: block !important; width: 100%; }
 body.mode-phone .modules-grid-container { grid-template-columns: 1fr 1fr !important; }
 body.mode-phone .settings-grid { grid-template-columns: 1fr !important; }
 body.mode-phone .pane-scroll-nav { display: none !important; }
 
-/* 2. TABLET MODE (768px - 1024px): Spacious Natural Scale (NO NARROW SPLIT) */
+/* 2. TABLET MODE (768px - 1024px) */
 body.mode-tab .app-view { max-width: 880px; margin: 0 auto; }
-body.mode-tab .dashboard-split-layout { 
-    display: block !important; /* Stacked naturally for tablets */
-    width: 100% !important; 
-}
+body.mode-tab .dashboard-split-layout { display: block !important; width: 100% !important; }
 body.mode-tab .dash-controls-pane { width: 100% !important; margin-bottom: 20px !important; }
 body.mode-tab .dash-preview-pane { width: 100% !important; position: static !important; }
 body.mode-tab .modules-grid-container { grid-template-columns: repeat(3, 1fr) !important; }
 body.mode-tab .settings-grid { grid-template-columns: repeat(2, 1fr) !important; }
 body.mode-tab .pane-scroll-nav { display: none !important; }
 
-/* 3. DESKTOP MODE (>= 1025px): Screen-Height Clamped 44/56 Split View */
-body.mode-desktop .app-view { max-width: 1440px; margin: 0 auto; }
+/* 3. DESKTOP MODE (>= 1025px): INDEPENDENT DUAL PANE SCROLL LOCK */
+body.mode-desktop .app-view { 
+    max-width: 1460px; 
+    margin: 0 auto; 
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+}
+body.mode-desktop .content {
+    padding: 10px 14px !important;
+    height: calc(100vh - 65px) !important;
+    max-height: calc(100vh - 65px) !important;
+    overflow: hidden !important;
+    padding-bottom: 10px !important;
+}
 body.mode-desktop .dashboard-split-layout {
     display: grid !important;
     grid-template-columns: 44% 56% !important;
     gap: 16px !important;
-    align-items: start !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    align-items: stretch !important;
     width: 100% !important;
+    overflow: hidden !important;
 }
+
+/* LEFT CONTROLS: PERSONAL SCROLL */
 body.mode-desktop .dash-controls-pane { 
     width: 100% !important;
-    max-height: calc(100vh - 85px) !important;
+    height: 100% !important;
+    max-height: 100% !important;
     overflow-y: auto !important;
-    padding-right: 6px !important;
+    overflow-x: hidden !important;
+    padding-right: 8px !important;
+    padding-bottom: 60px !important;
+    scrollbar-width: thin;
 }
+
+/* RIGHT PREVIEW: PERSONAL SCROLL */
 body.mode-desktop .dash-preview-pane { 
     width: 100% !important; 
-    position: sticky !important; 
-    top: 72px !important; 
-    max-height: calc(100vh - 85px) !important;
-    overflow-y: hidden !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding-bottom: 60px !important;
 }
+body.mode-desktop .pdf-section-wrapper {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    margin-top: 6px !important;
+}
+body.mode-desktop .pdf-sheet-frame {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+body.mode-desktop .mobile-preview-viewport {
+    flex: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
 body.mode-desktop .modules-grid-container { grid-template-columns: repeat(2, 1fr) !important; }
 body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !important; }
 body.mode-desktop .pane-scroll-nav { display: flex !important; }
@@ -761,9 +791,10 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     background: linear-gradient(135deg, #0c1e30, #1e3a5f);
     padding: 7px 12px;
     border-radius: 8px 8px 0 0;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     border: 1px solid #38bdf8;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    flex-shrink: 0;
 }
 .pane-title-badge {
     font-size: 11px;
@@ -784,7 +815,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border-radius: 5px;
     font-size: 11.5px;
     font-weight: 900;
-    padding: 3px 10px;
+    padding: 4px 12px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -810,7 +841,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .top-bar {
     background: var(--header-bg);
     color: #fff;
-    padding: 12px 16px;
+    padding: 10px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -818,14 +849,15 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     position: sticky;
     top: 0;
     z-index: 100;
+    flex-shrink: 0;
 }
 .brand-container { display: flex; align-items: center; gap: 10px; }
 .logo-box {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     background: linear-gradient(135deg, #1e3a5f, #0c1e30);
     border: 2px solid var(--th-accent);
-    border-radius: 9px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -988,7 +1020,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 /* ========================================================
-   0.25 INCH CUT MARGIN ENGINE (FLOW-ROOT PREVENTS CLIPPING)
+   A4 SHEET & FLOW-ROOT ENGINE
    ======================================================== */
 .a4-page-box {
     width: 746px !important;
@@ -1010,13 +1042,11 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 
 .page-physical-gap { height: 18px; background: #1e293b; width: 746px; margin: 0 auto; }
 
-/* ========================================================
-   1. 100% PDF-COMPATIBLE ANGLED HEADER (THEME #12 BLUEPRINT)
-   ======================================================== */
+/* 1. ANGLED HEADER */
 .geo-header-wrapper {
     position: relative;
     width: 100% !important;
-    min-height: calc(145px * var(--pdf-scale)) !important;
+    min-height: calc(140px * var(--pdf-scale)) !important;
     display: flex !important;
     background: #ffffff !important;
     border-bottom: 3.5px solid var(--th-primary) !important;
@@ -1035,16 +1065,16 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     display: flex !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    padding: calc(22px * var(--pdf-scale)) 0 calc(10px * var(--pdf-scale)) 22px !important;
+    padding: calc(20px * var(--pdf-scale)) 0 calc(8px * var(--pdf-scale)) 20px !important;
     position: relative;
     z-index: 2;
 }
 
 .brand-banner-img {
     width: 100% !important;
-    max-width: 380px !important;
+    max-width: 370px !important;
     height: auto !important;
-    max-height: calc(130px * var(--pdf-scale)) !important;
+    max-height: calc(125px * var(--pdf-scale)) !important;
     object-fit: contain !important;
     display: block !important;
 }
@@ -1056,7 +1086,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     flex-direction: column !important;
     justify-content: center !important;
     align-items: flex-end !important;
-    padding: calc(14px * var(--pdf-scale)) 22px calc(14px * var(--pdf-scale)) 10px !important;
+    padding: calc(12px * var(--pdf-scale)) 20px calc(12px * var(--pdf-scale)) 10px !important;
     color: #ffffff !important;
     position: relative;
     z-index: 2;
@@ -1064,18 +1094,18 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 
 .quote-main-heading {
     font-family: 'Space Grotesk', sans-serif !important;
-    font-size: calc(28px * var(--pdf-scale)) !important;
+    font-size: calc(26px * var(--pdf-scale)) !important;
     font-weight: 900 !important;
     letter-spacing: 3px !important;
     line-height: 1 !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
     text-transform: uppercase !important;
     color: #ffffff !important;
 }
 
 .quote-meta-list {
     font-size: calc(10.5px * var(--pdf-scale)) !important;
-    line-height: 1.6 !important;
+    line-height: 1.55 !important;
     text-align: right !important;
     font-weight: 700 !important;
     color: #ffffff !important;
@@ -1086,14 +1116,12 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     font-size: calc(11.5px * var(--pdf-scale)) !important;
 }
 
-/* ========================================================
-   HIGH-CONTRAST COMPANY SUBSTRIP BAR (ADDRESS & GSTIN)
-   ======================================================== */
+/* SUBSTRIP */
 .company-substrip-bar {
     background: #0c1e30 !important;
     color: #ffffff !important;
     border-bottom: 2px solid var(--border-dark) !important;
-    padding: calc(5px * var(--pdf-scale)) 18px !important;
+    padding: calc(4.5px * var(--pdf-scale)) 16px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -1123,19 +1151,16 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     gap: 4px !important;
 }
 
-/* ========================================================
-   CONTINUATION PAGE THEME HEADER (PAGE 2 & 4 OF PDF)
-   ======================================================== */
 .continuation-header-bar {
     width: 100% !important;
     background: linear-gradient(135deg, #0c1e30 0%, #1e3a5f 100%) !important;
     color: #ffffff !important;
-    padding: calc(7px * var(--pdf-scale)) 18px !important;
+    padding: calc(6px * var(--pdf-scale)) 16px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
     border-bottom: 2.5px solid var(--border-dark) !important;
-    font-size: calc(10.5px * var(--pdf-scale)) !important;
+    font-size: calc(10px * var(--pdf-scale)) !important;
     font-weight: 900 !important;
     letter-spacing: 0.6px !important;
     text-transform: uppercase !important;
@@ -1151,37 +1176,35 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 /* ========================================================
-   ⭐ 2. CUSTOMER DETAILS BLOCK (LOCKED FLEX: NO SQUISHING!) ⭐
+   ⭐ 2. CUSTOMER DETAILS: BULLETPROOF TABLE ARCHITECTURE ⭐
+   (Isse html2canvas mein text kabhi single-letter vertical nahi hoga!)
    ======================================================== */
 .customer-details-block {
     margin: 0 !important;
-    padding: calc(12px * var(--pdf-scale)) 20px calc(10px * var(--pdf-scale)) 18px !important;
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: flex-start !important;
+    padding: calc(9px * var(--pdf-scale)) 16px !important;
+    display: table !important;
+    table-layout: fixed !important;
     background: #ffffff !important;
     border-bottom: 2px solid var(--border-dark) !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    overflow: hidden !important;
 }
 
 .scope-left-column { 
+    display: table-cell !important;
     width: 52% !important; 
-    flex: 0 0 52% !important;
-    max-width: 52% !important;
-    padding-right: 12px !important; 
+    vertical-align: top !important;
+    padding-right: 14px !important; 
     box-sizing: border-box !important;
 }
 
 .scope-heading-dark { 
-    font-size: calc(10.5px * var(--pdf-scale)) !important; 
+    font-size: calc(10px * var(--pdf-scale)) !important; 
     font-weight: 900 !important; 
     color: var(--th-accent) !important; 
     text-transform: uppercase; 
     line-height: 1.25; 
-    letter-spacing: 0.6px; 
+    letter-spacing: 0.5px; 
     margin-bottom: 3px; 
 }
 .project-size-heading-label { 
@@ -1190,7 +1213,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     color: #000000; 
     text-transform: uppercase; 
     letter-spacing: 0.5px; 
-    margin-bottom: 3px; 
+    margin-bottom: 2px; 
 }
 .project-dim-columns { 
     display: flex; 
@@ -1210,55 +1233,53 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .dim-col-sep { color: #94a3b8; font-weight: 900; font-size: calc(11px * var(--pdf-scale)); margin: 0 1px; }
 .dim-col-item.area-col { background: #e0f2fe; padding: 2px 7px; border-radius: 3px; border-left: 2px solid var(--th-accent); }
 .dim-col-item.area-col .dim-lbl { color: #0369a1; }
-.dim-col-item.area-col .dim-val { color: #0c1e30; font-size: calc(12.5px * var(--pdf-scale)); }
+.dim-col-item.area-col .dim-val { color: #0c1e30; font-size: calc(12px * var(--pdf-scale)); }
 
-/* RIGID 48% WIDTH FOR CLIENT DETAILS */
+/* TABLE STRUCTURE PREVENTS SQUISHING */
 .client-right-list {
+    display: table-cell !important;
     width: 48% !important;
-    flex: 0 0 48% !important;
-    max-width: 48% !important;
-    font-size: calc(10.5px * var(--pdf-scale)) !important;
-    line-height: 1.55 !important;
-    color: #000000 !important;
+    vertical-align: top !important;
     box-sizing: border-box !important;
     padding-left: 6px !important;
-    padding-right: 10px !important;
 }
 
 .client-list-row { 
-    display: flex !important; 
-    flex-direction: row !important;
-    justify-content: space-between !important; 
-    align-items: baseline !important;
-    margin-bottom: 2px !important; 
+    display: table !important;
     width: 100% !important;
+    table-layout: fixed !important;
+    margin-bottom: 2.5px !important;
+    font-size: calc(10.5px * var(--pdf-scale)) !important;
+    line-height: 1.4 !important;
 }
 
 .client-list-row span.label { 
+    display: table-cell !important;
+    width: 105px !important; 
+    min-width: 105px !important;
+    max-width: 105px !important;
     font-weight: 900 !important; 
     color: #000000 !important; 
-    min-width: 95px !important; 
-    width: 95px !important;
-    flex-shrink: 0 !important;
     white-space: nowrap !important;
+    vertical-align: top !important;
+    text-align: left !important;
 }
 
-/* ⭐ DISPLAY BLOCK PREVENTS INLINE-BLOCK VERTICAL SQUISHING ⭐ */
 .client-list-row span.val { 
+    display: table-cell !important;
+    width: auto !important;
     font-weight: 800 !important; 
     color: #000000 !important; 
     text-align: right !important; 
-    flex: 1 1 auto !important; 
-    width: calc(100% - 95px) !important;
-    display: block !important;
-    word-break: normal !important; 
-    overflow-wrap: break-word !important; 
-    padding-left: 6px !important;
+    vertical-align: top !important;
     white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    padding-left: 4px !important;
 }
 
 /* ========================================================
-   3. ENGINEERING BOQ TABLES (VERTICAL LINES & DARK BORDERS)
+   3. ENGINEERING BOQ TABLES
    ======================================================== */
 .section-header-bar {
     margin: 0 !important;
@@ -1267,7 +1288,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border-bottom: 2px solid var(--border-dark) !important;
     border-left: 8px solid var(--th-primary) !important;
     border-right: none;
-    padding: calc(5px * var(--pdf-scale)) 18px !important;
+    padding: calc(4.5px * var(--pdf-scale)) 16px !important;
     font-size: calc(10px * var(--pdf-scale)) !important;
     font-weight: 900 !important;
     color: #000000 !important;
@@ -1308,7 +1329,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     font-size: calc(10px * var(--pdf-scale)) !important;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    padding: calc(7px * var(--pdf-scale)) 8px !important;
+    padding: calc(6px * var(--pdf-scale)) 8px !important;
     border-top: 2px solid var(--border-dark) !important;
     border-bottom: 2px solid var(--border-dark) !important;
     border-right: 1.5px solid rgba(255, 255, 255, 0.45) !important;
@@ -1316,7 +1337,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .theme-data-table th:last-child, .civil-schedule-table th:last-child { border-right: none !important; }
 
 .theme-data-table td, .civil-schedule-table td {
-    padding: calc(7px * var(--pdf-scale)) 8px !important;
+    padding: calc(6px * var(--pdf-scale)) 8px !important;
     border-bottom: 1.5px solid var(--border-col) !important;
     border-right: 1.5px solid var(--border-col) !important;
     font-size: calc(var(--base-table-body) * var(--pdf-scale)) !important;
@@ -1332,7 +1353,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 
 .executive-weight-total-row { background: #cbd5e1 !important; }
 .executive-weight-total-row td { 
-    padding: calc(6px * var(--pdf-scale)) 8px !important; 
+    padding: calc(5px * var(--pdf-scale)) 8px !important; 
     border-top: 2.5px solid #000000 !important; 
     border-bottom: 2.5px solid #000000 !important; 
     border-right: 1.5px solid #64748b !important;
@@ -1354,12 +1375,11 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     color: #000000 !important;
     font-weight: 800 !important;
     border: 1px solid #64748b !important;
-    padding: 1.5px 5px !important;
+    padding: 1px 5px !important;
     border-radius: 3px !important;
-    margin: 1.5px 2px !important;
+    margin: 1px 2px !important;
 }
 
-/* CLADDING THICKNESS HIGHLIGHT BADGE */
 .spec-highlight-pill {
     display: inline-block !important;
     background: #e0f2fe !important;
@@ -1370,15 +1390,13 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border-radius: 4px !important;
     margin-top: 3px !important;
     letter-spacing: 0.3px !important;
-    box-shadow: 0 1px 3px rgba(2, 132, 199, 0.15) !important;
 }
 
-/* CIVIL RIBBONS */
 .civil-job-details-ribbon {
     background: var(--th-primary) !important;
     color: #ffffff !important;
-    padding: calc(6px * var(--pdf-scale)) 14px !important;
-    font-size: calc(10.5px * var(--pdf-scale)) !important;
+    padding: calc(5px * var(--pdf-scale)) 14px !important;
+    font-size: calc(10px * var(--pdf-scale)) !important;
     font-weight: 900 !important;
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -1395,8 +1413,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border-bottom: 2px solid var(--border-dark) !important;
     border-left: 8px solid var(--th-primary) !important;
     border-right: none;
-    padding: calc(4.5px * var(--pdf-scale)) 14px !important;
-    font-size: calc(10px * var(--pdf-scale)) !important;
+    padding: calc(4px * var(--pdf-scale)) 14px !important;
+    font-size: calc(9.5px * var(--pdf-scale)) !important;
     font-weight: 900 !important;
     color: #000000 !important;
     text-transform: uppercase;
@@ -1405,41 +1423,40 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 /* ========================================================
-   4. TERMS & COMMERCIAL SUMMARY (LARGER & THICK PRINT)
+   4. TERMS & COMMERCIAL SUMMARY
    ======================================================== */
 .theme-bottom-summary-grid { 
-    padding: calc(10px * var(--pdf-scale)) 18px calc(6px * var(--pdf-scale)) 18px !important; 
+    padding: calc(8px * var(--pdf-scale)) 16px calc(6px * var(--pdf-scale)) 16px !important; 
     display: grid !important; 
     grid-template-columns: 54% 46% !important;
-    gap: 16px !important;
+    gap: 14px !important;
     align-items: flex-start; 
     box-sizing: border-box;
     width: 100% !important;
     margin: 0 !important;
 }
 
-.terms-column { width: 100%; padding-right: 8px; }
-.terms-column h4 { font-size: calc(10.5px * var(--pdf-scale)) !important; font-weight: 900; color: var(--th-primary); text-transform: uppercase; margin-bottom: 4px; }
-.payment-terms-block { margin-bottom: calc(4px * var(--pdf-scale)); }
+.terms-column { width: 100%; padding-right: 6px; }
+.terms-column h4 { font-size: calc(10px * var(--pdf-scale)) !important; font-weight: 900; color: var(--th-primary); text-transform: uppercase; margin-bottom: 3px; }
+.payment-terms-block { margin-bottom: calc(3px * var(--pdf-scale)); }
 
 .terms-column p, .editable-terms-preview-box p { 
-    font-size: calc(10px * var(--pdf-scale)) !important; 
+    font-size: calc(9.5px * var(--pdf-scale)) !important; 
     color: #000000 !important; 
-    line-height: 1.5 !important; 
+    line-height: 1.45 !important; 
     font-weight: 800 !important; 
 }
 .terms-column b, .editable-terms-preview-box b {
     font-weight: 900 !important;
     color: #000000 !important;
 }
-.thank-you-line { font-size: calc(10px * var(--pdf-scale)) !important; font-weight: 900; color: var(--th-primary); text-transform: uppercase; margin-top: 6px; }
+.thank-you-line { font-size: calc(9.5px * var(--pdf-scale)) !important; font-weight: 900; color: var(--th-primary); text-transform: uppercase; margin-top: 5px; }
 
 .calculation-column { width: 100%; }
-.calc-row-unit { display: flex; justify-content: space-between; padding: 2.5px 4px; font-size: calc(10.5px * var(--pdf-scale)) !important; font-weight: 900 !important; color: #000000 !important; }
+.calc-row-unit { display: flex; justify-content: space-between; padding: 2px 4px; font-size: calc(10.5px * var(--pdf-scale)) !important; font-weight: 900 !important; color: #000000 !important; }
 
 .tax-breakdown-vertical { width: 100%; display: flex; flex-direction: column; gap: 1px; margin: 2px 0; padding: 2px 0; border-top: 1.5px dashed var(--border-col); border-bottom: 1.5px dashed var(--border-col); }
 
-/* GST TEXT EXTRA DARK, THICK & LARGER FONT */
 .tax-split-row { 
     display: flex; 
     justify-content: space-between; 
@@ -1450,7 +1467,6 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     color: #000000 !important; 
     font-weight: 900 !important; 
     font-size: calc(11px * var(--pdf-scale)) !important;
-    letter-spacing: 0.2px;
 }
 .tax-split-row span.tax-amt { 
     color: #000000 !important; 
@@ -1458,7 +1474,6 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     font-size: calc(11px * var(--pdf-scale)) !important;
 }
 
-/* SOLID TOTAL BAR WITH SHIMMER LUXURY ANIMATION */
 .solid-navy-total-bar {
     position: relative;
     background: #0c1e30 !important;
@@ -1468,7 +1483,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: calc(7px * var(--pdf-scale)) 12px !important;
+    padding: calc(6px * var(--pdf-scale)) 10px !important;
     border-radius: 4px;
     margin-top: 3px;
     border: 1.5px solid #000000 !important;
@@ -1512,9 +1527,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     font-weight: 900;
     color: #000000 !important;
 }
-.shed-avg-rate-pill b { color: #000000 !important; font-size: calc(10.5px * var(--pdf-scale)); }
+.shed-avg-rate-pill b { color: #000000 !important; font-size: calc(10px * var(--pdf-scale)); }
 
-/* COMBINED PACKAGE SUMMARY BOX */
 .combined-package-summary-box {
     margin-top: 4px !important;
     background: #0c1e30 !important;
@@ -1577,52 +1591,47 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     border-radius: 5px !important;
     border: 1.5px solid #38bdf8 !important;
     cursor: pointer !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
-    letter-spacing: 0.3px !important;
 }
-.btn-preview-add-inline:active, .btn-acc-preview-add:active { transform: translateY(1px); }
 
 .rate-prefix { font-weight: 900; color: #000000; user-select: none; }
 .live-edit-hint-pill {
     background: #fef3c7;
     border: 1px solid #fde68a;
     border-radius: 8px;
-    padding: 7px 12px;
-    font-size: 11.5px;
+    padding: 6px 10px;
+    font-size: 11px;
     color: #92400e;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-shrink: 0;
 }
 
-/* PROFESSIONAL PREVIEW INPUT FOCUS */
 [contenteditable="true"] {
     outline: none;
     border-radius: 4px;
-    padding: 2px 5px !important;
+    padding: 1px 4px !important;
     cursor: text;
     display: inline-block;
-    min-width: 32px !important;
+    min-width: 28px !important;
     transition: all 0.15s ease;
 }
-[contenteditable="true"]:hover { background: #fef9c3 !important; box-shadow: 0 0 0 1px #f59e0b; }
+[contenteditable="true"]:hover { background: #fef9c3 !important; }
 [contenteditable="true"]:focus { 
     background: #eff6ff !important; 
     box-shadow: 0 0 0 2px #2563eb !important;
-    min-width: 48px !important;
+    min-width: 44px !important;
 }
 
-/* ========================================================
-   5. DUAL SIGNATURE BLOCK (ABOVE FOOTER)
-   ======================================================== */
+/* 5. DUAL SIGNATURE BLOCK */
 .signature-dual-grid {
-    padding: calc(10px * var(--pdf-scale)) 24px calc(12px * var(--pdf-scale)) 24px !important;
+    padding: calc(8px * var(--pdf-scale)) 20px calc(10px * var(--pdf-scale)) 20px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: flex-end !important;
-    margin-top: 6px !important;
+    margin-top: 4px !important;
     background: #ffffff !important;
     border-top: none !important;
     box-sizing: border-box;
@@ -1630,7 +1639,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 .sign-box-col {
-    width: 220px !important;
+    width: 200px !important;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -1638,20 +1647,19 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 .sign-stamp-area {
-    height: 32px !important;
+    height: 28px !important;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* PHYSICAL SIGNATURE RULE LINE */
 .sign-rule-line {
     display: block !important;
     visibility: visible !important;
-    width: 170px !important;
+    width: 160px !important;
     height: 1.5px !important;
     background: #000000 !important;
-    margin: 4px auto 6px auto !important;
+    margin: 3px auto 5px auto !important;
 }
 
 .sign-heading-main {
@@ -1669,9 +1677,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     text-transform: uppercase;
 }
 
-/* ========================================================
-   ⭐ 6. 100% FULL-WIDTH BLUE FOOTER BAR (PREVENTS CUTTING) ⭐
-   ======================================================== */
+/* 6. FULL FOOTER BAR */
 .geo-footer-wrapper {
     position: relative;
     width: 100% !important;
@@ -1689,9 +1695,9 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: calc(9px * var(--pdf-scale)) 18px !important;
+    padding: calc(8px * var(--pdf-scale)) 16px !important;
     color: #ffffff;
-    gap: calc(3.5px * var(--pdf-scale));
+    gap: calc(3px * var(--pdf-scale));
     box-sizing: border-box;
 }
 
@@ -1699,8 +1705,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 14px;
-    font-size: calc(10px * var(--pdf-scale)) !important;
+    gap: 12px;
+    font-size: calc(9.5px * var(--pdf-scale)) !important;
     font-weight: 800 !important;
     color: #ffffff !important;
     line-height: 1.35;
@@ -1709,9 +1715,9 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .gstin-pill-inline {
     background: #ffffff;
     color: #0c1e30 !important;
-    font-size: calc(10px * var(--pdf-scale));
+    font-size: calc(9.5px * var(--pdf-scale));
     font-weight: 900;
-    padding: 1.5px 8px;
+    padding: 1.5px 7px;
     border-radius: 4px;
     letter-spacing: 0.5px;
     display: inline-flex;
@@ -1719,9 +1725,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     gap: 4px;
 }
 
-/* ========================================================
-   MODALS, BUTTONS & FIXED CONTROLS
-   ======================================================== */
+/* MODALS & CONTROLS */
 .fixed-bottom-bar {
     position: fixed;
     bottom: 0;
@@ -1746,8 +1750,18 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     .row-2, .row-3 { grid-template-columns: 1fr; }
 }
 
-.font-scale-bar { background: #1e293b; border-radius: 9px; padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; color: #fff; }
-.btn-font-ctrl { background: #334155; color: #fff; border: 1px solid #475569; padding: 4px 10px; border-radius: 5px; font-size: 11.5px; font-weight: 900; cursor: pointer; }
+.font-scale-bar { 
+    background: #1e293b; 
+    border-radius: 8px; 
+    padding: 6px 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    margin-bottom: 6px; 
+    color: #fff;
+    flex-shrink: 0;
+}
+.btn-font-ctrl { background: #334155; color: #fff; border: 1px solid #475569; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: 900; cursor: pointer; }
 
 .modal {
     display: none !important;
@@ -1786,7 +1800,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .pdf-section-wrapper { margin-top: 14px; width: 100%; }
 .pdf-sheet-frame { width: 100%; background: #1e293b; border: 1.5px solid #cbd5e1; border-radius: 10px; overflow: hidden; height: auto; }
 
-/* ⭐ PREVIEW VIEWPORT CENTER-ALIGNED (NO LEFT SHIFT, HIDDEN SCROLLBAR) ⭐ */
+/* VIEWPORT CONTAINER */
 .mobile-preview-viewport { 
     width: 100% !important; 
     position: relative !important; 
@@ -1798,12 +1812,8 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     box-sizing: border-box !important; 
     overflow-x: hidden !important; 
     overflow-y: auto !important;
-    scrollbar-width: none !important; /* Hides ugly scrollbar */
-    -ms-overflow-style: none !important;
-    height: auto;
-}
-.mobile-preview-viewport::-webkit-scrollbar {
-    display: none !important;
+    scroll-behavior: smooth !important;
+    scrollbar-width: thin;
 }
 
 #scalingWrapper, #civilScalingWrapper { 
@@ -1824,9 +1834,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     margin: 0 auto !important;
 }
 
-/* ========================================================
-   PRINT MEDIA RULES: EXACT 0.25 INCH CUT MARGIN
-   ======================================================== */
+/* PRINT MEDIA */
 @media print {
     @page { 
         size: A4 portrait; 
@@ -1860,11 +1868,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     .shed-assembly-overlay { display: none !important; }
     .drag-handle { display: none !important; }
     .master-auth-overlay { display: none !important; }
-    
-    button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .btn-ripple { 
-        display: none !important; 
-    }
-    
+    button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .btn-ripple { display: none !important; }
     .preview-unit-pill {
         border: none !important;
         background: transparent !important;
