@@ -705,7 +705,7 @@ html, body {
 }
 
 /* ========================================================
-   ⭐ DESKTOP & TABLET MODE: 50/50 DUAL SCROLL + ARROW NAVIGATION ⭐
+   ⭐ DESKTOP & TABLET MODE: CLEAN SPLIT WITH SCROLL ARROWS ⭐
    ======================================================== */
 body.mode-phone .app-view { max-width: 480px; }
 body.mode-tab .app-view { max-width: 860px; }
@@ -751,16 +751,16 @@ body.mode-tab .pane-scroll-nav {
 .scroll-btns-wrap {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 }
 .btn-pane-scroll {
     background: #ffffff;
     color: #0c1e30;
-    border: 1px solid #94a3b8;
-    border-radius: 4px;
-    font-size: 11px;
+    border: 1.5px solid #38bdf8;
+    border-radius: 5px;
+    font-size: 11.5px;
     font-weight: 900;
-    padding: 3px 8px;
+    padding: 3px 10px;
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -772,58 +772,14 @@ body.mode-tab .pane-scroll-nav {
     transform: scale(0.92);
 }
 
-/* ⭐ DUAL INDEPENDENT SCROLL PANES WITH PERMANENT SCROLLBARS ⭐ */
-body.mode-desktop .dash-controls-pane,
-body.mode-tab .dash-controls-pane {
+body.mode-desktop .dash-controls-pane {
     width: 100% !important;
-    max-height: calc(100vh - 82px) !important;
-    overflow-y: scroll !important; /* Force visible scrollbar */
-    overflow-x: hidden !important;
-    padding-right: 8px !important;
-    scrollbar-width: auto;
-    scrollbar-color: #38bdf8 #0c1e30;
 }
 
-body.mode-desktop .dash-preview-pane,
-body.mode-tab .dash-preview-pane {
+body.mode-desktop .dash-preview-pane {
     width: 100% !important;
-    max-height: calc(100vh - 82px) !important;
-    overflow-y: scroll !important; /* Force visible scrollbar */
-    overflow-x: auto !important;
-    padding-right: 8px !important;
-    scrollbar-width: auto;
-    scrollbar-color: #38bdf8 #0c1e30;
-}
-
-/* CUSTOM WEBKIT SCROLLBARS WITH PHYSICAL ARROWS */
-body.mode-desktop .dash-controls-pane::-webkit-scrollbar,
-body.mode-desktop .dash-preview-pane::-webkit-scrollbar,
-body.mode-tab .dash-controls-pane::-webkit-scrollbar,
-body.mode-tab .dash-preview-pane::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-body.mode-desktop .dash-controls-pane::-webkit-scrollbar-thumb,
-body.mode-desktop .dash-preview-pane::-webkit-scrollbar-thumb,
-body.mode-tab .dash-controls-pane::-webkit-scrollbar-thumb,
-body.mode-tab .dash-preview-pane::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #38bdf8, #0284c7);
-    border-radius: 5px;
-    border: 2px solid #0c1e30;
-}
-body.mode-desktop .dash-controls-pane::-webkit-scrollbar-track,
-body.mode-desktop .dash-preview-pane::-webkit-scrollbar-track,
-body.mode-tab .dash-controls-pane::-webkit-scrollbar-track,
-body.mode-tab .dash-preview-pane::-webkit-scrollbar-track {
-    background: #0c1e30;
-    border-radius: 5px;
-}
-body.mode-desktop .dash-controls-pane::-webkit-scrollbar-button:single-button,
-body.mode-desktop .dash-preview-pane::-webkit-scrollbar-button:single-button {
-    background-color: #1e3a5f;
-    display: block;
-    border: 1px solid #38bdf8;
-    height: 12px;
+    position: sticky !important;
+    top: 72px !important;
 }
 
 body.mode-desktop .modules-grid-container { grid-template-columns: repeat(2, 1fr) !important; }
@@ -1184,7 +1140,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 }
 
 /* ========================================================
-   2. CUSTOMER DETAILS & SPECIFICATIONS (NO SQUISHING)
+   ⭐ 2. CUSTOMER DETAILS & SPECIFICATIONS (NO SQUISHING) ⭐
    ======================================================== */
 .customer-details-block {
     margin: 0 !important;
@@ -1281,7 +1237,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     text-align: right !important; 
     flex: 1 !important; 
     word-break: normal !important; 
-    overflow-wrap: break-word !important;
+    overflow-wrap: break-word !important; 
     padding-left: 6px !important;
     white-space: normal !important;
 }
@@ -1673,7 +1629,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     justify-content: center;
 }
 
-/* CLEAN PHYSICAL SIGNATURE RULE LINE */
+/* PHYSICAL SIGNATURE RULE LINE */
 .sign-rule-line {
     display: block !important;
     visibility: visible !important;
@@ -1699,7 +1655,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 }
 
 /* ========================================================
-   6. 100% FULL-WIDTH BLUE FOOTER BAR (PREVENTS CUTTING)
+   ⭐ 6. 100% FULL-WIDTH BLUE FOOTER BAR (PREVENTS CUTTING) ⭐
    ======================================================== */
 .geo-footer-wrapper {
     position: relative;
@@ -1815,19 +1771,26 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 .pdf-section-wrapper { margin-top: 14px; width: 100%; }
 .pdf-sheet-frame { width: 100%; background: #1e293b; border: 1.5px solid #cbd5e1; border-radius: 10px; overflow: hidden; height: auto; }
 
-/* ⭐ PREVIEW VIEWPORT CENTER-ALIGNED (PREVENTS LEFT SHIFT) ⭐ */
+/* ⭐ PREVIEW VIEWPORT CENTER-ALIGNED (NO LEFT SHIFT, HIDDEN SCROLLBAR) ⭐ */
 .mobile-preview-viewport { 
     width: 100% !important; 
     position: relative !important; 
     background: #1e293b !important; 
-    padding: 10px 0 !important; 
+    padding: 14px 0 !important; 
     display: flex !important; 
     justify-content: center !important;
     align-items: flex-start !important;
     box-sizing: border-box !important; 
-    overflow: hidden !important; 
+    overflow-x: hidden !important; 
+    overflow-y: auto !important;
+    scrollbar-width: none !important; /* Hides ugly scrollbar */
+    -ms-overflow-style: none !important;
     height: auto;
 }
+.mobile-preview-viewport::-webkit-scrollbar {
+    display: none !important;
+}
+
 #scalingWrapper, #civilScalingWrapper { 
     transform-origin: top center !important; 
     width: 746px !important; 
