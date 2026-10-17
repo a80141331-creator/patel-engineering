@@ -715,7 +715,7 @@ body.mode-phone .modules-grid-container { grid-template-columns: 1fr 1fr !import
 body.mode-phone .settings-grid { grid-template-columns: 1fr !important; }
 body.mode-phone .pane-scroll-nav { display: none !important; }
 
-/* 2. TABLET MODE (768px - 1024px): Spacious, Natural Scale (NO NARROW SPLIT) */
+/* 2. TABLET MODE (768px - 1024px): Spacious Natural Scale (NO NARROW SPLIT) */
 body.mode-tab .app-view { max-width: 880px; margin: 0 auto; }
 body.mode-tab .dashboard-split-layout { 
     display: block !important; /* Stacked naturally for tablets */
@@ -727,7 +727,7 @@ body.mode-tab .modules-grid-container { grid-template-columns: repeat(3, 1fr) !i
 body.mode-tab .settings-grid { grid-template-columns: repeat(2, 1fr) !important; }
 body.mode-tab .pane-scroll-nav { display: none !important; }
 
-/* 3. DESKTOP MODE (>= 1025px): Widescreen 44% Controls / 56% Sticky Preview */
+/* 3. DESKTOP MODE (>= 1025px): Screen-Height Clamped 44/56 Split View */
 body.mode-desktop .app-view { max-width: 1440px; margin: 0 auto; }
 body.mode-desktop .dashboard-split-layout {
     display: grid !important;
@@ -736,11 +736,18 @@ body.mode-desktop .dashboard-split-layout {
     align-items: start !important;
     width: 100% !important;
 }
-body.mode-desktop .dash-controls-pane { width: 100% !important; }
+body.mode-desktop .dash-controls-pane { 
+    width: 100% !important;
+    max-height: calc(100vh - 85px) !important;
+    overflow-y: auto !important;
+    padding-right: 6px !important;
+}
 body.mode-desktop .dash-preview-pane { 
     width: 100% !important; 
     position: sticky !important; 
     top: 72px !important; 
+    max-height: calc(100vh - 85px) !important;
+    overflow-y: hidden !important;
 }
 body.mode-desktop .modules-grid-container { grid-template-columns: repeat(2, 1fr) !important; }
 body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !important; }
@@ -1144,7 +1151,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 /* ========================================================
-   ⭐ 2. CUSTOMER DETAILS & SPECIFICATIONS (NO SQUISHING) ⭐
+   ⭐ 2. CUSTOMER DETAILS BLOCK (LOCKED FLEX: NO SQUISHING!) ⭐
    ======================================================== */
 .customer-details-block {
     margin: 0 !important;
@@ -1205,6 +1212,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .dim-col-item.area-col .dim-lbl { color: #0369a1; }
 .dim-col-item.area-col .dim-val { color: #0c1e30; font-size: calc(12.5px * var(--pdf-scale)); }
 
+/* RIGID 48% WIDTH FOR CLIENT DETAILS */
 .client-right-list {
     width: 48% !important;
     flex: 0 0 48% !important;
@@ -1229,17 +1237,20 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .client-list-row span.label { 
     font-weight: 900 !important; 
     color: #000000 !important; 
-    min-width: 90px !important; 
-    width: 90px !important;
+    min-width: 95px !important; 
+    width: 95px !important;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
 }
 
+/* ⭐ DISPLAY BLOCK PREVENTS INLINE-BLOCK VERTICAL SQUISHING ⭐ */
 .client-list-row span.val { 
     font-weight: 800 !important; 
     color: #000000 !important; 
     text-align: right !important; 
-    flex: 1 !important; 
+    flex: 1 1 auto !important; 
+    width: calc(100% - 95px) !important;
+    display: block !important;
     word-break: normal !important; 
     overflow-wrap: break-word !important; 
     padding-left: 6px !important;
