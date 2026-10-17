@@ -73,6 +73,16 @@ function showCorporateToast(message, icon = '✓') {
     }, 2800);
 }
 
+// ⭐ DESKTOP PANE SMOOTH SCROLL ARROWS FUNCTION ⭐
+function scrollPaneSmooth(paneId, delta) {
+    const el = document.getElementById(paneId);
+    if (el) {
+        el.scrollBy({ top: delta, behavior: 'smooth' });
+        playAppSound('click');
+        triggerHaptic(10);
+    }
+}
+
 // ========================================================
 // 3. MASTER BLUEPRINT & AUTO-LEARNING ENGINE
 // ========================================================
@@ -813,11 +823,11 @@ function saveStartingQuoteSeq(val) {
 }
 
 // ========================================================
-// ⭐ 10. PREVIEW SCALING & DESKTOP ZOOM CORRECTION ⭐
+// 10. PREVIEW SCALING & DESKTOP CENTER-ZOOM LOGIC
 // ========================================================
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
-    appSettings.savedPdfScale = Math.min(Math.max(cur, 0.50), 2.00);
+    appSettings.savedPdfScale = Math.min(Math.max(cur, 0.40), 2.20);
     syncDataToCloud('patel_app_settings', appSettings);
     applyScaleToSheet();
 }
@@ -855,16 +865,15 @@ function autoFitPreview() {
         if (availableWidth > 0) {
             let baseFit = availableWidth < 746 ? (availableWidth / 746) : 1.0;
             let totalScale = Math.round(baseFit * userZoom * 100) / 100;
-            let leftOffset = (availableWidth < (746 * totalScale)) ? 0 : Math.max(0, (availableWidth - (746 * totalScale)) / 2);
             
-            wrapper.style.transformOrigin = 'top left';
+            wrapper.style.transformOrigin = 'top center';
             wrapper.style.transform = `scale(${totalScale})`;
-            wrapper.style.setProperty('margin-left', `${leftOffset}px`, 'important');
+            wrapper.style.setProperty('margin', '0 auto', 'important');
             
             const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
             const scaledHeight = Math.ceil(unscaledHeight * totalScale);
             if (scaledHeight > 0) {
-                viewport.style.setProperty('height', `${scaledHeight}px`, 'important');
+                viewport.style.setProperty('height', `${scaledHeight + 35}px`, 'important');
             }
         }
     }
@@ -878,16 +887,15 @@ function autoFitPreview() {
         if (cWidth > 0) {
             let cBaseFit = cWidth < 746 ? (cWidth / 746) : 1.0;
             let cTotalScale = Math.round(cBaseFit * userZoom * 100) / 100;
-            let cLeft = (cWidth < (746 * cTotalScale)) ? 0 : Math.max(0, (cWidth - (746 * cTotalScale)) / 2);
             
-            civilWrap.style.transformOrigin = 'top left';
+            civilWrap.style.transformOrigin = 'top center';
             civilWrap.style.transform = `scale(${cTotalScale})`;
-            civilWrap.style.setProperty('margin-left', `${cLeft}px`, 'important');
+            civilWrap.style.setProperty('margin', '0 auto', 'important');
             
             const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
             const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
             if (cScaledHeight > 0) {
-                civilVp.style.setProperty('height', `${cScaledHeight}px`, 'important');
+                civilVp.style.setProperty('height', `${cScaledHeight + 35}px`, 'important');
             }
         }
     }
@@ -910,7 +918,7 @@ window.addEventListener('resize', () => {
 });
 
 // ========================================================
-// 11. HOMEPAGE & PROPOSAL CREATION (INHERITS MASTER)
+// 11. HOMEPAGE & PROPOSAL CREATION
 // ========================================================
 let tempNewQuoteType = 'both';
 function setNewSiteQuoteType(type) {
@@ -1126,7 +1134,6 @@ function loadSiteToDashboard(siteId) {
     applyCustomButtonNamesUI();
     refreshLivePdfPreviewSheet();
 
-    // Auto-route according to quote type
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -1136,7 +1143,7 @@ function loadSiteToDashboard(siteId) {
 }
 
 // ========================================================
-// 12. EDIT CUSTOMER DETAILS (WITH INSTANT SCREEN SWITCH)
+// 12. EDIT CUSTOMER DETAILS (WITH INSTANT DASHBOARD SWITCH)
 // ========================================================
 let tempEditQuoteType = 'both';
 function openEditCustomerModal() {
@@ -1196,7 +1203,7 @@ function saveEditCustomerDetails() {
     refreshLivePdfPreviewSheet();
     closeEditCustomerModal();
 
-    // ⭐ AUTO-SWITCH DASHBOARD SCREEN INSTANTLY ⭐
+    // Instant switch to selected dashboard
     if (site.quoteType === 'civil') {
         openCivilDashboardScreen();
     } else {
@@ -2301,7 +2308,6 @@ function addNewAccessoryDirectly() {
     refreshLivePdfPreviewSheet();
 }
 
-// ⭐ GST SPLIT ROWS EXTRA DARK, THICK & LARGER FONT ⭐
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     if (!taxSlab || taxSlab.rate === 0 || basicCost === 0) {
         return `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">-</span></div>`;
@@ -2346,7 +2352,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('pdfFooterAddrMini', compAddr);
     safeSetText('civilPdfFooterAddrMini', compAddr);
 
-    // Email & Web Blank Hide Logic
     const pEmailWrap = document.getElementById('pdfFooterEmailWrap');
     const cEmailWrap = document.getElementById('civilPdfFooterEmailWrap');
     if (compEmail) {
@@ -2753,7 +2758,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 }
 
 // ========================================================
-// ⭐ 21. PDF PAGINATION & DESKTOP RENDER LOCK ENGINE ⭐
+// 21. PDF PAGINATION & ZERO-OFFSET ENGINE (PREVENTS CROPPING)
 // ========================================================
 function createCleanPageBox(hasPageBreak = true) {
     const p = document.createElement('div');
@@ -2768,7 +2773,7 @@ function lockTableBottomBorder(tableEl) {
 }
 
 function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_CAPACITY = 1005; // Locked safe height prevents footer cut-off
+    const MAX_CAPACITY = 995; // 995px safe capacity guarantees no cut on footer
     const testStage = document.createElement('div');
     testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
     const initialClone = sectionEl.cloneNode(true);
@@ -2987,8 +2992,10 @@ function downloadPDFDirectly(mode = 'both') {
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
+    // ⭐ ZERO-OFFSET ABSOLUTE STAGE (FIXES DESKTOP SQUISH & CROP BUG) ⭐
     const stage = document.createElement('div');
-    stage.style.cssText = 'position: fixed; top: 0; left: 0; width: 746px; z-index: -99999; background: #fff; opacity: 0; margin: 0; padding: 0;';
+    stage.style.cssText = 'position: absolute; left: 0; top: 0; width: 746px; background: #fff; z-index: -99999; margin: 0; padding: 0; overflow: hidden;';
+    
     const clone = source.cloneNode(true);
     clone.style.setProperty('--pdf-scale', '1.0');
     clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
@@ -2999,7 +3006,8 @@ function downloadPDFDirectly(mode = 'both') {
     clone.querySelector('.page-physical-gap')?.remove();
 
     const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width: 746px; margin: 0 auto; padding: 0;';
+    outputContainer.style.cssText = 'width: 746px !important; min-width: 746px !important; max-width: 746px !important; margin: 0 !important; padding: 0 !important; display: block !important;';
+    
     const p1 = clone.querySelector('#page1MsStructure');
     const p2 = clone.querySelector('#civilDedicatedPageSheet');
 
@@ -3020,7 +3028,7 @@ function downloadPDFDirectly(mode = 'both') {
     stage.appendChild(outputContainer);
     document.body.appendChild(stage);
 
-    // ⭐ DESKTOP RENDERING LOCK: windowWidth: 1200 PREVENTS NARROW WRAPPING ⭐
+    // EXACT 746PX SCALE (NO VIEWPORT CROP)
     const opt = {
         margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
@@ -3028,11 +3036,9 @@ function downloadPDFDirectly(mode = 'both') {
         html2canvas: {
             scale: 2.5,
             useCORS: true,
-            scrollX: 0,
-            scrollY: 0,
-            width: 746,
-            windowWidth: 1200,
             letterRendering: true,
+            scrollY: 0,
+            scrollX: 0,
             logging: false
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
