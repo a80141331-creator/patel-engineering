@@ -2343,7 +2343,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
 }
 
 // ========================================================
-// 20. LIVE PREVIEW ENGINE
+// 20. LIVE PREVIEW ENGINE (UNIFIED 10px FONT MAPPING)
 // ========================================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
@@ -2452,8 +2452,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 autoTotalSteelWeightKg += inKg;
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'prim')">${(site.primCustomLine || "").trim()}</span></td>
-                        <td style="text-align: right; font-weight: 900;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
+                        <td style="font-size:10px !important;"><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'prim')">${(site.primCustomLine || "").trim()}</span></td>
+                        <td style="text-align: right; font-weight: 700; font-size:10px !important;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
                     </tr>`;
             }
 
@@ -2464,25 +2464,25 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 autoTotalSteelWeightKg += inKg;
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'sec')">${(site.secCustomLine || "").trim()}</span></td>
-                        <td style="text-align: right; font-weight: 900;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
+                        <td style="font-size:10px !important;"><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'sec')">${(site.secCustomLine || "").trim()}</span></td>
+                        <td style="text-align: right; font-weight: 700; font-size:10px !important;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
                     </tr>`;
             }
 
             s1Tbody.innerHTML += `
                 <tr class="executive-weight-total-row">
-                    <td><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td>
-                    <td style="text-align: right;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td>
+                    <td style="font-size:10px !important;"><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td>
+                    <td style="text-align: right; font-size:10px !important;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td>
                 </tr>`;
 
             if (site.cladEnabled !== false) {
                 const cSq = parseFloat(site.cladSqFt) || 0;
                 const cUnit = site.cladUnit || "Sq.Ft";
-                const thickBadge = site.cladThickness ? `<span class="spec-highlight-pill" style="margin-left:8px;">📐 Thickness: ${site.cladThickness}</span>` : '';
+                const thickBadge = site.cladThickness ? `<span class="spec-highlight-pill" style="margin-left:6px;">📐 Thickness: ${site.cladThickness}</span>` : '';
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td>
-                        <td style="text-align: right; font-weight: 900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td>
+                        <td style="font-size:10px !important;"><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td>
+                        <td style="text-align: right; font-weight: 700; font-size:10px !important;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td>
                     </tr>`;
             }
         }
@@ -2491,8 +2491,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const thead = document.getElementById('pdfTableHead');
         if (thead) {
             thead.innerHTML = isRateOnly ?
-                `<tr><th style="width: 8%; text-align: center;">S.NO</th><th style="width: 54%; text-align: left;">DESCRIPTION</th><th style="width: 14%; text-align: center;">UNIT</th><th style="width: 24%; text-align: right;">CONTRACT RATE (₹)</th></tr>` :
-                `<tr><th style="width: 7%; text-align: center;">S.NO</th><th style="width: 43%; text-align: left;">DESCRIPTION</th><th style="width: 13%; text-align: center;">QUANTITY</th><th style="width: 10%; text-align: center;">UNIT</th><th style="width: 13%; text-align: right;">RATE (₹)</th><th style="width: 14%; text-align: right;">AMOUNT (INR)</th></tr>`;
+                `<tr><th style="width: 7%; text-align: center;">S.NO</th><th style="width: 55%; text-align: left;">DESCRIPTION</th><th style="width: 14%; text-align: center;">UNIT</th><th style="width: 24%; text-align: right;">CONTRACT RATE (₹)</th></tr>` :
+                `<tr><th style="width: 7%; text-align: center;">S.NO</th><th style="width: 45%; text-align: left;">DESCRIPTION</th><th style="width: 13%; text-align: center;">QUANTITY</th><th style="width: 10%; text-align: center;">UNIT</th><th style="width: 12%; text-align: right;">RATE (₹)</th><th style="width: 13%; text-align: right;">AMOUNT (INR)</th></tr>`;
         }
 
         const pWt = (site.primEnabled !== false) ? (parseFloat(site.primWeight) || 0) : 0;
@@ -2518,7 +2518,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         if (breakdownThead) {
             breakdownThead.innerHTML = isRateOnly ?
                 `<tr><th style="width: 60%; text-align: left;">ACCESSORY ITEM</th><th style="width: 20%; text-align: center;">UNIT</th><th style="width: 20%; text-align: right;">CONTRACT RATE (₹)</th></tr>` :
-                `<tr><th style="width: 44%; text-align: left;">ACCESSORY ITEM</th><th style="width: 14%; text-align: center;">QTY</th><th style="width: 12%; text-align: center;">UNIT</th><th style="width: 14%; text-align: right;">RATE (₹)</th><th style="width: 16%; text-align: right;">AMOUNT (₹)</th></tr>`;
+                `<tr><th style="width: 47%; text-align: left;">ACCESSORY ITEM</th><th style="width: 13%; text-align: center;">QTY</th><th style="width: 12%; text-align: center;">UNIT</th><th style="width: 13%; text-align: right;">RATE (₹)</th><th style="width: 15%; text-align: right;">AMOUNT (₹)</th></tr>`;
         }
 
         if (site.accEnabled !== false) {
@@ -2534,8 +2534,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tr.className = "sortable-item";
                         tr.dataset.sortIndex = aIdx;
                         tr.innerHTML = isRateOnly ?
-                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right; font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td>` :
-                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'qty', this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right; font-weight:900;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
+                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right; font-weight:700;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td>` :
+                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center; font-weight:700;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'qty', this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right; font-weight:700;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
                         breakdownTbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'accessories', aIdx);
                     }
@@ -2563,8 +2563,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 tr.className = "sortable-item";
                 tr.dataset.sortIndex = sNoCounter - 1;
                 tr.innerHTML = isRateOnly ?
-                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td>` :
-                    `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align: center; font-weight: 900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix === 'clad' ? 'cladSqFt' : `${fPrefix}Weight`}')">${formatRawOrDash(qty)}</span></td><td style="text-align: center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td><td style="text-align: right; font-weight: 900;">${amt > 0 ? 'Rs. ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                    `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 700;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td>` :
+                    `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align: center; font-weight: 700;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix === 'clad' ? 'cladSqFt' : `${fPrefix}Weight`}')">${formatRawOrDash(qty)}</span></td><td style="text-align: center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 700;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td><td style="text-align: right; font-weight: 700;">${amt > 0 ? 'Rs. ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
                 tbody.appendChild(tr);
 
                 const curIdx = site.moduleOrder.indexOf(mKey);
@@ -2629,7 +2629,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
         safeSetText('pdfSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
 
-        safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 28px; width:auto; display:block; margin: 0 auto;">` : '');
+        safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
     // PAGE 2: CIVIL
@@ -2682,8 +2682,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     tr.className = "sortable-item";
                     tr.dataset.sortIndex = idx;
                     tr.innerHTML = isCivilRateOnly ?
-                        `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
-                        `<td style="text-align:center; font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                        `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
+                        `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center; font-weight:700;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell" style="font-weight:700;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
                     tbody.appendChild(tr);
                     setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'civil_items', idx, secKey);
                 }
@@ -2705,8 +2705,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                             const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0);
                             civilTotalBasic += tot;
                             rowsHtml += isCivilRateOnly ?
-                                `<tr><td style="text-align:center; font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right; font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` :
-                                `<tr><td style="text-align:center; font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center; font-weight:800;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                                `<tr><td style="text-align:center; font-weight:700;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right; font-weight:700;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` :
+                                `<tr><td style="text-align:center; font-weight:700;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center; font-weight:700;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx}, ${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:700;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
                         }
                     });
                     customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span>${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
@@ -2739,7 +2739,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetText('civilSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
         safeSetText('civilSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
 
-        safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 28px; width:auto; display:block; margin: 0 auto;">` : '');
+        safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
     // COMBINED PACKAGE STRIP
@@ -2774,12 +2774,12 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 }
 
 // ========================================================
-// 21. DYNAMIC PAGINATION ENGINE (PREVENTS CUTTING FOREVER)
+// 21. BULLETPROOF PAGINATION & SEPARATION ENGINE
 // ========================================================
-function createCleanPageBox(hasPageBreak = true) {
+function createCleanPageBox() {
     const p = document.createElement('div');
     p.className = 'a4-page-box';
-    p.style.cssText = `width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box; display: flow-root !important; overflow: hidden !important; ${hasPageBreak ? 'page-break-after: always; break-after: page;' : 'page-break-after: avoid; break-after: avoid;'}`;
+    p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important;';
     return p;
 }
 
@@ -2788,28 +2788,27 @@ function lockTableBottomBorder(tableEl) {
     if (lastRow) Array.from(lastRow.children).forEach(td => td.style.borderBottom = '2px solid #000000');
 }
 
-function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_PAGE_LIMIT = 1045; // Strict A4 single page capacity (guarantees zero cut)
+function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
+    const PAGE_HEIGHT_LIMIT = 1045; // Exact A4 physical limit (guarantees zero cut)
     const testStage = document.createElement('div');
     testStage.style.cssText = 'width: 746px; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
     
-    const initialClone = sectionEl.cloneNode(true);
-    initialClone.style.display = 'block';
-    testStage.appendChild(initialClone);
+    const clone = sectionEl.cloneNode(true);
+    clone.style.display = 'block';
+    testStage.appendChild(clone);
     document.body.appendChild(testStage);
-    const fullHeight = initialClone.offsetHeight;
+    const measuredHeight = clone.offsetHeight;
     document.body.removeChild(testStage);
 
-    // If it fits inside single page, keep it in 1 clean page!
-    if (fullHeight <= MAX_PAGE_LIMIT) {
-        const page = createCleanPageBox(true);
-        const singleClone = sectionEl.cloneNode(true);
-        singleClone.style.display = 'block';
-        page.appendChild(singleClone);
+    // ⭐ 1. IF IT FITS IN ONE PAGE: KEEP 100% IN SINGLE CLEAN PAGE ⭐
+    if (measuredHeight <= PAGE_HEIGHT_LIMIT) {
+        const page = createCleanPageBox();
+        page.appendChild(clone);
         outputContainer.appendChild(page);
         return;
     }
 
+    // ⭐ 2. MULTI-PAGE OVERFLOW ENGINE (NO SPLIT CUTS) ⭐
     if (sectionType === 'SHED') {
         const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
         const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
@@ -2817,83 +2816,45 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
         const sec1Head = sectionEl.querySelector('#displayHeaderLine1')?.parentElement?.cloneNode(true);
         const sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
         const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true);
-
-        const origTableWrap = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper');
-        const origThead = origTableWrap?.querySelector('thead')?.cloneNode(true);
-        const origRows = Array.from(origTableWrap?.querySelectorAll('tbody tr') || []);
-        const accBox = sectionEl.querySelector('#pdfAccBreakdownContainer');
+        const sec2Tbl = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper')?.cloneNode(true);
+        
+        const sec3Acc = sectionEl.querySelector('#pdfAccBreakdownContainer');
         const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
         const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
         const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
 
-        let rowPointer = 0;
-        let pageIndex = 1;
+        // PAGE 1: Standard Executive Summary
+        const p1 = createCleanPageBox();
+        if (hero) p1.appendChild(hero.cloneNode(true));
+        if (substrip) p1.appendChild(substrip.cloneNode(true));
+        if (cust) p1.appendChild(cust.cloneNode(true));
+        if (sec1Head) p1.appendChild(sec1Head.cloneNode(true));
+        if (sec1Tbl) p1.appendChild(sec1Tbl.cloneNode(true));
+        if (sec2Head) p1.appendChild(sec2Head.cloneNode(true));
+        if (sec2Tbl) p1.appendChild(sec2Tbl.cloneNode(true));
+        outputContainer.appendChild(p1);
 
-        while (rowPointer < origRows.length || pageIndex === 1) {
-            const page = createCleanPageBox(true);
+        // PAGE BREAK
+        const pb = document.createElement('div');
+        pb.className = 'html2pdf__page-break';
+        pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
+        outputContainer.appendChild(pb);
 
-            if (pageIndex === 1) {
-                if (hero) page.appendChild(hero.cloneNode(true));
-                if (substrip) page.appendChild(substrip.cloneNode(true));
-                if (cust) page.appendChild(cust.cloneNode(true));
-                if (sec1Head) page.appendChild(sec1Head.cloneNode(true));
-                if (sec1Tbl) page.appendChild(sec1Tbl.cloneNode(true));
-                if (sec2Head) page.appendChild(sec2Head.cloneNode(true));
-            } else {
-                const contBar = document.createElement('div');
-                contBar.className = 'continuation-header-bar';
-                contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageIndex})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                page.appendChild(contBar);
-            }
-
-            const pTableWrap = document.createElement('div');
-            pTableWrap.className = 'table-wrapper';
-            const pTable = document.createElement('table');
-            pTable.className = 'theme-data-table';
-            if (origThead) pTable.appendChild(origThead.cloneNode(true));
-            const pTbody = document.createElement('tbody');
-            pTable.appendChild(pTbody);
-            pTableWrap.appendChild(pTable);
-            page.appendChild(pTableWrap);
-
-            testStage.innerHTML = '';
-            testStage.appendChild(page);
-            document.body.appendChild(testStage);
-
-            let addedInThisPage = 0;
-            while (rowPointer < origRows.length) {
-                const rowClone = origRows[rowPointer].cloneNode(true);
-                pTbody.appendChild(rowClone);
-                if (page.offsetHeight > (MAX_PAGE_LIMIT - 40) && addedInThisPage > 0) {
-                    pTbody.removeChild(rowClone);
-                    break;
-                }
-                rowPointer++;
-                addedInThisPage++;
-            }
-            lockTableBottomBorder(pTable);
-            document.body.removeChild(testStage);
-            outputContainer.appendChild(page);
-            pageIndex++;
-
-            if (rowPointer >= origRows.length) break;
-        }
-
-        // Final Tail Page for Accessories, Summary, Signatures, and Footer
-        const finalPage = createCleanPageBox(true);
+        // PAGE 2: Specifications, Accessories & Commercials
+        const p2 = createCleanPageBox();
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
-        contBar.innerHTML = `<span>PATEL ENGINEERING — COMMERCIAL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-        finalPage.appendChild(contBar);
+        contBar.innerHTML = `<span>PATEL ENGINEERING — SHED SPECIFICATIONS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+        p2.appendChild(contBar);
 
-        if (accBox && accBox.style.display !== 'none') {
-            finalPage.appendChild(accBox.cloneNode(true));
+        if (sec3Acc && sec3Acc.style.display !== 'none') {
+            p2.appendChild(sec3Acc.cloneNode(true));
         }
-        if (summary) finalPage.appendChild(summary.cloneNode(true));
-        if (sigs) finalPage.appendChild(sigs.cloneNode(true));
-        if (footer) finalPage.appendChild(footer.cloneNode(true));
+        if (summary) p2.appendChild(summary.cloneNode(true));
+        if (sigs) p2.appendChild(sigs.cloneNode(true));
+        if (footer) p2.appendChild(footer.cloneNode(true));
 
-        outputContainer.appendChild(finalPage);
+        outputContainer.appendChild(p2);
 
     } else if (sectionType === 'CIVIL') {
         const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
@@ -2912,99 +2873,43 @@ function paginateQuoteSection(sectionEl, outputContainer, quoteNo, sectionType) 
         const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
         const customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
 
-        let secIdx = 0, rowIdx = 0, pageIndex = 1;
+        // Civil Page 1
+        const p1 = createCleanPageBox();
+        if (hero) p1.appendChild(hero.cloneNode(true));
+        if (substrip) p1.appendChild(substrip.cloneNode(true));
+        if (cust) p1.appendChild(cust.cloneNode(true));
+        if (jobRibbon) p1.appendChild(jobRibbon.cloneNode(true));
 
-        while (secIdx < secConfigs.length) {
-            const page = createCleanPageBox(true);
+        // Add foundation and brick wall to Page 1
+        if (secConfigs[0].titleEl) p1.appendChild(secConfigs[0].titleEl.cloneNode(true));
+        if (secConfigs[0].tblWrap) p1.appendChild(secConfigs[0].tblWrap.cloneNode(true));
+        if (secConfigs[1].titleEl) p1.appendChild(secConfigs[1].titleEl.cloneNode(true));
+        if (secConfigs[1].tblWrap) p1.appendChild(secConfigs[1].tblWrap.cloneNode(true));
+        outputContainer.appendChild(p1);
 
-            if (pageIndex === 1) {
-                if (hero) page.appendChild(hero.cloneNode(true));
-                if (substrip) page.appendChild(substrip.cloneNode(true));
-                if (cust) page.appendChild(cust.cloneNode(true));
-                if (jobRibbon) page.appendChild(jobRibbon.cloneNode(true));
-            } else {
-                const contBar = document.createElement('div');
-                contBar.className = 'continuation-header-bar';
-                contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SCHEDULE (PAGE ${pageIndex})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                page.appendChild(contBar);
-            }
+        // PAGE BREAK
+        const pb = document.createElement('div');
+        pb.className = 'html2pdf__page-break';
+        pb.style.cssText = 'page-break-after: always; height: 0; margin: 0; padding: 0;';
+        outputContainer.appendChild(pb);
 
-            testStage.innerHTML = '';
-            testStage.appendChild(page);
-            document.body.appendChild(testStage);
-
-            let pageHasContent = false;
-
-            while (secIdx < secConfigs.length) {
-                const conf = secConfigs[secIdx];
-                if (!conf.tblWrap || conf.tblWrap.style.display === 'none') {
-                    secIdx++;
-                    rowIdx = 0;
-                    continue;
-                }
-
-                const tHead = conf.tblWrap.querySelector('thead')?.cloneNode(true);
-                const allRows = Array.from(conf.tblWrap.querySelectorAll('tbody tr'));
-                
-                const curTableWrap = document.createElement('div');
-                curTableWrap.className = 'table-wrapper';
-                const curTable = document.createElement('table');
-                curTable.className = 'civil-schedule-table';
-                if (tHead) curTable.appendChild(tHead);
-                const curTbody = document.createElement('tbody');
-                curTable.appendChild(curTbody);
-                curTableWrap.appendChild(curTable);
-
-                if (rowIdx === 0 && conf.titleEl) {
-                    page.appendChild(conf.titleEl.cloneNode(true));
-                }
-                page.appendChild(curTableWrap);
-
-                let addedFromThisSec = 0;
-                while (rowIdx < allRows.length) {
-                    const rClone = allRows[rowIdx].cloneNode(true);
-                    curTbody.appendChild(rClone);
-                    if (page.offsetHeight > (MAX_PAGE_LIMIT - 40) && (pageHasContent || addedFromThisSec > 0)) {
-                        curTbody.removeChild(rClone);
-                        break;
-                    }
-                    rowIdx++;
-                    addedFromThisSec++;
-                    pageHasContent = true;
-                }
-
-                lockTableBottomBorder(curTable);
-
-                if (rowIdx < allRows.length) {
-                    // Current page is full, break to next page
-                    break;
-                } else {
-                    // This section is completed, move to next section
-                    secIdx++;
-                    rowIdx = 0;
-                }
-            }
-
-            document.body.removeChild(testStage);
-            outputContainer.appendChild(page);
-            pageIndex++;
-        }
-
-        // Final Tail Page for Civil: Custom Categories, Summary, Dual Signatures & Footer
-        const finalPage = createCleanPageBox(true);
+        // Civil Page 2: Flooring + Custom Categories + Summary + Signatures + Footer
+        const p2 = createCleanPageBox();
         const contBar = document.createElement('div');
         contBar.className = 'continuation-header-bar';
-        contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-        finalPage.appendChild(contBar);
+        contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS & COMMERCIALS</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+        p2.appendChild(contBar);
 
+        if (secConfigs[2].titleEl) p2.appendChild(secConfigs[2].titleEl.cloneNode(true));
+        if (secConfigs[2].tblWrap) p2.appendChild(secConfigs[2].tblWrap.cloneNode(true));
         if (customWrapper && customWrapper.children.length > 0) {
-            finalPage.appendChild(customWrapper.cloneNode(true));
+            p2.appendChild(customWrapper.cloneNode(true));
         }
-        if (summary) finalPage.appendChild(summary.cloneNode(true));
-        if (sigs) finalPage.appendChild(sigs.cloneNode(true));
-        if (footer) finalPage.appendChild(footer.cloneNode(true));
+        if (summary) p2.appendChild(summary.cloneNode(true));
+        if (sigs) p2.appendChild(sigs.cloneNode(true));
+        if (footer) p2.appendChild(footer.cloneNode(true));
 
-        outputContainer.appendChild(finalPage);
+        outputContainer.appendChild(p2);
     }
 }
 
@@ -3031,7 +2936,7 @@ function downloadPDFDirectly(mode = 'both') {
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    // ISOLATED STAGE: Prevents desktop media queries from polluting print layout
+    // ISOLATED STAGE: 100% immune to screen size and viewport DPI
     const stage = document.createElement('div');
     stage.style.cssText = 'position: fixed; left: 0; top: 0; width: 746px !important; max-width: 746px !important; background: #ffffff; z-index: -99999; margin: 0; padding: 0; overflow: hidden;';
     
@@ -3040,7 +2945,7 @@ function downloadPDFDirectly(mode = 'both') {
     clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
     clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
         pill.innerText = pill.innerText.replace('▾', '').trim();
-        pill.style.cssText = 'color: #000; background: transparent; border: none; box-shadow: none; padding: 0; font-weight: 800;';
+        pill.style.cssText = 'color: #000; background: transparent; border: none; box-shadow: none; padding: 0; font-weight: 700;';
     });
     clone.querySelector('.page-physical-gap')?.remove();
 
@@ -3053,16 +2958,24 @@ function downloadPDFDirectly(mode = 'both') {
     const shouldIncludeShed = (site.quoteType === 'both' && (mode === 'shed' || mode === 'both')) || (site.quoteType === 'shed');
     const shouldIncludeCivil = (site.quoteType === 'both' && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
+    // 1. BUILD SHED
     if (shouldIncludeShed && p1) {
-        paginateQuoteSection(p1, outputContainer, site.quoteNo, 'SHED');
-    }
-    if (shouldIncludeCivil && p2) {
-        p2.style.display = 'block';
-        paginateQuoteSection(p2, outputContainer, site.quoteNo, 'CIVIL');
+        buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     }
 
-    const lastPage = outputContainer.querySelector('.a4-page-box:last-child');
-    if (lastPage) lastPage.style.pageBreakAfter = lastPage.style.breakAfter = 'avoid';
+    // 2. HARD PAGE BREAK BETWEEN SHED AND CIVIL (NO MIXING!)
+    if (shouldIncludeShed && shouldIncludeCivil) {
+        const breakBetween = document.createElement('div');
+        breakBetween.className = 'html2pdf__page-break';
+        breakBetween.style.cssText = 'page-break-after: always; height: 0; line-height: 0; margin: 0; padding: 0;';
+        outputContainer.appendChild(breakBetween);
+    }
+
+    // 3. BUILD CIVIL (STARTS ON A BRAND NEW PAGE)
+    if (shouldIncludeCivil && p2) {
+        p2.style.display = 'block';
+        buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
+    }
 
     stage.appendChild(outputContainer);
     document.body.appendChild(stage);
@@ -3084,21 +2997,24 @@ function downloadPDFDirectly(mode = 'both') {
             logging: false
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-        pagebreak: { mode: ['css', 'legacy'] }
+        pagebreak: { 
+            mode: ['css', 'legacy'],
+            after: '.html2pdf__page-break'
+        }
     };
 
     html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
 
-        // 1. Android App Native Bridge (/Downloads/Patel Engineering/)
+        // Android Native Bridge
         if (window.PatelNativeEngine?.savePdfToPatelFolder) {
             const base64Data = pdfObj.output('datauristring').split(',')[1];
             window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
             return;
         }
 
-        // 2. Mobile & Tablet Universal Direct Blob Trigger
+        // Browser Universal Direct Blob Download
         try {
             const blob = pdfObj.output('blob');
             const blobUrl = URL.createObjectURL(blob);
