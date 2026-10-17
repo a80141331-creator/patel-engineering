@@ -309,9 +309,7 @@ html, body {
     border-bottom-width: 1.5px !important;
 }
 
-.btn-pulse {
-    animation: pulseButton 2.2s infinite;
-}
+.btn-pulse { animation: pulseButton 2.2s infinite; }
 @keyframes pulseButton {
     0% { box-shadow: 0 4px 10px rgba(12, 30, 48, 0.3); }
     50% { box-shadow: 0 4px 20px rgba(56, 189, 248, 0.5); }
@@ -382,10 +380,8 @@ html, body {
     white-space: nowrap !important;
     transition: all 0.15s ease;
 }
-.btn-del-pro:hover {
-    background: #fca5a5;
-    color: #991b1b;
-}
+.btn-del-pro:hover { background: #fca5a5; color: #991b1b; }
+
 .btn-site-delete {
     background: #fee2e2;
     color: #dc2626;
@@ -413,7 +409,7 @@ html, body {
     height: 38px;
 }
 
-/* ⭐ EDIT CUSTOMER DETAILS TRIGGER BUTTON ⭐ */
+/* EDIT CUSTOMER TRIGGER BUTTON */
 .btn-edit-cust-trigger {
     width: 100%;
     padding: 10px 14px;
@@ -435,30 +431,11 @@ html, body {
     border-left-color: #2563eb;
     transform: translateY(-1px);
 }
-.btn-edit-cust-trigger .icon {
-    font-size: 20px;
-    margin-right: 10px;
-}
-.btn-edit-cust-trigger .text-wrap {
-    text-align: left;
-    flex: 1;
-}
-.btn-edit-cust-trigger .text-wrap strong {
-    font-size: 12px;
-    font-weight: 900;
-    color: #0c1e30;
-    display: block;
-}
-.btn-edit-cust-trigger .text-wrap small {
-    font-size: 10px;
-    font-weight: 700;
-    color: #64748b;
-}
-.btn-edit-cust-trigger .arrow {
-    font-size: 14px;
-    font-weight: 900;
-    color: #0c1e30;
-}
+.btn-edit-cust-trigger .icon { font-size: 20px; margin-right: 10px; }
+.btn-edit-cust-trigger .text-wrap { text-align: left; flex: 1; }
+.btn-edit-cust-trigger .text-wrap strong { font-size: 12px; font-weight: 900; color: #0c1e30; display: block; }
+.btn-edit-cust-trigger .text-wrap small { font-size: 10px; font-weight: 700; color: #64748b; }
+.btn-edit-cust-trigger .arrow { font-size: 14px; font-weight: 900; color: #0c1e30; }
 
 .card-3d {
     background: #ffffff;
@@ -486,7 +463,7 @@ html, body {
 .modal-3d { border-top: 3.5px solid var(--gold-primary); }
 
 /* ========================================================
-   ⭐ HIGH-PROFESSIONAL DYNAMIC PHONE INPUTS IN SETTINGS ⭐
+   DYNAMIC PHONE INPUTS IN SETTINGS
    ======================================================== */
 .phone-row-dynamic {
     background: #f8fafc;
@@ -728,7 +705,7 @@ html, body {
 }
 
 /* ========================================================
-   DESKTOP & TABLET MODE: 50/50 SPLIT SCREEN ENGINE
+   ⭐ DESKTOP & TABLET MODE: 50/50 INDEPENDENT SCROLL SPLIT SCREEN ⭐
    ======================================================== */
 body.mode-phone .app-view { max-width: 480px; }
 body.mode-tab .app-view { max-width: 860px; }
@@ -739,24 +716,58 @@ body.mode-desktop .app-view { max-width: 1440px; }
     width: 100%;
 }
 
-body.mode-desktop .dashboard-split-layout {
+body.mode-desktop .dashboard-split-layout,
+body.mode-tab .dashboard-split-layout {
     display: grid !important;
     grid-template-columns: 46% 54% !important;
-    gap: 24px !important;
+    gap: 20px !important;
     align-items: start !important;
+    width: 100% !important;
 }
 
-body.mode-desktop .dash-controls-pane {
-    width: 100%;
-}
-
-body.mode-desktop .dash-preview-pane {
-    position: sticky !important;
-    top: 72px !important;
-    max-height: calc(100vh - 84px) !important;
+/* ⭐ CONTROLS PANE INDEPENDENT SCROLLBAR ⭐ */
+body.mode-desktop .dash-controls-pane,
+body.mode-tab .dash-controls-pane {
+    width: 100% !important;
+    max-height: calc(100vh - 85px) !important;
     overflow-y: auto !important;
-    padding-bottom: 20px !important;
+    overflow-x: hidden !important;
+    padding-right: 10px !important;
     scrollbar-width: thin;
+    scrollbar-color: #475569 #1e293b;
+}
+
+/* ⭐ PREVIEW PANE INDEPENDENT SCROLLBAR ⭐ */
+body.mode-desktop .dash-preview-pane,
+body.mode-tab .dash-preview-pane {
+    width: 100% !important;
+    max-height: calc(100vh - 85px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 8px !important;
+    scrollbar-width: thin;
+    scrollbar-color: #475569 #1e293b;
+}
+
+/* Custom sleek webkit scrollbars */
+body.mode-desktop .dash-controls-pane::-webkit-scrollbar,
+body.mode-desktop .dash-preview-pane::-webkit-scrollbar,
+body.mode-tab .dash-controls-pane::-webkit-scrollbar,
+body.mode-tab .dash-preview-pane::-webkit-scrollbar {
+    width: 6px;
+}
+body.mode-desktop .dash-controls-pane::-webkit-scrollbar-thumb,
+body.mode-desktop .dash-preview-pane::-webkit-scrollbar-thumb,
+body.mode-tab .dash-controls-pane::-webkit-scrollbar-thumb,
+body.mode-tab .dash-preview-pane::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+body.mode-desktop .dash-controls-pane::-webkit-scrollbar-track,
+body.mode-desktop .dash-preview-pane::-webkit-scrollbar-track,
+body.mode-tab .dash-controls-pane::-webkit-scrollbar-track,
+body.mode-tab .dash-preview-pane::-webkit-scrollbar-track {
+    background: #1e293b;
 }
 
 body.mode-desktop .modules-grid-container { grid-template-columns: repeat(2, 1fr) !important; }
@@ -849,10 +860,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     border-radius: 20px;
     margin-bottom: 10px;
 }
-.pulse-dot {
-    color: #0284c7;
-    animation: dotPulse 1.4s infinite;
-}
+.pulse-dot { color: #0284c7; animation: dotPulse 1.4s infinite; }
 @keyframes dotPulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.3; }
@@ -1120,15 +1128,15 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 }
 
 /* ========================================================
-   2. CUSTOMER DETAILS & SPECIFICATIONS (DIRECT EDITABLE)
+   ⭐ 2. CUSTOMER DETAILS & SPECIFICATIONS (FLEXBOX FIX: NO SQUISHING!) ⭐
    ======================================================== */
 .customer-details-block {
     margin: 0 !important;
     padding: calc(12px * var(--pdf-scale)) 20px calc(10px * var(--pdf-scale)) 18px !important;
-    display: grid !important;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr) !important;
-    gap: 14px !important;
-    align-items: center !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
     background: #ffffff !important;
     border-bottom: 2px solid var(--border-dark) !important;
     box-sizing: border-box !important;
@@ -1136,11 +1144,15 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     overflow: hidden !important;
 }
 
+/* FIXED PROPORTIONS PREVENT GRID COLLAPSE IN PDF ENGINE */
 .scope-left-column { 
-    width: 100% !important; 
-    padding-right: 4px !important; 
+    width: 52% !important; 
+    flex: 0 0 52% !important;
+    max-width: 52% !important;
+    padding-right: 12px !important; 
     box-sizing: border-box !important;
 }
+
 .scope-heading-dark { 
     font-size: calc(10.5px * var(--pdf-scale)) !important; 
     font-weight: 900 !important; 
@@ -1178,34 +1190,46 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 .dim-col-item.area-col .dim-lbl { color: #0369a1; }
 .dim-col-item.area-col .dim-val { color: #0c1e30; font-size: calc(12.5px * var(--pdf-scale)); }
 
+/* RIGID 48% WIDTH FOR CLIENT DETAILS IN PDF */
 .client-right-list {
-    width: 100% !important;
+    width: 48% !important;
+    flex: 0 0 48% !important;
+    max-width: 48% !important;
     font-size: calc(10.5px * var(--pdf-scale)) !important;
     line-height: 1.55 !important;
     color: #000000 !important;
     box-sizing: border-box !important;
     padding-left: 6px !important;
-    padding-right: 14px !important;
+    padding-right: 10px !important;
 }
+
 .client-list-row { 
     display: flex !important; 
+    flex-direction: row !important;
     justify-content: space-between !important; 
+    align-items: baseline !important;
     margin-bottom: 2px !important; 
     width: 100% !important;
 }
+
 .client-list-row span.label { 
     font-weight: 900 !important; 
     color: #000000 !important; 
-    min-width: 85px !important; 
+    min-width: 90px !important; 
+    width: 90px !important;
     flex-shrink: 0 !important;
+    white-space: nowrap !important;
 }
+
 .client-list-row span.val { 
     font-weight: 800 !important; 
     color: #000000 !important; 
     text-align: right !important; 
     flex: 1 !important; 
-    word-break: break-word !important; 
+    word-break: normal !important; 
+    overflow-wrap: break-word !important;
     padding-left: 6px !important;
+    white-space: normal !important;
 }
 
 /* ========================================================
@@ -1567,7 +1591,6 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 
 /* ========================================================
    5. DUAL SIGNATURE BLOCK (ABOVE FOOTER)
-   ⭐ CLEAN SOLID SIGNATURE RULE LINE RESTORED ⭐
    ======================================================== */
 .signature-dual-grid {
     padding: calc(10px * var(--pdf-scale)) 24px calc(12px * var(--pdf-scale)) 24px !important;
@@ -1576,7 +1599,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     align-items: flex-end !important;
     margin-top: 6px !important;
     background: #ffffff !important;
-    border-top: none !important; /* Top dashed line removed */
+    border-top: none !important;
     box-sizing: border-box;
     width: 100% !important;
 }
@@ -1622,7 +1645,7 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
 }
 
 /* ========================================================
-   6. 100% FULL-WIDTH BLUE FOOTER BAR
+   ⭐ 6. 100% FULL-WIDTH BLUE FOOTER BAR (PREVENTS CUTTING) ⭐
    ======================================================== */
 .geo-footer-wrapper {
     position: relative;
@@ -1631,6 +1654,8 @@ body.mode-desktop .settings-grid { grid-template-columns: repeat(3, 1fr) !import
     border-top: 2.5px solid var(--border-dark) !important;
     overflow: hidden;
     display: flex;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
 }
 
 .footer-full-bar {
