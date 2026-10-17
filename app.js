@@ -2633,11 +2633,11 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 21. TRUE DYNAMIC FLOW ENGINE (BORDERS CLOSED & PROPER HEADERS)
+// 21. TRUE DYNAMIC FLOW ENGINE (PERFECT PAGE SPLIT & CLEAN HEADERS)
 function createCleanPageBox() {
     const p = document.createElement('div');
     p.className = 'a4-page-box';
-    p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important;';
+    p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; page-break-inside: avoid !important;';
     return p;
 }
 
@@ -2651,8 +2651,17 @@ function lockTableBottomBorder(tableEl) {
     }
 }
 
+function appendPageToOutput(outputContainer, pageEl, isLastPage = false) {
+    outputContainer.appendChild(pageEl);
+    if (!isLastPage) {
+        const pageBreak = document.createElement('div');
+        pageBreak.className = 'html2pdf__page-break';
+        outputContainer.appendChild(pageBreak);
+    }
+}
+
 function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_PAGE_LIMIT = 1045;
+    const MAX_PAGE_LIMIT = 980; // Safe threshold for A4 margin fit
     const testStage = document.createElement('div');
     testStage.style.cssText = 'width: 746px !important; position: absolute; left: -9999px; top: 0; background: #fff; padding: 0; margin: 0; display: flow-root;';
 
@@ -2665,7 +2674,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         const sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
         const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true);
         const sec2TblOrig = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper');
-        const sec3Acc = sectionEl.querySelector('#pdfAccBreakdownContainer');
+        const sec3AccOrig = sectionEl.querySelector('#pdfAccBreakdownContainer');
         const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
         const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
         const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
@@ -2702,12 +2711,12 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             const rowClone = s2Rows[rIdx].cloneNode(true);
             curTbody.appendChild(rowClone);
 
-            if (curPage.offsetHeight > (MAX_PAGE_LIMIT - 35) && curTbody.children.length > 1) {
+            if (curPage.offsetHeight > MAX_PAGE_LIMIT && curTbody.children.length > 1) {
                 curTbody.removeChild(rowClone);
                 lockTableBottomBorder(curTable);
 
                 document.body.removeChild(testStage);
-                outputContainer.appendChild(curPage);
+                appendPageToOutput(outputContainer, curPage, false);
 
                 pageNum++;
                 curPage = createCleanPageBox();
@@ -2735,29 +2744,74 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
         lockTableBottomBorder(curTable);
 
-        // Accessories Breakdown
-        if (sec3Acc && sec3Acc.style.display !== 'none') {
-            const accClone = sec3Acc.cloneNode(true);
-            curPage.appendChild(accClone);
+        // Accessories Breakdown - Row-by-Row Check
+        if (sec3AccOrig && sec3AccOrig.style.display !== 'none') {
+            const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
+            const accThead = sec3AccOrig.querySelector('thead')?.cloneNode(true);
+            const accRows = Array.from(sec3AccOrig.querySelectorAll('tbody tr') || []);
 
-            if (curPage.offsetHeight > (MAX_PAGE_LIMIT - 35)) {
-                curPage.removeChild(accClone);
+            let accBlockWrap = document.createElement('div');
+            accBlockWrap.id = 'pdfAccBreakdownContainer';
+            if (accHeadBar) accBlockWrap.appendChild(accHeadBar);
 
-                document.body.removeChild(testStage);
-                outputContainer.appendChild(curPage);
+            let accTblWrap = document.createElement('div');
+            accTblWrap.className = 'table-wrapper';
+            let accTable = document.createElement('table');
+            accTable.className = 'theme-data-table';
+            if (accThead) accTable.appendChild(accThead);
+            let accTbody = document.createElement('tbody');
+            accTable.appendChild(accTbody);
+            accTblWrap.appendChild(accTable);
+            accBlockWrap.appendChild(accTblWrap);
 
-                pageNum++;
-                curPage = createCleanPageBox();
-                const contBar = document.createElement('div');
-                contBar.className = 'continuation-header-bar';
-                contBar.innerHTML = `<span>PATEL ENGINEERING — SHED SPECIFICATIONS & ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                curPage.appendChild(contBar);
-                curPage.appendChild(accClone);
+            curPage.appendChild(accBlockWrap);
 
-                testStage.innerHTML = '';
-                testStage.appendChild(curPage);
-                document.body.appendChild(testStage);
+            let aIdx = 0;
+            while (aIdx < accRows.length) {
+                const aRowClone = accRows[aIdx].cloneNode(true);
+                accTbody.appendChild(aRowClone);
+
+                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                    accTbody.removeChild(aRowClone);
+                    lockTableBottomBorder(accTable);
+
+                    if (accTbody.children.length === 0) {
+                        curPage.removeChild(accBlockWrap);
+                    }
+
+                    document.body.removeChild(testStage);
+                    appendPageToOutput(outputContainer, curPage, false);
+
+                    pageNum++;
+                    curPage = createCleanPageBox();
+                    const contBar = document.createElement('div');
+                    contBar.className = 'continuation-header-bar';
+                    contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES & COMMERCIALS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                    curPage.appendChild(contBar);
+
+                    accBlockWrap = document.createElement('div');
+                    accBlockWrap.id = 'pdfAccBreakdownContainer';
+                    if (accHeadBar) accBlockWrap.appendChild(accHeadBar.cloneNode(true));
+
+                    accTblWrap = document.createElement('div');
+                    accTblWrap.className = 'table-wrapper';
+                    accTable = document.createElement('table');
+                    accTable.className = 'theme-data-table';
+                    if (accThead) accTable.appendChild(accThead.cloneNode(true));
+                    accTbody = document.createElement('tbody');
+                    accTable.appendChild(accTbody);
+                    accTblWrap.appendChild(accTable);
+                    accBlockWrap.appendChild(accTblWrap);
+                    curPage.appendChild(accBlockWrap);
+
+                    testStage.innerHTML = '';
+                    testStage.appendChild(curPage);
+                    document.body.appendChild(testStage);
+                    continue;
+                }
+                aIdx++;
             }
+            lockTableBottomBorder(accTable);
         }
 
         // Summary + Signatures + Footer
@@ -2768,11 +2822,11 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
 
         curPage.appendChild(finalBlock);
 
-        if (curPage.offsetHeight > (MAX_PAGE_LIMIT - 10)) {
+        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
             curPage.removeChild(finalBlock);
 
             document.body.removeChild(testStage);
-            outputContainer.appendChild(curPage);
+            appendPageToOutput(outputContainer, curPage, false);
 
             pageNum++;
             curPage = createCleanPageBox();
@@ -2788,9 +2842,9 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
 
         document.body.removeChild(testStage);
-        outputContainer.appendChild(curPage);
+        appendPageToOutput(outputContainer, curPage, true);
 
-    // CIVIL QUOTATION DYNAMIC FLOW (100% BRAND NEW PAGE)
+    // CIVIL QUOTATION DYNAMIC FLOW
     } else if (sectionType === 'CIVIL') {
         const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
         const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
@@ -2831,8 +2885,9 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             const tHead = conf.tblWrap.querySelector('thead')?.cloneNode(true);
             const allRows = Array.from(conf.tblWrap.querySelectorAll('tbody tr') || []);
 
+            let titleClone = null;
             if (conf.titleEl) {
-                const titleClone = conf.titleEl.cloneNode(true);
+                titleClone = conf.titleEl.cloneNode(true);
                 curPage.appendChild(titleClone);
             }
 
@@ -2851,12 +2906,17 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                 const rClone = allRows[rowIdx].cloneNode(true);
                 cTbody.appendChild(rClone);
 
-                if (curPage.offsetHeight > (MAX_PAGE_LIMIT - 35) && cTbody.children.length > 1) {
+                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
                     cTbody.removeChild(rClone);
                     lockTableBottomBorder(cTable);
 
+                    if (cTbody.children.length === 0) {
+                        if (titleClone) curPage.removeChild(titleClone);
+                        curPage.removeChild(cTableWrap);
+                    }
+
                     document.body.removeChild(testStage);
-                    outputContainer.appendChild(curPage);
+                    appendPageToOutput(outputContainer, curPage, false);
 
                     pageNum++;
                     curPage = createCleanPageBox();
@@ -2864,6 +2924,10 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                     contBar.className = 'continuation-header-bar';
                     contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                     curPage.appendChild(contBar);
+
+                    if (titleClone && cTbody.children.length === 0) {
+                        curPage.appendChild(titleClone.cloneNode(true));
+                    }
 
                     cTableWrap = document.createElement('div');
                     cTableWrap.className = 'table-wrapper';
@@ -2890,11 +2954,11 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             const custCatClone = customWrapper.cloneNode(true);
             curPage.appendChild(custCatClone);
 
-            if (curPage.offsetHeight > (MAX_PAGE_LIMIT - 35)) {
+            if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
                 curPage.removeChild(custCatClone);
 
                 document.body.removeChild(testStage);
-                outputContainer.appendChild(curPage);
+                appendPageToOutput(outputContainer, curPage, false);
 
                 pageNum++;
                 curPage = createCleanPageBox();
@@ -2917,11 +2981,11 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
 
         curPage.appendChild(civilFinalBlock);
 
-        if (curPage.offsetHeight > (MAX_PAGE_LIMIT - 10)) {
+        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
             curPage.removeChild(civilFinalBlock);
 
             document.body.removeChild(testStage);
-            outputContainer.appendChild(curPage);
+            appendPageToOutput(outputContainer, curPage, false);
 
             pageNum++;
             curPage = createCleanPageBox();
@@ -2937,11 +3001,11 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
 
         document.body.removeChild(testStage);
-        outputContainer.appendChild(curPage);
+        appendPageToOutput(outputContainer, curPage, true);
     }
 }
 
-// 22. DIRECT DOWNLOAD ENGINE (AWAITS FONTS READY)
+// 22. DIRECT DOWNLOAD ENGINE
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2995,7 +3059,6 @@ async function downloadPDFDirectly(mode = 'both') {
     if (shouldIncludeShed && shouldIncludeCivil) {
         const breakBetween = document.createElement('div');
         breakBetween.className = 'html2pdf__page-break';
-        breakBetween.style.cssText = 'page-break-after: always; height: 0; line-height: 0; margin: 0; padding: 0;';
         outputContainer.appendChild(breakBetween);
     }
 
@@ -3026,7 +3089,7 @@ async function downloadPDFDirectly(mode = 'both') {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
         pagebreak: { 
             mode: ['css', 'legacy'],
-            after: '.html2pdf__page-break'
+            before: '.html2pdf__page-break'
         }
     };
 
