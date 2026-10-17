@@ -2636,29 +2636,19 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 // 21. TRUE DYNAMIC FLOW ENGINE (PERFECT PAGE SPLIT & ZERO TOP GAP)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
-    p.className = 'a4-page-box';
     if (isTest) {
+        p.className = 'a4-page-box';
         p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; height: auto !important; min-height: 0 !important; max-height: none !important;';
     } else {
+        p.className = 'pdf-page-slice';
         p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; page-break-inside: avoid !important; break-inside: avoid !important;';
     }
     return p;
 }
 
 function finalizePageBox(pageEl) {
-    pageEl.style.width = '746px';
-    pageEl.style.minWidth = '746px';
-    pageEl.style.maxWidth = '746px';
-    pageEl.style.height = '1072px';
-    pageEl.style.minHeight = '1072px';
-    pageEl.style.maxHeight = '1072px';
-    pageEl.style.margin = '0 auto';
-    pageEl.style.padding = '0';
-    pageEl.style.boxSizing = 'border-box';
-    pageEl.style.display = 'flow-root';
-    pageEl.style.overflow = 'hidden';
-    pageEl.style.pageBreakInside = 'avoid';
-    pageEl.style.breakInside = 'avoid';
+    pageEl.className = 'pdf-page-slice';
+    pageEl.style.cssText = 'width: 746px !important; min-width: 746px !important; max-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; background: #ffffff !important; page-break-inside: avoid !important; break-inside: avoid !important; border: 2px solid #000000 !important;';
     return pageEl;
 }
 
@@ -3078,7 +3068,7 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     }
 
-    // Shed aur Civil ke beech ek saaf single break (bina blank page ke)
+    // Single clean page break between Shed and Civil (no blank page)
     if (shouldIncludeShed && shouldIncludeCivil) {
         const breakBetween = document.createElement('div');
         breakBetween.className = 'html2pdf__page-break';
