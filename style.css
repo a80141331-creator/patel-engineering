@@ -388,14 +388,12 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .btn-enter-civil-hub { width: 100%; padding: 12px 14px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 
 /* ========================================================
-   A4 SHEET & DYNAMIC MULTI-PAGE FLOW (ZERO GAP TOP ALIGNMENT)
+   LIVE PREVIEW A4 SHEET (FULL SCROLLABLE & NO CLIPPING)
    ======================================================== */
 .a4-page-box {
     width: 746px !important;
     max-width: 746px !important;
     min-width: 746px !important;
-    min-height: 1072px !important;
-    max-height: 1072px !important;
     background: #ffffff !important;
     color: #000000 !important;
     position: relative;
@@ -407,7 +405,25 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     box-sizing: border-box !important;
     border: 2px solid #000000 !important;
     display: flow-root !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* PDF EXPORT EXACT PAGE SLICE (ONLY USED DURING EXPORT) */
+.pdf-page-slice {
+    width: 746px !important;
+    min-width: 746px !important;
+    max-width: 746px !important;
+    height: 1072px !important;
+    min-height: 1072px !important;
+    max-height: 1072px !important;
+    box-sizing: border-box !important;
     overflow: hidden !important;
+    display: flow-root !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     page-break-after: always !important;
@@ -415,26 +431,6 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 .page-physical-gap { height: 16px; background: #1e293b; width: 746px; margin: 0 auto; }
-
-/* HARD PAGE-BREAK ISOLATION (NO DOUBLE BREAK TO PREVENT BLANK PAGES) */
-.html2pdf__page-break {
-    page-break-after: always !important;
-    break-after: page !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    line-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    border: none !important;
-    display: block !important;
-    clear: both !important;
-}
-
-/* LAST PAGE NO EXTRA BREAK */
-.a4-page-box:last-child {
-    page-break-after: auto !important;
-    break-after: auto !important;
-}
 
 /* 1. ANGLED MAIN HEADER */
 .geo-header-wrapper {
@@ -536,7 +532,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     display: inline-flex !important; align-items: center !important; gap: 4px !important;
 }
 
-/* CONTINUATION HEADER STRIP (PINNED CLEANLY ON NEXT PAGES) */
+/* CONTINUATION HEADER STRIP (TOP OF NEXT PAGES) */
 .continuation-header-bar {
     width: 100% !important;
     background: linear-gradient(135deg, #0c1e30 0%, #1e3a5f 100%) !important;
@@ -665,7 +661,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     padding-left: 4px !important;
 }
 
-/* 3. ENGINEERING TABLES (CLOSED BORDERS & SAFE ROWS) */
+/* 3. ENGINEERING TABLES (SAFE ROWS & CLOSED BORDERS) */
 .section-header-bar {
     margin: 0 !important;
     background: #e2e8f0 !important;
@@ -726,7 +722,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 .theme-data-table th:last-child, .civil-schedule-table th:last-child { border-right: none !important; }
 
-/* TABLE ROW BREAK-INSIDE PROTECTION */
+/* TABLE ROW BREAK PROTECTION */
 .theme-data-table tr, .civil-schedule-table tr {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
@@ -950,8 +946,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     body * { visibility: hidden !important; }
     #printableA4Sheet, #printableA4Sheet * { visibility: visible !important; }
     #printableA4Sheet { position: absolute !important; left: 0 !important; top: 0 !important; width: 746px !important; margin: 0 auto !important; padding: 0 !important; box-shadow: none !important; }
-    .a4-page-box { box-shadow: none !important; width: 746px !important; padding: 0 !important; border: 2px solid #000000 !important; page-break-after: always !important; break-after: page !important; }
-    .a4-page-box:last-child { page-break-after: auto !important; break-after: auto !important; }
+    .a4-page-box { box-shadow: none !important; width: 746px !important; padding: 0 !important; border: 2px solid #000000 !important; }
     .page-physical-gap { display: none !important; }
     .fixed-bottom-bar, .top-bar { display: none !important; }
     .shed-assembly-overlay { display: none !important; }
