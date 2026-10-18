@@ -716,7 +716,7 @@ function initSamsungBootAnimation() {
     splash.classList.remove('boot-fade-out');
     splash.style.display = 'flex';
     if (bootTimer) clearTimeout(bootTimer);
-    bootTimer = setTimeout(() => skipBootAnimation(), 2500);
+    bootTimer = setTimeout(() => skipBootAnimation(), 2400);
 }
 function skipBootAnimation() {
     const splash = document.getElementById('appBootSplashScreen');
@@ -724,7 +724,7 @@ function skipBootAnimation() {
     if (bootTimer) clearTimeout(bootTimer);
     triggerHaptic(15);
     splash.classList.add('boot-fade-out');
-    setTimeout(() => { splash.style.display = 'none'; }, 700);
+    setTimeout(() => { splash.style.display = 'none'; }, 600);
 }
 function replaySamsungBootAnimation() {
     const splash = document.getElementById('appBootSplashScreen');
@@ -780,7 +780,7 @@ function saveStartingQuoteSeq(val) {
     syncDataToCloud('patel_app_settings', appSettings);
 }
 
-// 10. PREVIEW SCALING
+// 10. PREVIEW SCALING & PHONE BLUE GAP FIX
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
     appSettings.savedPdfScale = Math.min(Math.max(cur, 0.40), 2.20);
@@ -827,10 +827,18 @@ function autoFitPreview() {
             wrapper.style.transform = `scale(${totalScale})`;
             wrapper.style.setProperty('margin', '0 auto', 'important');
             
+            const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
+            const scaledHeight = Math.ceil(unscaledHeight * totalScale);
+            
+            // Negate bottom blue gap left by transform scale on mobile screens
+            if (totalScale < 1.0 && unscaledHeight > 0) {
+                wrapper.style.marginBottom = `-${Math.round(unscaledHeight * (1 - totalScale))}px`;
+            } else {
+                wrapper.style.marginBottom = '0px';
+            }
+
             if (!isDesktop) {
-                const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
-                const scaledHeight = Math.ceil(unscaledHeight * totalScale);
-                if (scaledHeight > 0) viewport.style.height = `${scaledHeight + 35}px`;
+                if (scaledHeight > 0) viewport.style.height = `${scaledHeight + 25}px`;
             } else {
                 viewport.style.height = '100%';
             }
@@ -851,10 +859,17 @@ function autoFitPreview() {
             civilWrap.style.transform = `scale(${cTotalScale})`;
             civilWrap.style.setProperty('margin', '0 auto', 'important');
             
+            const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
+            const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
+            
+            if (cTotalScale < 1.0 && cUnscaledHeight > 0) {
+                civilWrap.style.marginBottom = `-${Math.round(cUnscaledHeight * (1 - cTotalScale))}px`;
+            } else {
+                civilWrap.style.marginBottom = '0px';
+            }
+
             if (!isDesktop) {
-                const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
-                const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
-                if (cScaledHeight > 0) civilVp.style.height = `${cScaledHeight + 35}px`;
+                if (cScaledHeight > 0) civilVp.style.height = `${cScaledHeight + 25}px`;
             } else {
                 civilVp.style.height = '100%';
             }
@@ -2205,7 +2220,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 20. LIVE PREVIEW ENGINE (UNIFIED CRISP TYPOGRAPHY)
+// 20. LIVE PREVIEW ENGINE (PERMANENT TEXT EDIT FIX)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
     if (!site) return;
@@ -2256,18 +2271,39 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 
     updateHeaderBannersUI();
 
-    safeSetText('pdfRibbonTitle', "QUOTATION");
-    safeSetText('civilPdfRibbonTitle', "QUOTATION");
+    // ALL PERMANENT TEXTS BOUND DYNAMICALLY TO appSettings:
+    safeSetText('pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
+    safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
+    safeSetText('pdfScopeTitle', appSettings.pdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS");
+    safeSetText('pdfProjectSizeHeading', appSettings.projectSizeHeading || "📐 PROJECT SIZE / SHED DIMENSIONS:");
+    safeSetText('displayHeaderLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
+    safeSetText('pdfMilestoneHeading', appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
+    safeSetText('displayHeaderLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
+    safeSetText('pdfAccSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
+    safeSetText('civilPdfScopeTitle', site.civilScopeDesc || masterBlueprint.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS");
+    safeSetText('civilJobTitleDisplay', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
+    safeSetText('civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
+    safeSetText('civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
+    safeSetText('civilFloorTitle', appSettings.civilFloorTitle || "3. FLOORING & PCC WORK DETAILS:");
+    safeSetText('pdfTermsHeaderDisplay', appSettings.termsTitle || "Terms & Conditions:");
+    safeSetText('civilPdfTermsHeaderDisplay', appSettings.civilTermsTitle || "Civil Work Terms & Conditions:");
+    safeSetText('pdfThankYouDisplay', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS WITH US.");
+    safeSetText('civilPdfThankYouDisplay', appSettings.civilThankYouText || "THANK YOU FOR YOUR CIVIL CONTRACT.");
+    safeSetText('pdfCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
+    safeSetText('civilCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
+    safeSetText('pdfCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
+    safeSetText('civilCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
+    safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
+    safeSetText('civilSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
+    safeSetText('pdfSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
+    safeSetText('civilSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
+
     safeSetText('pdfQuoteNo', site.quoteNo || "PE/2026/01");
     safeSetText('civilPdfQuoteNo', site.quoteNo || "PE/2026/01");
 
     const issueDateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     safeSetText('pdfCurrentDate', issueDateStr);
     safeSetText('civilPdfCurrentDate', issueDateStr);
-
-    safeSetText('pdfScopeTitle', appSettings.pdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS");
-    safeSetText('pdfProjectSizeHeading', appSettings.projectSizeHeading || "📐 PROJECT SIZE / SHED DIMENSIONS:");
-    safeSetText('civilPdfScopeTitle', site.civilScopeDesc || masterBlueprint.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS");
 
     const sqft = (parseFloat(site.dimW) || 0) * (parseFloat(site.dimL) || 0);
     safeSetText('dimWVal', site.dimW ? site.dimW + " Ft" : "-");
@@ -2298,10 +2334,9 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     let autoTotalSteelWeightKg = 0;
 
     if (!isShedActive) {
-        if (page1ShedSheet) page1ShedSheet.style.setProperty('display', 'none', 'important');
+        if (page1ShedSheet) page1ShedSheet.style.display = 'none';
     } else {
-        if (page1ShedSheet) page1ShedSheet.style.setProperty('display', 'flow-root', 'important');
-        safeSetText('displayHeaderLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
+        if (page1ShedSheet) page1ShedSheet.style.display = 'flow-root';
 
         const s1Tbody = document.getElementById('pdfSection1TableBody');
         if (s1Tbody) {
@@ -2348,7 +2383,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             }
         }
 
-        safeSetText('displayHeaderLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
         const thead = document.getElementById('pdfTableHead');
         if (thead) {
             thead.innerHTML = isRateOnly ?
@@ -2403,7 +2437,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 }
             });
         }
-        safeSetText('pdfAccSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
         const accContainer = document.getElementById('pdfAccBreakdownContainer');
         if (accContainer) accContainer.style.display = (site.accEnabled !== false && selectedAccCount > 0) ? 'block' : 'none';
 
@@ -2483,13 +2516,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetHtml('pdfTermsContainer', `
             <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('paymentTerms', this)">${(appSettings.paymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
             <div class="general-terms-block"><p>2. <b>General Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('termsCond', this)">${(appSettings.termsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
-        safeSetText('pdfTermsHeaderDisplay', appSettings.termsTitle || "Terms & Conditions:");
-        safeSetText('pdfThankYouDisplay', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS WITH US.");
-        safeSetText('pdfCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-        safeSetText('pdfCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
-        safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
-        safeSetText('pdfSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
-
         safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
@@ -2499,16 +2525,15 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     let civilGrandTotal = 0;
 
     if (!isCivilActive) {
-        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'none', 'important');
-        if (pageGapDivider) pageGapDivider.style.setProperty('display', 'none', 'important');
+        if (civilPageBlock) civilPageBlock.style.display = 'none';
+        if (pageGapDivider) pageGapDivider.style.display = 'none';
     } else {
-        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'flow-root', 'important');
-        if (pageGapDivider) pageGapDivider.style.setProperty('display', (isShedActive ? 'block' : 'none'), 'important');
+        if (civilPageBlock) civilPageBlock.style.display = 'flow-root';
+        if (pageGapDivider) pageGapDivider.style.display = (isShedActive ? 'block' : 'none');
         ensureCivilDataOnSite(site);
         const civ = site.civilData;
         let civilTotalBasic = 0;
 
-        safeSetText('civilJobTitleDisplay', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
         const cleanCivHead = isCivilRateOnly ?
             `<tr><th style="width: 8%; text-align: center;">S.N</th><th style="width: 56%; text-align: left;">ITEM / WORK DESCRIPTION</th><th style="width: 14%; text-align: center;">UNIT</th><th style="width: 22%; text-align: right;">CONTRACT RATE (₹)</th></tr>` :
             `<tr><th style="width: 7%; text-align: center;">S.N</th><th style="width: 45%; text-align: left;">ITEM / WORK DESCRIPTION</th><th style="width: 14%; text-align: center;">QTY / AREA</th><th style="width: 10%; text-align: center;">UNIT</th><th style="width: 11%; text-align: right;">RATE (₹)</th><th style="width: 13%; text-align: right;">AMOUNT (₹)</th></tr>`;
@@ -2578,8 +2603,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetHtml('civilPdfTermsContainer', `
             <div class="payment-terms-block"><p>1. <b>Civil Schedule:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilPaymentTerms', this)">${(appSettings.civilPaymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
             <div class="general-terms-block"><p>2. <b>Civil Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilTermsCond', this)">${(appSettings.civilTermsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
-        safeSetText('civilPdfTermsHeaderDisplay', appSettings.civilTermsTitle || "Civil Work Terms & Conditions:");
-        safeSetText('civilPdfThankYouDisplay', appSettings.civilThankYouText || "THANK YOU FOR YOUR CIVIL CONTRACT.");
 
         const civilTax = getActiveTaxSlab('civil');
         const civGrand = civilTotalBasic + (civilTotalBasic * civilTax.rate);
@@ -2595,10 +2618,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             civFinBox.style.display = isCivilRateOnly ? 'none' : 'block';
             civRateNotice.style.display = isCivilRateOnly ? 'block' : 'none';
         }
-        safeSetText('civilCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-        safeSetText('civilCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
-        safeSetText('civilSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
-        safeSetText('civilSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
 
         safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; width:auto; display:block; margin: 0 auto;">` : '');
     }
@@ -2633,22 +2652,20 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 21. TRUE DYNAMIC FLOW ENGINE (PERFECT PAGE SPLIT & ZERO TOP GAP)
+// 21. TRUE DYNAMIC FLOW ENGINE FOR PDF (NO BLANK PAGES & NO BOTTOM LINES)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
         p.className = 'a4-page-box';
-        p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; height: auto !important; min-height: 0 !important; max-height: none !important;';
+        p.style.cssText = 'width: 746px !important; margin: 0 !important; padding: 0 !important; background: #ffffff !important; display: flow-root !important; height: auto !important; border: none !important;';
     } else {
         p.className = 'pdf-page-slice';
-        p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; page-break-inside: avoid !important; break-inside: avoid !important;';
     }
     return p;
 }
 
 function finalizePageBox(pageEl) {
     pageEl.className = 'pdf-page-slice';
-    pageEl.style.cssText = 'width: 746px !important; min-width: 746px !important; max-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; background: #ffffff !important; page-break-inside: avoid !important; break-inside: avoid !important; border: 2px solid #000000 !important;';
     return pageEl;
 }
 
@@ -2664,12 +2681,10 @@ function lockTableBottomBorder(tableEl) {
 
 function appendPageToOutput(outputContainer, pageEl, isLastPage = false) {
     finalizePageBox(pageEl);
-    outputContainer.appendChild(pageEl);
     if (!isLastPage) {
-        const pageBreak = document.createElement('div');
-        pageBreak.className = 'html2pdf__page-break';
-        outputContainer.appendChild(pageBreak);
+        pageEl.classList.add('has-page-break');
     }
+    outputContainer.appendChild(pageEl);
 }
 
 function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
@@ -3017,7 +3032,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. DIRECT DOWNLOAD ENGINE
+// 22. DIRECT DOWNLOAD ENGINE (NO BLANK PAGES)
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -3068,11 +3083,10 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     }
 
-    // Single clean page break between Shed and Civil (no blank page)
+    // Shed aur Civil ke beech saaf break bina extra blank page ke
     if (shouldIncludeShed && shouldIncludeCivil) {
-        const breakBetween = document.createElement('div');
-        breakBetween.className = 'html2pdf__page-break';
-        outputContainer.appendChild(breakBetween);
+        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
+        if (lastPage) lastPage.classList.add('has-page-break');
     }
 
     if (shouldIncludeCivil && p2) {
@@ -3084,7 +3098,7 @@ async function downloadPDFDirectly(mode = 'both') {
     document.body.appendChild(stage);
 
     const opt = {
-        margin: [6.35, 6.35, 6.35, 6.35], // Exact 0.25 inch safe margin on all sides
+        margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: {
@@ -3102,7 +3116,7 @@ async function downloadPDFDirectly(mode = 'both') {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
         pagebreak: { 
             mode: ['css', 'legacy'],
-            after: '.html2pdf__page-break'
+            after: '.has-page-break'
         }
     };
 
@@ -3147,7 +3161,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_companyGst', appSettings.companyGst || "");
     safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
 
-    safeSetVal('pt_pdfRibbonTitle', "QUOTATION");
+    safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
     safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle || "");
     safeSetVal('pt_projectSizeHeading', appSettings.projectSizeHeading || "📐 PROJECT SIZE / SHED DIMENSIONS:");
     safeSetVal('pt_headerLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
@@ -3155,7 +3169,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_headerLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
     safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
 
-    safeSetVal('pt_civilPdfRibbonTitle', "QUOTATION");
+    safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
     safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
     safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
     safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
