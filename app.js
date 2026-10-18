@@ -780,7 +780,7 @@ function saveStartingQuoteSeq(val) {
     syncDataToCloud('patel_app_settings', appSettings);
 }
 
-// 10. PREVIEW SCALING
+// 10. PREVIEW SCALING & AUTO-FIT (FIXED PHONE BOTTOM BLUE GAP)
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
     appSettings.savedPdfScale = Math.min(Math.max(cur, 0.40), 2.20);
@@ -827,10 +827,17 @@ function autoFitPreview() {
             wrapper.style.transform = `scale(${totalScale})`;
             wrapper.style.setProperty('margin', '0 auto', 'important');
             
+            const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
+            const scaledHeight = Math.ceil(unscaledHeight * totalScale);
+            
+            if (totalScale < 1.0 && unscaledHeight > 0) {
+                wrapper.style.marginBottom = `-${Math.round(unscaledHeight * (1 - totalScale))}px`;
+            } else {
+                wrapper.style.marginBottom = '0px';
+            }
+
             if (!isDesktop) {
-                const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
-                const scaledHeight = Math.ceil(unscaledHeight * totalScale);
-                if (scaledHeight > 0) viewport.style.height = `${scaledHeight + 35}px`;
+                if (scaledHeight > 0) viewport.style.height = `${scaledHeight + 25}px`;
             } else {
                 viewport.style.height = '100%';
             }
@@ -851,10 +858,17 @@ function autoFitPreview() {
             civilWrap.style.transform = `scale(${cTotalScale})`;
             civilWrap.style.setProperty('margin', '0 auto', 'important');
             
+            const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
+            const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
+            
+            if (cTotalScale < 1.0 && cUnscaledHeight > 0) {
+                civilWrap.style.marginBottom = `-${Math.round(cUnscaledHeight * (1 - cTotalScale))}px`;
+            } else {
+                civilWrap.style.marginBottom = '0px';
+            }
+
             if (!isDesktop) {
-                const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
-                const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
-                if (cScaledHeight > 0) civilVp.style.height = `${cScaledHeight + 35}px`;
+                if (cScaledHeight > 0) civilVp.style.height = `${cScaledHeight + 25}px`;
             } else {
                 civilVp.style.height = '100%';
             }
@@ -1687,6 +1701,10 @@ function autoSaveAndUpdate() {
     refreshLivePdfPreviewSheet();
 }
 
+Part 2 (Section 17 से आख़िरी लाइन तक)
+
+Part 1 के तुरंत नीचे इस Part 2 को जोड़ें:
+
 // 17. STRUCTURE MODULE MODALS
 let activeModType = null;
 function openModuleModal(type) {
@@ -2256,8 +2274,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 
     updateHeaderBannersUI();
 
-    safeSetText('pdfRibbonTitle', "QUOTATION");
-    safeSetText('civilPdfRibbonTitle', "QUOTATION");
+    safeSetText('pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
+    safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
     safeSetText('pdfQuoteNo', site.quoteNo || "PE/2026/01");
     safeSetText('civilPdfQuoteNo', site.quoteNo || "PE/2026/01");
 
@@ -2638,17 +2656,17 @@ function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
         p.className = 'a4-page-box';
-        p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; height: auto !important; min-height: 0 !important; max-height: none !important;';
+        p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; margin: 0 !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; height: auto !important; min-height: 0 !important; max-height: none !important; border: none !important;';
     } else {
         p.className = 'pdf-page-slice';
-        p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; page-break-inside: avoid !important; break-inside: avoid !important;';
+        p.style.cssText = 'width: 746px !important; max-width: 746px !important; min-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; background: #ffffff !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; border: none !important;';
     }
     return p;
 }
 
 function finalizePageBox(pageEl) {
     pageEl.className = 'pdf-page-slice';
-    pageEl.style.cssText = 'width: 746px !important; min-width: 746px !important; max-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; background: #ffffff !important; page-break-inside: avoid !important; break-inside: avoid !important; border: 2px solid #000000 !important;';
+    pageEl.style.cssText = 'width: 746px !important; min-width: 746px !important; max-width: 746px !important; height: 1072px !important; min-height: 1072px !important; max-height: 1072px !important; margin: 0 auto !important; padding: 0 !important; box-sizing: border-box !important; display: flow-root !important; overflow: hidden !important; background: #ffffff !important; border: none !important;';
     return pageEl;
 }
 
@@ -2664,12 +2682,10 @@ function lockTableBottomBorder(tableEl) {
 
 function appendPageToOutput(outputContainer, pageEl, isLastPage = false) {
     finalizePageBox(pageEl);
-    outputContainer.appendChild(pageEl);
     if (!isLastPage) {
-        const pageBreak = document.createElement('div');
-        pageBreak.className = 'html2pdf__page-break';
-        outputContainer.appendChild(pageBreak);
+        pageEl.classList.add('has-page-break');
     }
+    outputContainer.appendChild(pageEl);
 }
 
 function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
@@ -3068,11 +3084,10 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     }
 
-    // Single clean page break between Shed and Civil (no blank page)
+    // Shed aur Civil ke beech saaf break bina extra blank page ke
     if (shouldIncludeShed && shouldIncludeCivil) {
-        const breakBetween = document.createElement('div');
-        breakBetween.className = 'html2pdf__page-break';
-        outputContainer.appendChild(breakBetween);
+        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
+        if (lastPage) lastPage.classList.add('has-page-break');
     }
 
     if (shouldIncludeCivil && p2) {
@@ -3084,7 +3099,7 @@ async function downloadPDFDirectly(mode = 'both') {
     document.body.appendChild(stage);
 
     const opt = {
-        margin: [6.35, 6.35, 6.35, 6.35], // Exact 0.25 inch safe margin on all sides
+        margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: {
@@ -3102,7 +3117,7 @@ async function downloadPDFDirectly(mode = 'both') {
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
         pagebreak: { 
             mode: ['css', 'legacy'],
-            after: '.html2pdf__page-break'
+            after: '.has-page-break'
         }
     };
 
@@ -3147,7 +3162,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_companyGst', appSettings.companyGst || "");
     safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
 
-    safeSetVal('pt_pdfRibbonTitle', "QUOTATION");
+    safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
     safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle || "");
     safeSetVal('pt_projectSizeHeading', appSettings.projectSizeHeading || "📐 PROJECT SIZE / SHED DIMENSIONS:");
     safeSetVal('pt_headerLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
@@ -3155,7 +3170,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_headerLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
     safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
 
-    safeSetVal('pt_civilPdfRibbonTitle', "QUOTATION");
+    safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
     safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
     safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
     safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
