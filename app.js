@@ -3301,6 +3301,8 @@ function openLargeInput(key, title) {
     currentSettingKey = key;
     safeSetText('largeInputTitle', title);
     safeSetVal('largeInputTextarea', app
+}
+
 let currentSettingKey = '';
 function openLargeInput(key, title) {
     currentSettingKey = key;
@@ -3438,4 +3440,4 @@ window.onload = function() {
     }
     initSamsungBootAnimation();
     setTimeout(attachDynamicPreviewObserver, 200);
-};
+};   
