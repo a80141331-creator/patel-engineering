@@ -31,28 +31,23 @@
             <div class="auth-monogram">PE</div>
             <h2>PATEL ENGINEERING</h2>
             <p class="auth-subtitle">Authorized Enterprise Access Gateway</p>
-
-            <div class="form-group" style="margin-top: 18px; text-align: left;">
+            <div class="form-group" style="margin-top: 16px; text-align: left;">
                 <label style="color:#0f2942; font-weight:900;">Enter Master Access Passcode *</label>
                 <div style="position:relative;">
-                    <input type="password" id="inpMasterPasscode" placeholder="Enter Security Code" autocomplete="off" style="text-align:center; font-size:18px; font-weight:900; letter-spacing:2px; text-transform:uppercase;">
+                    <input type="password" id="inpMasterPasscode" placeholder="Enter Security Code" autocomplete="off" style="text-align:center; font-size:16px; font-weight:900; letter-spacing:2px; text-transform:uppercase;">
                     <button type="button" class="btn-toggle-eye" onclick="togglePassVisibility('inpMasterPasscode')">👁️</button>
                 </div>
                 <div id="authErrorMsg" class="auth-error-text" style="display:none;">⚠️ Invalid Passcode. Access Denied!</div>
             </div>
-
-            <button type="button" class="btn-main btn-3d-main btn-ripple" style="margin-top:14px; padding:13px;" onclick="verifyMasterPasscode()">
+            <button type="button" class="btn-main btn-3d-main btn-ripple" style="margin-top:12px; padding:11px;" onclick="verifyMasterPasscode()">
                 🔒 UNLOCK & INITIALIZE SYSTEM
             </button>
-            <p style="font-size:11px; color:#64748b; margin-top:12px;">* Master passcode badalte hi unauthorized devices lock ho jayenge.</p>
+            <p style="font-size:10.5px; color:#64748b; margin-top:10px;">* Master passcode badalte hi unauthorized devices lock ho jayenge.</p>
         </div>
     </div>
 
     <!-- 3D BOOT ANIMATION -->
     <div id="appBootSplashScreen" class="shed-assembly-overlay" onclick="skipBootAnimation()">
-        <div class="shed-light-mesh"></div>
-        <div class="shed-truss-lines"></div>
-
         <div class="shed-center-stage">
             <div class="shed-monogram-3d"><span>PE</span></div>
             <div class="shed-letters-3d-stage" id="bootTextContainer">
@@ -74,7 +69,6 @@
                 <span class="shed-char" style="--i:15;">N</span>
                 <span class="shed-char" style="--i:16;">G</span>
             </div>
-            <div class="shed-assembly-beam"></div>
         </div>
     </div>
 
@@ -87,7 +81,6 @@
                     <h1 id="appLogoName">PATEL ENGINEERING</h1>
                 </div>
             </div>
-            
             <div class="top-actions">
                 <div class="device-mode-pill pill-3d">
                     <button class="btn-device-mode btn-device-phone btn-ripple" onclick="setDeviceViewMode('phone', true)" title="Phone View">📱</button>
@@ -103,9 +96,9 @@
                 <span class="pulse-dot">●</span> 100% Cloud Synced (All Devices Connected)
             </div>
 
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 12px;">
                 <button class="btn-main btn-3d-main btn-ripple btn-pulse" onclick="openCreateSiteScreen()">
-                    <span style="font-size: 20px;">➕</span> CREATE NEW SITE QUOTATION
+                    <span style="font-size: 18px;">➕</span> CREATE NEW SITE QUOTATION
                 </button>
             </div>
 
@@ -113,9 +106,9 @@
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <span class="card-eyebrow">Project Portfolio</span>
-                        <h2 style="font-size: 17px; font-weight: 900; margin-top: 3px;">Saved Client Projects</h2>
+                        <h2 style="font-size: 16px; font-weight: 900; margin-top: 2px;">Saved Client Projects</h2>
                     </div>
-                    <span style="font-size: 32px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">🏗️</span>
+                    <span style="font-size: 28px;">🏗️</span>
                 </div>
                 <div class="stat-footer">
                     <div>Total Projects: <b id="statTotalSites" style="color:#fff;">0</b></div>
@@ -221,8 +214,8 @@
             <div class="nav-back-title">
                 <button class="icon-btn btn-3d-secondary btn-ripple" onclick="openScreen('screenHome')">← Sites</button>
                 <div>
-                    <h2 id="dashSiteName" style="font-size: 15px;">Site Overview</h2>
-                    <p style="font-size: 11px; color: var(--gold-light);" id="dashQuoteNo">Quote</p>
+                    <h2 id="dashSiteName" style="font-size: 14.5px;">Site Overview</h2>
+                    <p style="font-size: 10.5px; color: var(--gold-light);" id="dashQuoteNo">Quote</p>
                 </div>
             </div>
 
@@ -237,10 +230,6 @@
         </header>
 
         <div class="content">
-            <div class="autosave-status-pill pill-3d">
-                <span>●</span> Real-Time Auto-Save & Cloud Sync Active
-            </div>
-
             <div class="dashboard-split-layout">
                 <!-- LEFT CONTROLS PANE -->
                 <div class="dash-controls-pane">
@@ -267,23 +256,23 @@
                     </div>
 
                     <!-- COMBINE MODE CIVIL BUTTON -->
-                    <div id="civilSectionsContainer" style="display: none; margin-bottom: 12px;">
+                    <div id="civilSectionsContainer" style="display: none; margin-bottom: 10px;">
                         <button type="button" class="btn-enter-civil-hub btn-3d-green btn-ripple" onclick="openCivilDashboardScreen()">
                             <div style="display:flex; align-items:center; gap:8px;">
-                                <span style="font-size: 20px;">🏗️</span>
+                                <span style="font-size: 18px;">🏗️</span>
                                 <div style="text-align:left;">
-                                    <div style="font-size: 13px; font-weight: 900;">CONFIGURE CIVIL SPECIFICATIONS (PAGE 2)</div>
-                                    <span style="font-size: 10.5px; opacity: 0.95; font-weight: 700;">Foundation, Brick Wall, Flooring Parameters</span>
+                                    <div style="font-size: 12.5px; font-weight: 900;">CONFIGURE CIVIL SPECIFICATIONS (PAGE 2)</div>
+                                    <span style="font-size: 10px; opacity: 0.95; font-weight: 700;">Foundation, Brick Wall, Flooring Parameters</span>
                                 </div>
                             </div>
-                            <span style="font-size: 16px;">➔</span>
+                            <span style="font-size: 15px;">➔</span>
                         </button>
                     </div>
 
                     <!-- SHED DIMENSIONS CARD -->
                     <div id="shedDimensionsCardBox" class="card card-accent-top card-3d">
                         <label class="form-head-label">📐 Shed Dimensions (Width x Length x Height)</label>
-                        <div class="row-3" style="margin-top: 8px;">
+                        <div class="row-3" style="margin-top: 6px;">
                             <div class="form-group">
                                 <label>Width (Ft)</label>
                                 <input type="number" step="any" id="dimW" placeholder="0" oninput="autoSaveAndUpdate()">
@@ -304,9 +293,9 @@
 
                     <!-- STRUCTURE MODULES -->
                     <div id="shedModulesBlock">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin: 14px 0 8px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin: 10px 0 6px;">
                             <h3 class="section-title" style="margin:0;">Structure Modules</h3>
-                            <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 6px 12px; font-size:11px;" onclick="openAddUniversalModuleModal('shed')">
+                            <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 4px 8px; font-size:10.5px;" onclick="openAddUniversalModuleModal('shed')">
                                 ➕ Add Custom Module
                             </button>
                         </div>
@@ -366,13 +355,12 @@
                             </div>
                         </div>
 
-                        <div id="customModulesListContainer" class="modules-grid-container" style="margin-top:-4px;"></div>
+                        <div id="customModulesListContainer" class="modules-grid-container" style="margin-top:-3px;"></div>
                     </div>
                 </div>
 
                 <!-- RIGHT PREVIEW PANE -->
                 <div class="dash-preview-pane">
-                    <!-- PREVIEW TOP NAV STRIP (ARROWS SCROLL ONLY PREVIEW) -->
                     <div class="pane-scroll-nav">
                         <span class="pane-title-badge">📑 Document Preview</span>
                         <div class="scroll-btns-wrap">
@@ -383,17 +371,13 @@
 
                     <div class="pdf-section-wrapper">
                         <div class="font-scale-bar card-3d">
-                            <span style="font-size:11.5px; font-weight:800;">🔍 Preview Zoom:</span>
+                            <span style="font-size:11px; font-weight:800;">🔍 Font Size Adjust:</span>
                             <div style="display:flex; align-items:center; gap:6px;">
                                 <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.05)">A -</button>
-                                <span id="scaleIndicatorText" style="font-size:12px; font-weight:900; min-width:44px; text-align:center; color:var(--gold-light);">100%</span>
+                                <span id="scaleIndicatorText" style="font-size:11.5px; font-weight:900; min-width:40px; text-align:center; color:var(--gold-light);">100%</span>
                                 <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.05)">A +</button>
-                                <button class="btn-font-ctrl btn-ripple" style="font-size:10px; padding:4px 6px;" onclick="resetPdfScale()">Reset</button>
+                                <button class="btn-font-ctrl btn-ripple" style="font-size:9.5px; padding:3px 5px;" onclick="resetPdfScale()">Reset</button>
                             </div>
-                        </div>
-
-                        <div class="live-edit-hint-pill">
-                            ✏️ <strong>Live Preview:</strong> Numbers, Titles & Terms par click karke direct edit karein.
                         </div>
 
                         <div class="pdf-sheet-frame card-3d">
@@ -412,7 +396,7 @@
                                                     <div class="quote-main-heading" id="pdfRibbonTitle">QUOTATION</div>
                                                     <div class="quote-meta-list">
                                                         <div>Quote Ref: <b id="pdfQuoteNo">PE/2026/01</b></div>
-                                                        <div>Issue Date: <b id="pdfCurrentDate">17 Oct 2026</b></div>
+                                                        <div>Issue Date: <b id="pdfCurrentDate">20 Oct 2026</b></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -427,7 +411,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- 2. CUSTOMER DETAILS (DIRECT IN-PREVIEW EDITABLE) -->
+                                            <!-- 2. CUSTOMER DETAILS -->
                                             <div class="customer-details-block">
                                                 <div class="scope-left-column">
                                                     <div class="scope-heading-dark" id="pdfScopeTitle">
@@ -459,7 +443,7 @@
                                             <!-- SECTION 1: STEEL WEIGHT -->
                                             <div class="section-header-bar">
                                                 <span id="displayHeaderLine1">1. ESTIMATED STEEL WEIGHT:</span>
-                                                <span style="font-size:9.5px; font-weight:800;">Engineering Estimate</span>
+                                                <span style="font-size:9px; font-weight:800;">Engineering Estimate</span>
                                             </div>
                                             <div class="table-wrapper">
                                                 <table class="theme-data-table">
@@ -476,7 +460,7 @@
                                             <!-- SECTION 2: PRICE BREAKUP -->
                                             <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center;">
                                                 <span id="displayHeaderLine2">2. PRICE BREAKUP AS PER KG RATE:</span>
-                                                <button type="button" class="btn-preview-add-inline btn-ripple" onclick="openAddUniversalModuleModal('shed')">+ Add Module / Item</button>
+                                                <button type="button" class="btn-preview-add-inline btn-ripple" onclick="openAddUniversalModuleModal('shed')">+ Add Module</button>
                                             </div>
                                             <div class="table-wrapper">
                                                 <table class="theme-data-table">
@@ -487,7 +471,7 @@
 
                                             <!-- SECTION 3: ACCESSORIES BREAKDOWN -->
                                             <div id="pdfAccBreakdownContainer" style="display: none;">
-                                                <div class="section-header-bar" style="margin-top: 5px; display:flex; justify-content:space-between; align-items:center;">
+                                                <div class="section-header-bar" style="margin-top: 4px; display:flex; justify-content:space-between; align-items:center;">
                                                     <span id="pdfAccSectionHeading">3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:</span>
                                                     <button type="button" class="btn-acc-preview-add btn-ripple" onclick="addNewAccessoryDirectly()">+ Add Item</button>
                                                 </div>
@@ -532,7 +516,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- DUAL SIGNATURE BLOCK (WITH PHYSICAL RULE LINE) -->
+                                            <!-- DUAL SIGNATURE BLOCK -->
                                             <div class="signature-dual-grid">
                                                 <div class="sign-box-col">
                                                     <div class="sign-stamp-area"></div>
@@ -549,7 +533,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- 100% FULL-WIDTH BLUE FOOTER BAR -->
+                                            <!-- FOOTER BAR -->
                                             <div class="geo-footer-wrapper">
                                                 <div class="footer-full-bar">
                                                     <div class="footer-row-item">
@@ -563,7 +547,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
 
                                         <div class="page-physical-gap" id="civilPageGapDivider" style="display: none;"></div>
@@ -579,7 +562,7 @@
                                                     <div class="quote-main-heading" id="civilPdfRibbonTitle">QUOTATION</div>
                                                     <div class="quote-meta-list">
                                                         <div>Quote Ref: <b id="civilPdfQuoteNo">PE/2026/01</b></div>
-                                                        <div>Issue Date: <b id="civilPdfCurrentDate">17 Oct 2026</b></div>
+                                                        <div>Issue Date: <b id="civilPdfCurrentDate">20 Oct 2026</b></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -600,7 +583,7 @@
                                                     <div class="scope-heading-dark" id="civilPdfScopeTitle">
                                                         TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS
                                                     </div>
-                                                    <div style="font-size:9.5px; color:#64748b; font-weight:700; margin-top:3px;">
+                                                    <div style="font-size:9px; color:#64748b; font-weight:700; margin-top:2px;">
                                                         Detailed Engineering Estimate & Material Specifications
                                                     </div>
                                                 </div>
@@ -616,7 +599,7 @@
 
                                             <div class="civil-job-details-ribbon" id="civilJobTitleDisplay">JOB DETAILS & TECHNICAL SPECIFICATIONS</div>
 
-                                            <!-- SECTION 1: FOUNDATION -->
+                                            <!-- CIVIL SECTION 1 -->
                                             <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
                                                 <span id="civilFoundTitle">1. FOUNDATION & RCC COLUMN DETAILS:</span>
                                                 <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('foundation')">+ Add Item</button>
@@ -628,7 +611,7 @@
                                                 </table>
                                             </div>
 
-                                            <!-- SECTION 2: BRICK WALL -->
+                                            <!-- CIVIL SECTION 2 -->
                                             <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
                                                 <span id="civilBrickTitle">2. BRICK WALL, DPC & PLASTER DETAILS:</span>
                                                 <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('brickWall')">+ Add Item</button>
@@ -640,7 +623,7 @@
                                                 </table>
                                             </div>
 
-                                            <!-- SECTION 3: FLOORING -->
+                                            <!-- CIVIL SECTION 3 -->
                                             <div class="civil-category-title-bar" style="display:flex; justify-content:space-between; align-items:center;">
                                                 <span id="civilFloorTitle">3. FLOORING & PCC WORK DETAILS:</span>
                                                 <button type="button" class="btn-preview-add-inline btn-ripple" onclick="addCivilRowDirectly('flooring')">+ Add Item</button>
@@ -680,7 +663,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- DUAL SIGNATURE (CIVIL WITH SIGNATURE LINE) -->
+                                            <!-- DUAL SIGNATURE (CIVIL) -->
                                             <div class="signature-dual-grid">
                                                 <div class="sign-box-col">
                                                     <div class="sign-stamp-area"></div>
@@ -710,7 +693,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
 
                                     </div>
@@ -733,8 +715,8 @@
             <div class="nav-back-title">
                 <button class="icon-btn btn-3d-secondary btn-ripple" onclick="handleCivilBackNav()">← Back</button>
                 <div>
-                    <h2 id="civilDashSiteName" style="font-size: 14.5px;">Civil Work Manager</h2>
-                    <p style="font-size: 11px; color: var(--gold-light);" id="civilDashQuoteNo">Civil Scope</p>
+                    <h2 id="civilDashSiteName" style="font-size: 14px;">Civil Work Manager</h2>
+                    <p style="font-size: 10.5px; color: var(--gold-light);" id="civilDashQuoteNo">Civil Scope</p>
                 </div>
             </div>
 
@@ -750,7 +732,6 @@
         <div class="content">
             <div class="dashboard-split-layout">
                 <div class="dash-controls-pane">
-                    <!-- EDIT CUSTOMER DETAILS BUTTON IN CIVIL -->
                     <button type="button" class="btn-edit-cust-trigger btn-ripple" onclick="openEditCustomerModal()">
                         <span class="icon">👤</span>
                         <div class="text-wrap">
@@ -760,7 +741,7 @@
                         <span class="arrow">➔</span>
                     </button>
 
-                    <div class="compact-toggle-bar" id="civilCompactToggleBar" style="margin-bottom: 12px;">
+                    <div class="compact-toggle-bar" id="civilCompactToggleBar" style="margin-bottom: 10px;">
                         <div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnCivilScreenCivRateMode" onclick="toggleCivilRateOnlyMode()">
                             <span id="pillTxtCivilScreenCivRateMode">Civil BOQ</span>
                             <span class="pill-indicator"></span>
@@ -771,19 +752,19 @@
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <div>
                                 <span class="card-eyebrow">Civil Scope (Page Header)</span>
-                                <h4 id="civilScopeDescPreviewTxt" style="font-size:12.5px; font-weight:800; color:#0f172a; margin-top:3px;">
+                                <h4 id="civilScopeDescPreviewTxt" style="font-size:12px; font-weight:800; color:#0f172a; margin-top:2px;">
                                     TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS
                                 </h4>
                             </div>
-                            <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding:6px 12px; font-size:11.5px;" onclick="openCivilScopeModal()">
+                            <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding:5px 10px; font-size:11px;" onclick="openCivilScopeModal()">
                                 📝 Edit Scope
                             </button>
                         </div>
                     </div>
 
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin: 14px 0 8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin: 10px 0 6px;">
                         <h3 class="section-title" style="margin:0;">Civil Specifications Cards</h3>
-                        <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 6px 12px; font-size:11px;" onclick="openAddUniversalModuleModal('civil')">
+                        <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 4px 8px; font-size:10.5px;" onclick="openAddUniversalModuleModal('civil')">
                             ➕ Add Civil Module
                         </button>
                     </div>
@@ -825,9 +806,9 @@
                         </div>
                     </div>
 
-                    <div id="civilCustomCategoriesGrid" class="modules-grid-container" style="margin-top:-4px;"></div>
+                    <div id="civilCustomCategoriesGrid" class="modules-grid-container" style="margin-top:-3px;"></div>
 
-                    <div style="display:flex; gap:10px; margin-top: 16px;">
+                    <div style="display:flex; gap:8px; margin-top: 14px;">
                         <button class="btn-main btn-3d-green btn-ripple" style="flex:2;" onclick="downloadPDFDirectly('civil')">
                             ⬇️ DOWNLOAD CIVIL PDF
                         </button>
@@ -848,16 +829,16 @@
                     </div>
 
                     <div class="font-scale-bar card-3d">
-                        <span style="font-size:11.5px; font-weight:800;">🔍 Civil Preview Zoom:</span>
+                        <span style="font-size:11px; font-weight:800;">🔍 Civil Preview Zoom:</span>
                         <div style="display:flex; align-items:center; gap:6px;">
                             <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.05)">A -</button>
-                            <span id="civilScaleIndicatorText" style="font-size:12px; font-weight:900; min-width:44px; text-align:center; color:var(--gold-light);">100%</span>
+                            <span id="civilScaleIndicatorText" style="font-size:11.5px; font-weight:900; min-width:40px; text-align:center; color:var(--gold-light);">100%</span>
                             <button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.05)">A +</button>
-                            <button class="btn-font-ctrl btn-ripple" style="font-size:10px; padding:4px 6px;" onclick="resetPdfScale()">Reset</button>
+                            <button class="btn-font-ctrl btn-ripple" style="font-size:9.5px; padding:3px 5px;" onclick="resetPdfScale()">Reset</button>
                         </div>
                     </div>
 
-                    <div class="pdf-section-wrapper" style="margin-top: 8px;">
+                    <div class="pdf-section-wrapper" style="margin-top: 6px;">
                         <h3 class="section-title">Civil Sheet Live Preview</h3>
                         <div class="pdf-sheet-frame card-3d">
                             <div class="mobile-preview-viewport" id="civilViewportWrap">
@@ -881,54 +862,54 @@
             </div>
         </header>
         <div class="content">
-            <div style="margin-bottom: 12px; display:flex; flex-direction:column; gap:10px;">
-                <button class="btn-main btn-3d-main btn-ripple" style="padding: 13px;" onclick="openPermanentTextsModal()">
-                    <span style="font-size: 18px;">🖨️</span> EDIT ALL BUTTON NAMES & HEADINGS (PERMANENT)
+            <div style="margin-bottom: 10px; display:flex; flex-direction:column; gap:8px;">
+                <button class="btn-main btn-3d-main btn-ripple" style="padding: 11px;" onclick="openPermanentTextsModal()">
+                    <span style="font-size: 16px;">🖨️</span> EDIT ALL BUTTON NAMES & HEADINGS (PERMANENT)
                 </button>
-                <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 11px; justify-content:center;" onclick="openChangePasscodeModal()">
-                    <span style="font-size: 16px;">🔑</span> Change Master Security Passcode
+                <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 9px; justify-content:center;" onclick="openChangePasscodeModal()">
+                    <span style="font-size: 15px;">🔑</span> Change Master Security Passcode
                 </button>
-                <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 11px; justify-content:center;" onclick="replaySamsungBootAnimation()">
-                    <span style="font-size: 16px;">🎬</span> Replay 3D Tin Shed Open Animation
+                <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 9px; justify-content:center;" onclick="replaySamsungBootAnimation()">
+                    <span style="font-size: 15px;">🎬</span> Replay 3D Tin Shed Open Animation
                 </button>
             </div>
 
             <div class="card card-3d">
                 <label class="form-head-label">🔢 Next Quotation Starting Number (Live Auto-Sync)</label>
-                <div class="row-2" style="margin-top:6px; align-items:center;">
+                <div class="row-2" style="margin-top:5px; align-items:center;">
                     <div class="form-group" style="margin-bottom:0;">
                         <label>Next Quote Seq No.</label>
                         <input type="number" id="setStartingQuoteNo" min="1" placeholder="e.g. 7" oninput="saveStartingQuoteSeq(this.value)">
                     </div>
-                    <p style="font-size:11px; color:#64748b; margin:0;">
+                    <p style="font-size:10.5px; color:#64748b; margin:0;">
                         Ye automatically agle naye quotation ka sequence number show karta hai.
                     </p>
                 </div>
             </div>
 
             <!-- LOGO UPLOAD -->
-            <div class="card card-3d" style="display:flex; align-items:center; gap: 14px;">
-                <div class="logo-box logo-3d" id="settingsLogoPreview" style="width: 54px; height: 54px; border-radius: 12px;">PE</div>
+            <div class="card card-3d" style="display:flex; align-items:center; gap: 12px;">
+                <div class="logo-box logo-3d" id="settingsLogoPreview" style="width: 48px; height: 48px; border-radius: 10px;">PE</div>
                 <div>
                     <input type="file" id="logoUploadInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
                     <button class="btn-secondary btn-3d-secondary btn-ripple" onclick="document.getElementById('logoUploadInput').click()">
                         🖼️ Upload Header Banner Image & Logo
                     </button>
-                    <p style="font-size: 11px; color: #64748b; margin-top: 4px;">PDF Header Left Box & App Icon par auto-sync hoga</p>
+                    <p style="font-size: 10.5px; color: #64748b; margin-top: 3px;">PDF Header Left Box & App Icon par auto-sync hoga</p>
                 </div>
             </div>
 
             <!-- DYNAMIC CONTACT NUMBERS -->
             <div class="card card-3d">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                     <label class="form-head-label" style="margin:0;">Official Phone Numbers (Dynamic)</label>
-                    <button type="button" class="btn-secondary btn-3d-secondary btn-ripple" onclick="addPhoneRowInSettings()" style="font-size:11px; padding:5px 9px;">
+                    <button type="button" class="btn-secondary btn-3d-secondary btn-ripple" onclick="addPhoneRowInSettings()" style="font-size:10.5px; padding:4px 8px;">
                         ➕ Add Phone Number
                     </button>
                 </div>
                 <div id="settingsPhonesListContainer"></div>
 
-                <div class="row-2" style="margin-top:10px;">
+                <div class="row-2" style="margin-top:8px;">
                     <div class="form-group" style="margin-bottom:0;">
                         <label>Company Email (Blank = Hide)</label>
                         <input type="email" id="setCompanyEmail" oninput="saveCompanyEmailSetting(this.value)" placeholder="info@patelengineering.com">
@@ -978,12 +959,12 @@
     <!-- MODAL: EDIT CUSTOMER DETAILS -->
     <div id="editCustomerModal" class="modal">
         <div class="modal-body modal-3d" style="max-height: 94vh;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
-                <h3 style="font-size: 15px; font-weight: 900; color: #0f2942;">👤 Edit Customer & Project Details</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
+                <h3 style="font-size: 14.5px; font-weight: 900; color: #0f2942;">👤 Edit Customer & Project Details</h3>
                 <button class="btn-del-pro btn-ripple" onclick="closeEditCustomerModal()">✕ Close</button>
             </div>
 
-            <div class="card card-accent-top card-3d" style="margin-bottom:10px;">
+            <div class="card card-accent-top card-3d" style="margin-bottom:8px;">
                 <label class="form-head-label" style="color:#0f2942;">🎯 Switch Quotation Mode:</label>
                 <div class="quote-type-selector-grid">
                     <div class="quote-type-card card-3d-press btn-ripple" id="editCardQuoteType_both" onclick="setEditSiteQuoteType('both')">
@@ -1040,7 +1021,7 @@
                 </div>
             </div>
 
-            <div style="display:flex; gap:10px; margin-top: 14px;">
+            <div style="display:flex; gap:8px; margin-top: 12px;">
                 <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeEditCustomerModal()">Cancel</button>
                 <button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveEditCustomerDetails()">✓ SAVE & SWITCH DASHBOARD</button>
             </div>
@@ -1050,11 +1031,10 @@
     <!-- MODAL: CHANGE MASTER PASSCODE -->
     <div id="changePasscodeModal" class="modal">
         <div class="modal-body modal-3d">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
-                <h3 style="font-size: 15px; font-weight: 900; color: #0f2942;">🔑 Change Master Security Passcode</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
+                <h3 style="font-size: 14.5px; font-weight: 900; color: #0f2942;">🔑 Change Master Security Passcode</h3>
                 <button class="btn-del-pro btn-ripple" onclick="closeChangePasscodeModal()">✕ Close</button>
             </div>
-
             <div class="form-group">
                 <label>Current Master Passcode</label>
                 <input type="password" id="inpCurrentPass" placeholder="Enter Old Code">
@@ -1063,8 +1043,7 @@
                 <label>New Master Passcode</label>
                 <input type="text" id="inpNewPass" placeholder="Enter New Code (e.g. RJ06CC7194)" style="text-transform:uppercase; font-weight:800;">
             </div>
-
-            <div style="display:flex; gap:10px; margin-top: 14px;">
+            <div style="display:flex; gap:8px; margin-top: 12px;">
                 <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeChangePasscodeModal()">Cancel</button>
                 <button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveNewMasterPasscode()">UPDATE PASSCODE</button>
             </div>
@@ -1074,16 +1053,14 @@
     <!-- MODAL: CIVIL PARAMETERS -->
     <div id="civilParamModal" class="modal">
         <div class="modal-body modal-3d" style="max-height: 94vh;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
-                <h3 id="civilModalTitle" style="font-size: 15px; font-weight: 900; color: #166534; flex:1;">🧱 Civil Section Details</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
+                <h3 id="civilModalTitle" style="font-size: 14.5px; font-weight: 900; color: #166534; flex:1;">🧱 Civil Section Details</h3>
                 <button class="btn-del-pro btn-ripple" onclick="closeCivilParamModal()">✕ Close</button>
             </div>
-
-            <div id="civilModalRowsContainer" style="max-height: 72vh; overflow-y: auto; margin-bottom: 12px; padding-right: 4px;"></div>
-
-            <div style="display:flex; gap:10px;">
-                <button type="button" class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1; justify-content:center; padding:12px; font-weight:800;" onclick="addCustomRowToActiveCivilSection()">
-                    ➕ Add Custom Line / Item
+            <div id="civilModalRowsContainer" style="max-height: 72vh; overflow-y: auto; margin-bottom: 10px; padding-right: 4px;"></div>
+            <div style="display:flex; gap:8px;">
+                <button type="button" class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1; justify-content:center; padding:10px; font-weight:800;" onclick="addCustomRowToActiveCivilSection()">
+                    ➕ Add Item
                 </button>
                 <button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="closeCivilParamModal()">✓ DONE / SAVE</button>
             </div>
@@ -1093,43 +1070,29 @@
     <!-- MODAL: UNIVERSAL MODULE ADDER -->
     <div id="universalModuleModal" class="modal">
         <div class="modal-body modal-3d" style="max-height: 92vh; overflow-y: auto;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
-                <h3 id="universalModHeading" style="font-size: 15px; font-weight: 900; color: #0f2942;">➕ Add New Module</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
+                <h3 id="universalModHeading" style="font-size: 14.5px; font-weight: 900; color: #0f2942;">➕ Add New Module</h3>
                 <button class="btn-del-pro btn-ripple" onclick="closeUniversalModuleModal()">✕ Close</button>
             </div>
-
             <div class="form-group">
                 <label>Module / Item Title * (Required)</label>
                 <input type="text" id="umod_title" placeholder="e.g. Canopy & Gutter Work">
             </div>
-
             <div class="form-group">
                 <label>Description Note (Optional)</label>
                 <input type="text" id="umod_desc" placeholder="Details...">
             </div>
-
-            <div class="card card-3d" style="background:#f8fafc; border:1px solid #cbd5e1; padding:12px; margin-top:10px;">
+            <div class="card card-3d" style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; margin-top:8px;">
                 <div class="row-3">
-                    <div class="form-group" style="margin:0;">
-                        <label>Quantity</label>
-                        <input type="number" step="any" id="umod_qty" placeholder="1" oninput="recalcUmodPreviewAmount()">
-                    </div>
-                    <div class="form-group" style="margin:0;">
-                        <label>Unit</label>
-                        <button type="button" class="theme-unit-btn btn-3d-secondary btn-ripple" id="btn_umod_unit" onclick="openThemeUnitPickerForUniversalMod()">Lot ▾</button>
-                    </div>
-                    <div class="form-group" style="margin:0;">
-                        <label>Unit Rate (₹)</label>
-                        <input type="number" step="any" id="umod_rate" placeholder="0" oninput="recalcUmodPreviewAmount()">
-                    </div>
+                    <div class="form-group" style="margin:0;"><label>Quantity</label><input type="number" step="any" id="umod_qty" placeholder="1" oninput="recalcUmodPreviewAmount()"></div>
+                    <div class="form-group" style="margin:0;"><label>Unit</label><button type="button" class="theme-unit-btn btn-3d-secondary btn-ripple" id="btn_umod_unit" onclick="openThemeUnitPickerForUniversalMod()">Lot ▾</button></div>
+                    <div class="form-group" style="margin:0;"><label>Unit Rate (₹)</label><input type="number" step="any" id="umod_rate" placeholder="0" oninput="recalcUmodPreviewAmount()"></div>
                 </div>
-
-                <div class="calc-summary-strip" id="umodLiveSummaryStrip" style="margin-top:10px;">
+                <div class="calc-summary-strip" id="umodLiveSummaryStrip" style="margin-top:8px;">
                     <div><b>Calculated Total:</b> <span class="amt-gold" id="umodCalculatedAmtText">-</span></div>
                 </div>
             </div>
-
-            <div style="display:flex; gap:10px; margin-top: 14px;">
+            <div style="display:flex; gap:8px; margin-top: 12px;">
                 <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeUniversalModuleModal()">Cancel</button>
                 <button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveUniversalModule()">SAVE MODULE</button>
             </div>
@@ -1139,17 +1102,15 @@
     <!-- MODAL: CIVIL SCOPE -->
     <div id="civilScopeModal" class="modal">
         <div class="modal-body modal-3d">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
-                <h3 style="font-size: 15px; font-weight: 900; color: #166534;">📝 Edit Civil Scope / Description</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
+                <h3 style="font-size: 14.5px; font-weight: 900; color: #166534;">📝 Edit Civil Scope</h3>
                 <button class="btn-del-pro btn-ripple" onclick="closeCivilScopeModal()">✕ Close</button>
             </div>
-
             <div class="form-group">
                 <label>Civil Page Scope Description Line</label>
-                <textarea id="inp_civilScopeDescModal" rows="4" style="font-weight: 800; font-size: 13px;"></textarea>
+                <textarea id="inp_civilScopeDescModal" rows="3" style="font-weight: 800; font-size: 12px;"></textarea>
             </div>
-
-            <div style="display:flex; gap:10px; margin-top: 14px;">
+            <div style="display:flex; gap:8px; margin-top: 12px;">
                 <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeCivilScopeModal()">Cancel</button>
                 <button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveCivilScopeModal()">SAVE SCOPE</button>
             </div>
@@ -1159,17 +1120,17 @@
     <!-- MODAL: PERMANENT TEXTS -->
     <div id="permanentTextsModal" class="modal">
         <div class="modal-body modal-3d" style="max-height: 94vh;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
                 <div>
-                    <h3 style="font-size: 15px; font-weight: 900; color: #000;">🖨️ PDF Headings & Text Editor</h3>
-                    <p style="font-size: 11px; color: #059669; font-weight: 700;">● Har ek permanent text live sync hoga</p>
+                    <h3 style="font-size: 14.5px; font-weight: 900; color: #000;">🖨️ PDF Headings & Text Editor</h3>
+                    <p style="font-size: 10.5px; color: #059669; font-weight: 700;">● Har ek permanent text live sync hoga</p>
                 </div>
                 <button class="btn-del-pro btn-ripple" onclick="closePermanentTextsModal()">✕ Close</button>
             </div>
 
-            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #0f2942; margin-bottom: 10px;">
-                <label style="font-size: 11px; font-weight: 900; color: #0f2942; text-transform: uppercase;">1. Company Tagline & Contact</label>
-                <div class="row-2" style="margin-top:6px;">
+            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #0f2942; margin-bottom: 8px;">
+                <label style="font-size: 10.5px; font-weight: 900; color: #0f2942; text-transform: uppercase;">1. Company Tagline & Contact</label>
+                <div class="row-2" style="margin-top:5px;">
                     <div class="form-group"><label>Tagline / Description</label><input type="text" id="pt_companyDesc" oninput="autoSavePermanentText('companyDesc', this.value)"></div>
                     <div class="form-group"><label>GSTIN Number</label><input type="text" id="pt_companyGst" oninput="autoSavePermanentText('companyGst', this.value)"></div>
                 </div>
@@ -1179,9 +1140,9 @@
                 </div>
             </div>
 
-            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid var(--gold-primary); margin-bottom: 10px;">
-                <label style="font-size: 11px; font-weight: 900; color: #854d0e; text-transform: uppercase;">2. Shed Quotation Titles</label>
-                <div class="row-2" style="margin-top:6px;">
+            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid var(--gold-primary); margin-bottom: 8px;">
+                <label style="font-size: 10.5px; font-weight: 900; color: #854d0e; text-transform: uppercase;">2. Shed Quotation Titles</label>
+                <div class="row-2" style="margin-top:5px;">
                     <div class="form-group"><label>Shed Ribbon Title</label><input type="text" id="pt_pdfRibbonTitle" oninput="autoSavePermanentText('pdfRibbonTitle', this.value)"></div>
                     <div class="form-group"><label>Shed Scope Heading</label><input type="text" id="pt_pdfScopeTitle" oninput="autoSavePermanentText('pdfScopeTitle', this.value)"></div>
                 </div>
@@ -1196,9 +1157,9 @@
                 </div>
             </div>
 
-            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #16a34a; margin-bottom: 10px;">
-                <label style="font-size: 11px; font-weight: 900; color: #166534; text-transform: uppercase;">3. Civil Quotation Titles</label>
-                <div class="row-2" style="margin-top:6px;">
+            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #16a34a; margin-bottom: 8px;">
+                <label style="font-size: 10.5px; font-weight: 900; color: #166534; text-transform: uppercase;">3. Civil Quotation Titles</label>
+                <div class="row-2" style="margin-top:5px;">
                     <div class="form-group"><label>Civil Ribbon Title</label><input type="text" id="pt_civilPdfRibbonTitle" oninput="autoSavePermanentText('civilPdfRibbonTitle', this.value)"></div>
                     <div class="form-group"><label>Civil Blue Job Details Bar</label><input type="text" id="pt_civilJobTitle" oninput="autoSavePermanentText('civilJobTitle', this.value)"></div>
                 </div>
@@ -1209,9 +1170,9 @@
                 </div>
             </div>
 
-            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #2563eb; margin-bottom: 10px;">
-                <label style="font-size: 11px; font-weight: 900; color: #1e40af; text-transform: uppercase;">4. Dashboard Module Button Titles</label>
-                <div class="row-2" style="margin-top:6px;">
+            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #2563eb; margin-bottom: 8px;">
+                <label style="font-size: 10.5px; font-weight: 900; color: #1e40af; text-transform: uppercase;">4. Dashboard Module Button Titles</label>
+                <div class="row-2" style="margin-top:5px;">
                     <div class="form-group"><label>Primary Button</label><input type="text" id="pt_btnNamePrim" oninput="autoSavePermanentText('btnNamePrim', this.value)"></div>
                     <div class="form-group"><label>Secondary Button</label><input type="text" id="pt_btnNameSec" oninput="autoSavePermanentText('btnNameSec', this.value)"></div>
                 </div>
@@ -1227,9 +1188,9 @@
                 </div>
             </div>
 
-            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #7c3aed; margin-bottom: 10px;">
-                <label style="font-size: 11px; font-weight: 900; color: #6d28d9; text-transform: uppercase;">5. Terms, Conditions & Signatures</label>
-                <div class="row-2" style="margin-top:6px;">
+            <div class="card card-3d" style="background:#fafafa; border-left: 3px solid #7c3aed; margin-bottom: 8px;">
+                <label style="font-size: 10.5px; font-weight: 900; color: #6d28d9; text-transform: uppercase;">5. Terms, Conditions & Signatures</label>
+                <div class="row-2" style="margin-top:5px;">
                     <div class="form-group"><label>Shed Terms Heading</label><input type="text" id="pt_termsTitle" oninput="autoSavePermanentText('termsTitle', this.value)"></div>
                     <div class="form-group"><label>Civil Terms Heading</label><input type="text" id="pt_civilTermsTitle" oninput="autoSavePermanentText('civilTermsTitle', this.value)"></div>
                 </div>
@@ -1254,31 +1215,26 @@
     <!-- MODAL: MODULE SELECTION -->
     <div id="moduleSelectionModal" class="modal">
         <div class="modal-body modal-3d">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
                 <div>
-                    <h3 id="modModalTitle" style="font-size: 16px; font-weight: 800; color: #000;">Module Details</h3>
-                    <p style="font-size: 11.5px; color: #64748b;">Title, header line & specifications control</p>
+                    <h3 id="modModalTitle" style="font-size: 15px; font-weight: 800; color: #000;">Module Details</h3>
+                    <p style="font-size: 11px; color: #64748b;">Title, header line & specifications control</p>
                 </div>
                 <button class="btn-del-pro btn-ripple" onclick="closeModuleModal()">✕ Close</button>
             </div>
-
             <div class="form-group">
                 <label id="lblModCustomLine" style="color:var(--header-bg); font-weight:800;">Header Line / Description:</label>
                 <input type="text" id="modalInputCustomLine" placeholder="Description line..." oninput="autoSaveModuleChanges()">
             </div>
-
-            <div id="modInputsBox" class="card card-3d" style="background:#fafafa; padding:12px; margin-bottom:12px;"></div>
-
-            <label style="font-size: 11.5px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px; display:block;" id="lblChecklistTitle">Specifications (Checklist):</label>
-            <div id="modItemsCheckContainer" style="max-height: 40vh; overflow-y: auto; margin-bottom: 14px;"></div>
-
-            <div id="addItemRowBox" style="margin-bottom: 14px;">
-                <div style="display:flex; gap: 8px;">
-                    <input type="text" id="customItemInput" placeholder="+ Type new item name..." style="flex:1; padding:11px 12px; font-size:14px; border:1.5px solid #cbd5e1; border-radius:8px; outline:none;">
-                    <button class="btn-main btn-3d-main btn-ripple" style="width:auto; padding:11px 18px; font-size:13px;" onclick="addNewItemToModule()">➕ Add</button>
+            <div id="modInputsBox" class="card card-3d" style="background:#fafafa; padding:10px; margin-bottom:10px;"></div>
+            <label style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 6px; display:block;" id="lblChecklistTitle">Specifications (Checklist):</label>
+            <div id="modItemsCheckContainer" style="max-height: 40vh; overflow-y: auto; margin-bottom: 12px;"></div>
+            <div id="addItemRowBox" style="margin-bottom: 12px;">
+                <div style="display:flex; gap: 6px;">
+                    <input type="text" id="customItemInput" placeholder="+ Type new item name..." style="flex:1; padding:9px 10px; font-size:13px; border:1.5px solid #cbd5e1; border-radius:7px; outline:none;">
+                    <button class="btn-main btn-3d-main btn-ripple" style="width:auto; padding:9px 16px; font-size:12px;" onclick="addNewItemToModule()">➕ Add</button>
                 </div>
             </div>
-
             <button class="btn-main btn-3d-main btn-ripple" onclick="closeModuleModal()">✓ DONE / CLOSE</button>
         </div>
     </div>
@@ -1286,8 +1242,8 @@
     <!-- MODAL: TAX PICKER -->
     <div id="taxModal" class="modal">
         <div class="modal-body modal-3d">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
-                <h3 style="font-size: 15px; font-weight: 800; color: #000;" id="taxModalHeadingTitle">Choose Applicable Tax Slab</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                <h3 style="font-size: 14.5px; font-weight: 800; color: #000;" id="taxModalHeadingTitle">Choose Applicable Tax Slab</h3>
                 <button class="btn-del-pro btn-ripple" onclick="closeTaxPickerModal()">✕ Close</button>
             </div>
             <div id="taxSlabListContainer"></div>
@@ -1297,9 +1253,9 @@
     <!-- MODAL: LARGE INPUT -->
     <div id="largeInputModal" class="modal">
         <div class="modal-body modal-3d">
-            <h3 id="largeInputTitle" style="margin-bottom: 10px; font-size: 15px; color: #000;">Edit Detail</h3>
-            <textarea id="largeInputTextarea" rows="6" style="width:100%; padding:11px; border:1.5px solid #cbd5e1; border-radius:8px; font-size:14px;" oninput="autoSaveLargeInputLive()"></textarea>
-            <div style="display:flex; gap:10px; margin-top:12px;">
+            <h3 id="largeInputTitle" style="margin-bottom: 8px; font-size: 14.5px; color: #000;">Edit Detail</h3>
+            <textarea id="largeInputTextarea" rows="5" style="width:100%; padding:9px; border:1.5px solid #cbd5e1; border-radius:7px; font-size:13px;" oninput="autoSaveLargeInputLive()"></textarea>
+            <div style="display:flex; gap:8px; margin-top:10px;">
                 <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeLargeInput()">Close</button>
                 <button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="closeLargeInput()">✓ SAVED / DONE</button>
             </div>
@@ -1309,9 +1265,9 @@
     <!-- MODAL: SIGNATURE -->
     <div id="sigModal" class="modal">
         <div class="modal-body modal-3d">
-            <h3 style="margin-bottom: 6px; font-size: 15px; color: #000;">Touchpad Digital Signature</h3>
+            <h3 style="margin-bottom: 6px; font-size: 14.5px; color: #000;">Touchpad Digital Signature</h3>
             <canvas id="sigPad"></canvas>
-            <div style="display:flex; gap:10px; margin-top:12px;">
+            <div style="display:flex; gap:8px; margin-top:10px;">
                 <button class="btn-del-pro btn-ripple" onclick="clearSignature()">Clear</button>
                 <button class="btn-secondary btn-3d-secondary btn-ripple" onclick="closeSigModal()">Cancel</button>
                 <button class="btn-main btn-3d-main btn-ripple" onclick="saveSignature()">SAVE SIGNATURE</button>
@@ -1322,10 +1278,10 @@
     <!-- MODAL: UNIT PICKER -->
     <div id="unitPickerModal" class="modal">
         <div class="modal-body modal-3d">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; border-bottom: 2px solid var(--header-bg); padding-bottom: 8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
                 <div>
-                    <h3 style="font-size: 15px; font-weight: 900; color: #0f2942;">📏 Select Engineering Unit</h3>
-                    <p style="font-size: 11px; color: #64748b;">Choose standard engineering units</p>
+                    <h3 style="font-size: 14.5px; font-weight: 900; color: #0f2942;">📏 Select Engineering Unit</h3>
+                    <p style="font-size: 10.5px; color: #64748b;">Choose standard engineering units</p>
                 </div>
                 <button class="btn-del-pro btn-ripple" onclick="closeUnitPickerModal()">✕ Close</button>
             </div>
@@ -1349,7 +1305,7 @@
             <p id="confirmDesc">Are you sure?</p>
             <div class="confirm-actions">
                 <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="resolveCustomConfirm(false)">Cancel</button>
-                <button class="btn-del-pro btn-ripple" style="flex:1; justify-content:center; padding:10px;" onclick="resolveCustomConfirm(true)">Delete</button>
+                <button class="btn-del-pro btn-ripple" style="flex:1; justify-content:center; padding:9px;" onclick="resolveCustomConfirm(true)">Delete</button>
             </div>
         </div>
     </div>
