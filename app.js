@@ -785,7 +785,7 @@ function saveStartingQuoteSeq(val) {
     syncDataToCloud('patel_app_settings', appSettings);
 }
 
-// 10. PREVIEW FONT-SIZE ADJUSTMENT & VIEWPORT ADAPTATION
+// 10. PREVIEW FONT-SIZE ADJUSTMENT & VIEWPORT ADAPTATION (EDGE-TO-EDGE & TOUCH SCROLL FIX)
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfFontScale) || 1.0) + delta) * 100) / 100;
     appSettings.savedPdfFontScale = Math.min(Math.max(cur, 0.50), 1.60);
@@ -819,31 +819,34 @@ function autoFitPreview() {
     if (viewport && wrapper && sheet) {
         const availableWidth = viewport.clientWidth || viewport.offsetWidth;
         if (availableWidth > 0) {
-            let baseFit = availableWidth < 746 ? (availableWidth / 746) : 1.0;
+            // Scales edge-to-edge on phones and tablets to eliminate the empty side strip
+            let baseFit = availableWidth / 746;
             
-            wrapper.style.transformOrigin = 'top left';
-            wrapper.style.transform = `scale(${baseFit})`;
-            
-            if (availableWidth > 746) {
+            if (baseFit > 1.15 && isDesktop) {
+                baseFit = 1.0;
                 const centerMargin = Math.round((availableWidth - 746) / 2);
                 wrapper.style.marginLeft = `${centerMargin}px`;
             } else {
                 wrapper.style.marginLeft = '0px';
             }
             
+            wrapper.style.transformOrigin = 'top left';
+            wrapper.style.transform = `scale(${baseFit})`;
+            
             const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
-            if (baseFit < 1.0 && unscaledHeight > 0) {
+            if (baseFit !== 1.0 && unscaledHeight > 0) {
                 wrapper.style.marginBottom = `-${Math.round(unscaledHeight * (1 - baseFit))}px`;
             } else {
                 wrapper.style.marginBottom = '0px';
             }
 
+            // Ensures a fixed scrollable window on touch devices
             if (!isDesktop) {
-                viewport.style.height = 'auto';
-                viewport.style.maxHeight = '84vh';
+                viewport.style.setProperty('height', '72vh', 'important');
+                viewport.style.setProperty('max-height', '72vh', 'important');
             } else {
-                viewport.style.height = '100%';
-                viewport.style.maxHeight = 'none';
+                viewport.style.setProperty('height', '100%', 'important');
+                viewport.style.setProperty('max-height', 'none', 'important');
             }
         }
     }
@@ -855,31 +858,32 @@ function autoFitPreview() {
     if (civilVp && civilWrap) {
         const cWidth = civilVp.clientWidth || civilVp.offsetWidth;
         if (cWidth > 0) {
-            let cBaseFit = cWidth < 746 ? (cWidth / 746) : 1.0;
+            let cBaseFit = cWidth / 746;
             
-            civilWrap.style.transformOrigin = 'top left';
-            civilWrap.style.transform = `scale(${cBaseFit})`;
-            
-            if (cWidth > 746) {
+            if (cBaseFit > 1.15 && isDesktop) {
+                cBaseFit = 1.0;
                 const cCenterMargin = Math.round((cWidth - 746) / 2);
                 civilWrap.style.marginLeft = `${cCenterMargin}px`;
             } else {
                 civilWrap.style.marginLeft = '0px';
             }
             
+            civilWrap.style.transformOrigin = 'top left';
+            civilWrap.style.transform = `scale(${cBaseFit})`;
+            
             const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
-            if (cBaseFit < 1.0 && cUnscaledHeight > 0) {
+            if (cBaseFit !== 1.0 && cUnscaledHeight > 0) {
                 civilWrap.style.marginBottom = `-${Math.round(cUnscaledHeight * (1 - cBaseFit))}px`;
             } else {
                 civilWrap.style.marginBottom = '0px';
             }
 
             if (!isDesktop) {
-                civilVp.style.height = 'auto';
-                civilVp.style.maxHeight = '84vh';
+                civilVp.style.setProperty('height', '72vh', 'important');
+                civilVp.style.setProperty('max-height', '72vh', 'important');
             } else {
-                civilVp.style.height = '100%';
-                civilVp.style.maxHeight = 'none';
+                civilVp.style.setProperty('height', '100%', 'important');
+                civilVp.style.setProperty('max-height', 'none', 'important');
             }
         }
     }
@@ -3292,6 +3296,11 @@ function loadPhoneSettingsUI() {
     safeSetVal('setStartingQuoteNo', getNextQuoteSequenceNumber());
 }
 
+let currentSettingKey = '';
+function openLargeInput(key, title) {
+    currentSettingKey = key;
+    safeSetText('largeInputTitle', title);
+    safeSetVal('largeInputTextarea', app
 let currentSettingKey = '';
 function openLargeInput(key, title) {
     currentSettingKey = key;
