@@ -16,13 +16,11 @@ try {
         db = firebase.database();
         isFirebaseConnected = true;
     }
-} catch (e) {
-    console.warn("Firebase initialization note:", e);
-}
+} catch (e) { console.warn("Firebase init note:", e); }
 
 let masterSecurityPasscode = localStorage.getItem('pe_master_passcode') || "RJ06CC7194";
 
-// 2. AUDIO FEEDBACK & FLOATING TOASTS
+// 2. AUDIO & TOASTS
 let audioCtx = null;
 function playAppSound(type = 'click') {
     try {
@@ -46,17 +44,11 @@ function playAppSound(type = 'click') {
 }
 
 function showCorporateToast(message, icon = '✓') {
-    const box = document.getElementById('appToastContainer');
-    if (!box) return;
-    const toast = document.createElement('div');
-    toast.className = 'toast-message';
+    const box = document.getElementById('appToastContainer'); if (!box) return;
+    const toast = document.createElement('div'); toast.className = 'toast-message';
     toast.innerHTML = `<span style="color:#38bdf8; font-size:16px;">${icon}</span><span>${message}</span>`;
-    box.appendChild(toast);
-    playAppSound('chime');
-    setTimeout(() => {
-        toast.classList.add('toast-fade-out');
-        setTimeout(() => toast.remove(), 320);
-    }, 2800);
+    box.appendChild(toast); playAppSound('chime');
+    setTimeout(() => { toast.classList.add('toast-fade-out'); setTimeout(() => toast.remove(), 320); }, 2800);
 }
 
 function scrollPreviewPane(delta) {
@@ -68,7 +60,7 @@ function scrollCivilPreviewPane(delta) {
     if (vp) { vp.scrollBy({ top: delta, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); }
 }
 
-// 3. MASTER BLUEPRINT & AUTO-LEARNING ENGINE
+// 3. MASTER BLUEPRINT & APP SETTINGS
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
     primSpecs: [
@@ -158,7 +150,7 @@ let masterBlueprint = JSON.parse(localStorage.getItem('patel_master_blueprint') 
 let appSettings = JSON.parse(localStorage.getItem('patel_app_settings') || JSON.stringify(defaultAppSettings));
 if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
     appSettings.phones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean);
-    if (appSettings.phones.length === 0) appSettings.phones = ["+91 9799635249", "+91 7737734122"];
+    if (!appSettings.phones.length) appSettings.phones = ["+91 9799635249", "+91 7737734122"];
 }
 if (!appSettings.savedPdfFontScale) appSettings.savedPdfFontScale = appSettings.savedPdfScale || 1.0;
 
@@ -218,7 +210,7 @@ function syncSiteStructureToMasterBlueprint(site) {
 
 // 4. CLOUD SYNC & MASTER PROTECTION
 function syncDataToCloud(key, data) {
-    try { localStorage.setItem(key, JSON.stringify(data)); } catch (err) { console.warn("Storage quota warning for " + key, err); }
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch (err) { console.warn("Storage warning for " + key, err); }
     if (db && isFirebaseConnected && isCloudInitialSyncDone) {
         db.ref(key).set(data).catch(err => console.warn("Cloud sync write error:", err));
     }
@@ -265,9 +257,7 @@ function initCloudFirstMasterSync() {
     db.ref('patel_app_sites').on('value', (snapshot) => {
         const cloudSites = snapshot.val();
         if (cloudSites) {
-            let loadedSites = [];
-            if (Array.isArray(cloudSites)) loadedSites = cloudSites.filter(Boolean);
-            else if (typeof cloudSites === 'object') loadedSites = Object.values(cloudSites).filter(Boolean);
+            let loadedSites = Array.isArray(cloudSites) ? cloudSites.filter(Boolean) : (typeof cloudSites === 'object' ? Object.values(cloudSites).filter(Boolean) : []);
             if (loadedSites.length > 0) {
                 sites = loadedSites;
                 try { localStorage.setItem('patel_app_sites', JSON.stringify(sites)); } catch(e) {}
@@ -560,7 +550,7 @@ function saveStartingQuoteSeq(val) {
     syncDataToCloud('patel_app_settings', appSettings);
 }
 
-// 10. PREVIEW FONT-SIZE ADJUSTMENT & VIEWPORT ADAPTATION (EDGE-TO-EDGE & SMOOTH TOUCH SCROLL)
+// 10. PREVIEW FONT-SIZE ADJUSTMENT & VIEWPORT ADAPTATION (EDGE-TO-EDGE & NATURAL SCROLL FIX)
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfFontScale) || 1.0) + delta) * 100) / 100;
     appSettings.savedPdfFontScale = Math.min(Math.max(cur, 0.50), 1.60);
@@ -586,6 +576,7 @@ function autoFitPreview() {
     if (viewport && wrapper && sheet) {
         const availableWidth = viewport.clientWidth || viewport.offsetWidth;
         if (availableWidth > 0) {
+            // Scales edge-to-edge on phones and tablets to eliminate the empty side strip
             let baseFit = availableWidth / 746;
             if (baseFit > 1.15 && isDesktop) {
                 baseFit = 1.0;
@@ -604,12 +595,15 @@ function autoFitPreview() {
                 wrapper.style.marginBottom = '0px';
             }
 
+            // PHONE & TAB: Full page natural continuous scroll (NO TRAP). DESKTOP: Clean internal scroll
             if (!isDesktop) {
-                viewport.style.setProperty('height', '72vh', 'important');
-                viewport.style.setProperty('max-height', '72vh', 'important');
+                viewport.style.setProperty('height', 'auto', 'important');
+                viewport.style.setProperty('max-height', 'none', 'important');
+                viewport.style.setProperty('overflow-y', 'visible', 'important');
             } else {
                 viewport.style.setProperty('height', '100%', 'important');
                 viewport.style.setProperty('max-height', 'none', 'important');
+                viewport.style.setProperty('overflow-y', 'auto', 'important');
             }
         }
     }
@@ -640,11 +634,13 @@ function autoFitPreview() {
             }
 
             if (!isDesktop) {
-                civilVp.style.setProperty('height', '72vh', 'important');
-                civilVp.style.setProperty('max-height', '72vh', 'important');
+                civilVp.style.setProperty('height', 'auto', 'important');
+                civilVp.style.setProperty('max-height', 'none', 'important');
+                civilVp.style.setProperty('overflow-y', 'visible', 'important');
             } else {
                 civilVp.style.setProperty('height', '100%', 'important');
                 civilVp.style.setProperty('max-height', 'none', 'important');
+                civilVp.style.setProperty('overflow-y', 'auto', 'important');
             }
         }
     }
@@ -2204,12 +2200,22 @@ function loadPhoneSettingsUI() {
 
 let currentSettingKey = '';
 function openLargeInput(key, title) {
-    currentSettingKey = key; safeSetText('largeInputTitle', title); safeSetVal('largeInputTextarea', appSettings[key] || ""); openModalWithHistory('largeInputModal');
+    currentSettingKey = key;
+    safeSetText('largeInputTitle', title);
+    safeSetVal('largeInputTextarea', appSettings[key] || "");
+    openModalWithHistory('largeInputModal');
 }
-function closeLargeInput() { closeModalSafe('largeInputModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
+function closeLargeInput() { 
+    closeModalSafe('largeInputModal'); 
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet();
+}
 function autoSaveLargeInputLive() {
     appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
-    syncDataToCloud('patel_app_settings', appSettings); loadPhoneSettingsUI(); renderHomeScreen(); refreshLivePdfPreviewSheet();
+    syncDataToCloud('patel_app_settings', appSettings);
+    loadPhoneSettingsUI();
+    renderHomeScreen();
+    refreshLivePdfPreviewSheet();
 }
 
 function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
@@ -2219,9 +2225,14 @@ function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
         img.onload = function() {
             const canvas = document.createElement('canvas');
             let width = img.width, height = img.height;
-            if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
-            canvas.width = width; canvas.height = height;
-            const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+            if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
             const isPng = file.type === 'image/png';
             callback(canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', quality));
         };
@@ -2233,11 +2244,16 @@ function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
 function handleLogoUpload(input) {
     if (input.files && input.files[0]) {
         compressAndOptimizeBanner(input.files[0], 1000, 0.85, function(optimizedBase64) {
-            appSettings.logoData = optimizedBase64; syncDataToCloud('patel_app_settings', appSettings);
-            updateHeaderBannersUI(); refreshLivePdfPreviewSheet();
-            const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
-            if (fav) fav.href = optimizedBase64; if (appleFav) appleFav.href = optimizedBase64;
-            showCorporateToast("Company Header Banner Updated!", "🖼️"); input.value = '';
+            appSettings.logoData = optimizedBase64;
+            syncDataToCloud('patel_app_settings', appSettings);
+            updateHeaderBannersUI();
+            refreshLivePdfPreviewSheet();
+            const fav = document.getElementById('dynamicAppFavicon');
+            const appleFav = document.getElementById('dynamicAppleIcon');
+            if (fav) fav.href = optimizedBase64;
+            if (appleFav) appleFav.href = optimizedBase64;
+            showCorporateToast("Company Header Banner Updated!", "🖼️");
+            input.value = '';
         });
     }
 }
@@ -2246,33 +2262,56 @@ function handleLogoUpload(input) {
 let canvas, ctx, isDrawing = false, sigEventsAttached = false;
 function openSignatureModal() {
     openModalWithHistory('sigModal');
-    canvas = document.getElementById('sigPad'); ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
-    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+    canvas = document.getElementById('sigPad');
+    ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
 
     if (!sigEventsAttached) {
         canvas.addEventListener('touchstart', (e) => {
-            isDrawing = true; ctx.beginPath();
+            isDrawing = true;
+            ctx.beginPath();
             const t = e.touches[0], r = canvas.getBoundingClientRect();
-            ctx.moveTo(t.clientX - r.left, t.clientY - r.top); e.preventDefault();
+            ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
+            e.preventDefault();
         }, {passive:false});
         canvas.addEventListener('touchmove', (e) => {
             if (!isDrawing) return;
             const t = e.touches[0], r = canvas.getBoundingClientRect();
-            ctx.lineTo(t.clientX - r.left, t.clientY - r.top); ctx.stroke(); e.preventDefault();
+            ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
+            ctx.stroke();
+            e.preventDefault();
         }, {passive:false});
         canvas.addEventListener('touchend', () => isDrawing = false);
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
-        canvas.addEventListener('mousemove', (e) => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        });
         canvas.addEventListener('mouseup', () => isDrawing = false);
         sigEventsAttached = true;
     }
 }
-function clearSignature() { if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height); }
+function clearSignature() {
+    if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 function closeSigModal() { closeModalSafe('sigModal'); }
 function saveSignature() {
-    appSettings.signatureData = canvas.toDataURL(); syncDataToCloud('patel_app_settings', appSettings);
-    closeSigModal(); refreshLivePdfPreviewSheet(); showCorporateToast("Digital Signature Saved Successfully!", "✍️");
+    appSettings.signatureData = canvas.toDataURL();
+    syncDataToCloud('patel_app_settings', appSettings);
+    closeSigModal();
+    refreshLivePdfPreviewSheet();
+    showCorporateToast("Digital Signature Saved Successfully!", "✍️");
 }
 
 window.onload = function() {
@@ -2284,9 +2323,11 @@ window.onload = function() {
     autoDetectDeviceMode();
     updateHeaderBannersUI();
     if (appSettings.logoData) {
-        const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
-        if (fav) fav.href = appSettings.logoData; if (appleFav) appleFav.href = appSettings.logoData;
+        const fav = document.getElementById('dynamicAppFavicon');
+        const appleFav = document.getElementById('dynamicAppleIcon');
+        if (fav) fav.href = appSettings.logoData;
+        if (appleFav) appleFav.href = appSettings.logoData;
     }
     initSamsungBootAnimation();
     setTimeout(attachDynamicPreviewObserver, 200);
-};
+};                  
