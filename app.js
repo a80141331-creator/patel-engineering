@@ -78,7 +78,7 @@ function scrollCivilPreviewPane(delta) {
     if (vp) { vp.scrollBy({ top: delta, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); }
 }
 
-// 3. MASTER BLUEPRINT & AUTO-LEARNING ENGINE
+// 3. MASTER BLUEPRINT
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
     primSpecs: [
@@ -190,7 +190,7 @@ if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
-// SMART HELPER: Check if Civil genuinely has items with Qty or Rate
+// SMART HELPER: Check if Civil actually has items with Qty or Rate
 function hasCivilWork(site) {
     if (!site) return false;
     if (site.quoteType === 'civil') return true;
@@ -456,7 +456,7 @@ function triggerTotalBarShimmer() {
 }
 function handlePreviewInputFocus(el) { if (el && el.innerText.trim() === '-') el.innerText = ''; }
 
-// 7. DRAG & DROP REORDERING
+// 7. DRAG & DROP REORDERING (UNIVERSAL TOUCH & DESKTOP)
 let activeTouchDragScope = null, activeTouchDragIndex = null, activeTouchDragParent = null, activeTouchDragElement = null;
 
 function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) {
@@ -468,31 +468,14 @@ function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) 
     if (parentCat) rowEl.dataset.sortParent = parentCat;
 
     rowEl.addEventListener('dragstart', (e) => {
-        activeTouchDragScope = scope;
-        activeTouchDragIndex = parseInt(index, 10);
-        activeTouchDragParent = parentCat;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(index));
-        rowEl.classList.add('dragging');
+        activeTouchDragScope = scope; activeTouchDragIndex = parseInt(index, 10); activeTouchDragParent = parentCat;
+        e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(index)); rowEl.classList.add('dragging');
     });
-
-    rowEl.addEventListener('dragend', () => {
-        rowEl.classList.remove('dragging');
-        document.querySelectorAll('.sortable-item').forEach(i => i.classList.remove('drag-over'));
-    });
-
-    rowEl.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (activeTouchDragScope === scope && (parentCat === activeTouchDragParent)) rowEl.classList.add('drag-over');
-    });
-
+    rowEl.addEventListener('dragend', () => { rowEl.classList.remove('dragging'); document.querySelectorAll('.sortable-item').forEach(i => i.classList.remove('drag-over')); });
+    rowEl.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; if (activeTouchDragScope === scope && (parentCat === activeTouchDragParent)) rowEl.classList.add('drag-over'); });
     rowEl.addEventListener('dragleave', () => rowEl.classList.remove('drag-over'));
-
     rowEl.addEventListener('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        rowEl.classList.remove('drag-over');
+        e.preventDefault(); e.stopPropagation(); rowEl.classList.remove('drag-over');
         const targetIdx = parseInt(rowEl.dataset.sortIndex, 10);
         if (activeTouchDragScope === scope && activeTouchDragIndex !== null && activeTouchDragIndex !== targetIdx && (parentCat === activeTouchDragParent)) {
             handleItemsReorder(scope, activeTouchDragIndex, targetIdx, parentCat);
@@ -500,30 +483,18 @@ function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) 
     });
 
     handleEl.addEventListener('touchstart', (e) => {
-        e.stopPropagation();
-        activeTouchDragScope = scope;
-        activeTouchDragIndex = parseInt(index, 10);
-        activeTouchDragParent = parentCat;
-        activeTouchDragElement = rowEl;
-        rowEl.classList.add('dragging');
-        triggerHaptic(30);
+        e.stopPropagation(); activeTouchDragScope = scope; activeTouchDragIndex = parseInt(index, 10); activeTouchDragParent = parentCat;
+        activeTouchDragElement = rowEl; rowEl.classList.add('dragging'); triggerHaptic(30);
     }, { passive: false });
-
     handleEl.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const touch = e.touches[0];
+        e.preventDefault(); e.stopPropagation(); const touch = e.touches[0];
         const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
         const overRow = targetElement ? targetElement.closest('.sortable-item') : null;
         document.querySelectorAll('.sortable-item').forEach(r => r.classList.remove('drag-over'));
-        if (overRow && overRow !== activeTouchDragElement && overRow.dataset.sortIndex !== undefined && overRow.dataset.sortScope === scope) {
-            overRow.classList.add('drag-over');
-        }
+        if (overRow && overRow !== activeTouchDragElement && overRow.dataset.sortIndex !== undefined && overRow.dataset.sortScope === scope) overRow.classList.add('drag-over');
     }, { passive: false });
-
     handleEl.addEventListener('touchend', (e) => {
-        e.stopPropagation();
-        if (activeTouchDragElement) activeTouchDragElement.classList.remove('dragging');
+        e.stopPropagation(); if (activeTouchDragElement) activeTouchDragElement.classList.remove('dragging');
         const touch = e.changedTouches[0];
         const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
         const dropRow = targetElement ? targetElement.closest('.sortable-item') : null;
@@ -800,7 +771,7 @@ function saveNewBlankSiteAndOpen() {
         civilCustomCategories: []
     };
 
-    // Make sure Civil quantities & rates are completely blank by default
+    // Ensure all Civil quantities & rates are blank by default
     ['foundation', 'brickWall', 'flooring'].forEach(secKey => {
         if (newSite.civilData[secKey] && Array.isArray(newSite.civilData[secKey].items)) {
             newSite.civilData[secKey].items.forEach(it => {
@@ -1819,7 +1790,7 @@ function addNewAccessoryDirectly() {
     refreshLivePdfPreviewSheet();
 }
 
-// 18. LIVE PREVIEW ENGINE (STRICT ISOLATION & LIVE EDIT LINK)
+// 18. LIVE PREVIEW ENGINE (STRICT RATE ONLY & CLEAN ISOLATION)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
     if (!site) return;
@@ -1841,7 +1812,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (compWeb) { safeSetText('pdfFooterWebDisplay', compWeb); safeSetText('civilPdfFooterWebDisplay', compWeb); }
     updateHeaderBannersUI();
 
-    // All Permanent Headings Live Synchronized
+    // All Headings dynamically linked to appSettings
     safeSetText('pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
     safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
     safeSetText('pdfScopeTitle', appSettings.pdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS");
@@ -1886,7 +1857,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('civilPdfClientName', site.clientName || "-"); safeSetText('civilPdfContactPersonDisplay', contactPersonLine);
     safeSetText('civilPdfClientPhone', clientPhones); safeSetText('civilPdfClientGst', site.custGST || "-"); safeSetText('civilPdfClientAddr', site.custAddress || "-");
 
-    // Mode Isolation Fix: Only active when intended and data exists
+    // Strict Mode Enforcement: If Shed Only -> Only Shed; If Civil Only -> Only Civil; If Both -> Show Civil only if has work
     const isShedActive = (site.quoteType === 'both' || site.quoteType === 'shed');
     const isCivilActive = (site.quoteType === 'civil') || (site.quoteType === 'both' && hasCivilWork(site));
     const page1ShedSheet = document.getElementById('page1MsStructure');
@@ -1920,8 +1891,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const thead = document.getElementById('pdfTableHead');
         if (thead) {
             thead.innerHTML = isRateOnly ?
-                `<tr><th style="width:8%;">S.NO</th><th style="width:55%;">DESCRIPTION</th><th style="width:15%;">UNIT</th><th style="width:22%; text-align:right;">RATE (₹)</th></tr>` :
-                `<tr><th style="width:8%;">S.NO</th><th style="width:45%;">DESCRIPTION</th><th style="width:13%;">QTY</th><th style="width:10%;">UNIT</th><th style="width:11%; text-align:right;">RATE (₹)</th><th style="width:13%; text-align:right;">AMOUNT (₹)</th></tr>`;
+                `<tr><th style="width:8%; text-align:center;">S.NO</th><th style="width:55%; text-align:left;">DESCRIPTION</th><th style="width:15%; text-align:center;">UNIT</th><th style="width:22%; text-align:right;">CONTRACT RATE (₹)</th></tr>` :
+                `<tr><th style="width:8%; text-align:center;">S.NO</th><th style="width:45%; text-align:left;">DESCRIPTION</th><th style="width:13%; text-align:center;">QTY</th><th style="width:10%; text-align:center;">UNIT</th><th style="width:11%; text-align:right;">RATE (₹)</th><th style="width:13%; text-align:right;">AMOUNT (₹)</th></tr>`;
         }
 
         let pTot = (site.primEnabled !== false) ? (parseFloat(site.primWeight) || 0) * (parseFloat(site.primRate) || 0) : 0;
@@ -1934,46 +1905,79 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const breakdownThead = document.getElementById('pdfAccTableHead');
         if (breakdownTbody) breakdownTbody.innerHTML = "";
         if (breakdownThead) {
-            breakdownThead.innerHTML = `<tr><th style="width:50%;">ACCESSORY ITEM</th><th style="width:15%;">QTY</th><th style="width:10%;">UNIT</th><th style="width:12%; text-align:right;">RATE</th><th style="width:13%; text-align:right;">AMOUNT</th></tr>`;
+            breakdownThead.innerHTML = isRateOnly ?
+                `<tr><th style="width:60%; text-align:left;">ACCESSORY ITEM</th><th style="width:20%; text-align:center;">UNIT</th><th style="width:20%; text-align:right;">CONTRACT RATE (₹)</th></tr>` :
+                `<tr><th style="width:47%; text-align:left;">ACCESSORY ITEM</th><th style="width:13%; text-align:center;">QTY</th><th style="width:12%; text-align:center;">UNIT</th><th style="width:13%; text-align:right;">RATE (₹)</th><th style="width:15%; text-align:right;">AMOUNT (₹)</th></tr>`;
         }
         if (site.accEnabled !== false) {
-            (site.accessories || []).forEach((a) => {
+            (site.accessories || []).forEach((a, aIdx) => {
                 if (a.selected === true) {
                     const q = parseFloat(a.qty) || 0, r = parseFloat(a.rate) || 0, lineTot = q * r;
                     aTot += lineTot;
                     if (breakdownTbody) {
-                        breakdownTbody.innerHTML += `<tr><td><b>${a.name}</b></td><td style="text-align:center;">${formatRawOrDash(a.qty)}</td><td style="text-align:center;">${a.unit || 'Nos'}</td><td style="text-align:right;">₹ ${formatRawOrDash(a.rate)}</td><td style="text-align:right; font-weight:700;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                        const tr = document.createElement('tr');
+                        tr.className = "sortable-item";
+                        tr.dataset.sortIndex = aIdx;
+                        tr.innerHTML = isRateOnly ?
+                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right; font-weight:700;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td>` :
+                            `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx}, this)">${a.name}</b></td><td style="text-align:center; font-weight:700;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'qty', this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx}, 'rate', this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right; font-weight:700;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
+                        breakdownTbody.appendChild(tr);
+                        setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'accessories', aIdx);
                     }
                 }
             });
         }
         const accContainer = document.getElementById('pdfAccBreakdownContainer');
-        if (accContainer) accContainer.style.display = (site.accEnabled !== false && aTot > 0) ? 'block' : 'none';
+        if (accContainer) accContainer.style.display = (site.accEnabled !== false && (aTot > 0 || isRateOnly)) ? 'block' : 'none';
 
         const tbody = document.getElementById('pdfTableBody');
         if (tbody) {
             tbody.innerHTML = "";
             let sNo = 1;
-            const addRow = (title, line, r, q, amt, u) => {
-                tbody.innerHTML += isRateOnly ?
-                    `<tr><td style="text-align:center;">${sNo++}</td><td><b>${title}:</b> ${line}</td><td style="text-align:center;">${u}</td><td style="text-align:right; font-weight:700;">₹ ${formatRawOrDash(r)}</td></tr>` :
-                    `<tr><td style="text-align:center;">${sNo++}</td><td><b>${title}:</b> ${line}</td><td style="text-align:center;">${formatRawOrDash(q)}</td><td style="text-align:center;">${u}</td><td style="text-align:right;">₹ ${formatRawOrDash(r)}</td><td style="text-align:right; font-weight:700;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td></tr>`;
+            const helperSpecs = (specs) => (!specs || !Array.isArray(specs)) ? "" : `<div class="item-specs-bullets">${specs.filter(s => s.selected === true).map(s => `<span>• ${s.text || s}</span>`).join('')}</div>`;
+            const addRow = (catTitle, line, uRate, qty, amt, fPrefix, uLabel, isCust = false, bullets = "", mKey = "") => {
+                const descHtml = `<div class="row-item-title">${catTitle}:</div><div class="row-item-subtitle editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, '${fPrefix}', '${mKey}')">${(line || "").trim()}</div>${bullets}`;
+                const tr = document.createElement('tr');
+                tr.className = "sortable-item";
+                tr.dataset.sortIndex = sNo - 1;
+                tr.innerHTML = isRateOnly ?
+                    `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td><td>${descHtml}</td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 700;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td>` :
+                    `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td><td>${descHtml}</td><td style="text-align: center; font-weight: 700;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix === 'clad' ? 'cladSqFt' : `${fPrefix}Weight`}')">${formatRawOrDash(qty)}</span></td><td style="text-align: center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align: right; font-weight: 700;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, '${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td><td style="text-align: right; font-weight: 700;">${amt > 0 ? 'Rs. ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                tbody.appendChild(tr);
+
+                const curIdx = site.moduleOrder.indexOf(mKey);
+                if (curIdx !== -1) {
+                    const handle = tr.querySelector('.drag-handle');
+                    setupUniversalReorder(tr, handle, 'shed_modules', curIdx);
+                }
             };
-            if (site.primEnabled !== false) addRow("Primary Structure", site.primCustomLine, site.primRate, site.primWeight, pTot, site.primUnit || "Kg");
-            if (site.secEnabled !== false) addRow("Secondary Structure", site.secCustomLine, site.secRate, site.secWeight, sTot, site.secUnit || "Kg");
-            if (site.cladEnabled !== false) addRow("Roof & Wall Cladding", site.cladCustomLine, site.cladRate, site.cladSqFt, cTot, site.cladUnit || "Sq.Ft");
-            if (site.accEnabled !== false) addRow("Accessories Package", site.accCustomLine, "Package", "Package", aTot, "Lot");
-            if (site.erectEnabled !== false) addRow("Erection", site.erectCustomLine, site.erectRate, autoTotalSteelWeightKg, eTot, site.erectUnit || "Kg");
+
+            (site.moduleOrder || ['prim', 'sec', 'clad', 'acc', 'erect']).forEach(mKey => {
+                if (mKey === 'prim' && site.primEnabled !== false) addRow("Primary Structure", site.primCustomLine, site.primRate, site.primWeight, pTot, 'prim', site.primUnit || "Kg", false, helperSpecs(site.primSpecs), 'prim');
+                else if (mKey === 'sec' && site.secEnabled !== false) addRow("Secondary Structure", site.secCustomLine, site.secRate, site.secWeight, sTot, 'sec', site.secUnit || "Kg", false, helperSpecs(site.secSpecs), 'sec');
+                else if (mKey === 'clad' && site.cladEnabled !== false) addRow("Roof & Wall Cladding", site.cladCustomLine, site.cladRate, site.cladSqFt, cTot, 'clad', site.cladUnit || "Sq.Ft", false, "", 'clad');
+                else if (mKey === 'acc' && site.accEnabled !== false) addRow("Accessories Package", site.accCustomLine, "Package", "Package", aTot, 'acc', 'Lot', false, "", 'acc');
+                else if (mKey === 'erect' && site.erectEnabled !== false) addRow("Erection", site.erectCustomLine, site.erectRate, autoTotalSteelWeightKg, eTot, 'erect', site.erectUnit || "Kg", false, helperSpecs(site.erectSpecs), 'erect');
+            });
 
             const basic = pTot + sTot + cTot + aTot + eTot;
             const tax = getActiveTaxSlab('shed');
             const grand = basic + (basic * tax.rate);
             shedGrandTotal = grand;
+
+            // RATE ONLY MODE ENFORCEMENT: Completely Hide Financial Totals
+            const finBox = document.getElementById('financialStandardBox');
+            const rateNotice = document.getElementById('rateOnlyNoticeBox');
+            if (finBox && rateNotice) {
+                finBox.style.display = isRateOnly ? 'none' : 'block';
+                rateNotice.style.display = isRateOnly ? 'block' : 'none';
+            }
+
             animateNumberRoll('pdfFinBasic', basic, "Rs. ");
             safeSetHtml('pdfTaxBreakdownRows', `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">${(basic * tax.rate) > 0 ? '₹ ' + Math.round(basic * tax.rate).toLocaleString('en-IN') : '-'}</span></div>`);
             animateNumberRoll('pdfFinGrand', grand, "Rs. ");
 
-            // Always show Average Shed Rate when shed dimensions exist
+            // Show Average Shed Rate if NOT Rate-Only Mode
             const shedAvgBox = document.getElementById('pdfShedAvgRateBox');
             if (shedAvgBox) {
                 if (sqft > 0 && !isRateOnly && grand > 0) {
@@ -1986,8 +1990,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         }
 
         safeSetHtml('pdfTermsContainer', `
-            <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br>${(appSettings.paymentTerms || '').replace(/\n/g, '<br>')}</p></div>
-            <div class="general-terms-block"><p>2. <b>General Terms:</b><br>${(appSettings.termsCond || '').replace(/\n/g, '<br>')}</p></div>`);
+            <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('paymentTerms', this)">${(appSettings.paymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
+            <div class="general-terms-block"><p>2. <b>General Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('termsCond', this)">${(appSettings.termsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
         safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; margin: 0 auto;">` : '');
     }
 
@@ -1997,24 +2001,38 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     let civilGrandTotal = 0;
 
     if (!isCivilActive) {
-        if (civilPageBlock) civilPageBlock.style.display = 'none';
-        if (pageGapDivider) pageGapDivider.style.display = 'none';
+        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'none', 'important');
+        if (pageGapDivider) pageGapDivider.style.setProperty('display', 'none', 'important');
     } else {
-        if (civilPageBlock) civilPageBlock.style.display = 'flow-root';
-        if (pageGapDivider) pageGapDivider.style.display = (isShedActive ? 'block' : 'none');
+        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'flow-root', 'important');
+        if (pageGapDivider) pageGapDivider.style.setProperty('display', isShedActive ? 'block' : 'none', 'important');
         const civ = site.civilData || {};
         let civilTotalBasic = 0;
+
+        const cleanCivHead = isCivilRateOnly ?
+            `<tr><th style="width: 8%; text-align: center;">S.N</th><th style="width: 56%; text-align: left;">ITEM / WORK DESCRIPTION</th><th style="width: 14%; text-align: center;">UNIT</th><th style="width: 22%; text-align: right;">CONTRACT RATE (₹)</th></tr>` :
+            `<tr><th style="width: 7%; text-align: center;">S.N</th><th style="width: 45%; text-align: left;">ITEM / WORK DESCRIPTION</th><th style="width: 14%; text-align: center;">QTY / AREA</th><th style="width: 10%; text-align: center;">UNIT</th><th style="width: 11%; text-align: right;">RATE (₹)</th><th style="width: 13%; text-align: right;">AMOUNT (₹)</th></tr>`;
+        safeSetHtml('civilFoundationTableHead', cleanCivHead);
+        safeSetHtml('civilBrickWallTableHead', cleanCivHead);
+        safeSetHtml('civilFlooringTableHead', cleanCivHead);
 
         const renderCiv = (secKey, tbodyId) => {
             const tbody = document.getElementById(tbodyId);
             if (!tbody) return;
             tbody.innerHTML = "";
             let sIdx = 1;
-            (civ[secKey]?.items || []).forEach(item => {
-                if (item.enabled !== false && ((item.qty && parseFloat(item.qty) > 0) || (item.rate && parseFloat(item.rate) > 0))) {
+            (civ[secKey]?.items || []).forEach((item, idx) => {
+                if (item.enabled !== false && ((item.qty && parseFloat(item.qty) > 0) || (item.rate && parseFloat(item.rate) > 0) || isCivilRateOnly)) {
                     const amt = (parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0);
                     civilTotalBasic += amt;
-                    tbody.innerHTML += `<tr><td style="text-align:center;">${sIdx++}</td><td>${item.name}</td><td style="text-align:center;">${formatRawOrDash(item.qty)}</td><td style="text-align:center;">${item.unit || 'Lot'}</td><td style="text-align:right;">₹ ${formatRawOrDash(item.rate)}</td><td style="text-align:right; font-weight:700;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td></tr>`;
+                    const tr = document.createElement('tr');
+                    tr.className = "sortable-item";
+                    tr.dataset.sortIndex = idx;
+                    tr.innerHTML = isCivilRateOnly ?
+                        `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> 1.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
+                        `<td style="text-align:center; font-weight:700;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> 1.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this, '${secKey}', ${idx})">${item.name}</div></td><td style="text-align:center; font-weight:700;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}', ${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td style="text-align:right; font-weight:700;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                    tbody.appendChild(tr);
+                    setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'civil_items', idx, secKey);
                 }
             });
         };
@@ -2023,21 +2041,30 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         renderCiv('flooring', 'civilFlooringTableBody');
 
         safeSetHtml('civilPdfTermsContainer', `
-            <div class="payment-terms-block"><p>1. <b>Civil Schedule:</b><br>${(appSettings.civilPaymentTerms || '').replace(/\n/g, '<br>')}</p></div>
-            <div class="general-terms-block"><p>2. <b>Civil Terms:</b><br>${(appSettings.civilTermsCond || '').replace(/\n/g, '<br>')}</p></div>`);
+            <div class="payment-terms-block"><p>1. <b>Civil Schedule:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilPaymentTerms', this)">${(appSettings.civilPaymentTerms || '').replace(/\n/g, '<br>')}</span></p></div>
+            <div class="general-terms-block"><p>2. <b>Civil Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilTermsCond', this)">${(appSettings.civilTermsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
         const cTax = getActiveTaxSlab('civil');
         const cGrand = civilTotalBasic + (civilTotalBasic * cTax.rate);
         civilGrandTotal = cGrand;
+
+        // CIVIL RATE ONLY ENFORCEMENT
+        const civFinBox = document.getElementById('civilFinancialBox');
+        const civRateNotice = document.getElementById('civilRateOnlyNoticeBox');
+        if (civFinBox && civRateNotice) {
+            civFinBox.style.display = isCivilRateOnly ? 'none' : 'block';
+            civRateNotice.style.display = isCivilRateOnly ? 'block' : 'none';
+        }
+
         animateNumberRoll('civilFinBasic', civilTotalBasic, "Rs. ");
         safeSetHtml('civilPdfTaxBreakdownRows', `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">${(civilTotalBasic * cTax.rate) > 0 ? '₹ ' + Math.round(civilTotalBasic * cTax.rate).toLocaleString('en-IN') : '-'}</span></div>`);
         animateNumberRoll('civilFinGrand', cGrand, "Rs. ");
         safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; margin: 0 auto;">` : '');
     }
 
-    // Combined Rate Box: STRICTLY show ONLY when both Shed & Civil exist and Civil actually has work
+    // Combined Rate Box: STRICTLY show ONLY when both Shed & Civil exist, Civil has work, and NEITHER is Rate Only
     const p1CombBox = document.getElementById('pdfCombinedPackageBox');
     const p2CombBox = document.getElementById('civilPdfCombinedPackageBox');
-    const shouldShowCombined = isShedActive && isCivilActive && hasCivilWork(site);
+    const shouldShowCombined = isShedActive && isCivilActive && hasCivilWork(site) && !isRateOnly && !isCivilRateOnly;
 
     if (shouldShowCombined) {
         const totalComb = shedGrandTotal + civilGrandTotal;
@@ -2046,8 +2073,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             <div class="comb-row"><span>Shed Project Area:</span><b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b></div>
             <div class="comb-row"><span>Combined Total (Shed + Civil):</span><b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b></div>
             <div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') : '-'} / Sq.Ft</b></div>`;
-        if (p1CombBox) { p1CombBox.innerHTML = combHtml; p1CombBox.style.display = isRateOnly ? 'none' : 'flex'; }
-        if (p2CombBox) { p2CombBox.innerHTML = combHtml; p2CombBox.style.display = isCivilRateOnly ? 'none' : 'flex'; }
+        if (p1CombBox) { p1CombBox.innerHTML = combHtml; p1CombBox.style.display = 'flex'; }
+        if (p2CombBox) { p2CombBox.innerHTML = combHtml; p2CombBox.style.display = 'flex'; }
     } else {
         if (p1CombBox) p1CombBox.style.display = 'none';
         if (p2CombBox) p2CombBox.style.display = 'none';
@@ -2301,7 +2328,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 20. PDF DIRECT DOWNLOAD (STRICT MODE & NO BLANK PAGES)
+// 20. DIRECT DOWNLOAD ENGINE (MOBILE & TABLET NATIVE BLOB DOWNLOAD FIX)
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2310,8 +2337,15 @@ async function downloadPDFDirectly(mode = 'both') {
     
     triggerHaptic(50);
     playAppSound('chime');
-    if (typeof html2pdf === 'undefined') { window.print(); return; }
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+    if (typeof html2pdf === 'undefined') {
+        window.print();
+        return;
+    }
+
+    if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+    }
 
     const origScroll = window.scrollY || window.pageYOffset;
     window.scrollTo(0, 0);
@@ -2319,28 +2353,38 @@ async function downloadPDFDirectly(mode = 'both') {
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
+    // Mobile Fix: Keep positive z-index with opacity 0.01 so mobile engines render canvas properly
     const stage = document.createElement('div');
-    stage.style.cssText = 'position:fixed; left:0; top:0; width:746px !important; background:#ffffff; z-index:-99999; margin:0; padding:0; overflow:hidden;';
+    stage.id = 'pdfRenderStage';
+    stage.style.cssText = 'position: fixed; left: 0; top: 0; width: 746px !important; max-width: 746px !important; background: #ffffff; z-index: 999999; margin: 0; padding: 0; overflow: visible; opacity: 0.01; pointer-events: none;';
+    
     const clone = source.cloneNode(true);
     clone.style.setProperty('--pdf-scale', '1.0');
     clone.querySelectorAll('button, .preview-unit-pill, .drag-handle').forEach(el => el.remove());
 
     const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width:746px !important; margin:0 !important; padding:0 !important; display:block !important;';
+    outputContainer.style.cssText = 'width: 746px !important; min-width: 746px !important; max-width: 746px !important; margin: 0 !important; padding: 0 !important; display: block !important;';
 
     const p1 = clone.querySelector('#page1MsStructure');
     const p2 = clone.querySelector('#civilDedicatedPageSheet');
     
-    // Mode enforcement: Only include Civil if chosen and has work
+    // Strict Mode enforcement: Only include Civil if chosen and has work
     const shouldIncludeShed = (site.quoteType === 'shed') || (site.quoteType === 'both' && (mode === 'shed' || mode === 'both'));
     const shouldIncludeCivil = (site.quoteType === 'civil') || (site.quoteType === 'both' && (mode === 'civil' || mode === 'both') && hasCivilWork(site));
 
-    if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
+    if (shouldIncludeShed && p1) {
+        buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
+    }
+
+    // Shed and Civil clean split without extra blank pages
     if (shouldIncludeShed && shouldIncludeCivil) {
         const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
         if (lastPage) lastPage.classList.add('has-page-break');
     }
-    if (shouldIncludeCivil && p2) buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
+
+    if (shouldIncludeCivil && p2) {
+        buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
+    }
 
     stage.appendChild(outputContainer);
     document.body.appendChild(stage);
@@ -2349,18 +2393,54 @@ async function downloadPDFDirectly(mode = 'both') {
         margin: [6.35, 6.35, 6.35, 6.35],
         filename: fileName,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2.0, useCORS: true, letterRendering: true, width: 746, windowWidth: 746, scrollY: 0, scrollX: 0, logging: false },
+        html2canvas: {
+            scale: 2.0,
+            useCORS: true,
+            letterRendering: true,
+            scrollY: 0,
+            scrollX: 0,
+            width: 746,
+            windowWidth: 746,
+            logging: false
+        },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-        pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
+        pagebreak: { 
+            mode: ['css', 'legacy'],
+            after: '.has-page-break'
+        }
     };
 
-    html2pdf().set(opt).from(outputContainer).save().then(() => {
+    html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
-        showCorporateToast("✓ PDF Downloaded Successfully!");
-    }).catch(() => {
+
+        if (window.PatelNativeEngine?.savePdfToPatelFolder) {
+            const base64Data = pdfObj.output('datauristring').split(',')[1];
+            window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
+            return;
+        }
+
+        try {
+            const blob = pdfObj.output('blob');
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = blobUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(blobUrl);
+            }, 1500);
+            showCorporateToast("✓ PDF Downloaded Successfully!");
+        } catch(e) {
+            pdfObj.save(fileName);
+        }
+    }).catch(function(err) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
+        html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
     });
 }
 
@@ -2370,6 +2450,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_companyAddr', appSettings.companyAddr || "");
     safeSetVal('pt_companyGst', appSettings.companyGst || "");
     safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
+
     safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
     safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle || "");
     safeSetVal('pt_projectSizeHeading', appSettings.projectSizeHeading || "📐 PROJECT SIZE / SHED DIMENSIONS:");
@@ -2377,11 +2458,13 @@ function openPermanentTextsModal() {
     safeSetVal('pt_milestoneHeading', appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
     safeSetVal('pt_headerLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
     safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
+
     safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
     safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
     safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
     safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
     safeSetVal('pt_civilFloorTitle', appSettings.civilFloorTitle || "3. FLOORING & PCC WORK DETAILS:");
+
     safeSetVal('pt_btnNamePrim', appSettings.btnNamePrim || "1. Primary");
     safeSetVal('pt_btnNameSec', appSettings.btnNameSec || "2. Secondary");
     safeSetVal('pt_btnNameClad', appSettings.btnNameClad || "3. Cladding");
@@ -2390,6 +2473,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_btnNameFoundation', appSettings.btnNameFoundation || "1. Foundation Details");
     safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick || "2. Brick Wall Details");
     safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
+
     safeSetVal('pt_termsTitle', appSettings.termsTitle || "Terms & Conditions:");
     safeSetVal('pt_civilTermsTitle', appSettings.civilTermsTitle || "Civil Work Terms & Conditions:");
     safeSetVal('pt_thankYouText', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS WITH US.");
@@ -2398,6 +2482,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
     safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
     safeSetVal('pt_pdfSignatoryText', appSettings.pdfSignatoryText || "Authorized Signatory");
+
     openModalWithHistory('permanentTextsModal');
 }
 function closePermanentTextsModal() { closeModalSafe('permanentTextsModal'); }
@@ -2414,26 +2499,50 @@ function renderSettingsPhonesUI() {
     if (!box) return;
     box.innerHTML = "";
     (appSettings.phones || []).forEach((phone, idx) => {
-        box.innerHTML += `<div class="phone-row-dynamic"><span class="phone-badge-prefix">📞 #${idx + 1}</span><input type="tel" value="${phone}" oninput="updatePhoneSetting(${idx}, this.value)"><button type="button" class="btn-del-pro" onclick="deletePhoneSetting(${idx})">🗑️</button></div>`;
+        box.innerHTML += `
+            <div class="phone-row-dynamic">
+                <span class="phone-badge-prefix">📞 #${idx + 1}</span>
+                <input type="tel" value="${phone}" placeholder="Enter phone number..." oninput="updatePhoneSetting(${idx}, this.value)">
+                <button type="button" class="btn-del-pro btn-ripple" onclick="deletePhoneSetting(${idx})">🗑️</button>
+            </div>`;
     });
 }
+
 function addPhoneRowInSettings() {
     if (!appSettings.phones) appSettings.phones = [];
     appSettings.phones.push("+91 ");
     syncDataToCloud('patel_app_settings', appSettings);
     renderSettingsPhonesUI();
+    refreshLivePdfPreviewSheet();
 }
+
 function updatePhoneSetting(idx, val) {
+    if (!appSettings.phones) appSettings.phones = [];
     appSettings.phones[idx] = val;
     syncDataToCloud('patel_app_settings', appSettings);
+    refreshLivePdfPreviewSheet();
 }
+
 function deletePhoneSetting(idx) {
+    if (!appSettings.phones) return;
     appSettings.phones.splice(idx, 1);
     syncDataToCloud('patel_app_settings', appSettings);
     renderSettingsPhonesUI();
+    refreshLivePdfPreviewSheet();
 }
-function saveCompanyEmailSetting(val) { appSettings.companyEmail = val.trim(); syncDataToCloud('patel_app_settings', appSettings); }
-function saveFooterWebSetting(val) { appSettings.footerWeb = val.trim(); syncDataToCloud('patel_app_settings', appSettings); }
+
+function saveCompanyEmailSetting(val) {
+    appSettings.companyEmail = val.trim();
+    syncDataToCloud('patel_app_settings', appSettings);
+    refreshLivePdfPreviewSheet();
+}
+
+function saveFooterWebSetting(val) {
+    appSettings.footerWeb = val.trim();
+    syncDataToCloud('patel_app_settings', appSettings);
+    refreshLivePdfPreviewSheet();
+}
+
 function loadPhoneSettingsUI() {
     renderSettingsPhonesUI();
     safeSetVal('setCompanyEmail', appSettings.companyEmail || "");
@@ -2448,10 +2557,16 @@ function openLargeInput(key, title) {
     safeSetVal('largeInputTextarea', appSettings[key] || "");
     openModalWithHistory('largeInputModal');
 }
-function closeLargeInput() { closeModalSafe('largeInputModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
+function closeLargeInput() { 
+    closeModalSafe('largeInputModal'); 
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet();
+}
 function autoSaveLargeInputLive() {
     appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
     syncDataToCloud('patel_app_settings', appSettings);
+    loadPhoneSettingsUI();
+    renderHomeScreen();
     refreshLivePdfPreviewSheet();
 }
 
@@ -2477,25 +2592,54 @@ function openSignatureModal() {
     ctx = canvas.getContext('2d');
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
-    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
+
     if (!sigEventsAttached) {
-        canvas.addEventListener('touchstart', (e) => { isDrawing = true; ctx.beginPath(); const t = e.touches[0]; const r = canvas.getBoundingClientRect(); ctx.moveTo(t.clientX - r.left, t.clientY - r.top); e.preventDefault(); }, {passive:false});
-        canvas.addEventListener('touchmove', (e) => { if (!isDrawing) return; const t = e.touches[0]; const r = canvas.getBoundingClientRect(); ctx.lineTo(t.clientX - r.left, t.clientY - r.top); ctx.stroke(); e.preventDefault(); }, {passive:false});
+        canvas.addEventListener('touchstart', (e) => {
+            isDrawing = true;
+            ctx.beginPath();
+            const t = e.touches[0];
+            const r = canvas.getBoundingClientRect();
+            ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
+            e.preventDefault();
+        }, {passive:false});
+        canvas.addEventListener('touchmove', (e) => {
+            if (!isDrawing) return;
+            const t = e.touches[0];
+            const r = canvas.getBoundingClientRect();
+            ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
+            ctx.stroke();
+            e.preventDefault();
+        }, {passive:false});
         canvas.addEventListener('touchend', () => isDrawing = false);
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
-        canvas.addEventListener('mousemove', (e) => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDrawing) {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        });
         canvas.addEventListener('mouseup', () => isDrawing = false);
         sigEventsAttached = true;
     }
 }
-function clearSignature() { if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height); }
+function clearSignature() {
+    if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
 function closeSigModal() { closeModalSafe('sigModal'); }
 function saveSignature() {
     appSettings.signatureData = canvas.toDataURL();
     syncDataToCloud('patel_app_settings', appSettings);
     closeSigModal();
     refreshLivePdfPreviewSheet();
-    showCorporateToast("Signature Saved!");
+    showCorporateToast("Digital Signature Saved Successfully!", "✍️");
 }
 
 // 23. INITIALIZATION ON LOAD
@@ -2507,6 +2651,13 @@ window.onload = function() {
     applyScaleToSheet();
     autoDetectDeviceMode();
     updateHeaderBannersUI();
+    if (appSettings.logoData) {
+        const fav = document.getElementById('dynamicAppFavicon');
+        const appleFav = document.getElementById('dynamicAppleIcon');
+        if (fav) fav.href = appSettings.logoData;
+        if (appleFav) appleFav.href = appSettings.logoData;
+    }
     initSamsungBootAnimation();
     setTimeout(() => skipBootAnimation(), 2500); // Fail-safe auto bypass
+    setTimeout(attachDynamicPreviewObserver, 200);
 };
