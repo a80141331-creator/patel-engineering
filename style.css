@@ -407,7 +407,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     line-height: 1.35 !important;
     box-sizing: border-box !important;
     border: none !important;
-    display: flow-root !important;
+    display: flow-root; /* Removed !important to allow dynamic JS hiding */
     height: auto !important;
     min-height: auto !important;
     max-height: none !important;
@@ -943,16 +943,15 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
     box-shadow: 0 4px 14px rgba(0,0,0,0.25);
 }
 
-/* ADJUSTABLE & NATURAL PREVIEW VIEWPORT (NO AWKWARD GAP / NO STUCK SCROLL) */
+/* ========================================================
+   ADJUSTABLE & EDGE-TO-EDGE PREVIEW (NO BLUE GAP & PRECISE TOUCH)
+   ======================================================== */
 .mobile-preview-viewport { 
     width: 100% !important; 
     position: relative !important; 
     background: #1e293b !important; 
-    padding: 10px 0 !important; 
-    display: flex !important; 
-    flex-direction: column !important;
-    align-items: center !important; 
-    justify-content: flex-start !important; 
+    padding: 8px 0 !important; 
+    display: block !important; /* block view prevents asymmetrical flex offset */
     box-sizing: border-box !important; 
     overflow-x: hidden !important; 
     overflow-y: auto !important; 
@@ -964,22 +963,23 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 #scalingWrapper, #civilScalingWrapper { 
-    transform-origin: top center !important; 
+    transform-origin: top left !important; /* Locks left edge to eliminate empty left blue gap */
     width: 746px !important; 
     min-width: 746px !important; 
     max-width: 746px !important; 
-    margin: 0 auto !important; 
-    display: flow-root !important; 
+    margin: 0 !important; 
+    display: block !important; 
     height: auto !important;
     transition: transform 0.12s ease-out;
 }
+
 #printableA4Sheet {
     width: 746px !important; 
     min-width: 746px !important; 
     max-width: 746px !important; 
     display: flow-root !important; 
     height: auto !important; 
-    margin: 0 auto !important;
+    margin: 0 !important;
 }
 
 /* PRINT MEDIA CONFIGURATION */
