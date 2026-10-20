@@ -935,7 +935,7 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 .pdf-section-wrapper { margin-top: 14px; width: 100%; }
 .pdf-sheet-frame { 
     width: 100%; 
-    background: #1e293b; 
+    background: #0c1e30; 
     border: 1.5px solid #cbd5e1; 
     border-radius: 10px; 
     overflow: hidden; 
@@ -944,42 +944,56 @@ body.mode-desktop .pane-scroll-nav { display: flex !important; }
 }
 
 /* ========================================================
-   ADJUSTABLE & EDGE-TO-EDGE PREVIEW (NO BLUE GAP & PRECISE TOUCH)
+   ADJUSTABLE & EDGE-TO-EDGE PREVIEW (NO SIDE STRIP & SMOOTH TOUCH SCROLL)
    ======================================================== */
 .mobile-preview-viewport { 
     width: 100% !important; 
     position: relative !important; 
-    background: #1e293b !important; 
-    padding: 8px 0 !important; 
-    display: block !important; /* block view prevents asymmetrical flex offset */
+    background: #0c1e30 !important; 
+    padding: 0 !important; 
+    display: block !important; 
     box-sizing: border-box !important; 
     overflow-x: hidden !important; 
     overflow-y: auto !important; 
-    overscroll-behavior: contain !important;
+    overscroll-behavior: auto !important; /* Touch freeze fix */
     -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important; /* Smooth touch gestures */
     scroll-behavior: smooth !important; 
     scrollbar-width: thin;
-    min-height: min-content !important;
+}
+
+/* Scrollbar track fix (ताकि कोई सफेद/ग्रे पट्टी न दिखे) */
+.mobile-preview-viewport::-webkit-scrollbar {
+    width: 4px;
+    height: 0px;
+}
+.mobile-preview-viewport::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+}
+.mobile-preview-viewport::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 #scalingWrapper, #civilScalingWrapper { 
-    transform-origin: top left !important; /* Locks left edge to eliminate empty left blue gap */
+    transform-origin: top left !important; 
     width: 746px !important; 
     min-width: 746px !important; 
     max-width: 746px !important; 
     margin: 0 !important; 
     display: block !important; 
     height: auto !important;
+    touch-action: pan-y !important;
     transition: transform 0.12s ease-out;
 }
 
-#printableA4Sheet {
+#printableA4Sheet, #civilLiveSheetDisplayBox {
     width: 746px !important; 
     min-width: 746px !important; 
     max-width: 746px !important; 
-    display: flow-root !important; 
-    height: auto !important; 
+    display: block !important; 
     margin: 0 !important;
+    touch-action: pan-y !important;
 }
 
 /* PRINT MEDIA CONFIGURATION */
