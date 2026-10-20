@@ -821,13 +821,17 @@ function autoFitPreview() {
         if (availableWidth > 0) {
             let baseFit = availableWidth < 746 ? (availableWidth / 746) : 1.0;
             
-            wrapper.style.transformOrigin = 'top center';
+            wrapper.style.transformOrigin = 'top left';
             wrapper.style.transform = `scale(${baseFit})`;
-            wrapper.style.setProperty('margin', '0 auto', 'important');
+            
+            if (availableWidth > 746) {
+                const centerMargin = Math.round((availableWidth - 746) / 2);
+                wrapper.style.marginLeft = `${centerMargin}px`;
+            } else {
+                wrapper.style.marginLeft = '0px';
+            }
             
             const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
-            
-            // Negate bottom empty gap left by transform-scale without cut-off
             if (baseFit < 1.0 && unscaledHeight > 0) {
                 wrapper.style.marginBottom = `-${Math.round(unscaledHeight * (1 - baseFit))}px`;
             } else {
@@ -853,12 +857,17 @@ function autoFitPreview() {
         if (cWidth > 0) {
             let cBaseFit = cWidth < 746 ? (cWidth / 746) : 1.0;
             
-            civilWrap.style.transformOrigin = 'top center';
+            civilWrap.style.transformOrigin = 'top left';
             civilWrap.style.transform = `scale(${cBaseFit})`;
-            civilWrap.style.setProperty('margin', '0 auto', 'important');
+            
+            if (cWidth > 746) {
+                const cCenterMargin = Math.round((cWidth - 746) / 2);
+                civilWrap.style.marginLeft = `${cCenterMargin}px`;
+            } else {
+                civilWrap.style.marginLeft = '0px';
+            }
             
             const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
-            
             if (cBaseFit < 1.0 && cUnscaledHeight > 0) {
                 civilWrap.style.marginBottom = `-${Math.round(cUnscaledHeight * (1 - cBaseFit))}px`;
             } else {
@@ -1032,7 +1041,7 @@ function saveNewBlankSiteAndOpen() {
         }))
     };
 
-    // Ensure all civil items start strictly blank (no dummy or zero values)
+    // Ensure all civil items start strictly blank
     ['foundation', 'brickWall', 'flooring'].forEach(sec => {
         if (newSite.civilData[sec] && newSite.civilData[sec].items) {
             newSite.civilData[sec].items.forEach(it => { it.qty = ""; it.rate = ""; });
@@ -1377,11 +1386,13 @@ function syncCivilLivePreviewBox() {
         const isShed = site && (site.quoteType === 'both' || site.quoteType === 'shed');
         const isCivil = site && (site.quoteType === 'both' || site.quoteType === 'civil');
 
-        // On dedicated civil preview, always ensure civil sheet is completely and fully displayed
-        if (cloneCivil) cloneCivil.style.display = 'flow-root';
+        if (cloneCivil) cloneCivil.style.setProperty('display', 'flow-root', 'important');
 
         if (site && site.quoteType === 'civil') {
             if (cloneShed) cloneShed.remove();
+            if (cloneGap) cloneGap.remove();
+        } else if (site && site.quoteType === 'shed') {
+            if (cloneCivil) cloneCivil.remove();
             if (cloneGap) cloneGap.remove();
         } else {
             if (!isShed && cloneShed) cloneShed.remove();
@@ -2354,9 +2365,9 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     let autoTotalSteelWeightKg = 0;
 
     if (!isShedActive) {
-        if (page1ShedSheet) page1ShedSheet.style.display = 'none';
+        if (page1ShedSheet) page1ShedSheet.style.setProperty('display', 'none', 'important');
     } else {
-        if (page1ShedSheet) page1ShedSheet.style.display = 'flow-root';
+        if (page1ShedSheet) page1ShedSheet.style.setProperty('display', 'flow-root', 'important');
 
         const s1Tbody = document.getElementById('pdfSection1TableBody');
         if (s1Tbody) {
@@ -2546,11 +2557,11 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     let civilTotalBasic = 0;
 
     if (!isCivilActive) {
-        if (civilPageBlock) civilPageBlock.style.display = 'none';
-        if (pageGapDivider) pageGapDivider.style.display = 'none';
+        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'none', 'important');
+        if (pageGapDivider) pageGapDivider.style.setProperty('display', 'none', 'important');
     } else {
-        if (civilPageBlock) civilPageBlock.style.display = 'flow-root';
-        if (pageGapDivider) pageGapDivider.style.display = (isShedActive ? 'block' : 'none');
+        if (civilPageBlock) civilPageBlock.style.setProperty('display', 'flow-root', 'important');
+        if (pageGapDivider) pageGapDivider.style.setProperty('display', isShedActive ? 'block' : 'none', 'important');
         ensureCivilDataOnSite(site);
         const civ = site.civilData;
 
@@ -2674,7 +2685,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 21. TRUE DYNAMIC FLOW ENGINE FOR PDF (CLEAN ROWS & FULL PAGES)
+// 21. TRUE DYNAMIC FLOW ENGINE FOR PDF
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -3054,7 +3065,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. DIRECT DOWNLOAD ENGINE (STRICT SEPARATION BY MODE)
+// 22. DIRECT DOWNLOAD ENGINE
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
