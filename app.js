@@ -208,7 +208,7 @@ const defaultAppSettings = {
     pdfSignatoryText: "Authorized Signatory",
     signatureData: "",
     logoData: "",
-    savedPdfScale: 1.0
+    savedPdfFontScale: 1.0
 };
 
 let masterBlueprint = JSON.parse(localStorage.getItem('patel_master_blueprint') || JSON.stringify(defaultMasterBlueprint));
@@ -216,6 +216,9 @@ let appSettings = JSON.parse(localStorage.getItem('patel_app_settings') || JSON.
 if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
     appSettings.phones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean);
     if (appSettings.phones.length === 0) appSettings.phones = ["+91 9799635249", "+91 7737734122"];
+}
+if (!appSettings.savedPdfFontScale) {
+    appSettings.savedPdfFontScale = appSettings.savedPdfScale || 1.0;
 }
 
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
@@ -316,10 +319,12 @@ function initCloudFirstMasterSync() {
             if (!appSettings.phones || !Array.isArray(appSettings.phones)) {
                 appSettings.phones = [appSettings.phone1, appSettings.phone2, appSettings.phone3].filter(Boolean);
             }
+            if (!appSettings.savedPdfFontScale) appSettings.savedPdfFontScale = 1.0;
             try { localStorage.setItem('patel_app_settings', JSON.stringify(appSettings)); } catch(e) {}
             loadPhoneSettingsUI();
             applyCustomButtonNamesUI();
             updateHeaderBannersUI();
+            applyScaleToSheet();
             refreshLivePdfPreviewSheet(true);
         }
     });
@@ -780,28 +785,23 @@ function saveStartingQuoteSeq(val) {
     syncDataToCloud('patel_app_settings', appSettings);
 }
 
-// 10. PREVIEW SCALING & PHONE BLUE GAP FIX
+// 10. PREVIEW FONT-SIZE ADJUSTMENT & VIEWPORT ADAPTATION
 function changePdfScale(delta) {
-    let cur = Math.round(((parseFloat(appSettings.savedPdfScale) || 1.0) + delta) * 100) / 100;
-    appSettings.savedPdfScale = Math.min(Math.max(cur, 0.40), 2.20);
+    let cur = Math.round(((parseFloat(appSettings.savedPdfFontScale) || 1.0) + delta) * 100) / 100;
+    appSettings.savedPdfFontScale = Math.min(Math.max(cur, 0.50), 1.60);
     syncDataToCloud('patel_app_settings', appSettings);
     applyScaleToSheet();
 }
 
 function resetPdfScale() {
-    appSettings.savedPdfScale = 1.0;
+    appSettings.savedPdfFontScale = 1.0;
     syncDataToCloud('patel_app_settings', appSettings);
     applyScaleToSheet();
 }
 
 function applyScaleToSheet() {
-    const s = parseFloat(appSettings.savedPdfScale) || 1.0;
-    document.documentElement.style.setProperty('--pdf-scale', s);
-
-    const pSheet = document.getElementById('printableA4Sheet');
-    if (pSheet) pSheet.style.setProperty('--pdf-scale', s);
-    const cBox = document.getElementById('civilLiveSheetDisplayBox');
-    if (cBox) cBox.style.setProperty('--pdf-scale', s);
+    const s = parseFloat(appSettings.savedPdfFontScale) || 1.0;
+    document.documentElement.style.setProperty('--pdf-font-scale', s);
 
     const pct = Math.round(s * 100) + '%';
     safeSetText('scaleIndicatorText', pct);
@@ -810,7 +810,6 @@ function applyScaleToSheet() {
 }
 
 function autoFitPreview() {
-    const userZoom = parseFloat(appSettings.savedPdfScale) || 1.0;
     const isDesktop = document.body.classList.contains('mode-desktop');
 
     const viewport = document.getElementById('viewportWrap');
@@ -821,26 +820,26 @@ function autoFitPreview() {
         const availableWidth = viewport.clientWidth || viewport.offsetWidth;
         if (availableWidth > 0) {
             let baseFit = availableWidth < 746 ? (availableWidth / 746) : 1.0;
-            let totalScale = Math.round(baseFit * userZoom * 100) / 100;
             
             wrapper.style.transformOrigin = 'top center';
-            wrapper.style.transform = `scale(${totalScale})`;
+            wrapper.style.transform = `scale(${baseFit})`;
             wrapper.style.setProperty('margin', '0 auto', 'important');
             
             const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
-            const scaledHeight = Math.ceil(unscaledHeight * totalScale);
             
-            // Negate bottom blue gap left by transform scale on mobile screens
-            if (totalScale < 1.0 && unscaledHeight > 0) {
-                wrapper.style.marginBottom = `-${Math.round(unscaledHeight * (1 - totalScale))}px`;
+            // Negate bottom empty gap left by transform-scale without cut-off
+            if (baseFit < 1.0 && unscaledHeight > 0) {
+                wrapper.style.marginBottom = `-${Math.round(unscaledHeight * (1 - baseFit))}px`;
             } else {
                 wrapper.style.marginBottom = '0px';
             }
 
             if (!isDesktop) {
-                if (scaledHeight > 0) viewport.style.height = `${scaledHeight + 25}px`;
+                viewport.style.height = 'auto';
+                viewport.style.maxHeight = '84vh';
             } else {
                 viewport.style.height = '100%';
+                viewport.style.maxHeight = 'none';
             }
         }
     }
@@ -853,25 +852,25 @@ function autoFitPreview() {
         const cWidth = civilVp.clientWidth || civilVp.offsetWidth;
         if (cWidth > 0) {
             let cBaseFit = cWidth < 746 ? (cWidth / 746) : 1.0;
-            let cTotalScale = Math.round(cBaseFit * userZoom * 100) / 100;
             
             civilWrap.style.transformOrigin = 'top center';
-            civilWrap.style.transform = `scale(${cTotalScale})`;
+            civilWrap.style.transform = `scale(${cBaseFit})`;
             civilWrap.style.setProperty('margin', '0 auto', 'important');
             
             const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
-            const cScaledHeight = Math.ceil(cUnscaledHeight * cTotalScale);
             
-            if (cTotalScale < 1.0 && cUnscaledHeight > 0) {
-                civilWrap.style.marginBottom = `-${Math.round(cUnscaledHeight * (1 - cTotalScale))}px`;
+            if (cBaseFit < 1.0 && cUnscaledHeight > 0) {
+                civilWrap.style.marginBottom = `-${Math.round(cUnscaledHeight * (1 - cBaseFit))}px`;
             } else {
                 civilWrap.style.marginBottom = '0px';
             }
 
             if (!isDesktop) {
-                if (cScaledHeight > 0) civilVp.style.height = `${cScaledHeight + 25}px`;
+                civilVp.style.height = 'auto';
+                civilVp.style.maxHeight = '84vh';
             } else {
                 civilVp.style.height = '100%';
+                civilVp.style.maxHeight = 'none';
             }
         }
     }
@@ -1005,8 +1004,8 @@ function saveNewBlankSiteAndOpen() {
         civilSelectedTaxId: "gst18_split",
         rateOnlyMode: false,
         civilRateOnlyMode: false,
-        civilEnabled: tempNewQuoteType === 'both' || tempNewQuoteType === 'civil',
-        shedEnabled: tempNewQuoteType === 'both' || tempNewQuoteType === 'shed',
+        civilEnabled: (tempNewQuoteType === 'both' || tempNewQuoteType === 'civil'),
+        shedEnabled: (tempNewQuoteType === 'both' || tempNewQuoteType === 'shed'),
         dimW: "", dimL: "", dimH: "",
         primEnabled: true, secEnabled: true, cladEnabled: true, accEnabled: true, erectEnabled: true,
         foundEnabled: true, brickEnabled: true, floorEnabled: true,
@@ -1032,6 +1031,13 @@ function saveNewBlankSiteAndOpen() {
             ...c, enabled: true, items: (c.items || []).map(it => ({ ...it, qty: "", rate: "", total: 0, enabled: it.enabled !== false }))
         }))
     };
+
+    // Ensure all civil items start strictly blank (no dummy or zero values)
+    ['foundation', 'brickWall', 'flooring'].forEach(sec => {
+        if (newSite.civilData[sec] && newSite.civilData[sec].items) {
+            newSite.civilData[sec].items.forEach(it => { it.qty = ""; it.rate = ""; });
+        }
+    });
 
     if (tempNewQuoteType === 'shed') { newSite.civilEnabled = false; newSite.shedEnabled = true; }
     else if (tempNewQuoteType === 'civil') { newSite.civilEnabled = true; newSite.shedEnabled = false; }
@@ -1176,7 +1182,11 @@ function ensureCivilDataOnSite(site) {
     ['foundation', 'brickWall', 'flooring'].forEach(sec => {
         if (!site.civilData[sec]) site.civilData[sec] = JSON.parse(JSON.stringify(masterBlueprint.civilData[sec]));
         if (!site.civilData[sec].items) site.civilData[sec].items = JSON.parse(JSON.stringify(masterBlueprint.civilData[sec].items));
-        site.civilData[sec].items.forEach(it => { if (it.enabled === undefined) it.enabled = true; });
+        site.civilData[sec].items.forEach(it => {
+            if (it.enabled === undefined) it.enabled = true;
+            if (it.qty === undefined) it.qty = "";
+            if (it.rate === undefined) it.rate = "";
+        });
     });
 }
 
@@ -1367,9 +1377,17 @@ function syncCivilLivePreviewBox() {
         const isShed = site && (site.quoteType === 'both' || site.quoteType === 'shed');
         const isCivil = site && (site.quoteType === 'both' || site.quoteType === 'civil');
 
-        if (!isShed && cloneShed) cloneShed.remove();
-        if (!isCivil && cloneCivil) cloneCivil.remove();
-        if ((!isShed || !isCivil) && cloneGap) cloneGap.remove();
+        // On dedicated civil preview, always ensure civil sheet is completely and fully displayed
+        if (cloneCivil) cloneCivil.style.display = 'flow-root';
+
+        if (site && site.quoteType === 'civil') {
+            if (cloneShed) cloneShed.remove();
+            if (cloneGap) cloneGap.remove();
+        } else {
+            if (!isShed && cloneShed) cloneShed.remove();
+            if (!isCivil && cloneCivil) cloneCivil.remove();
+            if ((!isShed || !isCivil) && cloneGap) cloneGap.remove();
+        }
 
         civilLiveBox.appendChild(clone);
     }
@@ -1434,7 +1452,7 @@ function openCivilParamModal(type) {
                 <div class="row-3">
                     <div class="form-group" style="margin:0;">
                         <label>Qty / Area</label>
-                        <input type="number" inputmode="decimal" step="any" value="${item.qty}" oninput="updateCivilItemField('${type}', ${idx}, 'qty', this.value)">
+                        <input type="number" inputmode="decimal" step="any" placeholder="-" value="${item.qty || ''}" oninput="updateCivilItemField('${type}', ${idx}, 'qty', this.value)">
                     </div>
                     <div class="form-group" style="margin:0;">
                         <label>Unit</label>
@@ -1442,7 +1460,7 @@ function openCivilParamModal(type) {
                     </div>
                     <div class="form-group" style="margin:0;">
                         <label>Rate (₹)</label>
-                        <input type="number" inputmode="decimal" step="any" value="${item.rate}" oninput="updateCivilItemField('${type}', ${idx}, 'rate', this.value)">
+                        <input type="number" inputmode="decimal" step="any" placeholder="-" value="${item.rate || ''}" oninput="updateCivilItemField('${type}', ${idx}, 'rate', this.value)">
                     </div>
                 </div>
             </div>`;
@@ -1536,8 +1554,8 @@ function openAddUniversalModuleModal(mode) {
     safeSetText('universalModHeading', mode === 'civil' ? "➕ Add Civil Module" : "➕ Add Custom Module");
     safeSetVal('umod_title', "");
     safeSetVal('umod_desc', "");
-    safeSetVal('umod_qty', "1");
-    safeSetVal('umod_rate', "0");
+    safeSetVal('umod_qty', "");
+    safeSetVal('umod_rate', "");
     safeSetText('btn_umod_unit', "Lot ▾");
     recalcUmodPreviewAmount();
     openModalWithHistory('universalModuleModal');
@@ -1564,8 +1582,10 @@ function saveUniversalModule() {
     if (!title) return showAppAlert("⚠️ Required", "Please enter Module Title!");
 
     const descVal = (document.getElementById('umod_desc')?.value || "").trim();
-    const qtyVal = parseFloat(document.getElementById('umod_qty')?.value) || 1;
-    const rateVal = parseFloat(document.getElementById('umod_rate')?.value) || 0;
+    const qtyRaw = document.getElementById('umod_qty')?.value || "";
+    const rateRaw = document.getElementById('umod_rate')?.value || "";
+    const qtyVal = parseFloat(qtyRaw) || 0;
+    const rateVal = parseFloat(rateRaw) || 0;
     const totalVal = qtyVal * rateVal;
 
     if (universalModMode === 'civil') {
@@ -1574,7 +1594,7 @@ function saveUniversalModule() {
             id: 'civcat_' + Date.now(),
             categoryName: title,
             enabled: true,
-            items: [{ name: descVal || title, qty: qtyVal, unit: universalModUnit, rate: rateVal, total: totalVal, enabled: true }]
+            items: [{ name: descVal || title, qty: qtyRaw, unit: universalModUnit, rate: rateRaw, total: totalVal, enabled: true }]
         });
         renderCivilCustomCategoriesUI();
     } else {
@@ -1583,7 +1603,7 @@ function saveUniversalModule() {
         site.customModules.push({
             id: newModId,
             title, desc: descVal, unit: universalModUnit,
-            qty: qtyVal, rate: rateVal, total: totalVal, enabled: true
+            qty: qtyRaw, rate: rateRaw, total: totalVal, enabled: true
         });
         if (!site.moduleOrder) site.moduleOrder = ['prim', 'sec', 'clad', 'acc', 'erect'];
         site.moduleOrder.push(newModId);
@@ -2220,7 +2240,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 20. LIVE PREVIEW ENGINE (PERMANENT TEXT EDIT FIX)
+// 20. LIVE PREVIEW ENGINE (PERFECT SEPARATION & CLEAN COMBINED TOTALS)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite();
     if (!site) return;
@@ -2271,7 +2291,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 
     updateHeaderBannersUI();
 
-    // ALL PERMANENT TEXTS BOUND DYNAMICALLY TO appSettings:
     safeSetText('pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION");
     safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
     safeSetText('pdfScopeTitle', appSettings.pdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS");
@@ -2325,6 +2344,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('civilPdfClientGst', site.custGST || "-");
     safeSetText('civilPdfClientAddr', site.custAddress || "-");
 
+    // STRICT ISOLATION BY MODE
     const isShedActive = (site.quoteType === 'both' || site.quoteType === 'shed');
     const isCivilActive = (site.quoteType === 'both' || site.quoteType === 'civil');
 
@@ -2348,8 +2368,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 autoTotalSteelWeightKg += inKg;
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td style="font-size:10px !important;"><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'prim')">${(site.primCustomLine || "").trim()}</span></td>
-                        <td style="text-align: right; font-weight: 700; font-size:10px !important;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
+                        <td style="font-size:calc(10px * var(--pdf-font-scale)) !important;"><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'prim')">${(site.primCustomLine || "").trim()}</span></td>
+                        <td style="text-align: right; font-weight: 700; font-size:calc(10px * var(--pdf-font-scale)) !important;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
                     </tr>`;
             }
 
@@ -2360,15 +2380,15 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 autoTotalSteelWeightKg += inKg;
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td style="font-size:10px !important;"><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'sec')">${(site.secCustomLine || "").trim()}</span></td>
-                        <td style="text-align: right; font-weight: 700; font-size:10px !important;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
+                        <td style="font-size:calc(10px * var(--pdf-font-scale)) !important;"><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'sec')">${(site.secCustomLine || "").trim()}</span></td>
+                        <td style="text-align: right; font-weight: 700; font-size:calc(10px * var(--pdf-font-scale)) !important;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td>
                     </tr>`;
             }
 
             s1Tbody.innerHTML += `
                 <tr class="executive-weight-total-row">
-                    <td style="font-size:10px !important;"><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td>
-                    <td style="text-align: right; font-size:10px !important; font-weight: 700;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td>
+                    <td style="font-size:calc(10px * var(--pdf-font-scale)) !important;"><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td>
+                    <td style="text-align: right; font-size:calc(10px * var(--pdf-font-scale)) !important; font-weight: 700;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td>
                 </tr>`;
 
             if (site.cladEnabled !== false) {
@@ -2377,8 +2397,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 const thickBadge = site.cladThickness ? `<span class="spec-highlight-pill" style="margin-left:6px;">📐 Thickness: ${site.cladThickness}</span>` : '';
                 s1Tbody.innerHTML += `
                     <tr>
-                        <td style="font-size:10px !important;"><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td>
-                        <td style="text-align: right; font-weight: 700; font-size:10px !important;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td>
+                        <td style="font-size:calc(10px * var(--pdf-font-scale)) !important;"><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this, 'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td>
+                        <td style="text-align: right; font-weight: 700; font-size:calc(10px * var(--pdf-font-scale)) !important;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this, 'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td>
                     </tr>`;
             }
         }
@@ -2519,10 +2539,11 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
-    // PAGE 2: CIVIL
+    // PAGE 2: CIVIL SPECIFICATIONS
     const civilPageBlock = document.getElementById('civilDedicatedPageSheet');
     const pageGapDivider = document.getElementById('civilPageGapDivider');
     let civilGrandTotal = 0;
+    let civilTotalBasic = 0;
 
     if (!isCivilActive) {
         if (civilPageBlock) civilPageBlock.style.display = 'none';
@@ -2532,7 +2553,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         if (pageGapDivider) pageGapDivider.style.display = (isShedActive ? 'block' : 'none');
         ensureCivilDataOnSite(site);
         const civ = site.civilData;
-        let civilTotalBasic = 0;
 
         const cleanCivHead = isCivilRateOnly ?
             `<tr><th style="width: 8%; text-align: center;">S.N</th><th style="width: 56%; text-align: left;">ITEM / WORK DESCRIPTION</th><th style="width: 14%; text-align: center;">UNIT</th><th style="width: 22%; text-align: right;">CONTRACT RATE (₹)</th></tr>` :
@@ -2622,10 +2642,12 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height: 24px; width:auto; display:block; margin: 0 auto;">` : '');
     }
 
-    // COMBINED PACKAGE STRIP
+    // COMBINED PACKAGE STRIP: ONLY SHOW IF CIVIL IS ADDED AND HAS VALID VALUE (> 0)
     const p1CombBox = document.getElementById('pdfCombinedPackageBox');
     const p2CombBox = document.getElementById('civilPdfCombinedPackageBox');
-    if (isShedActive && isCivilActive) {
+    const isCivilActuallyValued = (civilGrandTotal > 0 || civilTotalBasic > 0);
+
+    if (isShedActive && isCivilActive && isCivilActuallyValued) {
         const totalComb = shedGrandTotal + civilGrandTotal;
         const combRate = sqft > 0 ? Math.round(totalComb / sqft) : 0;
         const combHtml = `
@@ -2652,7 +2674,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 21. TRUE DYNAMIC FLOW ENGINE FOR PDF (NO BLANK PAGES & NO BOTTOM LINES)
+// 21. TRUE DYNAMIC FLOW ENGINE FOR PDF (CLEAN ROWS & FULL PAGES)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -3032,7 +3054,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. DIRECT DOWNLOAD ENGINE (NO BLANK PAGES)
+// 22. DIRECT DOWNLOAD ENGINE (STRICT SEPARATION BY MODE)
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -3083,7 +3105,6 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     }
 
-    // Shed aur Civil ke beech saaf break bina extra blank page ke
     if (shouldIncludeShed && shouldIncludeCivil) {
         const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
         if (lastPage) lastPage.classList.add('has-page-break');
