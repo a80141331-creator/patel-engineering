@@ -56,7 +56,7 @@ html, body {
 .btn-toggle-eye { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; font-size: 15px; }
 .auth-error-text { font-size: 11px; font-weight: 800; color: #dc2626; margin-top: 5px; }
 
-/* 3D TIN SHED BOOT ANIMATION (ORIGINAL RESTORED) */
+/* 3D TIN SHED BOOT ANIMATION */
 .shed-assembly-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 45%, #e2e8f0 80%, #cbd5e1 100%); z-index: 999999; display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none; cursor: pointer; transition: opacity 0.65s ease, visibility 0.65s ease; }
 .shed-assembly-overlay.boot-fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 .shed-light-mesh { position: absolute; inset: -50px; background-image: linear-gradient(rgba(15, 41, 66, 0.05) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(15, 41, 66, 0.05) 1.5px, transparent 1.5px); background-size: 36px 36px; transform: perspective(600px) rotateX(45deg); opacity: 0.65; }
@@ -100,9 +100,7 @@ html, body {
 .card-3d-press { background: #fff; border: 1.5px solid #cbd5e1; border-bottom: 2.5px solid #94a3b8; border-radius: 8px; cursor: pointer; }
 .card-3d-press:active { transform: translateY(1.5px); border-bottom-width: 1px; }
 
-/* ========================================================
-   PHONE NUMBER INPUTS (FIXED SLEEK ALIGNMENT)
-   ======================================================== */
+/* PHONE NUMBER INPUTS */
 .phone-row-dynamic {
     background: #f8fafc;
     border: 1.5px solid #cbd5e1;
@@ -141,9 +139,7 @@ html, body {
     width: 100% !important;
 }
 
-/* ========================================================
-   SETTINGS GRID FIX (PROPER 3D CARDS & ALIGNMENT)
-   ======================================================== */
+/* SETTINGS GRID */
 .settings-grid {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
@@ -171,25 +167,37 @@ html, body {
 .setting-grid-card .title { font-size: 12px; font-weight: 900; color: #0f172a; }
 .setting-grid-card .subtitle { font-size: 10.5px; color: #64748b; margin-top: 1.5px; }
 
-/* QUOTATION MODE SELECTOR WITH TICK EFFECT */
-.quote-type-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
-.quote-type-card {
-    position: relative; padding: 10px 8px; background: #ffffff; border: 2px solid #cbd5e1;
-    border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; justify-content: center;
+/* 5-MODE QUOTATION SELECTOR GRID (CLEAN FLEX / RESPONSIVE FIT) */
+.quote-type-selector-grid { 
+    display: grid; 
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 6px; 
+    margin-top: 8px; 
 }
-.quote-type-card .icon { font-size: 24px; margin-bottom: 3px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1)); }
-.quote-type-card strong { font-size: 12px; font-weight: 900; color: #0f172a; display: block; line-height: 1.2; }
-.quote-type-card small { font-size: 9.5px; font-weight: 700; color: #64748b; margin-top: 2px; }
-.quote-type-card.active { border-color: #2563eb !important; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important; transform: translateY(-1px); }
+@media (max-width: 768px) {
+    .quote-type-selector-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 440px) {
+    .quote-type-selector-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.quote-type-card {
+    position: relative; padding: 9px 5px; background: #ffffff; border: 2px solid #cbd5e1;
+    border-radius: 9px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.quote-type-card .icon { font-size: 20px; margin-bottom: 3px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1)); }
+.quote-type-card strong { font-size: 11px; font-weight: 900; color: #0f172a; display: block; line-height: 1.2; }
+.quote-type-card small { font-size: 8.5px; font-weight: 700; color: #64748b; margin-top: 2px; }
+.quote-type-card.active { border-color: #2563eb !important; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2) !important; transform: translateY(-1px); }
 .quote-type-card.active strong { color: #1e40af; }
 .quote-type-card .tick-badge {
-    position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; background: #e2e8f0;
-    color: transparent; border-radius: 50%; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+    position: absolute; top: 4px; right: 4px; width: 16px; height: 16px; background: #e2e8f0;
+    color: transparent; border-radius: 50%; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
 }
 .quote-type-card.active .tick-badge { background: #16a34a; color: #ffffff; box-shadow: 0 2px 5px rgba(22, 163, 74, 0.4); }
 
-/* SAVED CLIENT PICKER TRIGGER (COMPANY THEMED BUTTON) */
+/* SAVED CLIENT TRIGGER BUTTON */
 .saved-client-trigger-btn {
     width: 100%;
     background: linear-gradient(135deg, #0c1e30, #1e3a5f);
@@ -208,7 +216,7 @@ html, body {
 }
 .saved-client-trigger-btn:hover { background: #1e3a5f; }
 
-/* CLIENT GROUP CARD (MULTI-QUOTES) */
+/* CLIENT GROUP CARD */
 .client-group-card {
     background: #ffffff; border: 1.5px solid #cbd5e1; border-left: 4px solid #2563eb;
     border-radius: 8px; padding: 9px 11px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
@@ -232,6 +240,49 @@ html, body {
 .sortable-item.dragging { opacity: 0.55 !important; background: #fef08a !important; }
 .sortable-item.drag-over { border-top: 2.5px solid #2563eb !important; }
 
+/* SQ.FT PRIMARY SPECIFICATION INPUT ROW (MODAL UI) */
+.sqft-prim-spec-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+.sqft-prim-spec-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+.sqft-prim-dim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px;
+}
+.sqft-prim-dim-grid label {
+    font-size: 9px;
+    font-weight: 800;
+    color: #475569;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    display: block;
+}
+.sqft-prim-dim-grid input, .sqft-prim-dim-grid select {
+    width: 100%;
+    padding: 5px 6px;
+    border: 1.2px solid #cbd5e1;
+    border-radius: 5px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: #ffffff;
+    outline: none;
+}
+
 /* 3-TIER RESPONSIVE ARCHITECTURE */
 body.mode-phone .app-view { max-width: 480px; margin: 0 auto; }
 body.mode-phone .dashboard-split-layout { display: block !important; width: 100%; }
@@ -243,9 +294,7 @@ body.mode-tab .dash-controls-pane { width: 100% !important; margin-bottom: 16px 
 body.mode-tab .modules-grid-container { grid-template-columns: repeat(3, 1fr) !important; }
 body.mode-tab .pane-scroll-nav { display: none !important; }
 
-/* ========================================================
-   DESKTOP COMPACT NO-SCROLL SINGLE SCREEN RULES
-   ======================================================== */
+/* DESKTOP COMPACT NO-SCROLL SINGLE SCREEN RULES */
 body.mode-desktop .app-view { max-width: 1480px; margin: 0 auto; height: 100vh !important; max-height: 100vh !important; overflow: hidden !important; }
 body.mode-desktop .content { padding: 6px 12px !important; height: calc(100vh - 54px) !important; max-height: calc(100vh - 54px) !important; overflow: hidden !important; }
 body.mode-desktop .dashboard-split-layout { display: grid !important; grid-template-columns: 42% 58% !important; gap: 12px !important; height: 100% !important; max-height: 100% !important; }
@@ -254,7 +303,6 @@ body.mode-desktop .dash-preview-pane { width: 100% !important; height: 100% !imp
 body.mode-desktop .pdf-section-wrapper, body.mode-desktop .pdf-sheet-frame { flex: 1 !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
 body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !important; max-height: 100% !important; overflow-y: auto !important; }
 
-/* Desktop Elements Ultra-Compact Density */
 body.mode-desktop .card { padding: 6px 9px !important; margin-bottom: 6px !important; border-radius: 6px !important; }
 body.mode-desktop .form-group { margin-bottom: 5px !important; }
 body.mode-desktop .form-group label { font-size: 8.5px !important; margin-bottom: 2px !important; }
@@ -274,23 +322,6 @@ body.mode-desktop .btn-main { padding: 6px 8px !important; font-size: 11px !impo
 body.mode-desktop .btn-secondary { padding: 2.5px 6px !important; font-size: 9.5px !important; }
 body.mode-desktop .pane-scroll-nav { display: flex !important; padding: 3px 6px !important; }
 body.mode-desktop .font-scale-bar { padding: 2px 5px !important; margin-bottom: 3px !important; }
-
-/* Desktop Settings Screen Single-Screen Fit */
-body.mode-desktop #screenSettings .content {
-    overflow-y: auto !important;
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
-    padding: 8px 14px !important;
-}
-body.mode-desktop #screenSettings .settings-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 6px !important;
-    margin-top: 4px !important;
-}
-body.mode-desktop #screenSettings .setting-grid-card {
-    padding: 6px 8px !important;
-}
 
 /* APP VIEWS & TOP BAR */
 .app-view { display: none; min-height: 100vh; flex-direction: column; width: 100%; margin: 0 auto; background: #f8fafc; }
@@ -376,7 +407,7 @@ body.mode-desktop #screenSettings .setting-grid-card {
 .executive-weight-total-row { background: #cbd5e1 !important; }
 .executive-weight-total-row td { padding: 4px 6px !important; border-top: 2px solid #000 !important; border-bottom: 2px solid #000 !important; color: #000 !important; font-weight: 900 !important; }
 
-/* UNIFIED HIGHLIGHT SPEC PILLS & BULLETS (SAME THEME SAMPLE PDF FIX) */
+/* UNIFIED HIGHLIGHT SPEC PILLS & BULLETS */
 .item-specs-bullets { font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 700 !important; color: #000000 !important; margin-top: 2.5px !important; line-height: 1.35 !important; }
 .item-specs-bullets span {
     display: inline-block !important;
@@ -403,6 +434,38 @@ body.mode-desktop #screenSettings .setting-grid-card {
     font-size: calc(8.5px * var(--pdf-font-scale)) !important;
 }
 
+/* NEW: SQ.FT MODE 3-COLUMN SEPARATE TABLE STYLING */
+.sqft-spec-detail-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: calc(9px * var(--pdf-font-scale)) !important;
+    color: #0f172a;
+    line-height: 1.35;
+}
+.sqft-spec-dim-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-weight: 800;
+    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
+    color: #0c1e30;
+    margin: 1px 0;
+}
+.sqft-contract-summary-row {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+    border-top: 2px solid #2563eb !important;
+}
+.sqft-contract-summary-row td {
+    color: #1e40af !important;
+    font-weight: 900 !important;
+    font-size: calc(10px * var(--pdf-font-scale)) !important;
+}
+
 .civil-job-details-ribbon { background: var(--th-primary) !important; color: #fff !important; padding: 4px 10px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase; width: 100% !important; }
 .civil-category-title-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 1.5px solid #000 !important; border-bottom: 1.5px solid #000 !important; border-left: 5px solid var(--th-primary) !important; padding: 3px 10px !important; font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000 !important; text-transform: uppercase; width: 100% !important; }
 
@@ -424,6 +487,57 @@ body.mode-desktop #screenSettings .setting-grid-card {
 .preview-unit-pill { display: inline-flex; align-items: center; padding: 1px 3.5px; border-radius: 3px; background: #e0f2fe; border: 1px solid #7dd3fc; color: #0369a1; font-weight: 800; font-size: calc(8.5px * var(--pdf-font-scale)) !important; cursor: pointer; }
 .btn-preview-add-inline, .btn-acc-preview-add { font-size: 8.5px !important; font-weight: 900 !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; color: #fff !important; padding: 2px 6px !important; border-radius: 3px !important; border: 1px solid #38bdf8 !important; cursor: pointer !important; }
 .rate-prefix { font-weight: 700; color: #000; }
+
+/* ========================================================
+   NEW: COMPANY BANK ACCOUNT CARD DIAGRAM (ON PDF & PREVIEW)
+   Auto-hides completely with 0px height if blank.
+   ======================================================== */
+.company-bank-card-diagram {
+    margin: 4px 12px 3px 12px !important;
+    background: #f8fafc !important;
+    border: 1.5px solid #0284c7 !important;
+    border-radius: 6px !important;
+    padding: 4px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+.bank-card-head {
+    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
+    font-weight: 900 !important;
+    color: #0369a1 !important;
+    text-transform: uppercase !important;
+    border-bottom: 1px dashed #7dd3fc !important;
+    padding-bottom: 2px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+.bank-card-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 2px 8px !important;
+    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
+}
+.bank-card-grid .bank-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.bank-card-grid .bank-item span {
+    color: #475569 !important;
+    font-weight: 900 !important;
+}
+.bank-card-grid .bank-item b {
+    color: #000000 !important;
+    font-weight: 900 !important;
+}
 
 .signature-dual-grid { padding: 5px 14px 6px 14px !important; display: flex !important; justify-content: space-between !important; align-items: flex-end !important; margin-top: 2px !important; background: #fff !important; width: 100% !important; }
 .sign-box-col { width: 170px !important; text-align: center; display: flex; flex-direction: column; align-items: center; }
@@ -469,15 +583,9 @@ body.mode-desktop #screenSettings .setting-grid-card {
 .confirm-card { background: #fff; width: 100%; max-width: 350px; border-radius: 12px; padding: 18px 16px; text-align: center; }
 #sigPad { border: 2px dashed #94a3b8; width: 100%; height: 160px; border-radius: 7px; background: #fff; }
 
-/* ========================================================
-   MODAL Z-INDEX FIX: SAVED CLIENT LIST OPENS IN FOREGROUND
-   ======================================================== */
-#savedClientModal {
-    z-index: 30000 !important;
-}
-#clientQuotesModal {
-    z-index: 25000 !important;
-}
+#savedClientModal { z-index: 30000 !important; }
+#clientQuotesModal { z-index: 25000 !important; }
+#companyBankDetailsModal { z-index: 28000 !important; }
 
 /* VIEWPORT & FRAME ZERO GAP */
 .mobile-preview-viewport { 
