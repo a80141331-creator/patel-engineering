@@ -64,7 +64,33 @@ html, body { background: #0f172a; color: #000000; overflow-x: hidden; font-size:
 .card-3d-press { background: #fff; border: 1.5px solid #cbd5e1; border-bottom: 2.5px solid #94a3b8; border-radius: 8px; cursor: pointer; }
 .card-3d-press:active { transform: translateY(1.5px); border-bottom-width: 1px; }
 
-/* TICK BOX UI FIX (CLEAR SOLID VISIBLE TICKS) */
+/* ========================================================
+   PREVIEW EDITABLE ELEMENTS FIX (NO CRUNCHED TINY BOXES)
+   ======================================================== */
+.editable-preview-title, [contenteditable="true"] {
+    outline: none !important;
+    border-radius: 3px;
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+    cursor: text;
+}
+.editable-preview-title:hover, [contenteditable="true"]:hover {
+    background: rgba(37, 99, 235, 0.08) !important;
+}
+.editable-preview-title:focus, [contenteditable="true"]:focus {
+    background: #ffffff !important;
+    box-shadow: 0 0 0 2px #2563eb !important;
+    color: #000000 !important;
+    padding: 1px 3px !important;
+    min-width: 25px;
+}
+@media print {
+    .editable-preview-title, [contenteditable="true"] {
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
+/* TICK BOX UI FIX */
 .tick-box-ui {
     width: 20px; height: 20px; border: 2px solid #000000; border-radius: 5px;
     display: inline-flex; align-items: center; justify-content: center;
@@ -212,7 +238,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .substrip-gst { background: #1e3a5f !important; padding: 1.5px 6px !important; border-radius: 4px !important; border: 1px solid #38bdf8 !important; color: #fff !important; font-weight: 900; }
 .continuation-header-bar { width: 100% !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; color: #fff !important; padding: 5px 12px !important; display: flex !important; justify-content: space-between !important; align-items: center !important; border-bottom: 2px solid #000000 !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; }
 
-/* CUSTOMER DETAILS BLOCK (DEEP DARK PRINT BORDERS) */
+/* CUSTOMER DETAILS BLOCK */
 .customer-details-block { margin: 0 !important; padding: 7px 12px !important; display: table !important; table-layout: fixed !important; background: #fff !important; border-bottom: 2px solid #000000 !important; width: 100% !important; }
 .scope-left-column { display: table-cell !important; width: 52% !important; vertical-align: top !important; padding-right: 10px !important; }
 .scope-heading-dark { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; line-height: 1.25; margin-bottom: 3px; }
@@ -251,13 +277,24 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .sqft-spec-detail-box { display: flex; flex-direction: column; gap: 2px; font-size: calc(9px * var(--pdf-font-scale)) !important; color: #000000; font-weight: 800; line-height: 1.35; }
 .sqft-spec-dim-badge { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; border: 1.5px solid #000000; border-radius: 4px; padding: 1px 5px; font-weight: 800; font-size: calc(8.5px * var(--pdf-font-scale)) !important; color: #000000; margin: 1px 0; }
 
-/* THEMED SOLID CONTRACT TOTAL ROW (REPLACED WEIRD STAR) */
-.sqft-contract-summary-row { background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; border-top: 2px solid #2563eb !important; }
-.sqft-contract-summary-row td { color: #1e40af !important; font-weight: 900 !important; font-size: calc(10px * var(--pdf-font-scale)) !important; border-bottom: 2px solid #000000 !important; }
+/* ========================================================
+   THEMED SOLID CONTRACT TOTAL ROW (NAVY & GOLD PATEL THEME)
+   ======================================================== */
+.sqft-contract-summary-row {
+    background: #0c1e30 !important;
+    border-top: 2px solid #ca8a04 !important;
+}
+.sqft-contract-summary-row td {
+    color: #ffffff !important;
+    font-weight: 900 !important;
+    font-size: calc(10px * var(--pdf-font-scale)) !important;
+    border-bottom: 2px solid #000000 !important;
+    padding: 6px 8px !important;
+}
 .sqft-contract-badge-pill {
-    background: #0c1e30; color: #ffffff; padding: 2px 5px; border-radius: 4px;
-    font-size: calc(8px * var(--pdf-font-scale)); font-weight: 900; letter-spacing: 0.5px;
-    display: inline-flex; align-items: center; gap: 3px; border: 1px solid #38bdf8;
+    background: #1e3a5f; color: #fef08a; padding: 3px 6px; border-radius: 4px;
+    font-size: calc(8.5px * var(--pdf-font-scale)); font-weight: 900; letter-spacing: 0.5px;
+    display: inline-flex; align-items: center; gap: 3px; border: 1.5px solid #ca8a04;
 }
 
 .civil-job-details-ribbon { background: var(--th-primary) !important; color: #fff !important; padding: 4px 10px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase; width: 100% !important; border-bottom: 2px solid #000000 !important; }
@@ -265,9 +302,9 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 
 /* SUMMARY & CALCULATION */
 .theme-bottom-summary-grid { padding: 5px 12px 3px 12px !important; display: grid !important; grid-template-columns: 54% 46% !important; gap: 10px !important; width: 100% !important; border-bottom: 2px solid #000000 !important; }
-.terms-column h4 { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-bottom: 2px; }
-.terms-column p, .editable-terms-preview-box p { font-size: calc(8.5px * var(--pdf-font-scale)) !important; color: #000000 !important; line-height: 1.3 !important; font-weight: 800 !important; }
-.thank-you-line { font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-top: 3px; }
+.terms-column h4 { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-bottom: 3px; }
+.terms-column p, .editable-terms-preview-box p { font-size: calc(8.5px * var(--pdf-font-scale)) !important; color: #000000 !important; line-height: 1.35 !important; font-weight: 800 !important; }
+.thank-you-line { font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-top: 4px; }
 .calc-row-unit { display: flex; justify-content: space-between; padding: 1px 2px; font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; }
 .tax-breakdown-vertical { width: 100%; display: flex; flex-direction: column; gap: 1px; margin: 2px 0; padding: 1.5px 0; border-top: 1.5px dashed #000000; border-bottom: 1.5px dashed #000000; }
 .tax-split-row { display: flex; justify-content: space-between; align-items: center; }
@@ -282,20 +319,73 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .btn-preview-add-inline, .btn-acc-preview-add { font-size: 8.5px !important; font-weight: 900 !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; color: #fff !important; padding: 2px 6px !important; border-radius: 3px !important; border: 1px solid #38bdf8 !important; cursor: pointer !important; }
 .rate-prefix { font-weight: 800; color: #000000; }
 
-/* COMPANY BANK DETAILS (WITH SOLID DARK 2PX BORDER) */
-.company-bank-card-diagram {
-    margin: 4px 12px 3px 12px !important; background: #f8fafc !important;
-    border: 2px solid #000000 !important; border-radius: 6px !important;
-    padding: 4px 8px !important; display: flex !important; flex-direction: column !important;
-    gap: 3px !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+/* SEPARATE & SPACIOUS TERMS & CONDITIONS BLOCKS */
+.terms-section-card {
+    background: #ffffff;
+    border: 1.5px solid #000000;
+    border-radius: 5px;
+    padding: 4px 6px;
+    margin-bottom: 4px;
 }
-.bank-card-head { font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #0369a1 !important; text-transform: uppercase !important; border-bottom: 1.5px dashed #000000 !important; padding-bottom: 2px !important; display: flex !important; align-items: center !important; gap: 4px !important; }
-.bank-card-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 2px 8px !important; font-size: calc(8.5px * var(--pdf-font-scale)) !important; }
-.bank-card-grid .bank-item { display: flex !important; align-items: center !important; gap: 4px !important; color: #000000 !important; font-weight: 800 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
-.bank-card-grid .bank-item span { color: #000000 !important; font-weight: 900 !important; }
+.terms-section-card h5 {
+    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
+    font-weight: 900;
+    color: #0c1e30;
+    text-transform: uppercase;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
+}
+
+/* ========================================================
+   COMPANY BANK DETAILS (OFFICIAL PATEL NAVY THEMED CARD)
+   ======================================================== */
+.company-bank-card-diagram {
+    margin: 4px 12px 3px 12px !important;
+    background: #ffffff !important;
+    border: 2px solid #000000 !important;
+    border-radius: 6px !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+.bank-card-head {
+    background: #0c1e30 !important;
+    color: #ffffff !important;
+    padding: 3px 8px !important;
+    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    border-bottom: 1.5px solid #000000 !important;
+}
+.bank-card-head span { color: #fef08a !important; }
+.bank-card-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 2px 8px !important;
+    padding: 4px 8px !important;
+    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
+    background: #f8fafc !important;
+}
+.bank-card-grid .bank-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    color: #000000 !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+.bank-card-grid .bank-item span { color: #475569 !important; font-weight: 900 !important; }
 .bank-card-grid .bank-item b { color: #000000 !important; font-weight: 900 !important; }
 
-/* DUAL SIGNATURE & FOOTER (SOLID CONTINUOUS OUTER BORDERS) */
+/* DUAL SIGNATURE & FOOTER */
 .signature-dual-grid { padding: 5px 14px 6px 14px !important; display: flex !important; justify-content: space-between !important; align-items: flex-end !important; margin-top: 0 !important; background: #fff !important; width: 100% !important; border-top: 2px solid #000000 !important; }
 .sign-box-col { width: 170px !important; text-align: center; display: flex; flex-direction: column; align-items: center; }
 .sign-stamp-area { height: 22px !important; display: flex; align-items: center; justify-content: center; }
