@@ -62,7 +62,7 @@
                 </div>
                 <div class="stat-footer"><div>Total Projects: <b id="statTotalSites" style="color:#fff;">0</b></div><div>Active Quotes: <b id="statActiveQuotes" style="color:var(--gold-light);">0</b></div></div>
             </div>
-            <h3 class="section-title">Recent Client Sites</h3><div id="sitesListContainer"></div>
+            <h3 class="section-title">Recent Client Sites (Touch To Open)</h3><div id="sitesListContainer"></div>
         </div>
     </div>
     <!-- SCREEN 2: CREATE SITE -->
@@ -184,7 +184,7 @@
                                             </div>
                                             <!-- SECTION 2 / POINT 1: PRICE BREAKUP OR SHED DESCRIPTION -->
                                             <div class="section-header-bar" style="display:flex;justify-content:space-between;align-items:center;">
-                                                <span class="editable-preview-title" id="displayHeaderLine2" contenteditable="true" onblur="syncPreviewTableDescLive(this)">1. SHED SPECIFICATIONS & DESCRIPTION:</span>
+                                                <span class="editable-preview-title" id="displayHeaderLine2" contenteditable="true" onblur="syncPreviewTableDescLive(this)">1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:</span>
                                                 <div style="display:flex;gap:4px;">
                                                     <button type="button" class="btn-preview-add-inline btn-ripple" id="btnPreviewAddSqftPrimItem" style="display:none;" onclick="addNewSqftPrimaryItemDirectly()">+ Add Prim Item</button>
                                                     <button type="button" class="btn-preview-add-inline btn-ripple" id="btnPreviewAddModInline" onclick="openAddUniversalModuleModal('shed')">+ Add Module</button>
@@ -210,9 +210,9 @@
                                                     <div id="rateOnlyNoticeBox" class="rate-only-contract-bar"><b>🏷️ RATE CONTRACT BASIS QUOTATION</b><span>Quotation prepared on Rate Contract Basis. Amounts & Grand Total excluded as per client request.</span></div>
                                                 </div>
                                             </div>
-                                            <!-- BANK DETAILS DIAGRAM -->
+                                            <!-- BANK DETAILS DIAGRAM (WHITE THEMED ACCENTS) -->
                                             <div id="pdfCompanyBankDetailsBox" class="company-bank-card-diagram" style="display:none;">
-                                                <div class="bank-card-head"><span>🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span></div>
+                                                <div class="bank-card-head"><span style="color:#ffffff !important;">🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span></div>
                                                 <div class="bank-card-grid">
                                                     <div class="bank-item"><span>Bank Name:</span> <b id="pdfBankNameDisplay">-</b></div>
                                                     <div class="bank-item"><span>Account Name:</span> <b id="pdfBankAccNameDisplay">-</b></div>
@@ -222,7 +222,7 @@
                                                     <div class="bank-item" id="pdfBankUpiWrap"><span>UPI ID:</span> <b id="pdfBankUpiDisplay">-</b></div>
                                                 </div>
                                             </div>
-                                            <!-- DUAL SIGNATURE BLOCK -->
+                                            <!-- DUAL SIGNATURE BLOCK (ENLARGED COMFORTABLE AREA) -->
                                             <div class="signature-dual-grid">
                                                 <div class="sign-box-col"><div class="sign-stamp-area"></div><div class="sign-rule-line"></div><b class="sign-heading-main" id="pdfCustSignHeader">CUSTOMER ACCEPTANCE</b><span class="sign-sub-caption" id="pdfCustSignSub">Authorized Signature & Stamp</span></div>
                                                 <div class="sign-box-col"><div class="sign-stamp-area" id="pdfSignImgBox"></div><div class="sign-rule-line"></div><b class="sign-heading-main" id="pdfSignCompanyHeader">FOR PATEL ENGINEERING</b><span class="sign-sub-caption" id="pdfSignatoryTitleDisplay">Authorized Signatory</span></div>
@@ -265,7 +265,7 @@
                                             </div>
                                             <!-- CIVIL BANK DETAILS DIAGRAM -->
                                             <div id="civilPdfCompanyBankDetailsBox" class="company-bank-card-diagram" style="display:none;">
-                                                <div class="bank-card-head"><span>🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span></div>
+                                                <div class="bank-card-head"><span style="color:#ffffff !important;">🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span></div>
                                                 <div class="bank-card-grid">
                                                     <div class="bank-item"><span>Bank Name:</span> <b id="civilPdfBankNameDisplay">-</b></div>
                                                     <div class="bank-item"><span>Account Name:</span> <b id="civilPdfBankAccNameDisplay">-</b></div>
