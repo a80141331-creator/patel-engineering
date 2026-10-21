@@ -65,13 +65,14 @@ html, body { background: #0f172a; color: #000000; overflow-x: hidden; font-size:
 .card-3d-press:active { transform: translateY(1.5px); border-bottom-width: 1px; }
 
 /* ========================================================
-   PREVIEW EDITABLE ELEMENTS FIX (NO CRUNCHED TINY BOXES)
+   PREVIEW EDITABLE ELEMENTS FIX (CLEAN, SPACIOUS, NATURAL)
    ======================================================== */
 .editable-preview-title, [contenteditable="true"] {
     outline: none !important;
     border-radius: 3px;
     transition: background 0.15s ease, box-shadow 0.15s ease;
     cursor: text;
+    display: inline-block;
 }
 .editable-preview-title:hover, [contenteditable="true"]:hover {
     background: rgba(37, 99, 235, 0.08) !important;
@@ -80,8 +81,8 @@ html, body { background: #0f172a; color: #000000; overflow-x: hidden; font-size:
     background: #ffffff !important;
     box-shadow: 0 0 0 2px #2563eb !important;
     color: #000000 !important;
-    padding: 1px 3px !important;
-    min-width: 25px;
+    padding: 2px 4px !important;
+    border-radius: 4px;
 }
 @media print {
     .editable-preview-title, [contenteditable="true"] {
@@ -268,7 +269,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .executive-weight-total-row { background: #cbd5e1 !important; }
 .executive-weight-total-row td { padding: 4px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; color: #000000 !important; font-weight: 900 !important; }
 
-/* HIGHLIGHTED PILLS ONLY IN ITEM COLUMN */
+/* HIGHLIGHTED PILLS */
 .item-specs-bullets { font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000 !important; margin-top: 2.5px !important; line-height: 1.35 !important; }
 .item-specs-bullets span { display: inline-block !important; background: #e0f2fe !important; color: #0c1e30 !important; font-weight: 800 !important; border: 1.5px solid #0284c7 !important; padding: 1.5px 5px !important; border-radius: 4px !important; margin: 1px 1.5px !important; font-size: calc(8.5px * var(--pdf-font-scale)) !important; }
 .spec-highlight-pill { display: inline-block !important; background: #e0f2fe !important; color: #0c1e30 !important; font-weight: 800 !important; border: 1.5px solid #0284c7 !important; padding: 1.5px 5px !important; border-radius: 4px !important; margin-top: 2px !important; font-size: calc(8.5px * var(--pdf-font-scale)) !important; }
@@ -277,30 +278,12 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .sqft-spec-detail-box { display: flex; flex-direction: column; gap: 2px; font-size: calc(9px * var(--pdf-font-scale)) !important; color: #000000; font-weight: 800; line-height: 1.35; }
 .sqft-spec-dim-badge { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; border: 1.5px solid #000000; border-radius: 4px; padding: 1px 5px; font-weight: 800; font-size: calc(8.5px * var(--pdf-font-scale)) !important; color: #000000; margin: 1px 0; }
 
-/* ========================================================
-   THEMED SOLID CONTRACT TOTAL ROW (NAVY & GOLD PATEL THEME)
-   ======================================================== */
-.sqft-contract-summary-row {
-    background: #0c1e30 !important;
-    border-top: 2px solid #ca8a04 !important;
-}
-.sqft-contract-summary-row td {
-    color: #ffffff !important;
-    font-weight: 900 !important;
-    font-size: calc(10px * var(--pdf-font-scale)) !important;
-    border-bottom: 2px solid #000000 !important;
-    padding: 6px 8px !important;
-}
-.sqft-contract-badge-pill {
-    background: #1e3a5f; color: #fef08a; padding: 3px 6px; border-radius: 4px;
-    font-size: calc(8.5px * var(--pdf-font-scale)); font-weight: 900; letter-spacing: 0.5px;
-    display: inline-flex; align-items: center; gap: 3px; border: 1.5px solid #ca8a04;
-}
-
 .civil-job-details-ribbon { background: var(--th-primary) !important; color: #fff !important; padding: 4px 10px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase; width: 100% !important; border-bottom: 2px solid #000000 !important; }
 .civil-category-title-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 3px 10px !important; font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; width: 100% !important; }
 
-/* SUMMARY & CALCULATION */
+/* ========================================================
+   SUMMARY & SEAMLESS EDITABLE TERMS (NO RESTRICTIVE BORDERS)
+   ======================================================== */
 .theme-bottom-summary-grid { padding: 5px 12px 3px 12px !important; display: grid !important; grid-template-columns: 54% 46% !important; gap: 10px !important; width: 100% !important; border-bottom: 2px solid #000000 !important; }
 .terms-column h4 { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-bottom: 3px; }
 .terms-column p, .editable-terms-preview-box p { font-size: calc(8.5px * var(--pdf-font-scale)) !important; color: #000000 !important; line-height: 1.35 !important; font-weight: 800 !important; }
@@ -319,26 +302,20 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .btn-preview-add-inline, .btn-acc-preview-add { font-size: 8.5px !important; font-weight: 900 !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; color: #fff !important; padding: 2px 6px !important; border-radius: 3px !important; border: 1px solid #38bdf8 !important; cursor: pointer !important; }
 .rate-prefix { font-weight: 800; color: #000000; }
 
-/* SEPARATE & SPACIOUS TERMS & CONDITIONS BLOCKS */
-.terms-section-card {
-    background: #ffffff;
-    border: 1.5px solid #000000;
-    border-radius: 5px;
-    padding: 4px 6px;
-    margin-bottom: 4px;
+/* SEAMLESS TERMS PARAGRAPHS (NO OUTER ENCLOSING BORDER LINES) */
+.terms-seamless-block {
+    margin-bottom: 5px;
+    background: transparent !important;
+    border: none !important;
 }
-.terms-section-card h5 {
-    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
-    font-weight: 900;
+.terms-seamless-block b {
     color: #0c1e30;
+    font-size: calc(8.5px * var(--pdf-font-scale));
     text-transform: uppercase;
-    border-bottom: 1px solid #cbd5e1;
-    padding-bottom: 2px;
-    margin-bottom: 2px;
 }
 
 /* ========================================================
-   COMPANY BANK DETAILS (OFFICIAL PATEL NAVY THEMED CARD)
+   COMPANY BANK DETAILS (TALLER HEIGHT & SPACIOUS COLUMNS)
    ======================================================== */
 .company-bank-card-diagram {
     margin: 4px 12px 3px 12px !important;
@@ -354,7 +331,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .bank-card-head {
     background: #0c1e30 !important;
     color: #ffffff !important;
-    padding: 3px 8px !important;
+    padding: 5px 10px !important;
     font-size: calc(8.5px * var(--pdf-font-scale)) !important;
     font-weight: 900 !important;
     text-transform: uppercase !important;
@@ -367,15 +344,15 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .bank-card-grid {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 2px 8px !important;
-    padding: 4px 8px !important;
-    font-size: calc(8.5px * var(--pdf-font-scale)) !important;
+    gap: 5px 14px !important;
+    padding: 7px 12px !important;
+    font-size: calc(9px * var(--pdf-font-scale)) !important;
     background: #f8fafc !important;
 }
 .bank-card-grid .bank-item {
     display: flex !important;
     align-items: center !important;
-    gap: 4px !important;
+    gap: 5px !important;
     color: #000000 !important;
     font-weight: 800 !important;
     white-space: nowrap !important;
@@ -385,13 +362,42 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .bank-card-grid .bank-item span { color: #475569 !important; font-weight: 900 !important; }
 .bank-card-grid .bank-item b { color: #000000 !important; font-weight: 900 !important; }
 
-/* DUAL SIGNATURE & FOOTER */
-.signature-dual-grid { padding: 5px 14px 6px 14px !important; display: flex !important; justify-content: space-between !important; align-items: flex-end !important; margin-top: 0 !important; background: #fff !important; width: 100% !important; border-top: 2px solid #000000 !important; }
-.sign-box-col { width: 170px !important; text-align: center; display: flex; flex-direction: column; align-items: center; }
-.sign-stamp-area { height: 22px !important; display: flex; align-items: center; justify-content: center; }
-.sign-rule-line { width: 130px !important; height: 1.5px !important; background: #000000 !important; margin: 2px auto 3px auto !important; }
+/* ========================================================
+   DUAL SIGNATURE BLOCK (ENLARGED COMFORTABLE AREA)
+   ======================================================== */
+.signature-dual-grid {
+    padding: 8px 14px 10px 14px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+    margin-top: 0 !important;
+    background: #fff !important;
+    width: 100% !important;
+    border-top: 2px solid #000000 !important;
+}
+.sign-box-col {
+    width: 190px !important;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.sign-stamp-area {
+    height: 48px !important;
+    min-height: 48px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3px;
+}
+.sign-rule-line {
+    width: 150px !important;
+    height: 1.5px !important;
+    background: #000000 !important;
+    margin: 2px auto 3px auto !important;
+}
 .sign-heading-main { font-size: calc(8.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase; color: #000; }
-.sign-sub-caption { font-size: calc(7px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000; text-transform: uppercase; }
+.sign-sub-caption { font-size: calc(7.5px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000; text-transform: uppercase; }
 
 .geo-footer-wrapper { position: relative; width: 100% !important; background: #fff; border-top: 2px solid #000000 !important; overflow: hidden; display: flex; }
 .footer-full-bar { width: 100% !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; display: flex; flex-direction: column; padding: 5px 12px !important; color: #fff; gap: 2px; }
