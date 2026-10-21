@@ -91,7 +91,7 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-// DEDICATED SQ.FT BLUEPRINT
+// DEDICATED SQ.FT BLUEPRINT (SEPARATE & INDEPENDENT)
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
@@ -130,7 +130,7 @@ const defaultAppSettings = {
     headerLine1: "1. ESTIMATED STEEL WEIGHT:", milestoneHeading: "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):",
     headerLine2: "2. PRICE BREAKUP AS PER KG RATE:",
     sqftHeaderLine1: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
-    sqftContractBarTitle: "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS):",
+    sqftContractBarTitle: "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)",
     sqftPrimLabel: "Primary Structural Framing", sqftCladLabel: "Roof & Wall Cladding System", sqftAccLabel: "Building Accessories Package", sqftErectLabel: "Turnkey Erection & Installation",
     accSectionHeading: "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:",
     civilJobTitle: "JOB DETAILS & TECHNICAL SPECIFICATIONS", civilFoundTitle: "1. FOUNDATION & RCC COLUMN DETAILS:",
@@ -1221,8 +1221,8 @@ function autoSaveAndUpdate() {
         const autoCost = sqft * sqRate;
         safeSetText('shedSqftAutoCostBadge', autoCost > 0 ? "₹ " + Math.round(autoCost).toLocaleString('en-IN') : "-");
         const tax = getActiveTaxSlab('shed');
-        const withTaxRate = sqRate > 0 ? (sqRate + (sqRate * tax.rate)) : 0;
-        safeSetText('shedSqftWithTaxRateBadge', withTaxRate > 0 ? `₹ ${withTaxRate.toFixed(2)} / Sq.Ft` : "-");
+        const withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : 0;
+        safeSetText('shedSqftWithTaxRateBadge', withTaxRate > 0 ? `₹ ${withTaxRate.toFixed(2)} / Sq.Ft` : (sqRate > 0 ? `₹ ${sqRate.toFixed(2)} / Sq.Ft (No Tax)` : "-"));
     }
     syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
@@ -1291,7 +1291,7 @@ function openModuleModal(type) {
         modalTitle.innerHTML = `📦 4. Building Accessories`; customLineInput.value = site.accCustomLine || "";
         checklistTitle.innerText = "Accessories List:"; checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
-            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Jo-jo accessory select hogi, wo PDF par Item Column me highlight pills bankar dikhegi.</p>`;
+            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Jo-jo accessory select hogi, wo PDF par Technical Specifications column me highlight pills bankar dikhegi.</p>`;
             renderSqftAccessoriesChecklist();
         } else {
             inputsBox.innerHTML = `<p style="font-size:12px;color:#475569;margin:0;">Tick to include:</p>`;
@@ -1414,7 +1414,7 @@ function deleteItemFromModule(idx) {
     autoSaveModuleChanges();
 }
 
-// UNLIMITED ITEM ADDING (RE-RENDERS IMMEDIATELY)
+// UNLIMITED ITEM ADDING FIX
 function addNewItemToModule() {
     const val = (document.getElementById('customItemInput')?.value || "").trim(); if (!val) return;
     const site = getCurrentSite();
@@ -1514,6 +1514,17 @@ function deleteAccessoryItem(idx) {
     else { site.accessories.splice(idx, 1); renderAccessoriesChecklist(); }
     autoSaveModuleChanges();
 }
+function addNewAccessoryDirectly() {
+    const site = getCurrentSite(); if (!site) return;
+    if (isSqftMode(site)) {
+        site.sqftAccessories = site.sqftAccessories || [];
+        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), selected: true });
+    } else {
+        site.accessories = site.accessories || [];
+        site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "1", unit: "Nos", rate: "0", selected: true });
+    }
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+}
 
 function autoSaveModuleChanges() {
     const site = getCurrentSite(); if (!site) return;
@@ -1593,8 +1604,8 @@ function calcModuleTotals() {
         safeSetText('badgeErectTotal', 'Turnkey');
         safeSetText('shedSqftAutoCostBadge', autoCost > 0 ? "₹ " + Math.round(autoCost).toLocaleString('en-IN') : "-");
         const tax = getActiveTaxSlab('shed');
-        const withTaxRate = sqRate > 0 ? (sqRate + (sqRate * tax.rate)) : 0;
-        safeSetText('shedSqftWithTaxRateBadge', withTaxRate > 0 ? `₹ ${withTaxRate.toFixed(2)} / Sq.Ft` : "-");
+        const withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : 0;
+        safeSetText('shedSqftWithTaxRateBadge', withTaxRate > 0 ? `₹ ${withTaxRate.toFixed(2)} / Sq.Ft` : (sqRate > 0 ? `₹ ${sqRate.toFixed(2)} / Sq.Ft (No Tax)` : "-"));
     } else {
         const pTot = (site.primEnabled !== false) ? (parseFloat(site.primWeight) || 0) * (parseFloat(site.primRate) || 0) : 0;
         if (site.primEnabled === false) safeSetText('badgePrimTotal', 'Disabled');
@@ -1648,90 +1659,6 @@ function calcModuleTotals() {
     }
 }
 
-// 20. IN-PREVIEW LIVE SYNC
-function openCivilUnitPicker(secKey, idx) {
-    const site = getCurrentSite(); if (!site?.civilData[secKey]?.items[idx]) return;
-    openThemeUnitPicker(site.civilData[secKey].items[idx].unit, (newUnit) => {
-        site.civilData[secKey].items[idx].unit = newUnit; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
-    });
-}
-function openCivilCustomCatUnitPicker(catIdx, itemIdx) {
-    const site = getCurrentSite(); if (!site?.civilCustomCategories[catIdx]?.items[itemIdx]) return;
-    openThemeUnitPicker(site.civilCustomCategories[catIdx].items[itemIdx].unit, (newUnit) => {
-        site.civilCustomCategories[catIdx].items[itemIdx].unit = newUnit; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
-    });
-}
-function openShedUnitPicker(modKey) {
-    const site = getCurrentSite(); if (!site) return;
-    const cur = modKey === 'prim' ? site.primUnit : modKey === 'sec' ? site.secUnit : modKey === 'clad' ? site.cladUnit : site.erectUnit;
-    openThemeUnitPicker(cur || 'Kg', (newUnit) => {
-        if (modKey === 'prim') site.primUnit = newUnit; else if (modKey === 'sec') site.secUnit = newUnit;
-        else if (modKey === 'clad') site.cladUnit = newUnit; else if (modKey === 'erect') site.erectUnit = newUnit;
-        syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
-    });
-}
-
-function syncPreviewTitleEdit(el, modKey, cModId = null) {
-    const site = getCurrentSite(); if (!site) return;
-    const newTitle = el.innerText.trim();
-    if (modKey === 'prim') site.primCustomLine = newTitle;
-    else if (modKey === 'sec') site.secCustomLine = newTitle;
-    else if (modKey === 'clad') site.cladCustomLine = newTitle;
-    else if (modKey === 'erect') site.erectCustomLine = newTitle;
-    else if (modKey === 'custom' && cModId) {
-        const mod = (site.customModules || []).find(m => m.id === cModId); if (mod) mod.title = newTitle;
-    }
-    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
-}
-function syncCivilTitleEdit(el, secKey, idx) {
-    const site = getCurrentSite(); if (!site?.civilData[secKey]?.items[idx]) return;
-    site.civilData[secKey].items[idx].name = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
-}
-
-function syncPreviewEdit(el, targetField) {
-    const site = getCurrentSite(); if (!site) return;
-    const textVal = el.innerText.trim().replace(/[^0-9.]/g, '');
-    if (targetField === 'primRate') site.primRate = textVal;
-    else if (targetField === 'primWeight') site.primWeight = textVal;
-    else if (targetField === 'secRate') site.secRate = textVal;
-    else if (targetField === 'secWeight') site.secWeight = textVal;
-    else if (targetField === 'cladRate') site.cladRate = textVal;
-    else if (targetField === 'cladWeight' || targetField === 'cladSqFt') site.cladSqFt = textVal;
-    else if (targetField === 'erectRate') site.erectRate = textVal;
-    else if (targetField === 'shedSqftRate') { site.shedSqftRate = textVal; safeSetVal('shedSqftRateInput', textVal); }
-    else if (targetField.startsWith('civ_')) {
-        const parts = targetField.split('_'), sec = parts[1], idx = parseInt(parts[2], 10), fld = parts[3];
-        if (site.civilData[sec]?.items[idx]) site.civilData[sec].items[idx][fld] = textVal;
-    } else if (targetField.startsWith('civcat_')) {
-        const parts = targetField.split('_'), cIdx = parseInt(parts[1], 10), itIdx = parseInt(parts[2], 10), fld = parts[3];
-        if (site.civilCustomCategories[cIdx]?.items[itIdx]) site.civilCustomCategories[cIdx].items[itIdx][fld] = textVal;
-    }
-    syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet(true);
-}
-function syncPreviewAccEdit(idx, field, el) {
-    const site = getCurrentSite(); if (!site?.accessories[idx]) return;
-    site.accessories[idx][field] = el.innerText.trim().replace(/[^0-9.]/g, '');
-    syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet(true);
-}
-function syncAccTitleEdit(idx, el) {
-    const site = getCurrentSite(); if (!site?.accessories[idx]) return;
-    site.accessories[idx].name = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
-}
-function syncPreviewTermsEdit(key, el) {
-    appSettings[key] = el.innerText.trim(); syncDataToCloud('patel_app_settings', appSettings);
-}
-function addNewAccessoryDirectly() {
-    const site = getCurrentSite(); if (!site) return;
-    if (isSqftMode(site)) {
-        site.sqftAccessories = site.sqftAccessories || [];
-        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), selected: true });
-    } else {
-        site.accessories = site.accessories || [];
-        site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "1", unit: "Nos", rate: "0", selected: true });
-    }
-    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
-}
-
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     if (!taxSlab || taxSlab.rate === 0 || basicCost === 0) return `<div class="tax-split-row"><span class="tax-lbl">GST:</span><span class="tax-amt">-</span></div>`;
     if (taxSlab.split) {
@@ -1743,7 +1670,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (SEPARATE COLUMNS FOR SQ.FT MODE & CONDITIONAL BANK DETAILS)
+// 21. LIVE PREVIEW ENGINE (ACCESSORIES IN TECHNICAL SPECS & THEMED SOLID TOTAL ROW)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1852,7 +1779,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                             const dimTag = `<span class="sqft-spec-dim-badge">📐 L: <span contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span> ${p.dimUnit || 'mm'}</span>`;
                             return `<div style="margin-bottom:2px;">• <b contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)">${name}</b> ${dimTag}</div>`;
                         }).join('');
-                    } else { primSpecsHtml = `<div style="color:#000;">As per standard design</div>`; }
+                    } else { primSpecsHtml = `<div style="color:#000;">As per standard engineering design</div>`; }
 
                     tbody.innerHTML += `
                         <tr>
@@ -1881,7 +1808,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         </tr>`;
                 }
 
-                // 3. ACCESSORIES (HIGHLIGHTED PILLS IN ITEM COLUMN ONLY)
+                // 3. ACCESSORIES: HIGHLIGHTED PILLS SHOWN IN TECHNICAL SPECIFICATIONS (COLUMN 3)
                 if (site.accEnabled !== false) {
                     const activeAcc = (site.sqftAccessories || []).filter(a => a.selected === true);
                     let accPillsHtml = "";
@@ -1894,11 +1821,11 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                             <td style="text-align:center;font-weight:900;">${sNo++}</td>
                             <td>
                                 <b>${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
-                                <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;">${accPillsHtml}</div>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.accCustomLine || 'All accessories complete with fasteners & flashings'}</div>
                             </td>
                             <td>
                                 <div class="sqft-spec-detail-box">
-                                    <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(8.5px * var(--pdf-font-scale));color:#000;font-weight:800;">${site.accCustomLine || 'All accessories complete with fasteners, flashings & seals'}</div>
+                                    <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:3px;">${accPillsHtml}</div>
                                 </div>
                             </td>
                             <td style="text-align:center;font-weight:900;color:#0369a1;">Package</td>
@@ -1920,25 +1847,25 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         </tr>`;
                 }
 
-                // THEMED SOLID CONTRACT TOTAL ROW (REPLACED WEIRD STAR WITH STYLISH THEMED BADGE)
+                // THEMED SOLID CONTRACT TOTAL ROW (NAVY/GOLD THEME + ZERO TAX CHECK)
                 const sqRate = parseFloat(site.shedSqftRate) || 0, shedBasicCost = sqft * sqRate;
                 const tax = getActiveTaxSlab('shed'), taxAmt = shedBasicCost * tax.rate, grand = shedBasicCost + taxAmt;
-                const withTaxRate = sqRate > 0 ? (sqRate + (sqRate * tax.rate)) : 0;
+                const withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : 0;
                 shedGrandTotal = grand;
 
                 tbody.innerHTML += `
                     <tr class="sqft-contract-summary-row">
-                        <td style="text-align:center;font-weight:900;"><span class="sqft-contract-badge-pill">✦ TOTAL</span></td>
+                        <td style="text-align:center;font-weight:900;"><span class="sqft-contract-badge-pill">✦ 05</span></td>
                         <td colspan="2">
-                            <div style="font-size:calc(10px * var(--pdf-font-scale));font-weight:900;color:#1e40af;">
-                                ${appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS):"}
+                            <div style="font-size:calc(10.5px * var(--pdf-font-scale));font-weight:900;color:#ffffff;letter-spacing:0.5px;">
+                                ${appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)"}
                             </div>
-                            <div style="font-size:calc(8.5px * var(--pdf-font-scale));color:#000000;font-weight:800;margin-top:2px;">
-                                Total Covered Area: <b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b> | Rate (Without Tax): <span class="rate-prefix">₹ </span><b contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'shedSqftRate')">${formatRawOrDash(sqRate)}</b> / Sq.Ft
-                                ${withTaxRate > 0 ? `| <b style="color:#166534;">With Tax Rate: ₹ ${withTaxRate.toFixed(2)} / Sq.Ft</b>` : ''}
+                            <div style="font-size:calc(8.5px * var(--pdf-font-scale));color:#fef08a;font-weight:800;margin-top:2px;">
+                                Total Covered Area: <b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b> | Rate (Without Tax): <span class="rate-prefix" style="color:#fef08a;">₹ </span><b contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'shedSqftRate')">${formatRawOrDash(sqRate)}</b> / Sq.Ft
+                                ${withTaxRate > 0 ? `| <span style="color:#86efac;font-weight:900;">With Tax Rate: ₹ ${withTaxRate.toFixed(2)} / Sq.Ft</span>` : ''}
                             </div>
                         </td>
-                        <td style="text-align:right;font-weight:900;color:#1e40af;font-size:calc(11px * var(--pdf-font-scale));">
+                        <td style="text-align:right;font-weight:900;color:#fef08a;font-size:calc(11.5px * var(--pdf-font-scale));">
                             ${shedBasicCost > 0 ? '₹ ' + Math.round(shedBasicCost).toLocaleString('en-IN') : '-'}
                         </td>
                     </tr>`;
@@ -1950,8 +1877,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 const shedAvgBox = document.getElementById('pdfShedAvgRateBox');
                 if (shedAvgBox) {
                     if (sqRate > 0) {
-                        safeSetText('pdfShedAvgRateLabel', 'SHED RATE / SQ.FT (WITH GST):');
-                        safeSetText('pdfShedAvgRateVal', `₹ ${withTaxRate > 0 ? withTaxRate.toFixed(2) : sqRate} / Sq.Ft`);
+                        safeSetText('pdfShedAvgRateLabel', tax.rate > 0 ? 'SHED RATE / SQ.FT (WITH GST):' : 'SHED RATE / SQ.FT (BASIC):');
+                        safeSetText('pdfShedAvgRateVal', `₹ ${withTaxRate > 0 ? withTaxRate.toFixed(2) : sqRate.toFixed(2)} / Sq.Ft`);
                         shedAvgBox.style.display = 'flex';
                     } else shedAvgBox.style.display = 'none';
                 }
@@ -2071,15 +1998,21 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const finBox = document.getElementById('financialStandardBox'), rateNotice = document.getElementById('rateOnlyNoticeBox');
         if (finBox && rateNotice) { finBox.style.display = isRateOnly ? 'none' : 'block'; rateNotice.style.display = isRateOnly ? 'block' : 'none'; }
         
-        // TERMS & CONDITIONS (DEDICATED PER MODE)
+        // SEPARATE & SPACIOUS TERMS & CONDITIONS
         const pTerms = isSqft ? (appSettings.sqftPaymentTerms || '') : (appSettings.paymentTerms || '');
         const gTerms = isSqft ? (appSettings.sqftTermsCond || '') : (appSettings.termsCond || '');
         const pKey = isSqft ? 'sqftPaymentTerms' : 'paymentTerms';
         const gKey = isSqft ? 'sqftTermsCond' : 'termsCond';
 
         safeSetHtml('pdfTermsContainer', `
-            <div class="payment-terms-block"><p>1. <b>Payment Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('${pKey}',this)">${pTerms.replace(/\n/g, '<br>')}</span></p></div>
-            <div class="general-terms-block"><p>2. <b>General Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('${gKey}',this)">${gTerms.replace(/\n/g, '<br>')}</span></p></div>
+            <div class="terms-section-card">
+                <h5>💳 1. Payment Terms & Schedule:</h5>
+                <p><span class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('${pKey}',this)">${pTerms.replace(/\n/g, '<br>')}</span></p>
+            </div>
+            <div class="terms-section-card">
+                <h5>📜 2. Commercial Terms & Conditions:</h5>
+                <p><span class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('${gKey}',this)">${gTerms.replace(/\n/g, '<br>')}</span></p>
+            </div>
         `);
         safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height:24px;width:auto;display:block;margin:0 auto;">` : '');
     }
@@ -2144,7 +2077,16 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             });
         }
 
-        safeSetHtml('civilPdfTermsContainer', `<div class="payment-terms-block"><p>1. <b>Civil Schedule:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilPaymentTerms',this)">${(appSettings.civilPaymentTerms || '').replace(/\n/g, '<br>')}</span></p></div><div class="general-terms-block"><p>2. <b>Civil Terms:</b><br><span contenteditable="true" onblur="syncPreviewTermsEdit('civilTermsCond',this)">${(appSettings.civilTermsCond || '').replace(/\n/g, '<br>')}</span></p></div>`);
+        safeSetHtml('civilPdfTermsContainer', `
+            <div class="terms-section-card">
+                <h5>🏗️ 1. Civil Work Schedule & Terms:</h5>
+                <p><span class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('civilPaymentTerms',this)">${(appSettings.civilPaymentTerms || '').replace(/\n/g, '<br>')}</span></p>
+            </div>
+            <div class="terms-section-card">
+                <h5>🧱 2. General Civil Conditions:</h5>
+                <p><span class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('civilTermsCond',this)">${(appSettings.civilTermsCond || '').replace(/\n/g, '<br>')}</span></p>
+            </div>
+        `);
         const civilTax = getActiveTaxSlab('civil'), civGrand = civilTotalBasic + (civilTotalBasic * civilTax.rate);
         civilGrandTotal = civGrand;
         animateNumberRoll('civilFinBasic', civilTotalBasic, "Rs. "); safeSetHtml('civilPdfTaxBreakdownRows', renderVerticalTaxRowsHtml(civilTotalBasic, civilTax));
@@ -2171,7 +2113,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         if (p1CombBox) p1CombBox.style.display = 'none'; if (p2CombBox) p2CombBox.style.display = 'none';
     }
 
-    // COMPANY BANK ACCOUNT DETAILS (CONDITIONAL DISPLAY)
+    // COMPANY BANK ACCOUNT DETAILS (CONDITIONAL DISPLAY WITH THEME)
     const p1BankBox = document.getElementById('pdfCompanyBankDetailsBox');
     const p2BankBox = document.getElementById('civilPdfCompanyBankDetailsBox');
     const hasBankData = !!(appSettings.bankName || appSettings.bankAccNo || appSettings.bankIfsc);
@@ -2593,7 +2535,11 @@ function openPermanentTextsModal() {
     safeSetVal('pt_sqftPdfRibbonTitle', appSettings.sqftPdfRibbonTitle || "QUOTATION");
     safeSetVal('pt_sqftPdfScopeTitle', appSettings.sqftPdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS");
     safeSetVal('pt_sqftHeaderLine1', appSettings.sqftHeaderLine1 || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:");
-    safeSetVal('pt_sqftContractBarTitle', appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS):");
+    safeSetVal('pt_sqftContractBarTitle', appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)");
+    safeSetVal('pt_sqftPrimLabel', appSettings.sqftPrimLabel || "Primary Structural Framing");
+    safeSetVal('pt_sqftCladLabel', appSettings.sqftCladLabel || "Roof & Wall Cladding System");
+    safeSetVal('pt_sqftAccLabel', appSettings.sqftAccLabel || "Building Accessories Package");
+    safeSetVal('pt_sqftErectLabel', appSettings.sqftErectLabel || "Turnkey Erection & Installation");
 
     // Civil Mode Texts
     safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
@@ -2605,7 +2551,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick || "2. Brick Wall Details");
     safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
 
-    // Common Terms
+    // Common Terms & Signatures
     safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
     safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
     safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
