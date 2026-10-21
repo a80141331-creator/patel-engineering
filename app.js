@@ -60,7 +60,7 @@ function scrollCivilPreviewPane(delta) {
     if (vp) { vp.scrollBy({ top: delta, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); }
 }
 
-// 3. MASTER BLUEPRINT & APP SETTINGS
+// 3. MASTER BLUEPRINT & SETTINGS
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
     primSpecs: [
@@ -155,17 +155,6 @@ if (!appSettings.savedPdfFontScale) appSettings.savedPdfFontScale = appSettings.
 
 let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
-
-// ==========================================
-// CORE SITE GETTER
-// ==========================================
-function getCurrentSite() {
-    return (sites || []).find(s => s && s.id === currentSiteId);
-}
-
-function escapeQuotes(str) {
-    return (str || '').replace(/'/g, "\\'");
-}
 
 function syncSiteStructureToMasterBlueprint(site) {
     if (!site) return;
@@ -508,7 +497,7 @@ function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
     else { calcModuleTotals(); refreshLivePdfPreviewSheet(); }
 }
 
-// 9. BOOT ANIMATION & PICKERS
+// 9. ORIGINAL 3D TIN SHED BOOT ANIMATION
 let bootTimer = null;
 function initSamsungBootAnimation() {
     const splash = document.getElementById('appBootSplashScreen'); if (!splash) return;
@@ -547,8 +536,8 @@ function closeUnitPickerModal() { closeModalSafe('unitPickerModal'); }
 
 function getNextQuoteSequenceNumber() {
     let maxSeq = parseInt(appSettings.startingQuoteSeq || 1, 10) - 1;
-    (sites || []).forEach(s => {
-        if (s && s.quoteNo) {
+    sites.forEach(s => {
+        if (s.quoteNo) {
             const parts = s.quoteNo.split('/'); const lastPart = parseInt(parts[parts.length - 1], 10);
             if (!isNaN(lastPart) && lastPart > maxSeq) maxSeq = lastPart;
         }
@@ -560,7 +549,7 @@ function saveStartingQuoteSeq(val) {
     syncDataToCloud('patel_app_settings', appSettings);
 }
 
-// 10. PREVIEW SCALING
+// 10. PREVIEW SCALING (EDGE-TO-EDGE & ZERO BLUE GAP)
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfFontScale) || 1.0) + delta) * 100) / 100;
     appSettings.savedPdfFontScale = Math.min(Math.max(cur, 0.50), 1.60);
@@ -602,6 +591,7 @@ function autoFitPreview() {
                 wrapper.style.marginBottom = '0px';
             }
 
+            // Zero blue screen gap: Mobile hugs exact sheet height; Desktop has clean scroll
             if (!isDesktop) {
                 viewport.style.setProperty('height', 'auto', 'important');
                 viewport.style.setProperty('max-height', 'none', 'important');
@@ -660,9 +650,10 @@ function attachDynamicPreviewObserver() {
 }
 window.addEventListener('resize', () => { autoDetectDeviceMode(); autoFitPreview(); });
 
-// 11. CLIENT DIRECTORY & AUTO-FILL
+// ========================================================
+// 11. CLIENT DIRECTORY, AUTO-FILL & SMART MULTI-QUOTE GROUPING
+// ========================================================
 function getClientGroupKey(site) {
-    if (!site) return 'untitled';
     const name = (site.clientName || '').trim().toLowerCase();
     const gst = (site.custGST || '').trim().toLowerCase();
     return (name && gst) ? `${name}__${gst}` : (name || 'untitled');
@@ -670,8 +661,7 @@ function getClientGroupKey(site) {
 
 function getUniqueSavedClients() {
     const map = new Map();
-    (sites || []).forEach(s => {
-        if (!s) return;
+    sites.forEach(s => {
         const key = getClientGroupKey(s);
         if (!map.has(key) && s.clientName) {
             map.set(key, {
@@ -689,36 +679,24 @@ function getUniqueSavedClients() {
     return Array.from(map.values());
 }
 
-let currentClientPickerTarget = 'create';
-function openSavedClientsPickerModal(targetMode = 'create') {
-    currentClientPickerTarget = targetMode;
-    const container = document.getElementById('savedClientsPickerList');
-    if (!container) return;
+function renderSavedClientsDropdown(selectElemId, targetMode = 'create') {
+    const select = document.getElementById(selectElemId);
+    if (!select) return;
     const clients = getUniqueSavedClients();
-    if (!clients.length) {
-        container.innerHTML = `<div style="text-align:center; padding:24px 10px; color:#64748b; font-weight:700;">No saved clients found. Details will save automatically when you create proposals.</div>`;
-    } else {
-        container.innerHTML = "";
-        clients.forEach((c, idx) => {
-            container.innerHTML += `
-                <div class="client-group-card btn-ripple" onclick="selectSavedClientByIndex(${idx})">
-                    <div style="flex:1;">
-                        <strong style="font-size:13px; color:#0c1e30; display:block;">${c.clientName}</strong>
-                        <span style="font-size:11px; color:#64748b;">${c.custGST ? `GST: ${c.custGST} | ` : ''}📍 ${c.custAddress || 'Site Location'}</span>
-                        <div style="font-size:10.5px; color:#0369a1; font-weight:700; margin-top:2px;">📞 ${c.custNumber1 || '-'} (${c.custContactPerson || '-'})</div>
-                    </div>
-                    <span style="font-size:11px; font-weight:900; background:#e0f2fe; color:#0369a1; padding:5px 9px; border-radius:6px;">Auto-fill ➔</span>
-                </div>`;
-        });
-    }
-    openModalWithHistory('savedClientModal');
+    select.innerHTML = `<option value="">👤 -- Select Saved Client (Auto-fill) --</option>`;
+    clients.forEach((c, idx) => {
+        select.innerHTML += `<option value="${idx}">${c.clientName} ${c.custGST ? `(${c.custGST})` : ''}</option>`;
+    });
 }
 
-function selectSavedClientByIndex(idx) {
+function handleSavedClientSelect(selectElem, targetMode = 'create') {
+    const idx = parseInt(selectElem.value, 10);
+    if (isNaN(idx)) return;
     const clients = getUniqueSavedClients();
     const c = clients[idx];
     if (!c) return;
-    const prefix = currentClientPickerTarget === 'edit' ? 'editCust' : 'cust';
+
+    const prefix = targetMode === 'edit' ? 'editCust' : 'cust';
     safeSetVal(prefix + 'Name', c.clientName || '');
     safeSetVal(prefix + 'ContactPerson', c.custContactPerson || '');
     safeSetVal(prefix + 'Role', c.custRole || '');
@@ -727,14 +705,14 @@ function selectSavedClientByIndex(idx) {
     safeSetVal(prefix + 'Address', c.custAddress || '');
     safeSetVal(prefix + 'GST', c.custGST || '');
     safeSetVal(prefix + 'Email', c.custEmail || '');
-    closeModalSafe('savedClientModal');
+
     showCorporateToast(`Client "${c.clientName}" details auto-filled!`, "👤");
 }
 
 let activeClientGroupKey = null;
 function openClientQuotationsModal(groupKey) {
     activeClientGroupKey = groupKey;
-    const clientQuotes = (sites || []).filter(s => s && getClientGroupKey(s) === groupKey);
+    const clientQuotes = sites.filter(s => getClientGroupKey(s) === groupKey);
     if (!clientQuotes.length) return;
 
     const clientName = clientQuotes[0].clientName || "Client Project";
@@ -760,7 +738,7 @@ function openClientQuotationsModal(groupKey) {
                     <span style="font-size:11px; color:#64748b;">Contact: ${site.custContactPerson || '-'} (${site.custNumber1 || '-'})</span>
                 </div>
                 <div style="display:flex; gap:6px; align-items:center;">
-                    <button class="btn-site-delete btn-ripple" onclick="event.stopPropagation(); triggerCustomDelete('${site.id}', '${escapeQuotes(site.clientName)}');">🗑️</button>
+                    <button class="btn-site-delete btn-ripple" onclick="event.stopPropagation(); triggerCustomDelete('${site.id}', '${site.clientName}');">🗑️</button>
                     <span style="font-size:11.5px; font-weight:900; color:#fff; background:var(--header-bg); padding:6px 10px; border-radius:6px;">Open ➔</span>
                 </div>
             </div>`;
@@ -771,7 +749,7 @@ function openClientQuotationsModal(groupKey) {
 
 function createNewQuoteForCurrentGroup() {
     if (!activeClientGroupKey) return;
-    const clientQuotes = (sites || []).filter(s => s && getClientGroupKey(s) === activeClientGroupKey);
+    const clientQuotes = sites.filter(s => getClientGroupKey(s) === activeClientGroupKey);
     closeModalSafe('clientQuotesModal');
     openCreateSiteScreen();
 
@@ -799,19 +777,19 @@ function setNewSiteQuoteType(type) {
 
 function renderHomeScreen() {
     safeSetText('appLogoName', appSettings.ownerName || "PATEL ENGINEERING");
-    safeSetText('statTotalSites', (sites || []).length); safeSetText('statActiveQuotes', (sites || []).length);
+    safeSetText('statTotalSites', sites.length); safeSetText('statActiveQuotes', sites.length);
     if (appSettings.logoData) safeSetHtml('appLogoBadge', `<img src="${appSettings.logoData}" alt="Logo">`);
     const container = document.getElementById('sitesListContainer'); if (!container) return;
     container.innerHTML = "";
 
-    if (!sites || sites.length === 0) {
+    if (sites.length === 0) {
         container.innerHTML = `<div style="text-align:center; padding: 40px 20px; color: #64748b;"><p style="font-size: 38px; margin-bottom: 8px;">🏢</p><p style="font-weight: 700; color: #000;">No proposals found.</p><p style="font-size: 12.5px; margin-top: 4px;">Click the top button to create a new quotation.</p></div>`;
         return;
     }
 
+    // Group sites by Client (Client Name + GSTIN)
     const clientGroups = {};
-    (sites || []).forEach(site => {
-        if (!site) return;
+    sites.forEach(site => {
         const key = getClientGroupKey(site);
         if (!clientGroups[key]) clientGroups[key] = [];
         clientGroups[key].push(site);
@@ -820,6 +798,7 @@ function renderHomeScreen() {
     Object.keys(clientGroups).forEach(groupKey => {
         const group = clientGroups[groupKey];
         if (group.length === 1) {
+            // Exactly 1 quotation for this client -> Opens normally
             const site = group[0];
             const sqft = ((parseFloat(site.dimW) || 0) * (parseFloat(site.dimL) || 0));
             const modeBadge = site.quoteType === 'civil' ? '🧱 CIVIL ONLY' : site.quoteType === 'shed' ? '🏢 SHED ONLY' : '📑 COMBINED';
@@ -836,16 +815,16 @@ function renderHomeScreen() {
                             ${site.quoteType !== 'civil' ? `<p style="font-size: 11.5px; font-weight: 600; color: #475569; margin-top: 3px;">Area: ${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</p>` : ''}
                         </div>
                         <div style="display:flex; gap:6px; align-items:center;">
-                            <button class="btn-site-delete btn-ripple" onclick="event.stopPropagation(); triggerCustomDelete('${site.id}', '${escapeQuotes(site.clientName)}')">🗑️</button>
+                            <button class="btn-site-delete btn-ripple" onclick="event.stopPropagation(); triggerCustomDelete('${site.id}', '${site.clientName}')">🗑️</button>
                             <span style="font-size: 13px; font-weight: 800; color: var(--header-bg); background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 7px 11px; border-radius: 8px;">Open ➔</span>
                         </div>
                     </div>
                 </div>`;
         } else {
+            // More than 1 quotation for same client -> Grouped client card with modal view
             const leadSite = group[0];
-            const safeKey = encodeURIComponent(groupKey);
             container.innerHTML += `
-                <div class="card card-3d" onclick="openClientQuotationsModal(decodeURIComponent('${safeKey}'))" style="cursor:pointer; border-left: 5px solid #2563eb !important; background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);">
+                <div class="card card-3d" onclick="openClientQuotationsModal('${groupKey}')" style="cursor:pointer; border-left: 5px solid #2563eb !important; background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div style="flex:1; padding-right:10px;">
                             <div style="display:flex; gap:6px; align-items:center;">
@@ -872,7 +851,7 @@ function triggerCustomDelete(siteId, clientName) {
 }
 function resolveCustomConfirm(isConfirmed) {
     if (isConfirmed && pendingDeleteId) {
-        sites = (sites || []).filter(s => s && s.id !== pendingDeleteId);
+        sites = sites.filter(s => s.id !== pendingDeleteId);
         syncDataToCloud('patel_app_sites', sites); renderHomeScreen(); loadPhoneSettingsUI(); showCorporateToast("Quotation deleted successfully", "🗑️");
         if (activeClientGroupKey) openClientQuotationsModal(activeClientGroupKey);
     }
@@ -883,6 +862,7 @@ function openCreateSiteScreen() {
     safeSetVal('custName', ""); safeSetVal('custContactPerson', ""); safeSetVal('custRole', ""); safeSetVal('custNumber1', "");
     safeSetVal('custNumber2', ""); safeSetVal('custAddress', ""); safeSetVal('custGST', ""); safeSetVal('custEmail', "");
     setNewSiteQuoteType('both');
+    renderSavedClientsDropdown('selectExistingClient', 'create');
     openScreen('screenCreateSite');
 }
 
@@ -930,6 +910,8 @@ function saveNewBlankSiteAndOpen() {
     renderHomeScreen(); loadPhoneSettingsUI(); loadSiteToDashboard(newSite.id); showCorporateToast(`New Proposal ${autoQuoteNumber} created!`);
 }
 
+function getCurrentSite() { return sites.find(s => s.id === currentSiteId); }
+
 function loadSiteToDashboard(siteId) {
     currentSiteId = siteId; const site = getCurrentSite(); if (!site) return;
     if (!site.moduleOrder) site.moduleOrder = ['prim', 'sec', 'clad', 'acc', 'erect'];
@@ -971,6 +953,7 @@ function openEditCustomerModal() {
     safeSetVal('editCustNumber2', site.custNumber2 || ""); safeSetVal('editCustAddress', site.custAddress || "");
     safeSetVal('editCustGST', site.custGST || ""); safeSetVal('editCustEmail', site.custEmail || "");
     setEditSiteQuoteType(site.quoteType || 'both');
+    renderSavedClientsDropdown('editSelectExistingClient', 'edit');
     openModalWithHistory('editCustomerModal');
 }
 function closeEditCustomerModal() { closeModalSafe('editCustomerModal'); }
@@ -1778,6 +1761,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('civilPdfClientName', site.clientName || "-"); safeSetText('civilPdfContactPersonDisplay', contactPersonLine);
     safeSetText('civilPdfClientPhone', clientPhones); safeSetText('civilPdfClientGst', site.custGST || "-"); safeSetText('civilPdfClientAddr', site.custAddress || "-");
 
+    // STRICT ISOLATION BY MODE
     const isShedActive = (site.quoteType === 'both' || site.quoteType === 'shed');
     const isCivilActive = (site.quoteType === 'both' || site.quoteType === 'civil');
 
@@ -2197,7 +2181,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
                 curPage.removeChild(custCatClone); document.body.removeChild(testStage);
                 appendPageToOutput(outputContainer, curPage, false);
-                pageNum++; curPage = createPageBox(true);
+pageNum++; curPage = createPageBox(true);
                 const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                 contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                 curPage.appendChild(contBar); curPage.appendChild(custCatClone);
@@ -2357,7 +2341,7 @@ function updatePhoneSetting(idx, val) {
 }
 function deletePhoneSetting(idx) {
     if (!appSettings.phones) return;
-    appSettings.phones.splice(idx, 1); syncDataToCloud('patel_app_sites', sites); renderSettingsPhonesUI(); refreshLivePdfPreviewSheet();
+    appSettings.phones.splice(idx, 1); syncDataToCloud('patel_app_settings', appSettings); renderSettingsPhonesUI(); refreshLivePdfPreviewSheet();
 }
 function saveCompanyEmailSetting(val) { appSettings.companyEmail = val.trim(); syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet(); }
 function saveFooterWebSetting(val) { appSettings.footerWeb = val.trim(); syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet(); }
