@@ -56,7 +56,7 @@ html, body {
 .btn-toggle-eye { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; cursor: pointer; font-size: 15px; }
 .auth-error-text { font-size: 11px; font-weight: 800; color: #dc2626; margin-top: 5px; }
 
-/* 3D TIN SHED BOOT ANIMATION */
+/* 3D TIN SHED BOOT ANIMATION (ORIGINAL RESTORED) */
 .shed-assembly-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 45%, #e2e8f0 80%, #cbd5e1 100%); z-index: 999999; display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none; cursor: pointer; transition: opacity 0.65s ease, visibility 0.65s ease; }
 .shed-assembly-overlay.boot-fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 .shed-light-mesh { position: absolute; inset: -50px; background-image: linear-gradient(rgba(15, 41, 66, 0.05) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(15, 41, 66, 0.05) 1.5px, transparent 1.5px); background-size: 36px 36px; transform: perspective(600px) rotateX(45deg); opacity: 0.65; }
@@ -100,6 +100,77 @@ html, body {
 .card-3d-press { background: #fff; border: 1.5px solid #cbd5e1; border-bottom: 2.5px solid #94a3b8; border-radius: 8px; cursor: pointer; }
 .card-3d-press:active { transform: translateY(1.5px); border-bottom-width: 1px; }
 
+/* ========================================================
+   PHONE NUMBER INPUTS (FIXED SLEEK ALIGNMENT)
+   ======================================================== */
+.phone-row-dynamic {
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 4px 8px;
+    margin-bottom: 7px;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+.phone-row-dynamic:focus-within {
+    border-color: #0c1e30;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(12, 30, 48, 0.15);
+}
+.phone-badge-prefix {
+    background: #0c1e30;
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 900;
+    padding: 4px 8px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+}
+.phone-row-dynamic input {
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    padding: 4px 0 !important;
+    width: 100% !important;
+}
+
+/* ========================================================
+   SETTINGS GRID FIX (PROPER 3D CARDS & ALIGNMENT)
+   ======================================================== */
+.settings-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-top: 8px !important;
+    margin-bottom: 16px !important;
+}
+@media (max-width: 640px) {
+    .settings-grid { grid-template-columns: 1fr !important; }
+}
+.setting-grid-card {
+    padding: 10px 12px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-bottom: 2.5px solid #94a3b8;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.setting-grid-card .icon { font-size: 24px; line-height: 1; flex-shrink: 0; }
+.setting-grid-card .title { font-size: 12px; font-weight: 900; color: #0f172a; }
+.setting-grid-card .subtitle { font-size: 10.5px; color: #64748b; margin-top: 1.5px; }
+
 /* QUOTATION MODE SELECTOR WITH TICK EFFECT */
 .quote-type-selector-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
 .quote-type-card {
@@ -118,16 +189,24 @@ html, body {
 }
 .quote-type-card.active .tick-badge { background: #16a34a; color: #ffffff; box-shadow: 0 2px 5px rgba(22, 163, 74, 0.4); }
 
-/* SAVED CLIENT PICKER - APP THEMED */
-.saved-client-picker-bar {
-    background: #0c1e30; border: 1.5px solid #1e3a5f; border-left: 4px solid #38bdf8;
-    border-radius: 8px; padding: 7px 10px; margin-bottom: 9px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+/* SAVED CLIENT PICKER TRIGGER (COMPANY THEMED BUTTON) */
+.saved-client-trigger-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #0c1e30, #1e3a5f);
+    border: 1.5px solid #38bdf8;
+    color: #ffffff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11.5px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(12,30,48,0.25);
 }
-.saved-client-picker-bar span { font-size: 11px; font-weight: 900; color: #38bdf8; text-transform: uppercase; }
-.saved-client-picker-bar select {
-    flex: 1; max-width: 240px; padding: 5px 8px; font-size: 11.5px; font-weight: 800;
-    border: 1.5px solid #38bdf8; border-radius: 6px; background: #ffffff; color: #0c1e30; outline: none; cursor: pointer;
-}
+.saved-client-trigger-btn:hover { background: #1e3a5f; }
 
 /* CLIENT GROUP CARD (MULTI-QUOTES) */
 .client-group-card {
@@ -135,36 +214,6 @@ html, body {
     border-radius: 8px; padding: 9px 11px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;
 }
 .client-group-card:hover { background: #f0fdf4; border-color: #16a34a; }
-
-/* ========================================================
-   SETTINGS SCREEN GRID FIX (PROPER 3D CARDS & ALIGNMENT)
-   ======================================================== */
-.settings-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-    margin-bottom: 16px;
-}
-@media (max-width: 640px) {
-    .settings-grid { grid-template-columns: 1fr; }
-}
-.setting-grid-card {
-    padding: 10px 12px !important;
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 10px !important;
-    background: #ffffff;
-    border: 1.5px solid #cbd5e1;
-    border-bottom: 2.5px solid #94a3b8;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-.setting-grid-card .icon { font-size: 24px; line-height: 1; flex-shrink: 0; }
-.setting-grid-card .title { font-size: 12px; font-weight: 900; color: #0f172a; }
-.setting-grid-card .subtitle { font-size: 10.5px; color: #64748b; margin-top: 1.5px; }
 
 /* MODULES & GRIDS */
 .modules-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px; }
@@ -231,8 +280,8 @@ body.mode-desktop #screenSettings .content {
     overflow-y: auto !important;
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-    padding: 10px 16px !important;
+    gap: 10px !important;
+    padding: 8px 14px !important;
 }
 body.mode-desktop #screenSettings .settings-grid {
     grid-template-columns: 1fr 1fr !important;
@@ -399,7 +448,17 @@ body.mode-desktop #screenSettings .setting-grid-card {
 .font-scale-bar { background: #1e293b; border-radius: 7px; padding: 5px 8px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; color: #fff; }
 .btn-font-ctrl { background: #334155; color: #fff; border: 1px solid #475569; padding: 2.5px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 900; cursor: pointer; }
 
-.modal { display: none !important; position: fixed; inset: 0; background: rgba(10,25,47,0.75); backdrop-filter: blur(8px); z-index: 10000; align-items: flex-end; justify-content: center; }
+/* MODALS (CLEAN SPECIFICITY - NO LOCKOUT) */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 25, 47, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    align-items: flex-end;
+    justify-content: center;
+}
 .modal.active { display: flex !important; }
 .modal-body { background: #fff; width: 100%; max-width: 540px; border-radius: 18px 18px 0 0; padding: 16px 14px 20px; max-height: 90vh; overflow-y: auto; }
 .unit-picker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; max-height: 55vh; overflow-y: auto; padding: 3px; }
