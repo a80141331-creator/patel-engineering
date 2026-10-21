@@ -130,12 +130,6 @@
                         </div>
                         <div class="area-badge" style="margin-top:7px;">Calculated Area: <span id="dashSqFtText">0 Sq.Ft</span></div>
                     </div>
-                    <!-- DEDICATED SQ.FT DESCRIPTIONS CARD -->
-                    <div id="sqftDescriptionsCardBox" class="card card-accent-top card-3d" style="display:none;margin-bottom:10px;">
-                        <label class="form-head-label" style="color:#0f2942;">📝 Shed Sq.Ft Descriptions (Independent):</label>
-                        <div class="form-group" style="margin-top:6px;"><label>Description 1 (Shed Scope Heading - Top Left)</label><input type="text" id="inpSqftScopeDesc" placeholder="QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS" oninput="saveSqftCustomDescriptions()"></div>
-                        <div class="form-group" style="margin-bottom:0;"><label>Description 2 (Table Point 1 Header Description)</label><input type="text" id="inpSqftTableDesc" placeholder="1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:" oninput="saveSqftCustomDescriptions()"></div>
-                    </div>
                     <!-- STRUCTURE MODULES -->
                     <div id="shedModulesBlock">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px;"><h3 class="section-title" style="margin:0;">Structure Modules</h3><button class="btn-secondary btn-3d-secondary btn-ripple" id="btnAddUniversalModuleBtn" style="padding:4px 8px;font-size:10.5px;" onclick="openAddUniversalModuleModal('shed')">➕ Add Custom Module</button></div>
@@ -337,20 +331,26 @@
             <div class="card card-3d"><label class="form-head-label">🔢 Next Quotation Starting Number (Live Auto-Sync)</label><div class="row-2" style="margin-top:5px;align-items:center;"><div class="form-group" style="margin-bottom:0;"><label>Next Quote Seq No.</label><input type="number" id="setStartingQuoteNo" min="1" placeholder="e.g. 7" oninput="saveStartingQuoteSeq(this.value)"></div><p style="font-size:10.5px;color:#64748b;margin:0;">Ye automatically agle naye quotation ka sequence number show karta hai.</p></div></div>
             <div class="card card-3d" style="display:flex;align-items:center;gap:12px;"><div class="logo-box logo-3d" id="settingsLogoPreview" style="width:48px;height:48px;border-radius:10px;">PE</div><div><input type="file" id="logoUploadInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)"><button class="btn-secondary btn-3d-secondary btn-ripple" onclick="document.getElementById('logoUploadInput').click()">🖼️ Upload Header Banner Image & Logo</button><p style="font-size:10.5px;color:#64748b;margin-top:3px;">PDF Header Left Box & App Icon par auto-sync hoga</p></div></div>
             <div class="card card-3d"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><label class="form-head-label" style="margin:0;">Official Phone Numbers (Dynamic)</label><button type="button" class="btn-secondary btn-3d-secondary btn-ripple" onclick="addPhoneRowInSettings()" style="font-size:10.5px;padding:4px 8px;">➕ Add Phone Number</button></div><div id="settingsPhonesListContainer"></div><div class="row-2" style="margin-top:8px;"><div class="form-group" style="margin-bottom:0;"><label>Company Email (Blank = Hide)</label><input type="email" id="setCompanyEmail" oninput="saveCompanyEmailSetting(this.value)" placeholder="info@patelengineering.com"></div><div class="form-group" style="margin-bottom:0;"><label>Company Website (Blank = Hide)</label><input type="text" id="setFooterWeb" oninput="saveFooterWebSetting(this.value)" placeholder="www.patelengineering.com"></div></div></div>
-            <h4 class="section-title">Controls & Custom Details</h4>
+            
+            <h4 class="section-title">Controls & Custom Details (Separate Terms Buttons)</h4>
             <div class="settings-grid">
-                <!-- 2 NEW DEDICATED SQ.FT DESCRIPTION BUTTONS IN SETTINGS -->
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('sqftPdfScopeTitle','Sq.Ft Scope Heading (Description 1)')" style="border-left:4px solid #0284c7;"><span class="icon">📝</span><div><div class="title">Sq.Ft Scope Desc (Desc 1)</div><div class="subtitle">Top Left Box Heading</div></div></div>
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('sqftHeaderLine1','Sq.Ft Work Description (Desc 2)')" style="border-left:4px solid #0284c7;"><span class="icon">📋</span><div><div class="title">Sq.Ft Work Desc (Desc 2)</div><div class="subtitle">Table Point 1 Header</div></div></div>
-                <!-- COMPANY BANK DETAILS -->
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openBankDetailsModal()" style="border-left:4px solid #16a34a;"><span class="icon">🏦</span><div><div class="title">Company Bank Details</div><div class="subtitle">A/C No, IFSC, Bank Name</div></div></div>
+                <!-- 1. KG SHED TERMS -->
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('paymentTerms','Kg Shed Payment Terms & Schedule')" style="border-left:4px solid #ca8a04;"><span class="icon">💳</span><div><div class="title">Kg Shed Payment Terms</div><div class="subtitle">Kg Basis Advance & Schedule</div></div></div>
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('termsCond','Kg Shed Terms & Conditions')" style="border-left:4px solid #ca8a04;"><span class="icon">📜</span><div><div class="title">Kg Shed Terms & Cond.</div><div class="subtitle">Kg Delivery, Civil & Power</div></div></div>
+
+                <!-- 2. SQ.FT SHED SEPARATE TERMS -->
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('sqftPaymentTerms','Sq.Ft Shed Payment Terms & Schedule')" style="border-left:4px solid #0284c7;"><span class="icon">💰</span><div><div class="title">Sq.Ft Payment Terms</div><div class="subtitle">Sq.Ft Stage Billing Schedule</div></div></div>
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('sqftTermsCond','Sq.Ft Shed Terms & Conditions')" style="border-left:4px solid #0284c7;"><span class="icon">📋</span><div><div class="title">Sq.Ft Terms & Cond.</div><div class="subtitle">Sq.Ft Contract Scope & Terms</div></div></div>
+
+                <!-- 3. CIVIL TERMS -->
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('civilPaymentTerms','Civil Payment Terms & Schedule')" style="border-left:4px solid #16a34a;"><span class="icon">🏗️</span><div><div class="title">Civil Payment Terms</div><div class="subtitle">Civil advance & stage bill</div></div></div>
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('civilTermsCond','Civil Terms & Conditions')" style="border-left:4px solid #16a34a;"><span class="icon">🧱</span><div><div class="title">Civil Terms & Conditions</div><div class="subtitle">Water, soil excavation etc.</div></div></div>
+
+                <!-- 4. BANK & COMPANY DETAILS -->
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openBankDetailsModal()" style="border-left:4px solid #38bdf8;"><span class="icon">🏦</span><div><div class="title">Company Bank Details</div><div class="subtitle">A/C No, IFSC, Bank Name</div></div></div>
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openSignatureModal()" style="border-left:4px solid #38bdf8;"><span class="icon">✍️</span><div><div class="title">Digital Sign</div><div class="subtitle">Touchpad Signature</div></div></div>
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('companyAddr','Company Full Address')"><span class="icon">📍</span><div><div class="title">Company Address</div><div class="subtitle">Bhawani Nagar, Bhilwara</div></div></div>
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('companyGst','Company GSTIN')"><span class="icon">📑</span><div><div class="title">Company GSTIN</div><div class="subtitle">Tax Registration</div></div></div>
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openSignatureModal()"><span class="icon">✍️</span><div><div class="title">Digital Sign</div><div class="subtitle">Touchpad Signature</div></div></div>
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('paymentTerms','Shed Payment Terms & Schedule')"><span class="icon">💳</span><div><div class="title">Shed Payment Terms</div><div class="subtitle">Advance, Dispatch, Erection</div></div></div>
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('termsCond','Shed Commercial Terms & Conditions')"><span class="icon">📜</span><div><div class="title">Shed Terms & Conditions</div><div class="subtitle">Delivery, Civil, Power</div></div></div>
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('civilPaymentTerms','Civil Payment Terms & Schedule')"><span class="icon">💰</span><div><div class="title">Civil Payment Terms</div><div class="subtitle">Civil advance & stage bill</div></div></div>
-                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('civilTermsCond','Civil Terms & Conditions')"><span class="icon">🏗️</span><div><div class="title">Civil Terms & Conditions</div><div class="subtitle">Water, soil excavation etc.</div></div></div>
             </div>
         </div>
     </div>
@@ -446,7 +446,7 @@
             <div style="display:flex;gap:8px;margin-top:12px;"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeCivilScopeModal()">Cancel</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveCivilScopeModal()">SAVE SCOPE</button></div>
         </div>
     </div>
-    <!-- MODAL: PERMANENT TEXTS (3 TABS) -->
+    <!-- MODAL: PERMANENT TEXTS -->
     <div id="permanentTextsModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:94vh;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:2px solid var(--header-bg);padding-bottom:6px;"><div><h3 style="font-size:14.5px;font-weight:900;color:#000;">🖨️ Headings & Text Permanent Editor</h3><p style="font-size:10.5px;color:#059669;font-weight:700;">● Select Mode Tab to edit respective texts</p></div><button class="btn-del-pro btn-ripple" onclick="closePermanentTextsModal()">✕ Close</button></div>
@@ -462,21 +462,14 @@
                     <div class="row-2"><div class="form-group"><label>Section 1 Header (Steel Weight)</label><input type="text" id="pt_headerLine1" oninput="autoSavePermanentText('headerLine1',this.value)"></div><div class="form-group"><label>Total Structure Weight Bar</label><input type="text" id="pt_milestoneHeading" oninput="autoSavePermanentText('milestoneHeading',this.value)"></div></div>
                     <div class="row-2"><div class="form-group"><label>Section 2 Header (Price Breakup)</label><input type="text" id="pt_headerLine2" oninput="autoSavePermanentText('headerLine2',this.value)"></div><div class="form-group"><label>Section 3 Header (Accessories)</label><input type="text" id="pt_accSectionHeading" oninput="autoSavePermanentText('accSectionHeading',this.value)"></div></div>
                 </div>
-                <div class="card card-3d" style="background:#fafafa;border-left:3px solid #2563eb;margin-bottom:8px;"><label style="font-size:10.5px;font-weight:900;color:#1e40af;text-transform:uppercase;">Kg Module Button Titles</label>
-                    <div class="row-2" style="margin-top:5px;"><div class="form-group"><label>Primary Button</label><input type="text" id="pt_btnNamePrim" oninput="autoSavePermanentText('btnNamePrim',this.value)"></div><div class="form-group"><label>Secondary Button</label><input type="text" id="pt_btnNameSec" oninput="autoSavePermanentText('btnNameSec',this.value)"></div></div>
-                    <div class="row-2"><div class="form-group"><label>Cladding Button</label><input type="text" id="pt_btnNameClad" oninput="autoSavePermanentText('btnNameClad',this.value)"></div><div class="form-group"><label>Accessories Button</label><input type="text" id="pt_btnNameAcc" oninput="autoSavePermanentText('btnNameAcc',this.value)"></div></div>
-                    <div class="form-group"><label>Erection Button</label><input type="text" id="pt_btnNameErect" oninput="autoSavePermanentText('btnNameErect',this.value)"></div>
-                </div>
             </div>
-            <!-- TAB 2: SQ.FT SHED (WITH 2 DISTINCT DESCRIPTIONS) -->
+            <!-- TAB 2: SQ.FT SHED -->
             <div id="ptPanelSqft" style="display:none;">
                 <div class="card card-3d" style="background:#fafafa;border-left:3px solid #0284c7;margin-bottom:8px;"><label style="font-size:10.5px;font-weight:900;color:#0369a1;text-transform:uppercase;">Sq.Ft Shed Titles & Descriptions</label>
                     <div class="form-group" style="margin-top:5px;"><label>Sq.Ft Ribbon Title (Top Right)</label><input type="text" id="pt_sqftPdfRibbonTitle" oninput="autoSavePermanentText('sqftPdfRibbonTitle',this.value)"></div>
-                    <div class="form-group"><label>Description 1: Shed Scope Heading (Top Left Box)</label><input type="text" id="pt_sqftPdfScopeTitle" placeholder="QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS" oninput="autoSavePermanentText('sqftPdfScopeTitle',this.value)"></div>
-                    <div class="form-group"><label>Description 2: Point 1 Header (Table Header Description)</label><input type="text" id="pt_sqftHeaderLine1" placeholder="1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:" oninput="autoSavePermanentText('sqftHeaderLine1',this.value)"></div>
+                    <div class="form-group"><label>Description 1: Shed Scope Heading (Top Left Box)</label><input type="text" id="pt_sqftPdfScopeTitle" oninput="autoSavePermanentText('sqftPdfScopeTitle',this.value)"></div>
+                    <div class="form-group"><label>Description 2: Point 1 Header (Table Header Description)</label><input type="text" id="pt_sqftHeaderLine1" oninput="autoSavePermanentText('sqftHeaderLine1',this.value)"></div>
                     <div class="form-group"><label>Complete Shed Contract Bar Title</label><input type="text" id="pt_sqftContractBarTitle" oninput="autoSavePermanentText('sqftContractBarTitle',this.value)"></div>
-                    <div class="row-2"><div class="form-group"><label>Primary Structure Label</label><input type="text" id="pt_sqftPrimLabel" oninput="autoSavePermanentText('sqftPrimLabel',this.value)"></div><div class="form-group"><label>Cladding System Label</label><input type="text" id="pt_sqftCladLabel" oninput="autoSavePermanentText('sqftCladLabel',this.value)"></div></div>
-                    <div class="row-2"><div class="form-group"><label>Accessories Package Label</label><input type="text" id="pt_sqftAccLabel" oninput="autoSavePermanentText('sqftAccLabel',this.value)"></div><div class="form-group"><label>Erection & Turnkey Label</label><input type="text" id="pt_sqftErectLabel" oninput="autoSavePermanentText('sqftErectLabel',this.value)"></div></div>
                 </div>
             </div>
             <!-- TAB 3: CIVIL -->
@@ -484,14 +477,11 @@
                 <div class="card card-3d" style="background:#fafafa;border-left:3px solid #16a34a;margin-bottom:8px;"><label style="font-size:10.5px;font-weight:900;color:#166534;text-transform:uppercase;">Civil Quotation Titles</label>
                     <div class="row-2" style="margin-top:5px;"><div class="form-group"><label>Civil Ribbon Title</label><input type="text" id="pt_civilPdfRibbonTitle" oninput="autoSavePermanentText('civilPdfRibbonTitle',this.value)"></div><div class="form-group"><label>Civil Blue Job Details Bar</label><input type="text" id="pt_civilJobTitle" oninput="autoSavePermanentText('civilJobTitle',this.value)"></div></div>
                     <div class="row-3"><div class="form-group"><label>Foundation Title</label><input type="text" id="pt_civilFoundTitle" oninput="autoSavePermanentText('civilFoundTitle',this.value)"></div><div class="form-group"><label>Brick Wall Title</label><input type="text" id="pt_civilBrickTitle" oninput="autoSavePermanentText('civilBrickTitle',this.value)"></div><div class="form-group"><label>Flooring Title</label><input type="text" id="pt_civilFloorTitle" oninput="autoSavePermanentText('civilFloorTitle',this.value)"></div></div>
-                    <div class="row-3"><div class="form-group"><label>Civil Foundation Button</label><input type="text" id="pt_btnNameFoundation" oninput="autoSavePermanentText('btnNameFoundation',this.value)"></div><div class="form-group"><label>Civil Brick Wall Button</label><input type="text" id="pt_btnNameBrick" oninput="autoSavePermanentText('btnNameBrick',this.value)"></div><div class="form-group"><label>Civil Flooring Button</label><input type="text" id="pt_btnNameFlooring" oninput="autoSavePermanentText('btnNameFlooring',this.value)"></div></div>
                 </div>
             </div>
-            <!-- COMMON TERMS -->
-            <div class="card card-3d" style="background:#fafafa;border-left:3px solid #7c3aed;margin-bottom:8px;"><label style="font-size:10.5px;font-weight:900;color:#6d28d9;text-transform:uppercase;">Terms, Thank You & Signatures (Common)</label>
-                <div class="row-2" style="margin-top:5px;"><div class="form-group"><label>Shed Terms Heading</label><input type="text" id="pt_termsTitle" oninput="autoSavePermanentText('termsTitle',this.value)"></div><div class="form-group"><label>Civil Terms Heading</label><input type="text" id="pt_civilTermsTitle" oninput="autoSavePermanentText('civilTermsTitle',this.value)"></div></div>
-                <div class="row-2"><div class="form-group"><label>Thank You Note (Shed)</label><input type="text" id="pt_thankYouText" oninput="autoSavePermanentText('thankYouText',this.value)"></div><div class="form-group"><label>Thank You Note (Civil)</label><input type="text" id="pt_civilThankYouText" oninput="autoSavePermanentText('civilThankYouText',this.value)"></div></div>
-                <div class="row-2"><div class="form-group"><label>Customer Sign Title</label><input type="text" id="pt_custAcceptanceTitle" oninput="autoSavePermanentText('custAcceptanceTitle',this.value)"></div><div class="form-group"><label>Customer Sign Sub</label><input type="text" id="pt_custAcceptanceSub" oninput="autoSavePermanentText('custAcceptanceSub',this.value)"></div></div>
+            <!-- COMMON SIGNATURES -->
+            <div class="card card-3d" style="background:#fafafa;border-left:3px solid #7c3aed;margin-bottom:8px;"><label style="font-size:10.5px;font-weight:900;color:#6d28d9;text-transform:uppercase;">Signatures & Thank You (Common)</label>
+                <div class="row-2" style="margin-top:5px;"><div class="form-group"><label>Customer Sign Title</label><input type="text" id="pt_custAcceptanceTitle" oninput="autoSavePermanentText('custAcceptanceTitle',this.value)"></div><div class="form-group"><label>Customer Sign Sub</label><input type="text" id="pt_custAcceptanceSub" oninput="autoSavePermanentText('custAcceptanceSub',this.value)"></div></div>
                 <div class="row-2"><div class="form-group"><label>Company Sign Header</label><input type="text" id="pt_signCompHeader" oninput="autoSavePermanentText('signCompHeader',this.value)"></div><div class="form-group"><label>Signatory Designation</label><input type="text" id="pt_pdfSignatoryText" oninput="autoSavePermanentText('pdfSignatoryText',this.value)"></div></div>
             </div>
             <button class="btn-main btn-3d-main btn-ripple" onclick="closePermanentTextsModal()">✓ DONE / CLOSE</button>
