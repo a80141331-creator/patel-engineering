@@ -1,4 +1,6 @@
+// ==========================================
 // 1. FIREBASE CONFIGURATION
+// ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyB_b6KlFizZGALLEZnRcJ0Pd16NUEF6QY8",
     authDomain: "patel-engineering-3b4c4.firebaseapp.com",
@@ -20,7 +22,9 @@ try {
 
 let masterSecurityPasscode = localStorage.getItem('pe_master_passcode') || "RJ06CC7194";
 
+// ==========================================
 // 2. AUDIO & TOASTS
+// ==========================================
 let audioCtx = null;
 function playAppSound(type = 'click') {
     try {
@@ -60,7 +64,9 @@ function scrollCivilPreviewPane(delta) {
     if (vp) { vp.scrollBy({ top: delta, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); }
 }
 
+// ==========================================
 // 3. MASTER BLUEPRINT & APP SETTINGS
+// ==========================================
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
     primSpecs: [
@@ -157,7 +163,7 @@ let sites = JSON.parse(localStorage.getItem('patel_app_sites') || '[]');
 let currentSiteId = null;
 
 // ==========================================
-// CORE SITE GETTER
+// CORE SITE GETTER & SYNC
 // ==========================================
 function getCurrentSite() {
     return (sites || []).find(s => s && s.id === currentSiteId);
@@ -218,7 +224,9 @@ function syncSiteStructureToMasterBlueprint(site) {
     } catch(err) { console.warn("Master blueprint sync notice:", err); }
 }
 
+// ==========================================
 // 4. CLOUD SYNC & MASTER PROTECTION
+// ==========================================
 function syncDataToCloud(key, data) {
     try { localStorage.setItem(key, JSON.stringify(data)); } catch (err) { console.warn("Storage warning for " + key, err); }
     if (db && isFirebaseConnected && isCloudInitialSyncDone) {
@@ -295,7 +303,9 @@ function updateHeaderBannersUI() {
     }
 }
 
+// ==========================================
 // 5. MASTER PASSCODE GATEWAY
+// ==========================================
 function checkFirstTimeAuthentication(isRemoteKick = false) {
     const savedToken = localStorage.getItem('pe_app_auth_token');
     const lockScreen = document.getElementById('appFirstTimeLockScreen');
@@ -335,7 +345,11 @@ function saveNewMasterPasscode() {
     closeChangePasscodeModal(); showCorporateToast(`Master Passcode updated: ${nw}`);
 }
 
-// 6. NAVIGATION & MODES
+// ==========================================
+// 6. NAVIGATION & MODALS (DYNAMIC LAYER FIX)
+// ==========================================
+let topModalZIndex = 10000;
+
 window.addEventListener('popstate', () => handleDeviceBackButton());
 function handleDeviceBackButton() {
     const openModals = document.querySelectorAll('.modal.active, .confirm-dialog-modal.active');
@@ -352,11 +366,25 @@ function handleCivilBackNav() {
     if (site && site.quoteType === 'civil') openScreen('screenHome', false);
     else openScreen('screenSiteDashboard', false);
 }
+
+// DYNAMIC Z-INDEX: Har naya modal hamesha purane modal ke upar khulega!
 function openModalWithHistory(modalId) {
     const m = document.getElementById(modalId);
-    if (m) { m.classList.add('active'); if (window.history && window.history.pushState) history.pushState({ modal: modalId }, ""); }
+    if (m) {
+        topModalZIndex += 10;
+        m.style.zIndex = topModalZIndex;
+        m.classList.add('active');
+        if (window.history && window.history.pushState) history.pushState({ modal: modalId }, "");
+    }
 }
-function closeModalSafe(modalId) { const m = document.getElementById(modalId); if (m) m.classList.remove('active'); }
+function closeModalSafe(modalId) {
+    const m = document.getElementById(modalId);
+    if (m) {
+        m.classList.remove('active');
+        setTimeout(() => { if (!m.classList.contains('active')) m.style.zIndex = ''; }, 220);
+    }
+}
+
 function openScreen(screenId, pushHistory = true) {
     try { if (pushHistory && window.history && window.history.pushState) history.pushState({ screen: screenId }, ""); } catch(e) {}
     document.querySelectorAll('.app-view').forEach(s => s.classList.remove('active'));
@@ -384,7 +412,9 @@ function autoDetectDeviceMode() {
     else setDeviceViewMode('phone', false);
 }
 
+// ==========================================
 // 7. DOM HELPERS & FORMATTERS
+// ==========================================
 function safeSetText(id, text) { const el = document.getElementById(id); if (el) el.innerText = (text !== undefined && text !== null) ? text : ''; }
 function safeSetHtml(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = (html !== undefined && html !== null) ? html : ''; }
 function safeSetVal(id, val) { const el = document.getElementById(id); if (el) el.value = (val !== undefined && val !== null) ? val : ''; }
@@ -434,7 +464,9 @@ document.addEventListener('click', function(e) {
     setTimeout(() => { if (circle && circle.parentNode) circle.remove(); }, 500);
 });
 
+// ==========================================
 // 8. DRAG & DROP REORDERING
+// ==========================================
 let activeTouchDragScope = null, activeTouchDragIndex = null, activeTouchDragParent = null, activeTouchDragElement = null;
 function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) {
     if (!rowEl || !handleEl) return;
@@ -508,7 +540,9 @@ function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
     else { calcModuleTotals(); refreshLivePdfPreviewSheet(); }
 }
 
+// ==========================================
 // 9. BOOT ANIMATION & PICKERS
+// ==========================================
 let bootTimer = null;
 function initSamsungBootAnimation() {
     const splash = document.getElementById('appBootSplashScreen'); if (!splash) return;
@@ -560,7 +594,9 @@ function saveStartingQuoteSeq(val) {
     syncDataToCloud('patel_app_settings', appSettings);
 }
 
+// ==========================================
 // 10. PREVIEW SCALING
+// ==========================================
 function changePdfScale(delta) {
     let cur = Math.round(((parseFloat(appSettings.savedPdfFontScale) || 1.0) + delta) * 100) / 100;
     appSettings.savedPdfFontScale = Math.min(Math.max(cur, 0.50), 1.60);
@@ -660,7 +696,9 @@ function attachDynamicPreviewObserver() {
 }
 window.addEventListener('resize', () => { autoDetectDeviceMode(); autoFitPreview(); });
 
+// ==========================================
 // 11. CLIENT DIRECTORY & AUTO-FILL
+// ==========================================
 function getClientGroupKey(site) {
     if (!site) return 'untitled';
     const name = (site.clientName || '').trim().toLowerCase();
@@ -789,7 +827,9 @@ function createNewQuoteForCurrentGroup() {
     }
 }
 
+// ==========================================
 // 12. HOMEPAGE & PROPOSALS LISTING
+// ==========================================
 let tempNewQuoteType = 'both';
 function setNewSiteQuoteType(type) {
     tempNewQuoteType = type;
@@ -962,7 +1002,9 @@ function loadSiteToDashboard(siteId) {
     setTimeout(attachDynamicPreviewObserver, 150);
 }
 
+// ==========================================
 // 13. EDIT CUSTOMER DETAILS
+// ==========================================
 let tempEditQuoteType = 'both';
 function openEditCustomerModal() {
     const site = getCurrentSite(); if (!site) return;
@@ -1012,7 +1054,9 @@ function syncPreviewCustEdit(field, el) {
     refreshLivePdfPreviewSheet(true);
 }
 
+// ==========================================
 // 14. CIVIL DATA & TOGGLES
+// ==========================================
 function ensureCivilDataOnSite(site) {
     if (!site.civilData) site.civilData = JSON.parse(JSON.stringify(masterBlueprint.civilData));
     ['foundation', 'brickWall', 'flooring'].forEach(sec => {
@@ -1119,7 +1163,9 @@ function updatePillTogglesUI() {
     }
 }
 
+// ==========================================
 // 15. CIVIL DASHBOARD
+// ==========================================
 function openCivilDashboardScreen() {
     const site = getCurrentSite(); if (!site) return;
     safeSetText('civilDashSiteName', site.clientName || "Untitled Client");
@@ -1170,7 +1216,9 @@ function saveCivilScopeModal() {
     setTimeout(() => openCivilDashboardScreen(), 50);
 }
 
+// ==========================================
 // 16. CIVIL PARAMETERS MODAL
+// ==========================================
 let activeCivilModalType = null;
 function openCivilParamModal(type) {
     activeCivilModalType = type; const site = getCurrentSite(); if (!site) return;
@@ -1251,7 +1299,9 @@ function closeCivilParamModal() {
     closeModalSafe('civilParamModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); setTimeout(() => openCivilDashboardScreen(), 50);
 }
 
+// ==========================================
 // 17. UNIVERSAL MODULE ADDER
+// ==========================================
 let universalModMode = 'shed', universalModUnit = 'Lot';
 function openAddUniversalModuleModal(mode) {
     universalModMode = mode; universalModUnit = 'Lot';
@@ -1352,7 +1402,9 @@ function autoSaveAndUpdate() {
     syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 
+// ==========================================
 // 18. STRUCTURE MODULE MODALS
+// ==========================================
 let activeModType = null;
 function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
@@ -1523,7 +1575,9 @@ function autoSaveModuleChanges() {
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 
+// ==========================================
 // 19. TAX SELECTION & CALCULATIONS
+// ==========================================
 const TAX_SLABS = [
     { id: "gst18_split", name: "GST @ 18% (CGST 9% + SGST 9%)", rate: 0.18, split: true, cgstRate: 0.09, sgstRate: 0.09, desc: "Standard Intra-State (CGST 9% + SGST 9%)" },
     { id: "igst18", name: "IGST @ 18% (Inter-State)", rate: 0.18, split: false, desc: "Outside State Inter-State Supply" },
@@ -1626,7 +1680,9 @@ function calcModuleTotals() {
     }
 }
 
+// ==========================================
 // 20. IN-PREVIEW LIVE SYNC
+// ==========================================
 function openCivilUnitPicker(secKey, idx) {
     const site = getCurrentSite(); if (!site?.civilData[secKey]?.items[idx]) return;
     openThemeUnitPicker(site.civilData[secKey].items[idx].unit, (newUnit) => {
@@ -1714,7 +1770,9 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (PERFECT ISOLATION & CLEAN COMBINED TOTALS)
+// ==========================================
+// 21. LIVE PREVIEW ENGINE
+// ==========================================
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true;
@@ -1996,7 +2054,9 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
+// ==========================================
 // 22. DYNAMIC FLOW ENGINE FOR PDF
+// ==========================================
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -2224,7 +2284,9 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
+// ==========================================
 // 23. DIRECT DOWNLOAD ENGINE
+// ==========================================
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2296,7 +2358,9 @@ async function downloadPDFDirectly(mode = 'both') {
     });
 }
 
+// ==========================================
 // 24. PERMANENT TEXTS MODAL
+// ==========================================
 function openPermanentTextsModal() {
     safeSetVal('pt_companyDesc', appSettings.companyDesc || ""); safeSetVal('pt_companyAddr', appSettings.companyAddr || "");
     safeSetVal('pt_companyGst', appSettings.companyGst || ""); safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
@@ -2378,9 +2442,9 @@ function closeLargeInput() {
     calcModuleTotals();
     refreshLivePdfPreviewSheet();
 }
+
+// FIXED: Cleaned up duplicated nested function bug!
 function autoSaveLargeInputLive() {
-    appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
-    function autoSaveLargeInputLive() {
     appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
     syncDataToCloud('patel_app_settings', appSettings);
     loadPhoneSettingsUI();
@@ -2412,6 +2476,8 @@ function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
 }
 
 function handleLogoUpload(input) {
+    if (input.files && input.files
+function handleLogoUpload(input) {
     if (input.files && input.files[0]) {
         compressAndOptimizeBanner(input.files[0], 1000, 0.85, function(optimizedBase64) {
             appSettings.logoData = optimizedBase64;
@@ -2428,7 +2494,9 @@ function handleLogoUpload(input) {
     }
 }
 
+// ==========================================
 // 25. DIGITAL SIGNATURE & WINDOW ONLOAD
+// ==========================================
 let canvas, ctx, isDrawing = false, sigEventsAttached = false;
 function openSignatureModal() {
     openModalWithHistory('sigModal');
@@ -2472,10 +2540,15 @@ function openSignatureModal() {
         sigEventsAttached = true;
     }
 }
+
 function clearSignature() {
     if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
-function closeSigModal() { closeModalSafe('sigModal'); }
+
+function closeSigModal() { 
+    closeModalSafe('sigModal'); 
+}
+
 function saveSignature() {
     appSettings.signatureData = canvas.toDataURL();
     syncDataToCloud('patel_app_settings', appSettings);
