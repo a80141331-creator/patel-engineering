@@ -141,21 +141,33 @@
         </header>
 
         <div class="content">
-            <!-- REFINED QUOTATION MODE SELECTOR WITH TICK BADGE -->
+            <!-- 5-MODE QUOTATION SELECTOR WITH TICK BADGE -->
             <div class="card card-accent-top card-3d">
                 <label class="form-head-label" style="color:#0f2942;">🎯 Select Quotation Mode:</label>
-                <div class="quote-type-selector-grid">
+                <div class="quote-type-selector-grid" id="createQuoteTypeGrid">
                     <div class="quote-type-card active btn-ripple" id="cardQuoteType_both" onclick="setNewSiteQuoteType('both')">
                         <span class="tick-badge">✓</span>
                         <span class="icon">📑</span>
-                        <strong>Combined</strong>
-                        <small>Shed + Civil</small>
+                        <strong>Combined (Kg)</strong>
+                        <small>Kg + Civil</small>
                     </div>
                     <div class="quote-type-card btn-ripple" id="cardQuoteType_shed" onclick="setNewSiteQuoteType('shed')">
                         <span class="tick-badge">✓</span>
-                        <span class="icon">🏢</span>
-                        <strong>Shed Only</strong>
+                        <span class="icon">⚖️</span>
+                        <strong>Shed (Kg Basis)</strong>
                         <small>PEB Structure</small>
+                    </div>
+                    <div class="quote-type-card btn-ripple" id="cardQuoteType_both_sqft" onclick="setNewSiteQuoteType('both_sqft')">
+                        <span class="tick-badge">✓</span>
+                        <span class="icon">📐</span>
+                        <strong>Comb. (Sq.Ft)</strong>
+                        <small>Sq.Ft + Civil</small>
+                    </div>
+                    <div class="quote-type-card btn-ripple" id="cardQuoteType_shed_sqft" onclick="setNewSiteQuoteType('shed_sqft')">
+                        <span class="tick-badge">✓</span>
+                        <span class="icon">🏢</span>
+                        <strong>Shed (Sq.Ft)</strong>
+                        <small>Shed Rate / Sq.Ft</small>
                     </div>
                     <div class="quote-type-card btn-ripple" id="cardQuoteType_civil" onclick="setNewSiteQuoteType('civil')">
                         <span class="tick-badge">✓</span>
@@ -299,7 +311,22 @@
                                 <input type="number" step="any" id="dimH" placeholder="0" oninput="autoSaveAndUpdate()">
                             </div>
                         </div>
-                        <div class="area-badge">
+
+                        <!-- NEW: SHED RATE / SQ.FT INPUT (Shown only in Sq.Ft Modes) -->
+                        <div id="shedSqftRateInputRow" style="display: none; margin-top: 5px; padding-top: 6px; border-top: 1.5px dashed #cbd5e1;">
+                            <div class="row-2" style="align-items: center;">
+                                <div class="form-group" style="margin: 0;">
+                                    <label style="color:#2563eb; font-weight: 900;">⭐ Shed Rate (₹ / Sq.Ft) *</label>
+                                    <input type="number" step="any" id="shedSqftRateInput" placeholder="e.g. 260" oninput="autoSaveAndUpdate()" style="border-color:#38bdf8; font-weight:900; background:#f0f9ff;">
+                                </div>
+                                <div class="form-group" style="margin: 0;">
+                                    <label>Calculated Basic Cost</label>
+                                    <div id="shedSqftAutoCostBadge" style="padding: 7px 9px; background:#e0f2fe; border: 1.5px solid #7dd3fc; border-radius: 7px; font-weight: 900; color: #0369a1; font-size: 12px; text-align: center;">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="area-badge" style="margin-top: 7px;">
                             Calculated Area: <span id="dashSqFtText">0 Sq.Ft</span>
                         </div>
                     </div>
@@ -308,7 +335,7 @@
                     <div id="shedModulesBlock">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin: 10px 0 6px;">
                             <h3 class="section-title" style="margin:0;">Structure Modules</h3>
-                            <button class="btn-secondary btn-3d-secondary btn-ripple" style="padding: 4px 8px; font-size:10.5px;" onclick="openAddUniversalModuleModal('shed')">
+                            <button class="btn-secondary btn-3d-secondary btn-ripple" id="btnAddUniversalModuleBtn" style="padding: 4px 8px; font-size:10.5px;" onclick="openAddUniversalModuleModal('shed')">
                                 ➕ Add Custom Module
                             </button>
                         </div>
@@ -323,6 +350,7 @@
                                 <span class="mod-card-badge" id="badgePrimTotal">Rs. 0</span>
                             </div>
 
+                            <!-- SECONDARY CARD (Hidden automatically in Sq.Ft mode) -->
                             <div class="module-grid-card card-3d-press btn-ripple" id="cardModSec" onclick="openModuleModal('sec')">
                                 <span class="mod-switch-pill on" id="badgeSecStatus" onclick="event.stopPropagation(); toggleModuleActiveState('sec')">ON</span>
                                 <div>
@@ -428,7 +456,7 @@
                                             <div class="customer-details-block">
                                                 <div class="scope-left-column">
                                                     <div class="scope-heading-dark" id="pdfScopeTitle">
-                                                        QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS
+                                                        QUOTATION FOR PRE-ENGINEERED BUILDING (PEB)
                                                     </div>
                                                     <div class="project-size-heading-label" id="pdfProjectSizeHeading">
                                                         📐 PROJECT SIZE / SHED DIMENSIONS:
@@ -453,27 +481,29 @@
                                                 </div>
                                             </div>
 
-                                            <!-- SECTION 1: STEEL WEIGHT -->
-                                            <div class="section-header-bar">
-                                                <span id="displayHeaderLine1">1. ESTIMATED STEEL WEIGHT:</span>
-                                                <span style="font-size:9px; font-weight:800;">Engineering Estimate</span>
-                                            </div>
-                                            <div class="table-wrapper">
-                                                <table class="theme-data-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style="width: 70%; text-align: left;">DESCRIPTION</th>
-                                                            <th style="width: 30%; text-align: right;">ESTIMATED WEIGHT / AREA</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="pdfSection1TableBody"></tbody>
-                                                </table>
+                                            <!-- SECTION 1: STEEL WEIGHT (Shown in Kg mode) -->
+                                            <div id="pdfSection1WeightWrapper">
+                                                <div class="section-header-bar">
+                                                    <span id="displayHeaderLine1">1. ESTIMATED STEEL WEIGHT:</span>
+                                                    <span style="font-size:9px; font-weight:800;">Engineering Estimate</span>
+                                                </div>
+                                                <div class="table-wrapper">
+                                                    <table class="theme-data-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 70%; text-align: left;">DESCRIPTION</th>
+                                                                <th style="width: 30%; text-align: right;">ESTIMATED WEIGHT / AREA</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="pdfSection1TableBody"></tbody>
+                                                    </table>
+                                                </div>
                                             </div>
 
-                                            <!-- SECTION 2: PRICE BREAKUP -->
+                                            <!-- SECTION 2: PRICE BREAKUP / SPECIFICATIONS (Dynamic 3-Column in Sq.Ft Mode or Standard BOQ) -->
                                             <div class="section-header-bar" style="display:flex; justify-content:space-between; align-items:center;">
-                                                <span id="displayHeaderLine2">2. PRICE BREAKUP AS PER KG RATE:</span>
-                                                <button type="button" class="btn-preview-add-inline btn-ripple" onclick="openAddUniversalModuleModal('shed')">+ Add Module</button>
+                                                <span id="displayHeaderLine2">2. PRICE BREAKUP & SPECIFICATIONS:</span>
+                                                <button type="button" class="btn-preview-add-inline btn-ripple" id="btnPreviewAddModInline" onclick="openAddUniversalModuleModal('shed')">+ Add Module</button>
                                             </div>
                                             <div class="table-wrapper">
                                                 <table class="theme-data-table">
@@ -482,7 +512,7 @@
                                                 </table>
                                             </div>
 
-                                            <!-- SECTION 3: ACCESSORIES BREAKDOWN -->
+                                            <!-- SECTION 3: ACCESSORIES BREAKDOWN (Only in Kg mode) -->
                                             <div id="pdfAccBreakdownContainer" style="display: none;">
                                                 <div class="section-header-bar" style="margin-top: 4px; display:flex; justify-content:space-between; align-items:center;">
                                                     <span id="pdfAccSectionHeading">3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:</span>
@@ -496,7 +526,7 @@
                                                 </div>
                                             </div>
 
-                                            <!-- TERMS & COMMERCIAL SUMMARY -->
+                                            <!-- TERMS, SUMMARY & BANK DETAILS -->
                                             <div class="theme-bottom-summary-grid">
                                                 <div class="terms-column">
                                                     <h4 id="pdfTermsHeaderDisplay">Terms & Conditions:</h4>
@@ -526,6 +556,21 @@
                                                         <b>🏷️ RATE CONTRACT BASIS QUOTATION</b>
                                                         <span>Quotation prepared on Rate Contract Basis. Amounts & Grand Total excluded as per client request.</span>
                                                     </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- NEW: COMPANY BANK ACCOUNT DIAGRAM (Auto-hides if blank) -->
+                                            <div id="pdfCompanyBankDetailsBox" class="company-bank-card-diagram" style="display: none;">
+                                                <div class="bank-card-head">
+                                                    <span>🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span>
+                                                </div>
+                                                <div class="bank-card-grid">
+                                                    <div class="bank-item"><span>Bank Name:</span> <b id="pdfBankNameDisplay">-</b></div>
+                                                    <div class="bank-item"><span>Account Name:</span> <b id="pdfBankAccNameDisplay">-</b></div>
+                                                    <div class="bank-item"><span>Account No:</span> <b id="pdfBankAccNoDisplay" style="letter-spacing: 0.5px;">-</b></div>
+                                                    <div class="bank-item"><span>IFSC Code:</span> <b id="pdfBankIfscDisplay">-</b></div>
+                                                    <div class="bank-item"><span>Branch:</span> <b id="pdfBankBranchDisplay">-</b></div>
+                                                    <div class="bank-item" id="pdfBankUpiWrap"><span>UPI ID:</span> <b id="pdfBankUpiDisplay">-</b></div>
                                                 </div>
                                             </div>
 
@@ -650,7 +695,7 @@
 
                                             <div id="civilCustomCategoriesPage2Wrapper"></div>
 
-                                            <!-- DEDICATED CIVIL TERMS -->
+                                            <!-- DEDICATED CIVIL TERMS & SUMMARY -->
                                             <div class="theme-bottom-summary-grid">
                                                 <div class="terms-column">
                                                     <h4 id="civilPdfTermsHeaderDisplay">Civil Work Terms & Conditions:</h4>
@@ -673,6 +718,21 @@
                                                         <b>🏷️ CIVIL RATE CONTRACT BASIS QUOTATION</b>
                                                         <span>Civil Work prepared on Unit Rate basis. Final billing as per actual joint site measurements.</span>
                                                     </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- CIVIL BANK ACCOUNT DIAGRAM -->
+                                            <div id="civilPdfCompanyBankDetailsBox" class="company-bank-card-diagram" style="display: none;">
+                                                <div class="bank-card-head">
+                                                    <span>🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span>
+                                                </div>
+                                                <div class="bank-card-grid">
+                                                    <div class="bank-item"><span>Bank Name:</span> <b id="civilPdfBankNameDisplay">-</b></div>
+                                                    <div class="bank-item"><span>Account Name:</span> <b id="civilPdfBankAccNameDisplay">-</b></div>
+                                                    <div class="bank-item"><span>Account No:</span> <b id="civilPdfBankAccNoDisplay" style="letter-spacing: 0.5px;">-</b></div>
+                                                    <div class="bank-item"><span>IFSC Code:</span> <b id="civilPdfBankIfscDisplay">-</b></div>
+                                                    <div class="bank-item"><span>Branch:</span> <b id="civilPdfBankBranchDisplay">-</b></div>
+                                                    <div class="bank-item" id="civilPdfBankUpiWrap"><span>UPI ID:</span> <b id="civilPdfBankUpiDisplay">-</b></div>
                                                 </div>
                                             </div>
 
@@ -937,6 +997,12 @@
             <h4 class="section-title">Controls & Custom Details</h4>
             
             <div class="settings-grid">
+                <!-- NEW: COMPANY BANK DETAILS BUTTON -->
+                <div class="setting-grid-card card-3d-press btn-ripple" onclick="openBankDetailsModal()" style="border-left: 4px solid #0284c7;">
+                    <span class="icon">🏦</span>
+                    <div><div class="title">Company Bank Details</div><div class="subtitle">A/C No, IFSC, Bank Name</div></div>
+                </div>
+
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('companyAddr', 'Company Full Address')">
                     <span class="icon">📍</span>
                     <div><div class="title">Company Address</div><div class="subtitle">Bhawani Nagar, Bhilwara</div></div>
@@ -965,6 +1031,57 @@
                     <span class="icon">🏗️</span>
                     <div><div class="title">Civil Terms & Conditions</div><div class="subtitle">Water, soil excavation etc.</div></div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: COMPANY BANK ACCOUNT DETAILS (NEW) -->
+    <div id="companyBankDetailsModal" class="modal">
+        <div class="modal-body modal-3d" style="max-height: 90vh;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
+                <div>
+                    <h3 style="font-size: 14.5px; font-weight: 900; color: #0c1e30;">🏦 Company Bank Account Details</h3>
+                    <p style="font-size: 10.5px; color: #0284c7; font-weight: 700;">* Khali chhodne par diagram PDF se gayab ho jayega</p>
+                </div>
+                <button class="btn-del-pro btn-ripple" onclick="closeBankDetailsModal()">✕ Close</button>
+            </div>
+
+            <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" id="inpBankName" placeholder="e.g. HDFC Bank / State Bank of India">
+            </div>
+            <div class="form-group">
+                <label>Account Holder Name (Firm Name)</label>
+                <input type="text" id="inpBankAccName" placeholder="e.g. PATEL ENGINEERING">
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Bank Account Number</label>
+                    <input type="text" id="inpBankAccNo" placeholder="Account Number">
+                </div>
+                <div class="form-group">
+                    <label>IFSC Code</label>
+                    <input type="text" id="inpBankIfsc" placeholder="e.g. HDFC0000456" style="text-transform: uppercase;">
+                </div>
+            </div>
+            <div class="row-2">
+                <div class="form-group">
+                    <label>Branch / City</label>
+                    <input type="text" id="inpBankBranch" placeholder="e.g. Bhilwara Main Branch">
+                </div>
+                <div class="form-group">
+                    <label>UPI ID (Optional)</label>
+                    <input type="text" id="inpBankUpi" placeholder="e.g. company@upi">
+                </div>
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top: 14px;">
+                <button class="btn-del-pro btn-ripple" style="flex:1; justify-content:center; padding:10px;" onclick="clearCompanyBankDetails()">
+                    🗑️ Clear (Make Blank)
+                </button>
+                <button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveCompanyBankDetails()">
+                    ✓ SAVE BANK DETAILS
+                </button>
             </div>
         </div>
     </div>
@@ -1016,19 +1133,29 @@
                 <button class="btn-del-pro btn-ripple" onclick="closeEditCustomerModal()">✕ Close</button>
             </div>
 
-            <!-- REFINED QUOTATION MODE SELECTOR WITH TICK BADGE -->
+            <!-- 5-MODE QUOTATION SELECTOR IN EDIT MODAL -->
             <div class="card card-accent-top card-3d" style="margin-bottom:8px;">
                 <label class="form-head-label" style="color:#0f2942;">🎯 Switch Quotation Mode:</label>
-                <div class="quote-type-selector-grid">
+                <div class="quote-type-selector-grid" id="editQuoteTypeGrid">
                     <div class="quote-type-card btn-ripple" id="editCardQuoteType_both" onclick="setEditSiteQuoteType('both')">
                         <span class="tick-badge">✓</span>
                         <span class="icon">📑</span>
-                        <strong>Combined</strong>
+                        <strong>Combined (Kg)</strong>
                     </div>
                     <div class="quote-type-card btn-ripple" id="editCardQuoteType_shed" onclick="setEditSiteQuoteType('shed')">
                         <span class="tick-badge">✓</span>
+                        <span class="icon">⚖️</span>
+                        <strong>Shed (Kg Basis)</strong>
+                    </div>
+                    <div class="quote-type-card btn-ripple" id="editCardQuoteType_both_sqft" onclick="setEditSiteQuoteType('both_sqft')">
+                        <span class="tick-badge">✓</span>
+                        <span class="icon">📐</span>
+                        <strong>Comb. (Sq.Ft)</strong>
+                    </div>
+                    <div class="quote-type-card btn-ripple" id="editCardQuoteType_shed_sqft" onclick="setEditSiteQuoteType('shed_sqft')">
+                        <span class="tick-badge">✓</span>
                         <span class="icon">🏢</span>
-                        <strong>Shed Only</strong>
+                        <strong>Shed (Sq.Ft)</strong>
                     </div>
                     <div class="quote-type-card btn-ripple" id="editCardQuoteType_civil" onclick="setEditSiteQuoteType('civil')">
                         <span class="tick-badge">✓</span>
@@ -1280,7 +1407,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
                 <div>
                     <h3 id="modModalTitle" style="font-size: 15px; font-weight: 800; color: #000;">Module Details</h3>
-                    <p style="font-size: 11px; color: #64748b;">Title, header line & specifications control</p>
+                    <p style="font-size: 11px; color: #64748b;" id="modModalSubNotice">Title, header line & specifications control</p>
                 </div>
                 <button class="btn-del-pro btn-ripple" onclick="closeModuleModal()">✕ Close</button>
             </div>
