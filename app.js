@@ -2217,8 +2217,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetHtml('civilFoundationTableHead', cleanCivHead); safeSetHtml('civilBrickWallTableHead', cleanCivHead); safeSetHtml('civilFlooringTableHead', cleanCivHead);
 
         const renderCivSection = (secKey, secPrefix, tbodyId, titleKey, defaultTitle, isEnabled) => {
-            const sec = civ[secKey], finalTitle = app
-const sec = civ[secKey], finalTitle = appSettings[titleKey] || sec.title || defaultTitle;
+            const sec = civ[secKey], finalTitle = appSettings[titleKey] || sec.title || defaultTitle;
             safeSetText(titleKey, finalTitle);
             const titleEl = document.getElementById(titleKey)?.parentElement, tbody = document.getElementById(tbodyId), tblWrap = tbody?.closest('.table-wrapper');
             if (!isEnabled) { if (titleEl) titleEl.style.display = 'none'; if (tblWrap) tblWrap.style.display = 'none'; return; }
