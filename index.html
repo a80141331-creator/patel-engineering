@@ -166,13 +166,11 @@
                 </div>
             </div>
 
-            <!-- SAVED CLIENT AUTO-FILL BAR -->
-            <div class="saved-client-picker-bar">
-                <span>⚡ Existing Client?</span>
-                <select id="selectExistingClient" onchange="handleSavedClientSelect(this, 'create')">
-                    <option value="">👤 -- Select Saved Client (Auto-fill) --</option>
-                </select>
-            </div>
+            <!-- SAVED CLIENT THEMED TRIGGER BUTTON -->
+            <button type="button" class="saved-client-trigger-btn btn-ripple" onclick="openSavedClientsPickerModal('create')">
+                <span>👤 Select Existing Client (Auto-fill)</span>
+                <span>📋 Choose Saved ➔</span>
+            </button>
 
             <div class="card card-3d">
                 <div class="form-group">
@@ -991,6 +989,25 @@
         </div>
     </div>
 
+    <!-- NEW MODAL: SAVED CLIENT PICKER (100% COMPANY THEME MODAL) -->
+    <div id="savedClientModal" class="modal">
+        <div class="modal-body modal-3d" style="max-height: 85vh; overflow-y: auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px; border-bottom: 2px solid var(--header-bg); padding-bottom: 6px;">
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 900; color: #0c1e30;">👤 Select Saved Client</h3>
+                    <p style="font-size: 10.5px; color: #64748b; font-weight: 700;">Click client to auto-fill details</p>
+                </div>
+                <button class="btn-del-pro btn-ripple" onclick="closeModalSafe('savedClientModal')">✕ Close</button>
+            </div>
+
+            <div id="savedClientsPickerList" style="margin-bottom: 10px;"></div>
+
+            <button class="btn-secondary btn-3d-secondary btn-ripple" style="width:100%; justify-content:center; padding:10px;" onclick="closeModalSafe('savedClientModal')">
+                Cancel
+            </button>
+        </div>
+    </div>
+
     <!-- MODAL: EDIT CUSTOMER DETAILS -->
     <div id="editCustomerModal" class="modal">
         <div class="modal-body modal-3d" style="max-height: 94vh;">
@@ -1021,13 +1038,11 @@
                 </div>
             </div>
 
-            <!-- SAVED CLIENT AUTO-FILL BAR IN EDIT MODAL -->
-            <div class="saved-client-picker-bar">
-                <span>⚡ Existing Client?</span>
-                <select id="editSelectExistingClient" onchange="handleSavedClientSelect(this, 'edit')">
-                    <option value="">👤 -- Select Saved Client (Auto-fill) --</option>
-                </select>
-            </div>
+            <!-- SAVED CLIENT THEMED TRIGGER IN EDIT MODAL -->
+            <button type="button" class="saved-client-trigger-btn btn-ripple" onclick="openSavedClientsPickerModal('edit')">
+                <span>👤 Select Existing Client (Auto-fill)</span>
+                <span>📋 Choose Saved ➔</span>
+            </button>
 
             <div class="form-group">
                 <label style="color:#dc2626;">Client / Firm Name *</label>
@@ -1357,6 +1372,52 @@
         </div>
     </div>
 
+    <!-- INLINE SCRIPT FOR THEMED CLIENT PICKER -->
+    <script>
+        let currentClientPickerTarget = 'create';
+        function openSavedClientsPickerModal(targetMode = 'create') {
+            currentClientPickerTarget = targetMode;
+            const container = document.getElementById('savedClientsPickerList');
+            if (!container) return;
+            const clients = (typeof getUniqueSavedClients === 'function') ? getUniqueSavedClients() : [];
+            if (!clients.length) {
+                container.innerHTML = `<div style="text-align:center; padding:24px 10px; color:#64748b; font-weight:700;">No saved clients found. Details will save automatically when you create proposals.</div>`;
+            } else {
+                container.innerHTML = "";
+                clients.forEach((c, idx) => {
+                    container.innerHTML += `
+                        <div class="client-group-card btn-ripple" onclick="selectSavedClientByIndex(${idx})">
+                            <div style="flex:1;">
+                                <strong style="font-size:13px; color:#0c1e30; display:block;">${c.clientName}</strong>
+                                <span style="font-size:11px; color:#64748b;">${c.custGST ? `GST: ${c.custGST} | ` : ''}📍 ${c.custAddress || 'Site Location'}</span>
+                                <div style="font-size:10.5px; color:#0369a1; font-weight:700; margin-top:2px;">📞 ${c.custNumber1 || '-'} (${c.custContactPerson || '-'})</div>
+                            </div>
+                            <span style="font-size:11px; font-weight:900; background:#e0f2fe; color:#0369a1; padding:5px 9px; border-radius:6px;">Auto-fill ➔</span>
+                        </div>`;
+                });
+            }
+            openModalWithHistory('savedClientModal');
+        }
+
+        function selectSavedClientByIndex(idx) {
+            const clients = (typeof getUniqueSavedClients === 'function') ? getUniqueSavedClients() : [];
+            const c = clients[idx];
+            if (!c) return;
+            const prefix = currentClientPickerTarget === 'edit' ? 'editCust' : 'cust';
+            safeSetVal(prefix + 'Name', c.clientName || '');
+            safeSetVal(prefix + 'ContactPerson', c.custContactPerson || '');
+            safeSetVal(prefix + 'Role', c.custRole || '');
+            safeSetVal(prefix + 'Number1', c.custNumber1 || '');
+            safeSetVal(prefix + 'Number2', c.custNumber2 || '');
+            safeSetVal(prefix + 'Address', c.custAddress || '');
+            safeSetVal(prefix + 'GST', c.custGST || '');
+            safeSetVal(prefix + 'Email', c.custEmail || '');
+            closeModalSafe('savedClientModal');
+            if (typeof showCorporateToast === 'function') {
+                showCorporateToast(`Client "${c.clientName}" details auto-filled!`, "👤");
+            }
+        }
+    </script>
     <script src="app.js"></script>
 </body>
 </html>
