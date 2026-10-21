@@ -60,7 +60,7 @@ function scrollCivilPreviewPane(delta) {
     if (vp) { vp.scrollBy({ top: delta, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); }
 }
 
-// 3. MASTER BLUEPRINT & SETTINGS
+// 3. MASTER BLUEPRINT & APP SETTINGS
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
     primSpecs: [
@@ -591,7 +591,6 @@ function autoFitPreview() {
                 wrapper.style.marginBottom = '0px';
             }
 
-            // Zero blue screen gap: Mobile hugs exact sheet height; Desktop has clean scroll
             if (!isDesktop) {
                 viewport.style.setProperty('height', 'auto', 'important');
                 viewport.style.setProperty('max-height', 'none', 'important');
@@ -650,9 +649,7 @@ function attachDynamicPreviewObserver() {
 }
 window.addEventListener('resize', () => { autoDetectDeviceMode(); autoFitPreview(); });
 
-// ========================================================
-// 11. CLIENT DIRECTORY, AUTO-FILL & SMART MULTI-QUOTE GROUPING
-// ========================================================
+// 11. CLIENT DIRECTORY & AUTO-FILL & SMART MULTI-QUOTE GROUPING
 function getClientGroupKey(site) {
     const name = (site.clientName || '').trim().toLowerCase();
     const gst = (site.custGST || '').trim().toLowerCase();
@@ -692,8 +689,7 @@ function renderSavedClientsDropdown(selectElemId, targetMode = 'create') {
 function handleSavedClientSelect(selectElem, targetMode = 'create') {
     const idx = parseInt(selectElem.value, 10);
     if (isNaN(idx)) return;
-    const clients = getUniqueSavedClients();
-    const c = clients[idx];
+    const clients = getUniqueSavedClients(), c = clients[idx];
     if (!c) return;
 
     const prefix = targetMode === 'edit' ? 'editCust' : 'cust';
@@ -705,7 +701,6 @@ function handleSavedClientSelect(selectElem, targetMode = 'create') {
     safeSetVal(prefix + 'Address', c.custAddress || '');
     safeSetVal(prefix + 'GST', c.custGST || '');
     safeSetVal(prefix + 'Email', c.custEmail || '');
-
     showCorporateToast(`Client "${c.clientName}" details auto-filled!`, "👤");
 }
 
@@ -787,7 +782,6 @@ function renderHomeScreen() {
         return;
     }
 
-    // Group sites by Client (Client Name + GSTIN)
     const clientGroups = {};
     sites.forEach(site => {
         const key = getClientGroupKey(site);
@@ -798,7 +792,6 @@ function renderHomeScreen() {
     Object.keys(clientGroups).forEach(groupKey => {
         const group = clientGroups[groupKey];
         if (group.length === 1) {
-            // Exactly 1 quotation for this client -> Opens normally
             const site = group[0];
             const sqft = ((parseFloat(site.dimW) || 0) * (parseFloat(site.dimL) || 0));
             const modeBadge = site.quoteType === 'civil' ? '🧱 CIVIL ONLY' : site.quoteType === 'shed' ? '🏢 SHED ONLY' : '📑 COMBINED';
@@ -821,7 +814,6 @@ function renderHomeScreen() {
                     </div>
                 </div>`;
         } else {
-            // More than 1 quotation for same client -> Grouped client card with modal view
             const leadSite = group[0];
             container.innerHTML += `
                 <div class="card card-3d" onclick="openClientQuotationsModal('${groupKey}')" style="cursor:pointer; border-left: 5px solid #2563eb !important; background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);">
@@ -909,8 +901,6 @@ function saveNewBlankSiteAndOpen() {
     sites.unshift(newSite); syncDataToCloud('patel_app_sites', sites);
     renderHomeScreen(); loadPhoneSettingsUI(); loadSiteToDashboard(newSite.id); showCorporateToast(`New Proposal ${autoQuoteNumber} created!`);
 }
-
-function getCurrentSite() { return sites.find(s => s.id === currentSiteId); }
 
 function loadSiteToDashboard(siteId) {
     currentSiteId = siteId; const site = getCurrentSite(); if (!site) return;
@@ -1761,7 +1751,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     safeSetText('civilPdfClientName', site.clientName || "-"); safeSetText('civilPdfContactPersonDisplay', contactPersonLine);
     safeSetText('civilPdfClientPhone', clientPhones); safeSetText('civilPdfClientGst', site.custGST || "-"); safeSetText('civilPdfClientAddr', site.custAddress || "-");
 
-    // STRICT ISOLATION BY MODE
     const isShedActive = (site.quoteType === 'both' || site.quoteType === 'shed');
     const isCivilActive = (site.quoteType === 'both' || site.quoteType === 'civil');
 
@@ -2181,7 +2170,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
                 curPage.removeChild(custCatClone); document.body.removeChild(testStage);
                 appendPageToOutput(outputContainer, curPage, false);
-pageNum++; curPage = createPageBox(true);
+                pageNum++; curPage = createPageBox(true);
                 const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                 contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                 curPage.appendChild(contBar); curPage.appendChild(custCatClone);
