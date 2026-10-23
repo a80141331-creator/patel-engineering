@@ -64,7 +64,7 @@ html, body { background: #0f172a; color: #000000; overflow-x: hidden; font-size:
 .card-3d-press { background: #fff; border: 1.5px solid #cbd5e1; border-bottom: 2.5px solid #94a3b8; border-radius: 8px; cursor: pointer; }
 .card-3d-press:active { transform: translateY(1.5px); border-bottom-width: 1px; }
 
-/* EDITABLE PREVIEW ELEMENTS (CLEAN & CLEAR) */
+/* EDITABLE PREVIEW ELEMENTS */
 .editable-preview-title, [contenteditable="true"] { outline: none !important; border-radius: 3px; transition: background 0.15s ease, box-shadow 0.15s ease; cursor: text; display: inline-block; }
 .editable-preview-title:hover, [contenteditable="true"]:hover { background: rgba(37, 99, 235, 0.08) !important; }
 .editable-preview-title:focus, [contenteditable="true"]:focus { background: #ffffff !important; box-shadow: 0 0 0 2px #2563eb !important; color: #000000 !important; padding: 2px 4px !important; border-radius: 4px; }
@@ -233,17 +233,65 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .client-list-row span.label { display: table-cell !important; width: 95px !important; font-weight: 900 !important; color: #000000 !important; }
 .client-list-row span.val { display: table-cell !important; width: auto !important; font-weight: 800 !important; color: #000000 !important; text-align: right !important; }
 
-/* TABLES & SOLID DARK COLUMN BORDERS (LARGER SECTION TITLE) */
+/* TABLES & SOLID DARK COLUMN BORDERS */
 .section-header-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 4.5px 12px !important; font-size: calc(10.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
 .table-wrapper { padding: 0 !important; margin: 0 !important; width: 100% !important; }
 .theme-data-table, .civil-schedule-table { width: 100% !important; border-collapse: collapse !important; border-spacing: 0 !important; font-size: calc(10px * var(--pdf-font-scale)) !important; border-left: 2px solid #000000 !important; border-right: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; }
 .theme-data-table th, .civil-schedule-table th { background: var(--th-primary) !important; color: #fff !important; font-weight: 900 !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; text-transform: uppercase; padding: 5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-right: 1.5px solid #000000 !important; }
-.theme-data-table td, .civil-schedule-table td { padding: 4.5px 6px !important; border-bottom: 1.5px solid #000000 !important; border-right: 1.5px solid #000000 !important; font-size: calc(10px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000 !important; vertical-align: middle; }
-.theme-data-table td:last-child, .civil-schedule-table td:last-child, .theme-data-table th:last-child, .civil-schedule-table th:last-child { border-right: none !important; }
-.theme-data-table tbody tr:nth-child(even), .civil-schedule-table tbody tr:nth-child(even) { background: #f8fafc !important; }
-.theme-data-table tbody tr:last-child td, .civil-schedule-table tbody tr:last-child td { border-bottom: 2px solid #000000 !important; }
+
+/* MAIN TABLE ROWS: ONLY OUTER BORDERS ALLOWED */
+.theme-data-table > tbody > tr > td, 
+.civil-schedule-table > tbody > tr > td { 
+    padding: 4.5px 6px !important; 
+    border-bottom: 1.5px solid #000000 !important; 
+    border-right: 1.5px solid #000000 !important; 
+    font-size: calc(10px * var(--pdf-font-scale)) !important; 
+    font-weight: 800 !important; 
+    color: #000000 !important; 
+    vertical-align: middle; 
+}
+.theme-data-table > tbody > tr > td:last-child, 
+.civil-schedule-table > tbody > tr > td:last-child, 
+.theme-data-table th:last-child, 
+.civil-schedule-table th:last-child { 
+    border-right: none !important; 
+}
+.theme-data-table > tbody > tr:nth-child(even), 
+.civil-schedule-table > tbody > tr:nth-child(even) { 
+    background: #f8fafc !important; 
+}
+.theme-data-table > tbody > tr:last-child > td, 
+.civil-schedule-table > tbody > tr:last-child > td { 
+    border-bottom: 2px solid #000000 !important; 
+}
 .executive-weight-total-row { background: #cbd5e1 !important; }
 .executive-weight-total-row td { padding: 4.5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; color: #000000 !important; font-weight: 900 !important; }
+
+/* ==========================================================================
+   NESTED SPEC TABLES (SQ.FT MODE): 100% HORIZONTAL LINES KILLED & HIDDEN
+   ========================================================================== */
+.theme-data-table table,
+.theme-data-table table tr,
+.theme-data-table table td,
+.nested-spec-table, 
+.nested-spec-table tr, 
+.nested-spec-table td {
+    border-top: none !important;
+    border-bottom: none !important;
+    border-spacing: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+.nested-spec-table td:first-child,
+.theme-data-table table td:first-child {
+    border-right: 1.5px solid #000000 !important;
+    border-left: none !important;
+}
+.nested-spec-table td:last-child,
+.theme-data-table table td:last-child {
+    border-right: none !important;
+    border-left: none !important;
+}
 
 /* HIGHLIGHTED PILLS */
 .item-specs-bullets { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000 !important; margin-top: 3px !important; line-height: 1.35 !important; }
