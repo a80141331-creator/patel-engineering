@@ -226,13 +226,13 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .client-list-row span.label { display: table-cell !important; width: 95px !important; font-weight: 900 !important; color: #000000 !important; }
 .client-list-row span.val { display: table-cell !important; width: auto !important; font-weight: 800 !important; color: #000000 !important; text-align: right !important; }
 
-/* TABLES BASE */
+/* TABLES BASE (STRICT FIXED TABLE LAYOUT TO PREVENT GAPS) */
 .section-header-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 4.5px 12px !important; font-size: calc(10.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
 .table-wrapper { padding: 0 !important; margin: 0 !important; width: 100% !important; }
-.theme-data-table, .civil-schedule-table { width: 100% !important; border-collapse: collapse !important; border-spacing: 0 !important; font-size: calc(10px * var(--pdf-font-scale)) !important; border-left: 2px solid #000000 !important; border-right: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; }
+.theme-data-table, .civil-schedule-table { width: 100% !important; border-collapse: collapse !important; border-spacing: 0 !important; table-layout: fixed !important; font-size: calc(10px * var(--pdf-font-scale)) !important; border: 2px solid #000000 !important; }
 .theme-data-table th, .civil-schedule-table th { background: var(--th-primary) !important; color: #fff !important; font-weight: 900 !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; text-transform: uppercase; padding: 5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-right: 1.5px solid #000000 !important; }
 
-/* ONLY MAIN ROWS GET OUTER BOTTOM BORDER */
+/* MAIN TABLE CELLS: 100% SOLID OUTER LINES */
 .theme-data-table > tbody > tr > td, 
 .civil-schedule-table > tbody > tr > td { 
     padding: 4.5px 6px !important; 
@@ -261,7 +261,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .executive-weight-total-row td { padding: 4.5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; color: #000000 !important; font-weight: 900 !important; }
 
 /* =========================================================
-   NESTED TABLES: ZERO INNER HORIZONTAL LINES GUARANTEED
+   NESTED TABLES: PERFECT VERTICAL DIVIDER & ZERO INNER LINES
    ========================================================= */
 .theme-data-table table,
 .theme-data-table table tr,
@@ -274,6 +274,12 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
     border-spacing: 0 !important;
     box-shadow: none !important;
     background: transparent !important;
+}
+.nested-spec-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    border: none !important;
 }
 .nested-spec-table td:first-child,
 .theme-data-table table td:first-child {
@@ -290,6 +296,10 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .item-specs-bullets { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000 !important; margin-top: 3px !important; line-height: 1.35 !important; }
 .item-specs-bullets span { display: inline-block !important; background: #e0f2fe !important; color: #0c1e30 !important; font-weight: 800 !important; border: 1px solid #0284c7 !important; padding: 1.5px 5px !important; border-radius: 4px !important; margin: 1px 1.5px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; }
 .spec-highlight-pill { display: inline-block !important; background: #e0f2fe !important; color: #0c1e30 !important; font-weight: 800 !important; border: 1px solid #0284c7 !important; padding: 1.5px 5px !important; border-radius: 4px !important; margin-top: 2px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; }
+
+/* SQ.FT 3-COLUMN SEPARATE DETAILS */
+.sqft-spec-detail-box { display: flex; flex-direction: column; gap: 2px; font-size: calc(9.5px * var(--pdf-font-scale)) !important; color: #000000; font-weight: 800; line-height: 1.35; }
+.sqft-spec-dim-badge { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; border: 1.5px solid #000000; border-radius: 4px; padding: 1px 5px; font-weight: 800; font-size: calc(9px * var(--pdf-font-scale)) !important; color: #000000; margin: 1px 0; }
 
 .civil-job-details-ribbon { background: var(--th-primary) !important; color: #fff !important; padding: 4.5px 10px !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase; width: 100% !important; border-bottom: 2px solid #000000 !important; }
 .civil-category-title-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 3.5px 10px !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; width: 100% !important; }
@@ -309,7 +319,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .combined-package-summary-box { margin-top: 2.5px !important; background: #0c1e30 !important; border: 1.5px solid #000000 !important; border-radius: 4px !important; padding: 3px 7px !important; color: #fff !important; display: flex !important; flex-direction: column !important; gap: 1.5px !important; width: 100% !important; }
 .comb-row { display: flex !important; justify-content: space-between !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #e2e8f0 !important; }
 .comb-rate-pill { margin-top: 1.5px !important; padding: 2px 5px !important; background: rgba(56,189,248,0.15) !important; border: 1px solid #38bdf8 !important; border-radius: 3px !important; display: flex !important; justify-content: space-between !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #fff !important; }
-.preview-unit-pill { display: inline-flex; align-items: center; padding: 1px 3.5px; border-radius: 3px; background: #e0f2fe; border: 1px solid #7dd3fc; color: #0369a1; font-weight: 900; font-size: calc(9px * var(--pdf-font-scale)) !important; cursor: pointer; }
+.preview-unit-pill { display: inline-flex; align-items: center; padding: 1px 3.5px; border-radius: 3px; background: #f1f5f9; border: 1px solid #94a3b8; color: #000000; font-weight: 900; font-size: calc(9px * var(--pdf-font-scale)) !important; cursor: pointer; }
 .btn-preview-add-inline, .btn-acc-preview-add { font-size: 9px !important; font-weight: 900 !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; color: #fff !important; padding: 2px 6px !important; border-radius: 3px !important; border: 1px solid #38bdf8 !important; cursor: pointer !important; }
 .rate-prefix { font-weight: 800; color: #000000; }
 
@@ -335,7 +345,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 
 .geo-footer-wrapper { position: relative; width: 100% !important; background: #fff; border-top: 2px solid #000000 !important; overflow: hidden; display: flex; }
 .footer-full-bar { width: 100% !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; display: flex; flex-direction: column; padding: 5px 12px !important; color: #fff; gap: 2px; }
-.footer-row-item { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #fff !important; }
+.footer-row-item { display: flex; align-items: center flex-wrap: wrap; gap: 8px; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #fff !important; }
 .gstin-pill-inline { background: #fff; color: #0c1e30 !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; padding: 1px 5px; border-radius: 3px; }
 
 /* MODALS & CONTROLS */
