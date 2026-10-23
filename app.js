@@ -1,20 +1,12 @@
 // 1. FIREBASE CONFIGURATION
 const firebaseConfig = {
-    apiKey: "AIzaSyB_b6KlFizZGALLEZnRcJ0Pd16NUEF6QY8",
-    authDomain: "patel-engineering-3b4c4.firebaseapp.com",
-    databaseURL: "https://patel-engineering-3b4c4-default-rtdb.firebaseio.com",
-    projectId: "patel-engineering-3b4c4",
-    storageBucket: "patel-engineering-3b4c4.firebasestorage.app",
-    messagingSenderId: "261245424222",
-    appId: "1:261245424222:web:126273db274b515f8cdacf"
+    apiKey: "AIzaSyB_b6KlFizZGALLEZnRcJ0Pd16NUEF6QY8", authDomain: "patel-engineering-3b4c4.firebaseapp.com",
+    databaseURL: "https://patel-engineering-3b4c4-default-rtdb.firebaseio.com", projectId: "patel-engineering-3b4c4",
+    storageBucket: "patel-engineering-3b4c4.firebasestorage.app", messagingSenderId: "261245424222", appId: "1:261245424222:web:126273db274b515f8cdacf"
 };
 let db = null, isFirebaseConnected = false, isCloudInitialSyncDone = false;
 try {
-    if (typeof firebase !== 'undefined' && firebase.initializeApp) {
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.database();
-        isFirebaseConnected = true;
-    }
+    if (typeof firebase !== 'undefined' && firebase.initializeApp) { firebase.initializeApp(firebaseConfig); db = firebase.database(); isFirebaseConnected = true; }
 } catch (e) { console.warn("Firebase note:", e); }
 let masterSecurityPasscode = localStorage.getItem('pe_master_passcode') || "RJ06CC7194";
 
@@ -90,22 +82,27 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-// DEDICATED SQ.FT BLUEPRINT
+// DEDICATED SQ.FT BLUEPRINT WITH THICKNESS & QUANTITY SUPPORT
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
+    primCustomLine: "Heavy Duty Structural Steel Portal Framing System",
     moduleOrder: ['prim', 'clad', 'acc', 'erect'],
     primSpecs: [
-        { text: "Columns (Main Stanchions)", length: "22", width: "300", dimUnit: "mm", selected: true },
-        { text: "Truss / Rafter Framing", length: "50", width: "250", dimUnit: "mm", selected: true },
-        { text: "Tie Beams & Bracings", length: "15", width: "150", dimUnit: "mm", selected: true },
-        { text: "Canopy & Tie Members", length: "10", width: "100", dimUnit: "mm", selected: true }
+        { text: "Columns (Main Stanchions)", length: "22", width: "300", thk: "6", dimUnit: "mm", selected: true },
+        { text: "Truss / Rafter Framing", length: "50", width: "250", thk: "5", dimUnit: "mm", selected: true },
+        { text: "Tie Beams & Bracings", length: "15", width: "150", thk: "4", dimUnit: "mm", selected: true },
+        { text: "Canopy & Tie Members", length: "10", width: "100", thk: "3", dimUnit: "mm", selected: true }
     ],
     cladThickness: "0.50 mm", cladCustomLine: "0.50mm TATA BlueScope / JSW Colour Coated Profile Sheet",
+    accCustomLine: "Standard Industrial Shed Accessories Package",
     accessories: [
-        { name: "Turbo Ventilators", selected: true }, { name: "Rainwater Gutters", selected: true },
-        { name: "Down Pipes (PVC)", selected: true }, { name: "Anchor Fastener Bolts", selected: true }
+        { name: "Turbo Ventilators", qty: "6 Nos", selected: true },
+        { name: "Rainwater Gutters", qty: "120 R.Ft", selected: true },
+        { name: "Down Pipes (PVC)", qty: "8 Sets", selected: true },
+        { name: "Anchor Fastener Bolts", qty: "1 Lot", selected: true }
     ],
+    erectCustomLine: "Crane, Hydra, Welding Machine, Expert Labour",
     erectSpecs: [{ text: "Crane", selected: true }, { text: "Hydra", selected: true }, { text: "Welding Machine", selected: true }, { text: "Labour", selected: true }]
 };
 
@@ -167,6 +164,11 @@ function syncSiteStructureToMasterBlueprint(s) {
             if (s.sqftAccessories) sqftMasterBlueprint.accessories = JSON.parse(JSON.stringify(s.sqftAccessories));
             sqftMasterBlueprint.sqftScopeDesc = s.sqftScopeDesc || sqftMasterBlueprint.sqftScopeDesc;
             sqftMasterBlueprint.sqftTableDesc = s.sqftTableDesc || sqftMasterBlueprint.sqftTableDesc;
+            sqftMasterBlueprint.primCustomLine = s.primCustomLine || sqftMasterBlueprint.primCustomLine;
+            sqftMasterBlueprint.cladCustomLine = s.cladCustomLine || sqftMasterBlueprint.cladCustomLine;
+            sqftMasterBlueprint.cladThickness = s.cladThickness || sqftMasterBlueprint.cladThickness;
+            sqftMasterBlueprint.accCustomLine = s.accCustomLine || sqftMasterBlueprint.accCustomLine;
+            sqftMasterBlueprint.erectCustomLine = s.erectCustomLine || sqftMasterBlueprint.erectCustomLine;
             if (s.moduleOrder) sqftMasterBlueprint.moduleOrder = [...s.moduleOrder];
             localStorage.setItem('patel_sqft_master_blueprint', JSON.stringify(sqftMasterBlueprint));
             if (db && isFirebaseConnected) db.ref('patel_sqft_master_blueprint').set(sqftMasterBlueprint).catch(() => {});
@@ -366,7 +368,7 @@ document.addEventListener('click', function(e) {
     setTimeout(() => { if (circle && circle.parentNode) circle.remove(); }, 500);
 });
 
-// 8. DRAG & DROP REORDERING (WORKS ACROSS ALL MODES)
+// 8. DRAG & DROP REORDERING
 let activeTouchDragScope = null, activeTouchDragIndex = null, activeTouchDragParent = null, activeTouchDragElement = null;
 function setupUniversalReorder(rowEl, handleEl, scope, index, parentCat = null) {
     if (!rowEl || !handleEl) return;
@@ -420,8 +422,7 @@ function handleItemsReorder(scope, fromIndex, toIndex, parentCat = null) {
     const from = parseInt(fromIndex, 10), to = parseInt(toIndex, 10);
     if (scope === 'shed_modules') {
         if (!site.moduleOrder) site.moduleOrder = isSqftMode(site) ? ['prim', 'clad', 'acc', 'erect'] : ['prim', 'sec', 'clad', 'acc', 'erect'];
-        const item = site.moduleOrder.splice(from, 1)[0];
-        site.moduleOrder.splice(to, 0, item);
+        const item = site.moduleOrder.splice(from, 1)[0]; site.moduleOrder.splice(to, 0, item);
     } else if (scope === 'accessories') {
         const item = site.accessories.splice(from, 1)[0]; site.accessories.splice(to, 0, item);
     } else if (scope === 'civil_items') {
@@ -542,7 +543,7 @@ function attachDynamicPreviewObserver() {
 }
 window.addEventListener('resize', () => { autoDetectDeviceMode(); autoFitPreview(); });
 
-// 11. CLIENT DIRECTORY & GROUPING (DIRECT TOUCH CARD - NO OPEN BUTTON)
+// 11. CLIENT DIRECTORY & GROUPING
 function getClientGroupKey(s) {
     const name = (s.clientName || '').trim().toLowerCase(), gst = (s.custGST || '').trim().toLowerCase();
     return (name && gst) ? `${name}__${gst}` : (name || 'untitled');
@@ -611,7 +612,7 @@ function createNewQuoteForCurrentGroup() {
     }
 }
 
-// 12. HOMEPAGE (DIRECT TOUCH - NO OPEN BUTTON)
+// 12. HOMEPAGE
 let tempNewQuoteType = 'both';
 function setNewSiteQuoteType(type) {
     tempNewQuoteType = type;
@@ -645,7 +646,6 @@ function renderHomeScreen() {
             else if (site.quoteType === 'shed_sqft') modeBadge = '🏢 SHED (SQ.FT)';
             else if (site.quoteType === 'both_sqft') modeBadge = '📐 COMB. (SQ.FT)';
 
-            // DIRECT TOUCH CARD - NO OPEN BUTTON
             container.innerHTML += `
                 <div class="card card-3d btn-ripple" onclick="loadSiteToDashboard('${site.id}')" style="cursor:pointer;user-select:none;">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -725,12 +725,16 @@ function saveNewBlankSiteAndOpen() {
         sqftAccessories: JSON.parse(JSON.stringify(sqBp.accessories || [])),
         moduleOrder: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? ['prim', 'clad', 'acc', 'erect'] : ['prim', 'sec', 'clad', 'acc', 'erect'],
         primEnabled: true, secEnabled: true, cladEnabled: true, accEnabled: true, erectEnabled: true,
-        foundEnabled: true, brickEnabled: true, floorEnabled: true, primCustomLine: bp.primCustomLine,
+        foundEnabled: true, brickEnabled: true, floorEnabled: true,
+        primCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.primCustomLine || "Heavy Duty Structural Steel Portal Framing System") : bp.primCustomLine,
         primSpecs: bp.primSpecs ? JSON.parse(JSON.stringify(bp.primSpecs)) : [], primWeight: "", primRate: "", primUnit: bp.primUnit || "Kg",
         secCustomLine: bp.secCustomLine, secSpecs: bp.secSpecs ? JSON.parse(JSON.stringify(bp.secSpecs)) : [], secWeight: "", secRate: "", secUnit: bp.secUnit || "Kg",
-        cladCustomLine: bp.cladCustomLine, cladThickness: bp.cladThickness || "", cladSqFt: "", cladRate: "", cladUnit: bp.cladUnit || "Sq.Ft",
-        accCustomLine: bp.accCustomLine, accessories: (bp.accessories || []).map(a => ({ name: a.name, qty: a.qty || "", unit: a.unit || "Nos", rate: a.rate || "", selected: a.selected !== false })),
-        erectCustomLine: bp.erectCustomLine, erectSpecs: bp.erectSpecs ? JSON.parse(JSON.stringify(bp.erectSpecs)) : [], erectRate: "", erectUnit: bp.erectUnit || "Kg",
+        cladCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.cladCustomLine || "0.50mm TATA BlueScope / JSW Colour Coated Profile Sheet") : bp.cladCustomLine,
+        cladThickness: bp.cladThickness || "0.50 mm", cladSqFt: "", cladRate: "", cladUnit: bp.cladUnit || "Sq.Ft",
+        accCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.accCustomLine || "Standard Industrial Shed Accessories Package") : bp.accCustomLine,
+        accessories: (bp.accessories || []).map(a => ({ name: a.name, qty: a.qty || "", unit: a.unit || "Nos", rate: a.rate || "", selected: a.selected !== false })),
+        erectCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.erectCustomLine || "Crane, Hydra, Welding Machine, Expert Labour") : bp.erectCustomLine,
+        erectSpecs: bp.erectSpecs ? JSON.parse(JSON.stringify(bp.erectSpecs)) : [], erectRate: "", erectUnit: bp.erectUnit || "Kg",
         customModules: (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })), civilScopeDesc: bp.civilScopeDesc,
         civilData: bp.civilData ? JSON.parse(JSON.stringify(bp.civilData)) : {},
         civilCustomCategories: (bp.civilCustomCategories || []).map(c => ({
@@ -845,7 +849,7 @@ function saveEditCustomerDetails() {
     showCorporateToast("Quotation & Customer Details Updated!", "👤");
 }
 
-// ROBUST LIVE PREVIEW DIRECT SYNC (INSTANT SAVE)
+// ROBUST LIVE PREVIEW DIRECT SYNC (FULL EDITING IN SQ.FT & KG MODES)
 function syncPreviewCustEdit(field, el) {
     const site = getCurrentSite(); if (!site) return;
     site[field] = el.innerText.trim();
@@ -888,6 +892,48 @@ function syncSqftAccLive(idx, el) {
     const site = getCurrentSite(); if (!site?.sqftAccessories || !site.sqftAccessories[idx]) return;
     site.sqftAccessories[idx].name = el.innerText.trim();
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
+}
+function syncSqftAccQtyLive(idx, el) {
+    const site = getCurrentSite(); if (!site?.sqftAccessories || !site.sqftAccessories[idx]) return;
+    site.sqftAccessories[idx].qty = el.innerText.trim();
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
+}
+function syncPreviewTitleEdit(el, fPrefix, mKey = null) {
+    const site = getCurrentSite(); if (!site) return;
+    const txt = el.innerText.trim();
+    if (fPrefix === 'custom' && mKey) {
+        const c = (site.customModules || []).find(m => m.id === mKey);
+        if (c) c.title = txt;
+    } else if (fPrefix === 'prim') site.primCustomLine = txt;
+    else if (fPrefix === 'sec') site.secCustomLine = txt;
+    else if (fPrefix === 'clad') site.cladCustomLine = txt;
+    else if (fPrefix === 'acc') site.accCustomLine = txt;
+    else if (fPrefix === 'erect') site.erectCustomLine = txt;
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
+}
+function syncPreviewEdit(el, field) {
+    const site = getCurrentSite(); if (!site) return;
+    site[field] = el.innerText.trim();
+    syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet(true);
+}
+function syncAccTitleEdit(idx, el) {
+    const site = getCurrentSite(); if (!site?.accessories || !site.accessories[idx]) return;
+    site.accessories[idx].name = el.innerText.trim();
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
+}
+function syncPreviewAccEdit(idx, field, el) {
+    const site = getCurrentSite(); if (!site?.accessories || !site.accessories[idx]) return;
+    site.accessories[idx][field] = el.innerText.trim();
+    syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet(true);
+}
+function syncCivilTitleEdit(el, secKey, idx) {
+    const site = getCurrentSite(); if (!site?.civilData?.[secKey]?.items?.[idx]) return;
+    site.civilData[secKey].items[idx].name = el.innerText.trim();
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
+}
+function syncPreviewTermsEdit(field, el) {
+    appSettings[field] = el.innerText.trim();
+    syncDataToCloud('patel_app_settings', appSettings);
 }
 
 // 14. CIVIL DATA & TOGGLES
@@ -1233,7 +1279,7 @@ function autoSaveAndUpdate() {
     syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 
-// 18. STRUCTURE MODULE MODALS & UNLIMITED ITEM ADDING FIX
+// 18. STRUCTURE MODULE MODALS & FULL IN-MODAL EDITING (NEVER LOCKS)
 let activeModType = null;
 function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
@@ -1246,14 +1292,14 @@ function openModuleModal(type) {
     if (type === 'prim') {
         modalTitle.innerHTML = `🏗️ 1. Primary Framing Structure`;
         customLineInput.value = site.primCustomLine || "";
-        checklistTitle.innerText = isSqft ? "Member Dimensions & Specifications:" : "Checklist Specifications:";
+        checklistTitle.innerText = isSqft ? "Member Dimensions & Specifications (Length, Width, Thk, Unit):" : "Checklist Specifications:";
         checklistTitle.style.display = addRowBox.style.display = 'block';
 
         if (isSqft) {
-            if (subNotice) subNotice.innerText = "Sq.Ft Mode: Overall shed rate applies. Enter Length, Width & Unit for each member.";
+            if (subNotice) subNotice.innerText = "Sq.Ft Mode: Overall shed rate applies. Enter Length, Width, Thickness & Unit for each member.";
             inputsBox.innerHTML = `
                 <div style="font-size:11px;font-weight:800;color:#0369a1;background:#e0f2fe;padding:6px 9px;border-radius:6px;border:1px solid #7dd3fc;">
-                    ℹ️ Sq.Ft Mode Active: Individual member rates/amounts are excluded. Har member ki Length, Width aur Unit neeche fill karein.
+                    ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness (मोटाई) aur Unit neeche fill karein.
                 </div>`;
             renderSqftPrimaryChecklist(site.sqftPrimSpecs || []);
         } else {
@@ -1295,9 +1341,9 @@ function openModuleModal(type) {
         document.getElementById('modItemsCheckContainer').innerHTML = `<div style="font-size:12px;color:#64748b;padding:10px 0;">💡 Sheeting parameters sync automatically.</div>`;
     } else if (type === 'acc') {
         modalTitle.innerHTML = `📦 4. Building Accessories`; customLineInput.value = site.accCustomLine || "";
-        checklistTitle.innerText = "Accessories List:"; checklistTitle.style.display = addRowBox.style.display = 'block';
+        checklistTitle.innerText = "Accessories List (Name & Quantity):"; checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
-            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Jo-jo accessory select hogi, wo PDF par Item Column me print hogi.</p>`;
+            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Har item ka Name & Quantity PDF Item Column me automatically print hoga.</p>`;
             renderSqftAccessoriesChecklist();
         } else {
             inputsBox.innerHTML = `<p style="font-size:12px;color:#475569;margin:0;">Tick to include:</p>`;
@@ -1316,6 +1362,41 @@ function openModuleModal(type) {
     openModalWithHistory('moduleSelectionModal');
 }
 
+// INSTANT AUTO-SAVE FOR ALL HEADER LINES & MODAL INPUTS (NEVER FAILS)
+function autoSaveModuleChanges() {
+    const site = getCurrentSite(); if (!site) return;
+    const customLineVal = (document.getElementById('modalInputCustomLine')?.value || "").trim();
+    if (activeModType === 'prim') site.primCustomLine = customLineVal;
+    else if (activeModType === 'sec') site.secCustomLine = customLineVal;
+    else if (activeModType === 'clad') {
+        site.cladCustomLine = customLineVal;
+        const thk = document.getElementById('modalInputThick')?.value;
+        if (thk !== undefined) site.cladThickness = thk;
+        if (!isSqftMode(site)) {
+            site.cladSqFt = document.getElementById('modalInputSqFt')?.value || "";
+            site.cladRate = document.getElementById('modalInputRt')?.value || "";
+        }
+    } else if (activeModType === 'acc') site.accCustomLine = customLineVal;
+    else if (activeModType === 'erect') {
+        site.erectCustomLine = customLineVal;
+        if (!isSqftMode(site)) site.erectRate = document.getElementById('modalInputRt')?.value || "";
+    }
+    if (!isSqftMode(site)) {
+        if (activeModType === 'prim') {
+            site.primWeight = document.getElementById('modalInputWt')?.value || "";
+            site.primRate = document.getElementById('modalInputRt')?.value || "";
+        } else if (activeModType === 'sec') {
+            site.secWeight = document.getElementById('modalInputWt')?.value || "";
+            site.secRate = document.getElementById('modalInputRt')?.value || "";
+        }
+    }
+    syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet();
+}
+
+// SQ.FT PRIMARY STRUCTURE: LENGTH, WIDTH, THICKNESS & UNIT
 function renderSqftPrimaryChecklist(list) {
     const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
     container.innerHTML = "";
@@ -1328,13 +1409,14 @@ function renderSqftPrimaryChecklist(list) {
                 <div class="sqft-prim-spec-top">
                     <div style="display:flex;align-items:center;gap:8px;flex:1;" onclick="toggleItemTick(${idx})">
                         <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleItemTick(${idx})">${isSelected ? '✓' : ''}</div>
-                        <input type="text" value="${itemName}" onclick="event.stopPropagation()" oninput="updateStandardChecklistItemName(${idx},this.value)" style="border:none;background:transparent;font-size:12.5px;font-weight:800;color:#0f172a;flex:1;outline:none;">
+                        <input type="text" value="${itemName}" onclick="event.stopPropagation()" oninput="updateStandardChecklistItemName(${idx},this.value)" style="border:none;background:transparent;font-size:13px;font-weight:900;color:#0f172a;flex:1;outline:none;">
                     </div>
                     <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteItemFromModule(${idx})">🗑️</button>
                 </div>
-                <div class="sqft-prim-dim-grid">
+                <div class="sqft-prim-dim-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
                     <div><label>Length</label><input type="text" placeholder="e.g. 22" value="${item.length || ''}" oninput="updatePrimaryDimField(${idx},'length',this.value)"></div>
                     <div><label>Width / Size</label><input type="text" placeholder="e.g. 300" value="${item.width || ''}" oninput="updatePrimaryDimField(${idx},'width',this.value)"></div>
+                    <div><label>Thickness</label><input type="text" placeholder="e.g. 6" value="${item.thk || ''}" oninput="updatePrimaryDimField(${idx},'thk',this.value)"></div>
                     <div><label>Unit</label><select onchange="updatePrimaryDimField(${idx},'dimUnit',this.value)"><option value="mm" ${curUnit === 'mm' ? 'selected' : ''}>mm</option><option value="Ft" ${curUnit === 'Ft' ? 'selected' : ''}>Ft</option><option value="Inch" ${curUnit === 'Inch' ? 'selected' : ''}>Inch</option><option value="Mtr" ${curUnit === 'Mtr' ? 'selected' : ''}>Mtr</option></select></div>
                 </div>
             </div>`;
@@ -1347,16 +1429,58 @@ function updatePrimaryDimField(idx, field, val) {
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
 }
 
+// SQ.FT ACCESSORIES: INCLUDES QUANTITY INPUT
 function renderSqftAccessoriesChecklist() {
     const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
     container.innerHTML = ""; const site = getCurrentSite();
     if (!site?.sqftAccessories || site.sqftAccessories.length === 0) { container.innerHTML = `<div style="font-size:12.5px;color:#a1a1aa;padding:12px 0;">No accessories added.</div>`; return; }
     site.sqftAccessories.forEach((acc, idx) => {
-        const isSelected = acc.selected === true;
+        const isSelected = acc.selected !== false;
+        container.innerHTML += `
+            <div class="tick-item-card ${isSelected ? 'selected' : ''}" onclick="toggleAccessoryTick(${idx})" style="display:flex;align-items:center;gap:8px;">
+                <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleAccessoryTick(${idx})">${isSelected ? '✓' : ''}</div>
+                <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:13px;font-weight:800;color:#0f172a;flex:1;outline:none;" placeholder="Accessory Item Name">
+                <input type="text" value="${acc.qty || ''}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'qty',this.value)" placeholder="Qty (e.g. 6 Nos)" style="width:110px;padding:4px 6px;border:1.5px solid #cbd5e1;border-radius:6px;font-size:11.5px;font-weight:800;outline:none;background:#fff;">
+                <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteAccessoryItem(${idx})">🗑️</button>
+            </div>`;
+    });
+}
+
+function updateAccessoryFieldFast(idx, field, val) {
+    const site = getCurrentSite();
+    if (isSqftMode(site)) {
+        if (site?.sqftAccessories?.[idx]) { site.sqftAccessories[idx][field] = val; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet(); }
+    } else {
+        if (site?.accessories?.[idx]) { site.accessories[idx][field] = val; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
+    }
+}
+function toggleAccessoryTick(idx) {
+    const site = getCurrentSite();
+    if (isSqftMode(site)) {
+        if (site?.sqftAccessories?.[idx]) { site.sqftAccessories[idx].selected = !(site.sqftAccessories[idx].selected !== false); renderSqftAccessoriesChecklist(); }
+    } else {
+        if (site?.accessories?.[idx]) { site.accessories[idx].selected = !(site.accessories[idx].selected !== false); renderAccessoriesChecklist(); }
+    }
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+}
+function deleteAccessoryItem(idx) {
+    const site = getCurrentSite();
+    if (isSqftMode(site)) {
+        if (site?.sqftAccessories) { site.sqftAccessories.splice(idx, 1); renderSqftAccessoriesChecklist(); }
+    } else {
+        if (site?.accessories) { site.accessories.splice(idx, 1); renderAccessoriesChecklist(); }
+    }
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+}
+function renderAccessoriesChecklist() {
+    const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
+    container.innerHTML = ""; const site = getCurrentSite();
+    (site.accessories || []).forEach((a, idx) => {
+        const isSelected = a.selected === true;
         container.innerHTML += `
             <div class="tick-item-card ${isSelected ? 'selected' : ''}" onclick="toggleAccessoryTick(${idx})">
                 <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleAccessoryTick(${idx})">${isSelected ? '✓' : ''}</div>
-                <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:13px;font-weight:800;color:#0f172a;flex:1;outline:none;">
+                <input type="text" value="${a.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:13px;font-weight:800;color:#0f172a;flex:1;outline:none;">
                 <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteAccessoryItem(${idx})">🗑️</button>
             </div>`;
     });
@@ -1425,7 +1549,7 @@ function addNewItemToModule() {
     const site = getCurrentSite();
     if (isSqftMode(site) && activeModType === 'prim') {
         site.sqftPrimSpecs = site.sqftPrimSpecs || [];
-        site.sqftPrimSpecs.push({ text: val, length: "", width: "", dimUnit: "mm", selected: true });
+        site.sqftPrimSpecs.push({ text: val, length: "", width: "", thk: "", dimUnit: "mm", selected: true });
         renderSqftPrimaryChecklist(site.sqftPrimSpecs);
     } else if (activeModType === 'prim') {
         site.primSpecs = site.primSpecs || [];
@@ -1438,7 +1562,7 @@ function addNewItemToModule() {
     } else if (activeModType === 'acc') {
         if (isSqftMode(site)) {
             site.sqftAccessories = site.sqftAccessories || [];
-            site.sqftAccessories.push({ name: val, selected: true });
+            site.sqftAccessories.push({ name: val, qty: "1 Lot", selected: true });
             renderSqftAccessoriesChecklist();
         } else {
             site.accessories = site.accessories || [];
@@ -1456,8 +1580,48 @@ function addNewItemToModule() {
 function addNewSqftPrimaryItemDirectly() {
     const site = getCurrentSite(); if (!site) return;
     site.sqftPrimSpecs = site.sqftPrimSpecs || [];
-    site.sqftPrimSpecs.push({ text: "New Framing Member #" + (site.sqftPrimSpecs.length + 1), length: "10", width: "100", dimUnit: "mm", selected: true });
+    site.sqftPrimSpecs.push({ text: "New Framing Member #" + (site.sqftPrimSpecs.length + 1), length: "10", width: "100", thk: "4", dimUnit: "mm", selected: true });
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
+}
+
+function addNewAccessoryDirectly() {
+    const site = getCurrentSite(); if (!site) return;
+    if (isSqftMode(site)) {
+        site.sqftAccessories = site.sqftAccessories || [];
+        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), qty: "1 Nos", selected: true });
+    } else {
+        site.accessories = site.accessories || [];
+        site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "1", unit: "Nos", rate: "0", selected: true });
+    }
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+}
+
+function openShedUnitPicker(fPrefix) {
+    const site = getCurrentSite(); if (!site) return;
+    const curUnit = fPrefix === 'prim' ? site.primUnit : fPrefix === 'sec' ? site.secUnit : fPrefix === 'clad' ? site.cladUnit : site.erectUnit;
+    openThemeUnitPicker(curUnit || 'Kg', (u) => {
+        if (fPrefix === 'prim') site.primUnit = u; else if (fPrefix === 'sec') site.secUnit = u;
+        else if (fPrefix === 'clad') site.cladUnit = u; else if (fPrefix === 'erect') site.erectUnit = u;
+        syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+    });
+}
+function openThemeUnitPickerForAcc(idx) {
+    const site = getCurrentSite(); if (!site?.accessories?.[idx]) return;
+    openThemeUnitPicker(site.accessories[idx].unit || 'Nos', (u) => {
+        site.accessories[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+    });
+}
+function openCivilUnitPicker(secKey, idx) {
+    const site = getCurrentSite(); if (!site?.civilData?.[secKey]?.items?.[idx]) return;
+    openThemeUnitPicker(site.civilData[secKey].items[idx].unit || 'Lot', (u) => {
+        site.civilData[secKey].items[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+    });
+}
+function openCivilCustomCatUnitPicker(cIdx, idx) {
+    const site = getCurrentSite(); if (!site?.civilCustomCategories?.[cIdx]?.items?.[idx]) return;
+    openThemeUnitPicker(site.civilCustomCategories[cIdx].items[idx].unit || 'Lot', (u) => {
+        site.civilCustomCategories[cIdx].items[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+    });
 }
 
 // 19. TAX SELECTION & CALCULATIONS
@@ -1584,7 +1748,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (SEPARATE DRAGGABLE ROWS IN SQ.FT MODE)
+// 21. LIVE PREVIEW ENGINE (LARGER TITLE FONTS, THICKNESS & ACC QTY FULLY DISPLAYED)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1683,13 +1847,12 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 tbody.innerHTML = "";
                 let sNo = 1;
 
-                // ENSURE SQ.FT MODULE ORDER EXISTS
                 if (!site.moduleOrder || site.moduleOrder.includes('sec')) {
                     site.moduleOrder = ['prim', 'clad', 'acc', 'erect'];
                 }
 
                 site.moduleOrder.forEach((mKey, orderIdx) => {
-                    // 1. PRIMARY STRUCTURE
+                    // 1. PRIMARY STRUCTURE (WITH LENGTH, WIDTH, THICKNESS)
                     if (mKey === 'prim' && site.primEnabled !== false) {
                         const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
                         let primNamesHtml = "", primSizesHtml = "";
@@ -1697,12 +1860,13 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         if (primItems.length > 0) {
                             primItems.forEach((p, pIdx) => {
                                 const name = p.text || p;
-                                primNamesHtml += `<div style="padding:2px 0;line-height:1.4;">• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)">${name}</b></div>`;
-                                const hasSize = (p.length || p.width);
+                                primNamesHtml += `<div style="padding:2.5px 0;line-height:1.4;">• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)">${name}</b></div>`;
+                                const hasSize = (p.length || p.width || p.thk);
                                 if (hasSize) {
-                                    primSizesHtml += `<div style="padding:2px 0;line-height:1.4;font-weight:800;color:#000;">L: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span> ${p.dimUnit || 'mm'}</div>`;
+                                    const thkPart = p.thk ? ` × Thk: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'thk',this)">${p.thk}</span>` : '';
+                                    primSizesHtml += `<div style="padding:2.5px 0;line-height:1.4;font-weight:800;color:#000;">L: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span>${thkPart} ${p.dimUnit || 'mm'}</div>`;
                                 } else {
-                                    primSizesHtml += `<div style="padding:2px 0;line-height:1.4;">&nbsp;</div>`;
+                                    primSizesHtml += `<div style="padding:2.5px 0;line-height:1.4;">&nbsp;</div>`;
                                 }
                             });
                         } else {
@@ -1715,12 +1879,12 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tr.innerHTML = `
                             <td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td>
-                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftPrimLabel',this)" style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.primCustomLine || ''}</div>
-                                <div style="margin-top:4px;">${primNamesHtml}</div>
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftPrimLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.primCustomLine || ''}</div>
+                                <div style="margin-top:5px;">${primNamesHtml}</div>
                             </td>
                             <td style="vertical-align:top;">
-                                <div style="font-weight:900;font-size:calc(9px * var(--pdf-font-scale));color:#000;margin-bottom:4px;">Member Dimensions:</div>
+                                <div style="font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000;margin-bottom:4px;">Member Dimensions & Thickness:</div>
                                 <div>${primSizesHtml}</div>
                             </td>
                             <td style="text-align:center;font-weight:900;color:#0c1e30;">Main Frame</td>`;
@@ -1734,22 +1898,26 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tr.innerHTML = `
                             <td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td>
-                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftCladLabel',this)" style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftCladLabel || "Roof & Wall Cladding System"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.cladCustomLine || ''}</div>
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftCladLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftCladLabel || "Roof & Wall Cladding System"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.cladCustomLine || ''}</div>
                             </td>
                             <td>
-                                <div style="font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000000;">Thickness: <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewEdit(this,'cladThickness')">${site.cladThickness || '0.50 mm'}</span></div>
+                                <div style="font-weight:900;font-size:calc(10px * var(--pdf-font-scale));color:#000000;">Thickness: <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewEdit(this,'cladThickness')">${site.cladThickness || '0.50 mm'}</span></div>
                             </td>
                             <td style="text-align:center;font-weight:900;color:#0c1e30;">Covering</td>`;
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 3. ACCESSORIES (ITEMS IN COL 1 UNDER TITLE)
+                    // 3. ACCESSORIES (WITH QUANTITY IN SQ.FT MODE)
                     } else if (mKey === 'acc' && site.accEnabled !== false) {
-                        const activeAcc = (site.sqftAccessories || []).filter(a => a.selected === true);
+                        const activeAcc = (site.sqftAccessories || []).filter(a => a.selected !== false);
                         let accItemsColHtml = "";
                         if (activeAcc.length > 0) {
-                            accItemsColHtml = activeAcc.map((a, aIdx) => `<div style="padding:2px 0;line-height:1.4;">• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)">${a.name}</b></div>`).join('');
+                            accItemsColHtml = activeAcc.map((a, aIdx) => `
+                                <div style="padding:2.5px 0;line-height:1.4;display:flex;align-items:center;gap:6px;">
+                                    <span>• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)">${a.name}</b></span>
+                                    <span style="color:#0369a1;font-weight:900;">(<span class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)">${a.qty || 'Qty Included'}</span>)</span>
+                                </div>`).join('');
                         } else { accItemsColHtml = `<div style="color:#000;">No accessories specified</div>`; }
 
                         const tr = document.createElement('tr');
@@ -1757,12 +1925,12 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tr.innerHTML = `
                             <td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td>
-                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftAccLabel',this)" style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.accCustomLine || ''}</div>
-                                <div style="margin-top:4px;">${accItemsColHtml}</div>
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftAccLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.accCustomLine || ''}</div>
+                                <div style="margin-top:5px;">${accItemsColHtml}</div>
                             </td>
                             <td style="vertical-align:middle;">
-                                <div style="font-weight:800;color:#000000;font-size:calc(9px * var(--pdf-font-scale));">Complete Standard Turnkey Supply</div>
+                                <div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">Complete Standard Turnkey Supply Package</div>
                             </td>
                             <td style="text-align:center;font-weight:900;color:#0369a1;">Package</td>`;
                         tbody.appendChild(tr);
@@ -1776,15 +1944,15 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tr.innerHTML = `
                             <td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td>
-                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftErectLabel',this)" style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftErectLabel || "Turnkey Erection & Installation"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'erect')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.erectCustomLine || ''}</div>
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftErectLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftErectLabel || "Turnkey Erection & Installation"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'erect')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.erectCustomLine || ''}</div>
                             </td>
-                            <td><div style="font-weight:800;color:#000000;font-size:calc(9px * var(--pdf-font-scale));">${erectBullets || 'Crane, Hydra, Welding Machine & Labour'}</div></td>
+                            <td><div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">${erectBullets || 'Crane, Hydra, Welding Machine & Labour'}</div></td>
                             <td style="text-align:center;font-weight:900;color:#0c1e30;">Turnkey</td>`;
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 5. CUSTOM MODULES IN SQ.FT MODE (DRAGGABLE)
+                    // 5. CUSTOM MODULES IN SQ.FT MODE
                     } else {
                         const c = (site.customModules || []).find(m => m.id === mKey);
                         if (c && c.enabled !== false) {
@@ -1793,10 +1961,10 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                             tr.innerHTML = `
                                 <td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                                 <td>
-                                    <b class="editable-preview-title" contenteditable="true" onblur="syncPreviewTitleEdit(this,'custom','${c.id}')" style="font-size:calc(9.5px * var(--pdf-font-scale));">${c.title}</b>
-                                    <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${c.desc || '-'}</div>
+                                    <b class="editable-preview-title" contenteditable="true" onblur="syncPreviewTitleEdit(this,'custom','${c.id}')" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${c.title}</b>
+                                    <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${c.desc || '-'}</div>
                                 </td>
-                                <td><div style="font-weight:800;color:#000000;font-size:calc(9px * var(--pdf-font-scale));">${c.qty ? (c.qty + ' ' + (c.unit || 'Lot')) : 'Standard Scope'}</div></td>
+                                <td><div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">${c.qty ? (c.qty + ' ' + (c.unit || 'Lot')) : 'Standard Scope'}</div></td>
                                 <td style="text-align:center;font-weight:900;color:#0c1e30;">${c.unit || 'Lot'}</td>`;
                             tbody.appendChild(tr);
                             setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
@@ -1804,7 +1972,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     }
                 });
 
-                // NO STAR LINE: Direct financial calculation
                 const sqRate = parseFloat(site.shedSqftRate) || 0, shedBasicCost = sqft * sqRate;
                 const tax = getActiveTaxSlab('shed'), taxAmt = shedBasicCost * tax.rate, grand = shedBasicCost + taxAmt;
                 const withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : 0;
@@ -1824,7 +1991,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 }
             }
         } else {
-            // KG / BOQ MODE (100% PRESERVED)
+            // KG / BOQ MODE
             if (sec1Wrap) sec1Wrap.style.display = 'block';
             const s1Tbody = document.getElementById('pdfSection1TableBody');
             if (s1Tbody) {
@@ -1832,17 +1999,17 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 if (site.primEnabled !== false) {
                     const pWt = parseFloat(site.primWeight) || 0, pUnit = site.primUnit || "Kg", inKg = pUnit.toLowerCase() === 'mt' ? (pWt * 1000) : pWt;
                     autoTotalSteelWeightKg += inKg;
-                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')">${(site.primCustomLine || "").trim()}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10px * var(--pdf-font-scale)) !important;color:#000;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
+                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')">${(site.primCustomLine || "").trim()}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
                 }
                 if (site.secEnabled !== false) {
                     const sWt = parseFloat(site.secWeight) || 0, sUnit = site.secUnit || "Kg", inKg = sUnit.toLowerCase() === 'mt' ? (sWt * 1000) : sWt;
                     autoTotalSteelWeightKg += inKg;
-                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'sec')">${(site.secCustomLine || "").trim()}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10px * var(--pdf-font-scale)) !important;color:#000;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
+                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'sec')">${(site.secCustomLine || "").trim()}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
                 }
-                s1Tbody.innerHTML += `<tr class="executive-weight-total-row"><td style="font-size:calc(10px * var(--pdf-font-scale)) !important;color:#000;font-weight:900;"><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td><td style="text-align:right;font-size:calc(10px * var(--pdf-font-scale)) !important;font-weight:900;color:#000;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td></tr>`;
+                s1Tbody.innerHTML += `<tr class="executive-weight-total-row"><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:900;"><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td><td style="text-align:right;font-size:calc(10.5px * var(--pdf-font-scale)) !important;font-weight:900;color:#000;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td></tr>`;
                 if (site.cladEnabled !== false) {
                     const cSq = parseFloat(site.cladSqFt) || 0, cUnit = site.cladUnit || "Sq.Ft", thickBadge = site.cladThickness ? `<span class="spec-highlight-pill" style="margin-left:6px;">📐 Thickness: ${site.cladThickness}</span>` : '';
-                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td><td style="text-align:right;font-weight:900;font-size:calc(10px * var(--pdf-font-scale)) !important;color:#000;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td></tr>`;
+                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td></tr>`;
                 }
             }
 
@@ -1891,7 +2058,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 tbody.innerHTML = "";
                 const helperSpecs = (specs) => (!specs || !Array.isArray(specs)) ? "" : `<div class="item-specs-bullets">${specs.filter(s => s.selected === true).map(s => `<span>• ${s.text || s}</span>`).join('')}</div>`;
                 const addRow = (catTitle, line, uRate, qty, amt, fPrefix, uLabel, isCust = false, bullets = "", mKey = "") => {
-                    const descHtml = `<div class="row-item-title">${catTitle}:</div><div class="row-item-subtitle editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'${fPrefix}','${mKey}')">${(line || "").trim()}</div>${bullets}`;
+                    const descHtml = `<div class="row-item-title" style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;font-weight:900;color:#000;">${catTitle}:</div><div class="row-item-subtitle editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'${fPrefix}','${mKey}')" style="font-size:calc(9.5px * var(--pdf-font-scale));">${(line || "").trim()}</div>${bullets}`;
                     const tr = document.createElement('tr'); tr.className = "sortable-item"; tr.dataset.sortIndex = sNoCounter - 1;
                     tr.innerHTML = isRateOnly ?
                         `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td>` :
@@ -1938,7 +2105,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const finBox = document.getElementById('financialStandardBox'), rateNotice = document.getElementById('rateOnlyNoticeBox');
         if (finBox && rateNotice) { finBox.style.display = isRateOnly ? 'none' : 'block'; rateNotice.style.display = isRateOnly ? 'block' : 'none'; }
         
-        // SEPARATE & SPACIOUS TERMS & CONDITIONS
         const pTerms = isSqft ? (appSettings.sqftPaymentTerms || '') : (appSettings.paymentTerms || '');
         const gTerms = isSqft ? (appSettings.sqftTermsCond || '') : (appSettings.termsCond || '');
         const pKey = isSqft ? 'sqftPaymentTerms' : 'paymentTerms';
@@ -1946,15 +2112,15 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 
         safeSetHtml('pdfTermsContainer', `
             <div class="terms-seamless-block">
-                <b>1. Payment Terms & Schedule:</b>
-                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('${pKey}',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(8.5px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${pTerms}</div>
+                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">1. Payment Terms & Schedule:</b>
+                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('${pKey}',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(9px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${pTerms}</div>
             </div>
             <div class="terms-seamless-block" style="margin-top:5px;">
-                <b>2. Commercial Terms & Conditions:</b>
-                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('${gKey}',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(8.5px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${gTerms}</div>
+                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">2. Commercial Terms & Conditions:</b>
+                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('${gKey}',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(9px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${gTerms}</div>
             </div>
         `);
-        safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height:42px;width:auto;display:block;margin:0 auto;">` : '');
+        safeSetHtml('pdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height:44px;width:auto;display:block;margin:0 auto;">` : '');
     }
 
     // PAGE 2: CIVIL SPECIFICATIONS
@@ -1987,8 +2153,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     const amt = (parseFloat(item.qty) || 0) * (parseFloat(item.rate) || 0); civilTotalBasic += amt;
                     const tr = document.createElement('tr'); tr.className = "sortable-item"; tr.dataset.sortIndex = idx;
                     tr.innerHTML = isCivilRateOnly ?
-                        `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this,'${secKey}',${idx})">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}',${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
-                        `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this,'${secKey}',${idx})">${item.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}',${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                        `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this,'${secKey}',${idx})" style="font-size:calc(9.5px * var(--pdf-font-scale));">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}',${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
+                        `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this,'${secKey}',${idx})" style="font-size:calc(9.5px * var(--pdf-font-scale));">${item.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}',${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
                     tbody.appendChild(tr); setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'civil_items', idx, secKey);
                 }
             });
@@ -2012,19 +2178,19 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                                 `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
                         }
                     });
-                    customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span>${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
+                    customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span style="font-size:calc(9.5px * var(--pdf-font-scale));">${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
                 }
             });
         }
 
         safeSetHtml('civilPdfTermsContainer', `
             <div class="terms-seamless-block">
-                <b>1. Civil Work Schedule & Terms:</b>
-                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('civilPaymentTerms',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(8.5px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${(appSettings.civilPaymentTerms || '')}</div>
+                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">1. Civil Work Schedule & Terms:</b>
+                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('civilPaymentTerms',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(9px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${(appSettings.civilPaymentTerms || '')}</div>
             </div>
             <div class="terms-seamless-block" style="margin-top:5px;">
-                <b>2. General Civil Conditions:</b>
-                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('civilTermsCond',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(8.5px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${(appSettings.civilTermsCond || '')}</div>
+                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">2. General Civil Conditions:</b>
+                <div class="editable-preview-title" contenteditable="true" onblur="syncPreviewTermsEdit('civilTermsCond',this)" style="display:block;white-space:pre-wrap;margin-top:2px;font-size:calc(9px * var(--pdf-font-scale));line-height:1.35;font-weight:800;color:#000;">${(appSettings.civilTermsCond || '')}</div>
             </div>
         `);
         const civilTax = getActiveTaxSlab('civil'), civGrand = civilTotalBasic + (civilTotalBasic * civilTax.rate);
@@ -2034,7 +2200,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 
         const civFinBox = document.getElementById('civilFinancialBox'), civRateNotice = document.getElementById('civilRateOnlyNoticeBox');
         if (civFinBox && civRateNotice) { civFinBox.style.display = isCivilRateOnly ? 'none' : 'block'; civRateNotice.style.display = isCivilRateOnly ? 'block' : 'none'; }
-        safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height:42px;width:auto;display:block;margin:0 auto;">` : '');
+        safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height:44px;width:auto;display:block;margin:0 auto;">` : '');
     }
 
     // COMBINED PACKAGE STRIP
@@ -2053,7 +2219,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         if (p1CombBox) p1CombBox.style.display = 'none'; if (p2CombBox) p2CombBox.style.display = 'none';
     }
 
-    // COMPANY BANK ACCOUNT DETAILS (WHITE THEMED ACCENTS)
+    // COMPANY BANK ACCOUNT DETAILS
     const p1BankBox = document.getElementById('pdfCompanyBankDetailsBox');
     const p2BankBox = document.getElementById('civilPdfCompanyBankDetailsBox');
     const hasBankData = !!(appSettings.bankName || appSettings.bankAccNo || appSettings.bankIfsc);
@@ -2082,7 +2248,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 22. DYNAMIC FLOW ENGINE FOR PDF (NO STEEL WEIGHT IN SQ.FT MODE)
+// 22. DYNAMIC FLOW ENGINE FOR PDF
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -2127,7 +2293,6 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         if (substrip) curPage.appendChild(substrip.cloneNode(true));
         if (cust) curPage.appendChild(cust.cloneNode(true));
 
-        // STEEL WEIGHT 100% EXCLUDED IN SQ.FT MODE
         if (!isSqft && sec1Head && sec1Tbl) {
             curPage.appendChild(sec1Head.cloneNode(true));
             curPage.appendChild(sec1Tbl.cloneNode(true));
@@ -2438,19 +2603,11 @@ function saveCompanyBankDetails() {
 }
 
 function clearCompanyBankDetails() {
-    safeSetVal('inpBankName', "");
-    safeSetVal('inpBankAccName', "");
-    safeSetVal('inpBankAccNo', "");
-    safeSetVal('inpBankIfsc', "");
-    safeSetVal('inpBankBranch', "");
-    safeSetVal('inpBankUpi', "");
+    safeSetVal('inpBankName', ""); safeSetVal('inpBankAccName', ""); safeSetVal('inpBankAccNo', "");
+    safeSetVal('inpBankIfsc', ""); safeSetVal('inpBankBranch', ""); safeSetVal('inpBankUpi', "");
 
-    appSettings.bankName = "";
-    appSettings.bankAccName = "";
-    appSettings.bankAccNo = "";
-    appSettings.bankIfsc = "";
-    appSettings.bankBranch = "";
-    appSettings.bankUpi = "";
+    appSettings.bankName = ""; appSettings.bankAccName = ""; appSettings.bankAccNo = "";
+    appSettings.bankIfsc = ""; appSettings.bankBranch = ""; appSettings.bankUpi = "";
 
     syncDataToCloud('patel_app_settings', appSettings);
     closeBankDetailsModal();
