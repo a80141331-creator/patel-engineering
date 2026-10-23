@@ -82,7 +82,6 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-// DEDICATED SQ.FT BLUEPRINT WITH THICKNESS & QUANTITY SUPPORT
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
@@ -849,7 +848,6 @@ function saveEditCustomerDetails() {
     showCorporateToast("Quotation & Customer Details Updated!", "👤");
 }
 
-// ROBUST LIVE PREVIEW DIRECT SYNC (FULL EDITING IN SQ.FT & KG MODES)
 function syncPreviewCustEdit(field, el) {
     const site = getCurrentSite(); if (!site) return;
     site[field] = el.innerText.trim();
@@ -1279,7 +1277,7 @@ function autoSaveAndUpdate() {
     syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 
-// 18. STRUCTURE MODULE MODALS & FULL IN-MODAL EDITING (NEVER LOCKS)
+// 18. STRUCTURE MODULE MODALS & INPUT EDITING
 let activeModType = null;
 function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
@@ -1343,7 +1341,7 @@ function openModuleModal(type) {
         modalTitle.innerHTML = `📦 4. Building Accessories`; customLineInput.value = site.accCustomLine || "";
         checklistTitle.innerText = "Accessories List (Name & Quantity):"; checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
-            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Har item ka Name & Quantity PDF Item Column me automatically print hoga.</p>`;
+            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Quantity technical specifications column me samne print hogi.</p>`;
             renderSqftAccessoriesChecklist();
         } else {
             inputsBox.innerHTML = `<p style="font-size:12px;color:#475569;margin:0;">Tick to include:</p>`;
@@ -1362,7 +1360,6 @@ function openModuleModal(type) {
     openModalWithHistory('moduleSelectionModal');
 }
 
-// INSTANT AUTO-SAVE FOR ALL HEADER LINES & MODAL INPUTS (NEVER FAILS)
 function autoSaveModuleChanges() {
     const site = getCurrentSite(); if (!site) return;
     const customLineVal = (document.getElementById('modalInputCustomLine')?.value || "").trim();
@@ -1396,7 +1393,6 @@ function autoSaveModuleChanges() {
     refreshLivePdfPreviewSheet();
 }
 
-// SQ.FT PRIMARY STRUCTURE: LENGTH, WIDTH, THICKNESS & UNIT
 function renderSqftPrimaryChecklist(list) {
     const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
     container.innerHTML = "";
@@ -1413,7 +1409,7 @@ function renderSqftPrimaryChecklist(list) {
                     </div>
                     <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteItemFromModule(${idx})">🗑️</button>
                 </div>
-                <div class="sqft-prim-dim-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+                <div class="sqft-prim-dim-grid" style="grid-template-columns:repeat(4, 1fr);">
                     <div><label>Length</label><input type="text" placeholder="e.g. 22" value="${item.length || ''}" oninput="updatePrimaryDimField(${idx},'length',this.value)"></div>
                     <div><label>Width / Size</label><input type="text" placeholder="e.g. 300" value="${item.width || ''}" oninput="updatePrimaryDimField(${idx},'width',this.value)"></div>
                     <div><label>Thickness</label><input type="text" placeholder="e.g. 6" value="${item.thk || ''}" oninput="updatePrimaryDimField(${idx},'thk',this.value)"></div>
@@ -1429,7 +1425,6 @@ function updatePrimaryDimField(idx, field, val) {
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
 }
 
-// SQ.FT ACCESSORIES: INCLUDES QUANTITY INPUT
 function renderSqftAccessoriesChecklist() {
     const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
     container.innerHTML = ""; const site = getCurrentSite();
@@ -1440,7 +1435,7 @@ function renderSqftAccessoriesChecklist() {
             <div class="tick-item-card ${isSelected ? 'selected' : ''}" onclick="toggleAccessoryTick(${idx})" style="display:flex;align-items:center;gap:8px;">
                 <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleAccessoryTick(${idx})">${isSelected ? '✓' : ''}</div>
                 <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:13px;font-weight:800;color:#0f172a;flex:1;outline:none;" placeholder="Accessory Item Name">
-                <input type="text" value="${acc.qty || ''}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'qty',this.value)" placeholder="Qty (e.g. 6 Nos)" style="width:110px;padding:4px 6px;border:1.5px solid #cbd5e1;border-radius:6px;font-size:11.5px;font-weight:800;outline:none;background:#fff;">
+                <input type="text" value="${acc.qty || ''}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'qty',this.value)" placeholder="Qty (Blank if none)" style="width:120px;padding:4px 6px;border:1.5px solid #cbd5e1;border-radius:6px;font-size:11.5px;font-weight:800;outline:none;background:#fff;">
                 <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteAccessoryItem(${idx})">🗑️</button>
             </div>`;
     });
@@ -1562,7 +1557,7 @@ function addNewItemToModule() {
     } else if (activeModType === 'acc') {
         if (isSqftMode(site)) {
             site.sqftAccessories = site.sqftAccessories || [];
-            site.sqftAccessories.push({ name: val, qty: "1 Lot", selected: true });
+            site.sqftAccessories.push({ name: val, qty: "", selected: true });
             renderSqftAccessoriesChecklist();
         } else {
             site.accessories = site.accessories || [];
@@ -1588,7 +1583,7 @@ function addNewAccessoryDirectly() {
     const site = getCurrentSite(); if (!site) return;
     if (isSqftMode(site)) {
         site.sqftAccessories = site.sqftAccessories || [];
-        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), qty: "1 Nos", selected: true });
+        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), qty: "", selected: true });
     } else {
         site.accessories = site.accessories || [];
         site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "1", unit: "Nos", rate: "0", selected: true });
@@ -1748,7 +1743,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (LARGER TITLE FONTS, THICKNESS & ACC QTY FULLY DISPLAYED)
+// 21. LIVE PREVIEW ENGINE (STRUCTURED PAIRED-ROW LOCK - ZERO MISALIGNMENT)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1830,7 +1825,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             if (sec1Wrap) sec1Wrap.style.display = 'none';
             if (accContainer) accContainer.style.display = 'none';
 
-            // 3-COLUMN SEPARATE TABLE HEAD FOR SQ.FT MODE
             const thead = document.getElementById('pdfTableHead');
             if (thead) {
                 thead.innerHTML = `
@@ -1852,42 +1846,54 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 }
 
                 site.moduleOrder.forEach((mKey, orderIdx) => {
-                    // 1. PRIMARY STRUCTURE (WITH LENGTH, WIDTH, THICKNESS)
+                    // 1. PRIMARY STRUCTURE (LOCKED ROW-BY-ROW WITH THICKNESS)
                     if (mKey === 'prim' && site.primEnabled !== false) {
                         const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
-                        let primNamesHtml = "", primSizesHtml = "";
+                        let subRowsHtml = "";
 
                         if (primItems.length > 0) {
                             primItems.forEach((p, pIdx) => {
                                 const name = p.text || p;
-                                primNamesHtml += `<div style="padding:2.5px 0;line-height:1.4;">• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)">${name}</b></div>`;
                                 const hasSize = (p.length || p.width || p.thk);
+                                let dimHtml = "";
                                 if (hasSize) {
                                     const thkPart = p.thk ? ` × Thk: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'thk',this)">${p.thk}</span>` : '';
-                                    primSizesHtml += `<div style="padding:2.5px 0;line-height:1.4;font-weight:800;color:#000;">L: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span>${thkPart} ${p.dimUnit || 'mm'}</div>`;
-                                } else {
-                                    primSizesHtml += `<div style="padding:2.5px 0;line-height:1.4;">&nbsp;</div>`;
-                                }
+                                    dimHtml = `L: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span>${thkPart} ${p.dimUnit || 'mm'}`;
+                                } else { dimHtml = `&nbsp;`; }
+
+                                subRowsHtml += `
+                                    <tr>
+                                        <td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;vertical-align:middle;border-bottom:${pIdx < primItems.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
+                                            • <b class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)" style="font-size:calc(9.5px * var(--pdf-font-scale));">${name}</b>
+                                        </td>
+                                        <td style="width:50%;padding:3.5px 6px;vertical-align:middle;font-weight:800;color:#000;border-bottom:${pIdx < primItems.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
+                                            ${dimHtml}
+                                        </td>
+                                    </tr>`;
                             });
                         } else {
-                            primNamesHtml = `<div style="font-weight:800;color:#000;">As per standard engineering design</div>`;
-                            primSizesHtml = `<div>&nbsp;</div>`;
+                            subRowsHtml = `<tr><td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;">As per standard design</td><td style="width:50%;padding:3.5px 6px;">-</td></tr>`;
                         }
 
                         const tr = document.createElement('tr');
                         tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
                         tr.innerHTML = `
-                            <td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
-                            <td>
-                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftPrimLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.primCustomLine || ''}</div>
-                                <div style="margin-top:5px;">${primNamesHtml}</div>
+                            <td style="text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
+                            <td colspan="2" style="padding:0;vertical-align:top;border-right:1.5px solid #000;">
+                                <table style="width:100%;border-collapse:collapse;margin:0;padding:0;border:none;">
+                                    <tr>
+                                        <td style="width:50%;border-right:1.5px solid #000;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;">
+                                            <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftPrimLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
+                                            <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.primCustomLine || ''}</div>
+                                        </td>
+                                        <td style="width:50%;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000;vertical-align:bottom;">
+                                            Member Dimensions & Thickness:
+                                        </td>
+                                    </tr>
+                                    ${subRowsHtml}
+                                </table>
                             </td>
-                            <td style="vertical-align:top;">
-                                <div style="font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000;margin-bottom:4px;">Member Dimensions & Thickness:</div>
-                                <div>${primSizesHtml}</div>
-                            </td>
-                            <td style="text-align:center;font-weight:900;color:#0c1e30;">Main Frame</td>`;
+                            <td style="text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">Main Frame</td>`;
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
@@ -1908,31 +1914,49 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 3. ACCESSORIES (WITH QUANTITY IN SQ.FT MODE)
+                    // 3. ACCESSORIES (QTY IN TECHNICAL SPECIFICATIONS COL - STRICTLY HORIZONTALLY LOCKED)
                     } else if (mKey === 'acc' && site.accEnabled !== false) {
                         const activeAcc = (site.sqftAccessories || []).filter(a => a.selected !== false);
-                        let accItemsColHtml = "";
+                        let subAccRowsHtml = "";
+
                         if (activeAcc.length > 0) {
-                            accItemsColHtml = activeAcc.map((a, aIdx) => `
-                                <div style="padding:2.5px 0;line-height:1.4;display:flex;align-items:center;gap:6px;">
-                                    <span>• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)">${a.name}</b></span>
-                                    <span style="color:#0369a1;font-weight:900;">(<span class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)">${a.qty || 'Qty Included'}</span>)</span>
-                                </div>`).join('');
-                        } else { accItemsColHtml = `<div style="color:#000;">No accessories specified</div>`; }
+                            activeAcc.forEach((a, aIdx) => {
+                                const qVal = (a.qty || "").trim();
+                                const qtyCellContent = qVal ? `<b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)" style="color:#0369a1;">${qVal}</b>` : `<span class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)" style="display:inline-block;min-width:30px;">&nbsp;</span>`;
+
+                                subAccRowsHtml += `
+                                    <tr>
+                                        <td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;vertical-align:middle;border-bottom:${aIdx < activeAcc.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
+                                            • <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)" style="font-size:calc(9.5px * var(--pdf-font-scale));color:#000;">${a.name}</b>
+                                        </td>
+                                        <td style="width:50%;padding:3.5px 6px;vertical-align:middle;font-weight:800;border-bottom:${aIdx < activeAcc.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
+                                            ${qtyCellContent}
+                                        </td>
+                                    </tr>`;
+                            });
+                        } else {
+                            subAccRowsHtml = `<tr><td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;">No accessories specified</td><td style="width:50%;padding:3.5px 6px;">&nbsp;</td></tr>`;
+                        }
 
                         const tr = document.createElement('tr');
                         tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
                         tr.innerHTML = `
-                            <td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
-                            <td>
-                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftAccLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.accCustomLine || ''}</div>
-                                <div style="margin-top:5px;">${accItemsColHtml}</div>
+                            <td style="text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
+                            <td colspan="2" style="padding:0;vertical-align:top;border-right:1.5px solid #000;">
+                                <table style="width:100%;border-collapse:collapse;margin:0;padding:0;border:none;">
+                                    <tr>
+                                        <td style="width:50%;border-right:1.5px solid #000;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;">
+                                            <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftAccLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
+                                            <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.accCustomLine || ''}</div>
+                                        </td>
+                                        <td style="width:50%;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000;vertical-align:bottom;">
+                                            Required Quantity:
+                                        </td>
+                                    </tr>
+                                    ${subAccRowsHtml}
+                                </table>
                             </td>
-                            <td style="vertical-align:middle;">
-                                <div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">Complete Standard Turnkey Supply Package</div>
-                            </td>
-                            <td style="text-align:center;font-weight:900;color:#0369a1;">Package</td>`;
+                            <td style="text-align:center;font-weight:900;color:#0369a1;vertical-align:middle;">Package</td>`;
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
