@@ -39,7 +39,7 @@ function showCorporateToast(msg, icon = '✓') {
 function scrollPreviewPane(d) { const vp = document.getElementById('viewportWrap'); if (vp) { vp.scrollBy({ top: d, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); } }
 function scrollCivilPreviewPane(d) { const vp = document.getElementById('civilViewportWrap'); if (vp) { vp.scrollBy({ top: d, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); } }
 
-// 3. MASTER BLUEPRINTS
+// 3. MASTER BLUEPRINTS (SEPARATE TEMPLATES FOR KG & SQ.FT)
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
     primSpecs: [{ text: "Fabrication with FE", selected: true }, { text: "345 Steel", selected: true }, { text: "Cutting", selected: true }, { text: "Welding", selected: true }, { text: "1 Coat Primer", selected: true }],
@@ -81,10 +81,15 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
+// DEDICATED SQ.FT BLUEPRINT (100% INDEPENDENT FROM KG BLUEPRINT)
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
-    primCustomLine: "Heavy Duty Structural Steel Portal Framing System",
+    sqftPrimCustomLine: "Heavy Duty Structural Steel Portal Framing System",
+    sqftCladCustomLine: "0.50mm TATA BlueScope / JSW Colour Coated Profile Sheet",
+    sqftAccCustomLine: "Standard Industrial Shed Accessories Package",
+    sqftErectCustomLine: "Crane, Hydra, Welding Machine, Expert Labour",
+    cladThickness: "0.50 mm",
     moduleOrder: ['prim', 'clad', 'acc', 'erect'],
     primSpecs: [
         { text: "Columns (Main Stanchions)", length: "", width: "", thk: "", dimUnit: "mm", selected: true },
@@ -92,47 +97,49 @@ const defaultSqftMasterBlueprint = {
         { text: "Tie Beams & Bracings", length: "", width: "", thk: "", dimUnit: "mm", selected: true },
         { text: "Canopy & Tie Members", length: "", width: "", thk: "", dimUnit: "mm", selected: true }
     ],
-    cladThickness: "0.50 mm", cladCustomLine: "0.50mm TATA BlueScope / JSW Colour Coated Profile Sheet",
-    accCustomLine: "Standard Industrial Shed Accessories Package",
     accessories: [
         { name: "Turbo Ventilators", qty: "", unit: "Nos", selected: true },
         { name: "Rainwater Gutters", qty: "", unit: "R.Ft", selected: true },
         { name: "Down Pipes (PVC)", qty: "", unit: "Set", selected: true },
         { name: "Anchor Fastener Bolts", qty: "", unit: "Lot", selected: true }
     ],
-    erectCustomLine: "Crane, Hydra, Welding Machine, Expert Labour",
-    erectSpecs: [{ text: "Crane", selected: true }, { text: "Hydra", selected: true }, { text: "Welding Machine", selected: true }, { text: "Labour", selected: true }]
+    erectSpecs: [{ text: "Crane", selected: true }, { text: "Hydra", selected: true }, { text: "Welding Machine", selected: true }, { text: "Labour", selected: true }],
+    customModules: []
 };
+
 const defaultBannerSvg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 240' width='700' height='240'><g fill='%230f172a'><path d='M30,120 Q30,30 160,30 L260,30 Q330,30 330,80 Q330,125 250,130 L110,130 L110,210 L30,210 Z'/><rect x='30' y='218' width='640' height='8' fill='%230c1e30'/><text x='350' y='240' font-family='Arial,sans-serif' font-weight='900' font-size='22' letter-spacing='14' text-anchor='middle'>PATEL ENGINEERING</text></g></svg>`;
 
 const defaultAppSettings = {
     ownerName: "PATEL ENGINEERING", companyAddr: "Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)",
     companyGst: "08AHFPL0222M2ZF", phones: ["+91 9799635249", "+91 7737734122", "+91 9829111111"],
     companyEmail: "info@patelengineering.com", footerWeb: "www.patelengineering.com", startingQuoteSeq: 1,
+    // KG MODE PERMANENT TEXTS
+    pdfRibbonTitle: "QUOTATION", pdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS",
+    headerLine1: "1. ESTIMATED STEEL WEIGHT:", milestoneHeading: "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):",
+    headerLine2: "2. PRICE BREAKUP AS PER KG RATE:", accSectionHeading: "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:",
+    btnNamePrim: "1. Primary", btnNameSec: "2. Secondary", btnNameClad: "3. Cladding", btnNameAcc: "4. Accessories", btnNameErect: "5. Erection",
     paymentTerms: "• 40% Advance along with Purchase Order & Foundation drawing approval.\n• 50% Progressive payment against proforma invoice before dispatch.\n• 10% Final payment after successful completion of erection on site.",
     termsCond: "• Delivery within 4-6 weeks from approval of anchor drawings.\n• Uninterrupted water & 3-phase electricity at site under client scope.\n• All structural steel weights are estimated as per standard engineering tolerance.",
+    // SQ.FT MODE PERMANENT TEXTS
+    sqftPdfRibbonTitle: "QUOTATION", sqftPdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
+    sqftHeaderLine1: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:", sqftContractBarTitle: "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)",
+    sqftPrimLabel: "Primary Structural Framing", sqftCladLabel: "Roof & Wall Cladding System", sqftAccLabel: "Building Accessories Package", sqftErectLabel: "Turnkey Erection & Installation",
+    sqftBtnNamePrim: "1. Primary Framing", sqftBtnNameClad: "2. Cladding System", sqftBtnNameAcc: "3. Accessories", sqftBtnNameErect: "4. Turnkey Erection",
     sqftPaymentTerms: "• 35% Advance with Order Confirmation & Foundation Drawing Approval.\n• 50% Progressive payment stage-wise against site delivery of structure & sheets.\n• 15% Final payment after complete handover of shed structure.",
     sqftTermsCond: "• Total covered shed area billing as per actual agreed layout dimensions.\n• Civil foundations, uninterrupted water & 3-phase power under client scope.\n• All framing & roofing work executed under turnkey single-contract rate.",
-    civilPaymentTerms: "• 30% Advance along with formal Civil Work order confirmation.\n• 50% Running progressive payment based on site progress (Plinth/DPC/Wall).\n• 20% Final payment upon successful completion of Flooring & PCC work.",
-    civilTermsCond: "• Water & 3-phase electricity connection to be provided free of charge by client at site.\n• Unforeseen hard-rock excavation or dewatering if required will be extra as per mutual consent.\n• Adequate secured storage space for cement & steel reinforcement to be provided at site.",
-    pdfRibbonTitle: "QUOTATION", sqftPdfRibbonTitle: "QUOTATION", civilPdfRibbonTitle: "QUOTATION", companyDesc: "PEB Structure | Industrial Sheds | Roofing Solutions",
-    pdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS",
-    sqftPdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
-    projectSizeHeading: "📐 PROJECT SIZE / SHED DIMENSIONS:",
-    btnNamePrim: "1. Primary", btnNameSec: "2. Secondary", btnNameClad: "3. Cladding", btnNameAcc: "4. Accessories", btnNameErect: "5. Erection",
-    btnNameFoundation: "1. Foundation Details", btnNameBrick: "2. Brick Wall Details", btnNameFlooring: "3. Flooring Details",
-    headerLine1: "1. ESTIMATED STEEL WEIGHT:", milestoneHeading: "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):",
-    headerLine2: "2. PRICE BREAKUP AS PER KG RATE:",
-    sqftHeaderLine1: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
-    sqftContractBarTitle: "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)",
-    sqftPrimLabel: "Primary Structural Framing", sqftCladLabel: "Roof & Wall Cladding System", sqftAccLabel: "Building Accessories Package", sqftErectLabel: "Turnkey Erection & Installation",
-    accSectionHeading: "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:",
+    // CIVIL MODE PERMANENT TEXTS
+    civilPdfRibbonTitle: "QUOTATION", civilScopeDesc: "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS",
     civilJobTitle: "JOB DETAILS & TECHNICAL SPECIFICATIONS", civilFoundTitle: "1. FOUNDATION & RCC COLUMN DETAILS:",
     civilBrickTitle: "2. BRICK WALL, DPC & PLASTER DETAILS:", civilFloorTitle: "3. FLOORING & PCC WORK DETAILS:",
-    termsTitle: "Terms & Conditions:", civilTermsTitle: "Civil Work Terms & Conditions:",
+    btnNameFoundation: "1. Foundation Details", btnNameBrick: "2. Brick Wall Details", btnNameFlooring: "3. Flooring Details",
+    civilPaymentTerms: "• 30% Advance along with formal Civil Work order confirmation.\n• 50% Running progressive payment based on site progress (Plinth/DPC/Wall).\n• 20% Final payment upon successful completion of Flooring & PCC work.",
+    civilTermsCond: "• Water & 3-phase electricity connection to be provided free of charge by client at site.\n• Unforeseen hard-rock excavation or dewatering if required will be extra as per mutual consent.\n• Adequate secured storage space for cement & steel reinforcement to be provided at site.",
+    // COMMON DETAILS
+    projectSizeHeading: "📐 PROJECT SIZE / SHED DIMENSIONS:", termsTitle: "Terms & Conditions:", civilTermsTitle: "Civil Work Terms & Conditions:",
     thankYouText: "THANK YOU FOR YOUR BUSINESS WITH US.", civilThankYouText: "THANK YOU FOR YOUR CIVIL CONTRACT.",
     custAcceptanceTitle: "CUSTOMER ACCEPTANCE", custAcceptanceSub: "Authorized Signature & Stamp",
     signCompHeader: "FOR PATEL ENGINEERING", pdfSignatoryText: "Authorized Signatory",
+    companyDesc: "PEB Structure | Industrial Sheds | Roofing Solutions",
     signatureData: "", logoData: "", savedPdfFontScale: 1.0,
     bankName: "", bankAccName: "", bankAccNo: "", bankIfsc: "", bankBranch: "", bankUpi: ""
 };
@@ -153,44 +160,58 @@ function isSqftMode(s) { return s && (s.quoteType === 'shed_sqft' || s.quoteType
 function hasCivilMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'civil'); }
 function hasShedMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'shed' || s.quoteType === 'shed_sqft'); }
 
-// AUTOMATICALLY SET MASTER BLUEPRINTS FOR FUTURE QUOTATIONS
+// STRICT INDEPENDENT BLUEPRINT SYNC: KG & SQFT NEVER TOUCH EACH OTHER
 function syncSiteStructureToMasterBlueprint(s) {
     if (!s) return;
     try {
         if (isSqftMode(s)) {
-            if (s.sqftPrimSpecs) sqftMasterBlueprint.primSpecs = s.sqftPrimSpecs.map(p => ({ text: p.text, length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: p.selected !== false }));
-            if (s.sqftAccessories) sqftMasterBlueprint.accessories = s.sqftAccessories.map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", selected: a.selected !== false }));
-            sqftMasterBlueprint.sqftScopeDesc = s.sqftScopeDesc || sqftMasterBlueprint.sqftScopeDesc;
-            sqftMasterBlueprint.sqftTableDesc = s.sqftTableDesc || sqftMasterBlueprint.sqftTableDesc;
-            sqftMasterBlueprint.primCustomLine = s.primCustomLine || sqftMasterBlueprint.primCustomLine;
-            sqftMasterBlueprint.cladCustomLine = s.cladCustomLine || sqftMasterBlueprint.cladCustomLine;
-            sqftMasterBlueprint.cladThickness = s.cladThickness || sqftMasterBlueprint.cladThickness;
-            sqftMasterBlueprint.accCustomLine = s.accCustomLine || sqftMasterBlueprint.accCustomLine;
-            sqftMasterBlueprint.erectCustomLine = s.erectCustomLine || sqftMasterBlueprint.erectCustomLine;
+            // SQFT BLUEPRINT ONLY
+            if (s.sqftPrimSpecs) {
+                sqftMasterBlueprint.primSpecs = s.sqftPrimSpecs.map(p => ({
+                    text: p.text || "", length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: p.selected !== false
+                }));
+            }
+            if (s.sqftAccessories) {
+                sqftMasterBlueprint.accessories = s.sqftAccessories.map(a => ({
+                    name: a.name || "", qty: "", unit: a.unit || "Nos", selected: a.selected !== false
+                }));
+            }
+            if (s.sqftScopeDesc !== undefined) sqftMasterBlueprint.sqftScopeDesc = s.sqftScopeDesc;
+            if (s.sqftTableDesc !== undefined) sqftMasterBlueprint.sqftTableDesc = s.sqftTableDesc;
+            if (s.sqftPrimCustomLine !== undefined) sqftMasterBlueprint.sqftPrimCustomLine = s.sqftPrimCustomLine;
+            if (s.sqftCladCustomLine !== undefined) sqftMasterBlueprint.sqftCladCustomLine = s.sqftCladCustomLine;
+            if (s.cladThickness !== undefined) sqftMasterBlueprint.cladThickness = s.cladThickness;
+            if (s.sqftAccCustomLine !== undefined) sqftMasterBlueprint.sqftAccCustomLine = s.sqftAccCustomLine;
+            if (s.sqftErectCustomLine !== undefined) sqftMasterBlueprint.sqftErectCustomLine = s.sqftErectCustomLine;
             if (s.moduleOrder) sqftMasterBlueprint.moduleOrder = [...s.moduleOrder];
+            if (s.customModules) sqftMasterBlueprint.customModules = JSON.parse(JSON.stringify(s.customModules));
+
             localStorage.setItem('patel_sqft_master_blueprint', JSON.stringify(sqftMasterBlueprint));
             if (db && isFirebaseConnected) db.ref('patel_sqft_master_blueprint').set(sqftMasterBlueprint).catch(() => {});
         } else {
-            masterBlueprint.primCustomLine = s.primCustomLine || masterBlueprint.primCustomLine;
+            // KG BLUEPRINT ONLY
             if (s.primSpecs) masterBlueprint.primSpecs = s.primSpecs.map(p => ({ text: p.text || p, selected: p.selected !== false }));
-            masterBlueprint.primUnit = s.primUnit || "Kg";
-            masterBlueprint.secCustomLine = s.secCustomLine || masterBlueprint.secCustomLine;
             if (s.secSpecs) masterBlueprint.secSpecs = s.secSpecs.map(sec => ({ text: sec.text || sec, selected: sec.selected !== false }));
-            masterBlueprint.secUnit = s.secUnit || "Kg";
-            masterBlueprint.cladCustomLine = s.cladCustomLine || masterBlueprint.cladCustomLine;
-            masterBlueprint.cladThickness = s.cladThickness || masterBlueprint.cladThickness;
-            masterBlueprint.cladUnit = s.cladUnit || "Sq.Ft";
-            masterBlueprint.accCustomLine = s.accCustomLine || masterBlueprint.accCustomLine;
             if (s.accessories) masterBlueprint.accessories = s.accessories.map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", rate: "", selected: a.selected !== false }));
-            masterBlueprint.erectCustomLine = s.erectCustomLine || masterBlueprint.erectCustomLine;
             if (s.erectSpecs) masterBlueprint.erectSpecs = s.erectSpecs.map(e => ({ text: e.text || e, selected: e.selected !== false }));
-            masterBlueprint.erectUnit = s.erectUnit || "Kg";
+            if (s.primCustomLine !== undefined) masterBlueprint.primCustomLine = s.primCustomLine;
+            if (s.primUnit) masterBlueprint.primUnit = s.primUnit;
+            if (s.secCustomLine !== undefined) masterBlueprint.secCustomLine = s.secCustomLine;
+            if (s.secUnit) masterBlueprint.secUnit = s.secUnit;
+            if (s.cladCustomLine !== undefined) masterBlueprint.cladCustomLine = s.cladCustomLine;
+            if (s.cladThickness !== undefined) masterBlueprint.cladThickness = s.cladThickness;
+            if (s.cladUnit) masterBlueprint.cladUnit = s.cladUnit;
+            if (s.accCustomLine !== undefined) masterBlueprint.accCustomLine = s.accCustomLine;
+            if (s.erectCustomLine !== undefined) masterBlueprint.erectCustomLine = s.erectCustomLine;
+            if (s.erectUnit) masterBlueprint.erectUnit = s.erectUnit;
             if (s.moduleOrder) masterBlueprint.moduleOrder = [...s.moduleOrder];
+            if (s.customModules) masterBlueprint.customModules = JSON.parse(JSON.stringify(s.customModules));
+
             localStorage.setItem('patel_master_blueprint', JSON.stringify(masterBlueprint));
             if (db && isFirebaseConnected) db.ref('patel_master_blueprint').set(masterBlueprint).catch(() => {});
         }
         if (s.civilData) {
-            masterBlueprint.civilScopeDesc = s.civilScopeDesc || masterBlueprint.civilScopeDesc;
+            if (s.civilScopeDesc !== undefined) masterBlueprint.civilScopeDesc = s.civilScopeDesc;
             ['foundation', 'brickWall', 'flooring'].forEach(sec => {
                 if (s.civilData[sec]) {
                     if (!masterBlueprint.civilData[sec]) masterBlueprint.civilData[sec] = { title: "", enabled: true, items: [] };
@@ -655,11 +676,12 @@ function openCreateSiteScreen() {
     setNewSiteQuoteType('both'); openScreen('screenCreateSite');
 }
 
-// 100% BLANK INITIALIZATION & CARRIES FORWARD SAVED MASTER SETTINGS
+// 100% BLANK INITIALIZATION & CARRIES FORWARD ONLY MODE-SPECIFIC BLUEPRINT
 function saveNewBlankSiteAndOpen() {
     const clientNameInput = (document.getElementById('custName')?.value || "").trim();
     if (!clientNameInput) return showAppAlert("⚠️ Client Name Required", "Please enter Client Name.");
     const currentYear = new Date().getFullYear(), nextSeq = getNextQuoteSequenceNumber(), autoQuoteNumber = "PE/" + currentYear + "/" + nextSeq;
+    const isNewSqft = (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft');
     const bp = JSON.parse(JSON.stringify(masterBlueprint)), sqBp = JSON.parse(JSON.stringify(sqftMasterBlueprint));
 
     const newSite = {
@@ -672,23 +694,39 @@ function saveNewBlankSiteAndOpen() {
         rateOnlyMode: false, civilRateOnlyMode: false,
         civilEnabled: hasCivilMode({ quoteType: tempNewQuoteType }), shedEnabled: hasShedMode({ quoteType: tempNewQuoteType }),
         dimW: "", dimL: "", dimH: "", shedSqftRate: "",
-        sqftScopeDesc: appSettings.sqftPdfScopeTitle || sqBp.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
-        sqftTableDesc: appSettings.sqftHeaderLine1 || sqBp.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
-        sqftPrimSpecs: (sqBp.primSpecs || []).map(p => ({ ...p, length: "", width: "", thk: "", selected: true })),
-        sqftAccessories: (sqBp.accessories || []).map(a => ({ ...a, qty: "", unit: a.unit || "Nos", selected: true })),
-        moduleOrder: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? ['prim', 'clad', 'acc', 'erect'] : ['prim', 'sec', 'clad', 'acc', 'erect'],
+
+        // SQFT SPECIFIC SETUP (BLANK INPUTS, RETAINS ADDED ITEMS)
+        sqftScopeDesc: appSettings.sqftPdfScopeTitle !== undefined ? appSettings.sqftPdfScopeTitle : (sqBp.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS"),
+        sqftTableDesc: appSettings.sqftHeaderLine1 !== undefined ? appSettings.sqftHeaderLine1 : (sqBp.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:"),
+        sqftPrimSpecs: (sqBp.primSpecs || []).map(p => ({ text: p.text || "", length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: true })),
+        sqftAccessories: (sqBp.accessories || []).map(a => ({ name: a.name || "", qty: "", unit: a.unit || "Nos", selected: true })),
+        sqftPrimCustomLine: sqBp.sqftPrimCustomLine !== undefined ? sqBp.sqftPrimCustomLine : "Heavy Duty Structural Steel Portal Framing System",
+        sqftCladCustomLine: sqBp.sqftCladCustomLine !== undefined ? sqBp.sqftCladCustomLine : "0.50mm TATA BlueScope / JSW Colour Coated Profile Sheet",
+        sqftAccCustomLine: sqBp.sqftAccCustomLine !== undefined ? sqBp.sqftAccCustomLine : "Standard Industrial Shed Accessories Package",
+        sqftErectCustomLine: sqBp.sqftErectCustomLine !== undefined ? sqBp.sqftErectCustomLine : "Crane, Hydra, Welding Machine, Expert Labour",
+        moduleOrder: isNewSqft ? (sqBp.moduleOrder || ['prim', 'clad', 'acc', 'erect']) : (bp.moduleOrder || ['prim', 'sec', 'clad', 'acc', 'erect']),
+        customModules: isNewSqft ? (sqBp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })) : (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })),
+
+        // KG SPECIFIC SETUP (100% SEPARATE & BLANK INPUTS)
         primEnabled: true, secEnabled: true, cladEnabled: true, accEnabled: true, erectEnabled: true,
-        foundEnabled: true, brickEnabled: true, floorEnabled: true,
-        primCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.primCustomLine || "Heavy Duty Structural Steel Portal Framing System") : bp.primCustomLine,
-        primSpecs: bp.primSpecs ? bp.primSpecs.map(p => ({ ...p, selected: true })) : [], primWeight: "", primRate: "", primUnit: bp.primUnit || "Kg",
-        secCustomLine: bp.secCustomLine, secSpecs: bp.secSpecs ? bp.secSpecs.map(s => ({ ...s, selected: true })) : [], secWeight: "", secRate: "", secUnit: bp.secUnit || "Kg",
-        cladCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.cladCustomLine || "0.50mm TATA BlueScope / JSW Colour Coated Profile Sheet") : bp.cladCustomLine,
-        cladThickness: bp.cladThickness || "0.50 mm", cladSqFt: "", cladRate: "", cladUnit: bp.cladUnit || "Sq.Ft",
-        accCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.accCustomLine || "Standard Industrial Shed Accessories Package") : bp.accCustomLine,
+        primSpecs: (bp.primSpecs || []).map(p => ({ text: p.text || p, selected: true })),
+        secSpecs: (bp.secSpecs || []).map(s => ({ text: s.text || s, selected: true })),
         accessories: (bp.accessories || []).map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", rate: "", selected: a.selected !== false })),
-        erectCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.erectCustomLine || "Crane, Hydra, Welding Machine, Expert Labour") : bp.erectCustomLine,
-        erectSpecs: bp.erectSpecs ? bp.erectSpecs.map(e => ({ ...e, selected: true })) : [], erectRate: "", erectUnit: bp.erectUnit || "Kg",
-        customModules: (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })), civilScopeDesc: appSettings.civilScopeDesc || bp.civilScopeDesc,
+        erectSpecs: (bp.erectSpecs || []).map(e => ({ text: e.text || e, selected: true })),
+        primWeight: "", primRate: "", primUnit: bp.primUnit || "Kg",
+        secWeight: "", secRate: "", secUnit: bp.secUnit || "Kg",
+        cladThickness: isNewSqft ? (sqBp.cladThickness || "0.50 mm") : (bp.cladThickness || "0.50 mm"),
+        cladSqFt: "", cladRate: "", cladUnit: bp.cladUnit || "Sq.Ft",
+        erectRate: "", erectUnit: bp.erectUnit || "Kg",
+        primCustomLine: bp.primCustomLine !== undefined ? bp.primCustomLine : "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
+        secCustomLine: bp.secCustomLine !== undefined ? bp.secCustomLine : "Z Purlin 200 & 150 - 2.0mm Galvanized 120 GSM, Girts & Bracings",
+        cladCustomLine: bp.cladCustomLine !== undefined ? bp.cladCustomLine : "0.50mm TATA BlueScope / JSW Colour Coated Sheet",
+        accCustomLine: bp.accCustomLine !== undefined ? bp.accCustomLine : "Turbo Ventilators, Gutters, Down Pipes, Anchor Bolts, Nuts & Bolts",
+        erectCustomLine: bp.erectCustomLine !== undefined ? bp.erectCustomLine : "Crane, Hydra, Welding Machine, Labour",
+
+        // CIVIL SETUP
+        foundEnabled: true, brickEnabled: true, floorEnabled: true,
+        civilScopeDesc: appSettings.civilScopeDesc !== undefined ? appSettings.civilScopeDesc : (bp.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS"),
         civilData: bp.civilData ? JSON.parse(JSON.stringify(bp.civilData)) : {},
         civilCustomCategories: (bp.civilCustomCategories || []).map(c => ({
             ...c, enabled: true, items: (c.items || []).map(it => ({ ...it, qty: "", rate: "", total: 0, enabled: it.enabled !== false }))
@@ -714,12 +752,12 @@ function loadSiteToDashboard(siteId) {
     if (site.brickEnabled === undefined) site.brickEnabled = true;
     if (site.floorEnabled === undefined) site.floorEnabled = true;
 
-    if (!site.sqftScopeDesc) site.sqftScopeDesc = appSettings.sqftPdfScopeTitle || sqftMasterBlueprint.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS";
-    if (!site.sqftTableDesc) site.sqftTableDesc = appSettings.sqftHeaderLine1 || sqftMasterBlueprint.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:";
+    if (site.sqftScopeDesc === undefined) site.sqftScopeDesc = appSettings.sqftPdfScopeTitle || sqftMasterBlueprint.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS";
+    if (site.sqftTableDesc === undefined) site.sqftTableDesc = appSettings.sqftHeaderLine1 || sqftMasterBlueprint.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:";
     if (!site.sqftPrimSpecs) site.sqftPrimSpecs = JSON.parse(JSON.stringify(sqftMasterBlueprint.primSpecs || []));
     if (!site.sqftAccessories) site.sqftAccessories = JSON.parse(JSON.stringify(sqftMasterBlueprint.accessories || []));
 
-    if (!site.civilScopeDesc) site.civilScopeDesc = masterBlueprint.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS";
+    if (site.civilScopeDesc === undefined) site.civilScopeDesc = appSettings.civilScopeDesc || masterBlueprint.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS";
     if (!site.selectedTaxId) site.selectedTaxId = "gst18_split";
     if (!site.civilSelectedTaxId) site.civilSelectedTaxId = "gst18_split";
     ensureCivilDataOnSite(site);
@@ -793,20 +831,19 @@ function syncPreviewCustEdit(field, el) {
     safeSetText('dashSiteName', site.clientName); safeSetText('civilDashSiteName', site.clientName);
 }
 
-// 2-WAY PERMANENT SYNC: SAVES IMMEDIATELY TO APP SETTINGS & MASTER BLUEPRINTS
+// 2-WAY PERMANENT TEXT SYNC ENGINE: PRESERVES BLANK (EMPTY) WITHOUT REVERTING
 function syncPermanentTextLive(fieldKey, el) {
     const val = el.innerText.trim(); appSettings[fieldKey] = val;
     const site = getCurrentSite();
     if (site) {
-        if (fieldKey === 'sqftPdfScopeTitle' || fieldKey === 'pdfScopeTitle') {
-            site.sqftScopeDesc = val; sqftMasterBlueprint.sqftScopeDesc = val; masterBlueprint.sqftScopeDesc = val;
+        if (isSqftMode(site)) {
+            if (fieldKey === 'sqftPdfScopeTitle') { site.sqftScopeDesc = val; sqftMasterBlueprint.sqftScopeDesc = val; }
+            if (fieldKey === 'sqftHeaderLine1') { site.sqftTableDesc = val; sqftMasterBlueprint.sqftTableDesc = val; }
+        } else {
+            if (fieldKey === 'pdfScopeTitle') { site.primCustomLine = val; masterBlueprint.primCustomLine = val; }
+            if (fieldKey === 'headerLine2') { masterBlueprint.headerLine2 = val; }
         }
-        if (fieldKey === 'sqftHeaderLine1' || fieldKey === 'headerLine2') {
-            site.sqftTableDesc = val; sqftMasterBlueprint.sqftTableDesc = val;
-        }
-        if (fieldKey === 'civilScopeDesc') {
-            site.civilScopeDesc = val; masterBlueprint.civilScopeDesc = val;
-        }
+        if (fieldKey === 'civilScopeDesc') { site.civilScopeDesc = val; masterBlueprint.civilScopeDesc = val; }
         syncSiteStructureToMasterBlueprint(site);
     }
     syncDataToCloud('patel_app_settings', appSettings);
@@ -819,9 +856,10 @@ function syncPermanentTextLive(fieldKey, el) {
 function autoSavePermanentText(fieldKey, val) {
     appSettings[fieldKey] = val; const site = getCurrentSite();
     if (site) {
-        if (fieldKey === 'sqftPdfScopeTitle' || fieldKey === 'pdfScopeTitle') site.sqftScopeDesc = val;
-        if (fieldKey === 'sqftHeaderLine1' || fieldKey === 'headerLine2') site.sqftTableDesc = val;
-        if (fieldKey === 'civilScopeDesc') site.civilScopeDesc = val;
+        if (fieldKey === 'sqftPdfScopeTitle') { site.sqftScopeDesc = val; sqftMasterBlueprint.sqftScopeDesc = val; }
+        if (fieldKey === 'sqftHeaderLine1') { site.sqftTableDesc = val; sqftMasterBlueprint.sqftTableDesc = val; }
+        if (fieldKey === 'pdfScopeTitle') { site.primCustomLine = val; masterBlueprint.primCustomLine = val; }
+        if (fieldKey === 'civilScopeDesc') { site.civilScopeDesc = val; masterBlueprint.civilScopeDesc = val; }
         syncSiteStructureToMasterBlueprint(site);
     }
     if (fieldKey === 'sqftPdfScopeTitle') sqftMasterBlueprint.sqftScopeDesc = val;
@@ -853,13 +891,24 @@ function syncSqftAccQtyLive(idx, el) {
     const site = getCurrentSite(); if (!site?.sqftAccessories || !site.sqftAccessories[idx]) return;
     site.sqftAccessories[idx].qty = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
+
+// EDIT TITLE / HEADER LINE IN PREVIEW (ACCEPTS BLANK WITHOUT RESTORING DEFAULTS)
 function syncPreviewTitleEdit(el, fPrefix, mKey = null) {
     const site = getCurrentSite(); if (!site) return;
     const txt = el.innerText.trim();
     if (fPrefix === 'custom' && mKey) { const c = (site.customModules || []).find(m => m.id === mKey); if (c) c.title = txt; }
-    else if (fPrefix === 'prim') site.primCustomLine = txt; else if (fPrefix === 'sec') site.secCustomLine = txt;
-    else if (fPrefix === 'clad') site.cladCustomLine = txt; else if (fPrefix === 'acc') site.accCustomLine = txt;
-    else if (fPrefix === 'erect') site.erectCustomLine = txt;
+    else if (isSqftMode(site)) {
+        if (fPrefix === 'prim') site.sqftPrimCustomLine = txt;
+        else if (fPrefix === 'clad') site.sqftCladCustomLine = txt;
+        else if (fPrefix === 'acc') site.sqftAccCustomLine = txt;
+        else if (fPrefix === 'erect') site.sqftErectCustomLine = txt;
+    } else {
+        if (fPrefix === 'prim') site.primCustomLine = txt;
+        else if (fPrefix === 'sec') site.secCustomLine = txt;
+        else if (fPrefix === 'clad') site.cladCustomLine = txt;
+        else if (fPrefix === 'acc') site.accCustomLine = txt;
+        else if (fPrefix === 'erect') site.erectCustomLine = txt;
+    }
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
 function syncPreviewEdit(el, field) {
@@ -907,11 +956,24 @@ function renderDynamicPdfActionsBar() {
     }
 }
 function applyCustomButtonNamesUI() {
-    safeSetText('dashBtnTitlePrim', appSettings.btnNamePrim || "1. Primary"); safeSetText('dashBtnTitleSec', appSettings.btnNameSec || "2. Secondary");
-    safeSetText('dashBtnTitleClad', appSettings.btnNameClad || "3. Cladding"); safeSetText('dashBtnTitleAcc', appSettings.btnNameAcc || "4. Accessories");
-    safeSetText('dashBtnTitleErect', appSettings.btnNameErect || "5. Erection"); safeSetText('dashBtnTitleFoundation', appSettings.btnNameFoundation || "1. Foundation Details");
-    safeSetText('dashBtnTitleBrick', appSettings.btnNameBrick || "2. Brick Wall Details"); safeSetText('dashBtnTitleFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
+    const site = getCurrentSite(), isSqft = isSqftMode(site);
+    if (isSqft) {
+        safeSetText('dashBtnTitlePrim', appSettings.sqftBtnNamePrim || appSettings.sqftPrimLabel || "1. Primary Framing");
+        safeSetText('dashBtnTitleClad', appSettings.sqftBtnNameClad || appSettings.sqftCladLabel || "2. Cladding System");
+        safeSetText('dashBtnTitleAcc', appSettings.sqftBtnNameAcc || appSettings.sqftAccLabel || "3. Accessories Package");
+        safeSetText('dashBtnTitleErect', appSettings.sqftBtnNameErect || appSettings.sqftErectLabel || "4. Turnkey Erection");
+    } else {
+        safeSetText('dashBtnTitlePrim', appSettings.btnNamePrim || "1. Primary");
+        safeSetText('dashBtnTitleSec', appSettings.btnNameSec || "2. Secondary");
+        safeSetText('dashBtnTitleClad', appSettings.btnNameClad || "3. Cladding");
+        safeSetText('dashBtnTitleAcc', appSettings.btnNameAcc || "4. Accessories");
+        safeSetText('dashBtnTitleErect', appSettings.btnNameErect || "5. Erection");
+    }
+    safeSetText('dashBtnTitleFoundation', appSettings.btnNameFoundation || "1. Foundation Details");
+    safeSetText('dashBtnTitleBrick', appSettings.btnNameBrick || "2. Brick Wall Details");
+    safeSetText('dashBtnTitleFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
 }
+
 function toggleModuleActiveState(modKey) {
     const site = getCurrentSite(); if (!site) return;
     site[modKey + 'Enabled'] = !site[modKey + 'Enabled'];
@@ -1180,7 +1242,7 @@ function autoSaveAndUpdate() {
     syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 
-// 18. STRUCTURE MODULE MODALS & INPUT EDITING
+// 18. STRUCTURE MODULE MODALS (SEPARATE & PERSISTENT TITLE LINES)
 let activeModType = null;
 function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
@@ -1189,8 +1251,22 @@ function openModuleModal(type) {
     const subNotice = document.getElementById('modModalSubNotice');
     safeSetVal('customItemInput', ""); const isSqft = isSqftMode(site);
 
+    // MODE-SPECIFIC VALUE LOADING (NEVER FALLS BACK TO DEFAULT IF SET EMPTY)
+    if (isSqft) {
+        if (type === 'prim') customLineInput.value = site.sqftPrimCustomLine !== undefined ? site.sqftPrimCustomLine : "";
+        else if (type === 'clad') customLineInput.value = site.sqftCladCustomLine !== undefined ? site.sqftCladCustomLine : "";
+        else if (type === 'acc') customLineInput.value = site.sqftAccCustomLine !== undefined ? site.sqftAccCustomLine : "";
+        else if (type === 'erect') customLineInput.value = site.sqftErectCustomLine !== undefined ? site.sqftErectCustomLine : "";
+    } else {
+        if (type === 'prim') customLineInput.value = site.primCustomLine !== undefined ? site.primCustomLine : "";
+        else if (type === 'sec') customLineInput.value = site.secCustomLine !== undefined ? site.secCustomLine : "";
+        else if (type === 'clad') customLineInput.value = site.cladCustomLine !== undefined ? site.cladCustomLine : "";
+        else if (type === 'acc') customLineInput.value = site.accCustomLine !== undefined ? site.accCustomLine : "";
+        else if (type === 'erect') customLineInput.value = site.erectCustomLine !== undefined ? site.erectCustomLine : "";
+    }
+
     if (type === 'prim') {
-        modalTitle.innerHTML = `🏗️ 1. Primary Framing Structure`; customLineInput.value = site.primCustomLine || "";
+        modalTitle.innerHTML = `🏗️ 1. Primary Framing Structure`;
         checklistTitle.innerText = isSqft ? "Member Dimensions (Length, Width, Thickness, Unit):" : "Checklist Specifications:";
         checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
@@ -1208,7 +1284,7 @@ function openModuleModal(type) {
             renderStandardChecklist(site.primSpecs);
         }
     } else if (type === 'sec') {
-        modalTitle.innerHTML = `⚙️ 2. Secondary Framing`; customLineInput.value = site.secCustomLine || "";
+        modalTitle.innerHTML = `⚙️ 2. Secondary Framing`;
         checklistTitle.innerText = "Specifications:"; checklistTitle.style.display = addRowBox.style.display = 'block';
         inputsBox.innerHTML = `
             <div class="row-3">
@@ -1218,7 +1294,7 @@ function openModuleModal(type) {
             </div>`;
         renderStandardChecklist(site.secSpecs);
     } else if (type === 'clad') {
-        modalTitle.innerHTML = `🛡️ 3. Roofing & Cladding System`; customLineInput.value = site.cladCustomLine || "";
+        modalTitle.innerHTML = `🛡️ 3. Roofing & Cladding System`;
         checklistTitle.style.display = addRowBox.style.display = 'none';
         if (isSqft) {
             inputsBox.innerHTML = `
@@ -1235,7 +1311,7 @@ function openModuleModal(type) {
         }
         document.getElementById('modItemsCheckContainer').innerHTML = `<div style="font-size:12px;color:#64748b;padding:10px 0;">💡 Sheeting parameters sync automatically.</div>`;
     } else if (type === 'acc') {
-        modalTitle.innerHTML = `📦 4. Building Accessories`; customLineInput.value = site.accCustomLine || "";
+        modalTitle.innerHTML = `📦 4. Building Accessories`;
         checklistTitle.innerText = isSqft ? "Accessories List (Name, Quantity & Unit):" : "Accessories Breakdown (Quantity, Unit & Rate):";
         checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
@@ -1246,7 +1322,7 @@ function openModuleModal(type) {
             renderAccessoriesChecklist();
         }
     } else if (type === 'erect') {
-        modalTitle.innerHTML = `🚜 5. Turnkey Erection`; customLineInput.value = site.erectCustomLine || "";
+        modalTitle.innerHTML = `🚜 5. Turnkey Erection`;
         checklistTitle.innerText = "Scope Specifications:"; checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
             inputsBox.innerHTML = `<p style="font-size:11.5px;color:#475569;margin:0;">Turnkey Erection included in overall shed rate.</p>`;
@@ -1257,25 +1333,37 @@ function openModuleModal(type) {
     }
     openModalWithHistory('moduleSelectionModal');
 }
+
+// FULL CONTROL AUTO-SAVE: PRESERVES EMPTY STRING WITHOUT RESTORING OLD VALUE
 function autoSaveModuleChanges() {
     const site = getCurrentSite(); if (!site) return;
     const customLineVal = (document.getElementById('modalInputCustomLine')?.value || "").trim();
-    if (activeModType === 'prim') site.primCustomLine = customLineVal;
-    else if (activeModType === 'sec') site.secCustomLine = customLineVal;
-    else if (activeModType === 'clad') {
-        site.cladCustomLine = customLineVal;
-        const thk = document.getElementById('modalInputThick')?.value;
-        if (thk !== undefined) site.cladThickness = thk;
-        if (!isSqftMode(site)) {
+    const isSqft = isSqftMode(site);
+
+    if (isSqft) {
+        if (activeModType === 'prim') site.sqftPrimCustomLine = customLineVal;
+        else if (activeModType === 'clad') {
+            site.sqftCladCustomLine = customLineVal;
+            const thk = document.getElementById('modalInputThick')?.value;
+            if (thk !== undefined) site.cladThickness = thk;
+        }
+        else if (activeModType === 'acc') site.sqftAccCustomLine = customLineVal;
+        else if (activeModType === 'erect') site.sqftErectCustomLine = customLineVal;
+    } else {
+        if (activeModType === 'prim') site.primCustomLine = customLineVal;
+        else if (activeModType === 'sec') site.secCustomLine = customLineVal;
+        else if (activeModType === 'clad') {
+            site.cladCustomLine = customLineVal;
+            const thk = document.getElementById('modalInputThick')?.value;
+            if (thk !== undefined) site.cladThickness = thk;
             site.cladSqFt = document.getElementById('modalInputSqFt')?.value || "";
             site.cladRate = document.getElementById('modalInputRt')?.value || "";
         }
-    } else if (activeModType === 'acc') site.accCustomLine = customLineVal;
-    else if (activeModType === 'erect') {
-        site.erectCustomLine = customLineVal;
-        if (!isSqftMode(site)) site.erectRate = document.getElementById('modalInputRt')?.value || "";
-    }
-    if (!isSqftMode(site)) {
+        else if (activeModType === 'acc') site.accCustomLine = customLineVal;
+        else if (activeModType === 'erect') {
+            site.erectCustomLine = customLineVal;
+            site.erectRate = document.getElementById('modalInputRt')?.value || "";
+        }
         if (activeModType === 'prim') {
             site.primWeight = document.getElementById('modalInputWt')?.value || "";
             site.primRate = document.getElementById('modalInputRt')?.value || "";
@@ -1284,8 +1372,12 @@ function autoSaveModuleChanges() {
             site.secRate = document.getElementById('modalInputRt')?.value || "";
         }
     }
-    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+    syncDataToCloud('patel_app_sites', sites);
+    syncSiteStructureToMasterBlueprint(site);
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet();
 }
+
 function renderSqftPrimaryChecklist(list) {
     const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
     container.innerHTML = "";
@@ -1439,7 +1531,7 @@ function addNewItemToModule() {
         site.secSpecs = site.secSpecs || []; site.secSpecs.push({ text: val, selected: true }); renderStandardChecklist(site.secSpecs);
     } else if (activeModType === 'acc') {
         if (isSqftMode(site)) { site.sqftAccessories = site.sqftAccessories || []; site.sqftAccessories.push({ name: val, qty: "", unit: "Nos", selected: true }); renderSqftAccessoriesChecklist(); }
-        else { site.accessories = site.accessories || []; site.accessories.push({ name: val, qty: "", unit: "Nos", rate: "", selected: true }); renderAccessoriesChecklist(); }
+        else { site.accessories = site.accessories || []; site.accessories.push({ name: val, qty: "1", unit: "Nos", rate: "0", selected: true }); renderAccessoriesChecklist(); }
     } else if (activeModType === 'erect') {
         site.erectSpecs = site.erectSpecs || []; site.erectSpecs.push({ text: val, selected: true }); renderStandardChecklist(site.erectSpecs);
     }
@@ -1601,7 +1693,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (ZERO NESTED TABLES - CLEAN NATIVE 4-COLUMN SOLID BORDERS)
+// 21. LIVE PREVIEW ENGINE (SEPARATE HEADERS & ZERO NESTED TABLE GAPS)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1622,31 +1714,32 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     else { if (pWebWrap) pWebWrap.style.display = 'none'; if (cWebWrap) cWebWrap.style.display = 'none'; }
 
     updateHeaderBannersUI();
-    safeSetText('pdfRibbonTitle', isSqft ? (appSettings.sqftPdfRibbonTitle || "QUOTATION") : (appSettings.pdfRibbonTitle || "QUOTATION"));
-    safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
-    safeSetText('pdfScopeTitle', isSqft ? (site.sqftScopeDesc || appSettings.sqftPdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS") : (appSettings.pdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS"));
-    safeSetText('pdfProjectSizeHeading', appSettings.projectSizeHeading || "📐 PROJECT SIZE / SHED DIMENSIONS:");
-    safeSetText('displayHeaderLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
-    safeSetText('pdfMilestoneHeading', appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
-    safeSetText('displayHeaderLine2', isSqft ? (site.sqftTableDesc || appSettings.sqftHeaderLine1 || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:") : (appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:"));
-    safeSetText('pdfAccSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
-    safeSetText('civilPdfScopeTitle', site.civilScopeDesc || masterBlueprint.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS");
-    safeSetText('civilJobTitleDisplay', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
-    safeSetText('civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
-    safeSetText('civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
-    safeSetText('civilFloorTitle', appSettings.civilFloorTitle || "3. FLOORING & PCC WORK DETAILS:");
-    safeSetText('pdfTermsHeaderDisplay', appSettings.termsTitle || "Terms & Conditions:");
-    safeSetText('civilPdfTermsHeaderDisplay', appSettings.civilTermsTitle || "Civil Work Terms & Conditions:");
-    safeSetText('pdfThankYouDisplay', appSettings.thankYouText || "THANK YOU FOR YOUR BUSINESS WITH US.");
-    safeSetText('civilPdfThankYouDisplay', appSettings.civilThankYouText || "THANK YOU FOR YOUR CIVIL CONTRACT.");
-    safeSetText('pdfCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-    safeSetText('civilCustSignHeader', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-    safeSetText('pdfCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
-    safeSetText('civilCustSignSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
-    safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
-    safeSetText('civilSignCompanyHeader', appSettings.signCompHeader || ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
-    safeSetText('pdfSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
-    safeSetText('civilSignatoryTitleDisplay', appSettings.pdfSignatoryText || "Authorized Signatory");
+    // 100% SEPARATE HEADINGS FOR EACH MODE
+    safeSetText('pdfRibbonTitle', isSqft ? (appSettings.sqftPdfRibbonTitle !== undefined ? appSettings.sqftPdfRibbonTitle : "QUOTATION") : (appSettings.pdfRibbonTitle !== undefined ? appSettings.pdfRibbonTitle : "QUOTATION"));
+    safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle !== undefined ? appSettings.civilPdfRibbonTitle : "QUOTATION");
+    safeSetText('pdfScopeTitle', isSqft ? (site.sqftScopeDesc !== undefined ? site.sqftScopeDesc : (appSettings.sqftPdfScopeTitle || "")) : (site.primCustomLine !== undefined ? site.primCustomLine : (appSettings.pdfScopeTitle || "")));
+    safeSetText('pdfProjectSizeHeading', appSettings.projectSizeHeading !== undefined ? appSettings.projectSizeHeading : "📐 PROJECT SIZE / SHED DIMENSIONS:");
+    safeSetText('displayHeaderLine1', appSettings.headerLine1 !== undefined ? appSettings.headerLine1 : "1. ESTIMATED STEEL WEIGHT:");
+    safeSetText('pdfMilestoneHeading', appSettings.milestoneHeading !== undefined ? appSettings.milestoneHeading : "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
+    safeSetText('displayHeaderLine2', isSqft ? (site.sqftTableDesc !== undefined ? site.sqftTableDesc : (appSettings.sqftHeaderLine1 || "")) : (appSettings.headerLine2 !== undefined ? appSettings.headerLine2 : "2. PRICE BREAKUP AS PER KG RATE:"));
+    safeSetText('pdfAccSectionHeading', appSettings.accSectionHeading !== undefined ? appSettings.accSectionHeading : "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
+    safeSetText('civilPdfScopeTitle', site.civilScopeDesc !== undefined ? site.civilScopeDesc : (appSettings.civilScopeDesc || ""));
+    safeSetText('civilJobTitleDisplay', appSettings.civilJobTitle !== undefined ? appSettings.civilJobTitle : "JOB DETAILS & TECHNICAL SPECIFICATIONS");
+    safeSetText('civilFoundTitle', appSettings.civilFoundTitle !== undefined ? appSettings.civilFoundTitle : "1. FOUNDATION & RCC COLUMN DETAILS:");
+    safeSetText('civilBrickTitle', appSettings.civilBrickTitle !== undefined ? appSettings.civilBrickTitle : "2. BRICK WALL, DPC & PLASTER DETAILS:");
+    safeSetText('civilFloorTitle', appSettings.civilFloorTitle !== undefined ? appSettings.civilFloorTitle : "3. FLOORING & PCC WORK DETAILS:");
+    safeSetText('pdfTermsHeaderDisplay', appSettings.termsTitle !== undefined ? appSettings.termsTitle : "Terms & Conditions:");
+    safeSetText('civilPdfTermsHeaderDisplay', appSettings.civilTermsTitle !== undefined ? appSettings.civilTermsTitle : "Civil Work Terms & Conditions:");
+    safeSetText('pdfThankYouDisplay', appSettings.thankYouText !== undefined ? appSettings.thankYouText : "THANK YOU FOR YOUR BUSINESS WITH US.");
+    safeSetText('civilPdfThankYouDisplay', appSettings.civilThankYouText !== undefined ? appSettings.civilThankYouText : "THANK YOU FOR YOUR CIVIL CONTRACT.");
+    safeSetText('pdfCustSignHeader', appSettings.custAcceptanceTitle !== undefined ? appSettings.custAcceptanceTitle : "CUSTOMER ACCEPTANCE");
+    safeSetText('civilCustSignHeader', appSettings.custAcceptanceTitle !== undefined ? appSettings.custAcceptanceTitle : "CUSTOMER ACCEPTANCE");
+    safeSetText('pdfCustSignSub', appSettings.custAcceptanceSub !== undefined ? appSettings.custAcceptanceSub : "Authorized Signature & Stamp");
+    safeSetText('civilCustSignSub', appSettings.custAcceptanceSub !== undefined ? appSettings.custAcceptanceSub : "Authorized Signature & Stamp");
+    safeSetText('pdfSignCompanyHeader', appSettings.signCompHeader !== undefined ? appSettings.signCompHeader : ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
+    safeSetText('civilSignCompanyHeader', appSettings.signCompHeader !== undefined ? appSettings.signCompHeader : ("FOR " + (appSettings.ownerName || "PATEL ENGINEERING")));
+    safeSetText('pdfSignatoryTitleDisplay', appSettings.pdfSignatoryText !== undefined ? appSettings.pdfSignatoryText : "Authorized Signatory");
+    safeSetText('civilSignatoryTitleDisplay', appSettings.pdfSignatoryText !== undefined ? appSettings.pdfSignatoryText : "Authorized Signatory");
 
     safeSetText('pdfQuoteNo', site.quoteNo || "PE/2026/01"); safeSetText('civilPdfQuoteNo', site.quoteNo || "PE/2026/01");
     const issueDateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -1694,7 +1787,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 if (!site.moduleOrder || site.moduleOrder.includes('sec')) site.moduleOrder = ['prim', 'clad', 'acc', 'erect'];
 
                 site.moduleOrder.forEach((mKey, orderIdx) => {
-                    // 1. PRIMARY STRUCTURE (SOLID 4-COLUMN CELLS - NO GAP, NO CUT)
+                    // 1. PRIMARY STRUCTURE (SQFT INDEPENDENT CUSTOM LINE)
                     if (mKey === 'prim' && site.primEnabled !== false) {
                         const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
                         let leftItemsHtml = "", rightItemsHtml = "";
@@ -1710,13 +1803,14 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                                 rightItemsHtml += `<div class="sqft-pair-row">${dimHtml}</div>`;
                             });
                         }
+                        const primCustomLineDisplay = site.sqftPrimCustomLine !== undefined ? site.sqftPrimCustomLine : (sqftMasterBlueprint.sqftPrimCustomLine || "");
                         const tr = document.createElement('tr');
                         tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
                         tr.innerHTML = `
                             <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td style="width:40%;vertical-align:top;">
                                 <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftPrimLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-bottom:4px;">${site.primCustomLine || ''}</div>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-bottom:4px;">${primCustomLineDisplay}</div>
                                 ${leftItemsHtml}
                             </td>
                             <td style="width:40%;vertical-align:top;">
@@ -1728,15 +1822,16 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 2. ROOF & WALL CLADDING (PERFECT NATIVE 4-COLUMN ALIGNMENT)
+                    // 2. ROOF & WALL CLADDING (SQFT INDEPENDENT CUSTOM LINE)
                     } else if (mKey === 'clad' && site.cladEnabled !== false) {
+                        const cladCustomLineDisplay = site.sqftCladCustomLine !== undefined ? site.sqftCladCustomLine : (sqftMasterBlueprint.sqftCladCustomLine || "");
                         const tr = document.createElement('tr');
                         tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
                         tr.innerHTML = `
                             <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td style="width:40%;vertical-align:middle;">
                                 <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftCladLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftCladLabel || "Roof & Wall Cladding System"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.cladCustomLine || ''}</div>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${cladCustomLineDisplay}</div>
                             </td>
                             <td style="width:40%;vertical-align:middle;">
                                 <div style="font-weight:900;font-size:calc(10px * var(--pdf-font-scale));color:#000000;">Thickness: <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewEdit(this,'cladThickness')">${site.cladThickness || '0.50 mm'}</span></div>
@@ -1745,7 +1840,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 3. ACCESSORIES (QTY & UNIT LOCKED, BLACK COLOR, BLANK CHECK)
+                    // 3. ACCESSORIES (SQFT INDEPENDENT CUSTOM LINE & ITEMS)
                     } else if (mKey === 'acc' && site.accEnabled !== false) {
                         const activeAcc = (site.sqftAccessories || []).filter(a => a.selected !== false);
                         let leftAccHtml = "", rightAccHtml = "";
@@ -1760,13 +1855,14 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                                 rightAccHtml += `<div class="sqft-pair-row" style="font-weight:900;color:#000000;">${qtyCellContent}</div>`;
                             });
                         }
+                        const accCustomLineDisplay = site.sqftAccCustomLine !== undefined ? site.sqftAccCustomLine : (sqftMasterBlueprint.sqftAccCustomLine || "");
                         const tr = document.createElement('tr');
                         tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
                         tr.innerHTML = `
                             <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td style="width:40%;vertical-align:top;">
                                 <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftAccLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-bottom:4px;">${site.accCustomLine || ''}</div>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-bottom:4px;">${accCustomLineDisplay}</div>
                                 ${leftAccHtml}
                             </td>
                             <td style="width:40%;vertical-align:top;">
@@ -1778,16 +1874,17 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 4. ERECTION & TURNKEY
+                    // 4. ERECTION & TURNKEY (SQFT INDEPENDENT CUSTOM LINE)
                     } else if (mKey === 'erect' && site.erectEnabled !== false) {
                         const erectBullets = (site.erectSpecs || []).filter(e => e.selected === true).map(e => `<span>• ${e.text || e}</span>`).join(' ');
+                        const erectCustomLineDisplay = site.sqftErectCustomLine !== undefined ? site.sqftErectCustomLine : (sqftMasterBlueprint.sqftErectCustomLine || "");
                         const tr = document.createElement('tr');
                         tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
                         tr.innerHTML = `
                             <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
                             <td style="width:40%;vertical-align:middle;">
                                 <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftErectLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftErectLabel || "Turnkey Erection & Installation"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'erect')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.erectCustomLine || ''}</div>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'erect')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${erectCustomLineDisplay}</div>
                             </td>
                             <td style="width:40%;vertical-align:middle;">
                                 <div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">${erectBullets || 'Crane, Hydra, Welding Machine & Labour'}</div>
@@ -1835,7 +1932,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 }
             }
         } else {
-            // KG / BOQ MODE
+            // KG / BOQ MODE (100% PRESERVED INDEPENDENT KG LINES)
             if (sec1Wrap) sec1Wrap.style.display = 'block';
             const s1Tbody = document.getElementById('pdfSection1TableBody');
             if (s1Tbody) {
@@ -1843,17 +1940,17 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 if (site.primEnabled !== false) {
                     const pWt = parseFloat(site.primWeight) || 0, pUnit = site.primUnit || "Kg", inKg = pUnit.toLowerCase() === 'mt' ? (pWt * 1000) : pWt;
                     autoTotalSteelWeightKg += inKg;
-                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')">${(site.primCustomLine || "").trim()}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
+                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Primary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')">${(site.primCustomLine !== undefined ? site.primCustomLine : "")}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;">${pWt > 0 ? `${pWt.toLocaleString('en-IN')} <span class="unit-locked-text">${pUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
                 }
                 if (site.secEnabled !== false) {
                     const sWt = parseFloat(site.secWeight) || 0, sUnit = site.secUnit || "Kg", inKg = sUnit.toLowerCase() === 'mt' ? (sWt * 1000) : sWt;
                     autoTotalSteelWeightKg += inKg;
-                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'sec')">${(site.secCustomLine || "").trim()}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
+                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Secondary Structure:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'sec')">${(site.secCustomLine !== undefined ? site.secCustomLine : "")}</span></td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;">${sWt > 0 ? `${sWt.toLocaleString('en-IN')} <span class="unit-locked-text">${sUnit}</span> (${(inKg/1000).toFixed(1)} MT)` : "-"}</td></tr>`;
                 }
                 s1Tbody.innerHTML += `<tr class="executive-weight-total-row"><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:900;"><div class="exec-wt-title" id="pdfMilestoneHeading">${appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):"}</div></td><td style="text-align:right;font-size:calc(10.5px * var(--pdf-font-scale)) !important;font-weight:900;color:#000;"><span class="exec-wt-val">${autoTotalSteelWeightKg > 0 ? `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)` : "-"}</span></td></tr>`;
                 if (site.cladEnabled !== false) {
                     const cSq = parseFloat(site.cladSqFt) || 0, cUnit = site.cladUnit || "Sq.Ft", thickBadge = site.cladThickness ? `<span class="spec-highlight-pill" style="margin-left:6px;">📐 Thickness: ${site.cladThickness}</span>` : '';
-                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')">${(site.cladCustomLine || "").trim()}</span>${thickBadge}</td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td></tr>`;
+                    s1Tbody.innerHTML += `<tr><td style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;font-weight:800;"><b>Roof & Wall Cladding:</b> <span class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')">${(site.cladCustomLine !== undefined ? site.cladCustomLine : "")}</span>${thickBadge}</td><td style="text-align:right;font-weight:900;font-size:calc(10.5px * var(--pdf-font-scale)) !important;color:#000;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'cladSqFt')">${cSq > 0 ? cSq : '-'}</span> <span class="unit-locked-text">${cUnit}</span></td></tr>`;
                 }
             }
 
@@ -1901,7 +1998,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 tbody.innerHTML = "";
                 const helperSpecs = (specs) => (!specs || !Array.isArray(specs)) ? "" : `<div class="item-specs-bullets">${specs.filter(s => s.selected === true).map(s => `<span>• ${s.text || s}</span>`).join('')}</div>`;
                 const addRow = (catTitle, line, uRate, qty, amt, fPrefix, uLabel, isCust = false, bullets = "", mKey = "") => {
-                    const descHtml = `<div class="row-item-title" style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;font-weight:900;color:#000;">${catTitle}:</div><div class="row-item-subtitle editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'${fPrefix}','${mKey}')" style="font-size:calc(9.5px * var(--pdf-font-scale));">${(line || "").trim()}</div>${bullets}`;
+                    const descHtml = `<div class="row-item-title" style="font-size:calc(10.5px * var(--pdf-font-scale)) !important;font-weight:900;color:#000;">${catTitle}:</div><div class="row-item-subtitle editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'${fPrefix}','${mKey}')" style="font-size:calc(9.5px * var(--pdf-font-scale));">${(line !== undefined ? line : "").trim()}</div>${bullets}`;
                     const tr = document.createElement('tr'); tr.className = "sortable-item"; tr.dataset.sortIndex = sNoCounter - 1;
                     tr.innerHTML = isRateOnly ?
                         `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNoCounter++}</td><td>${descHtml}</td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="${isCust ? '' : `openShedUnitPicker('${fPrefix}')`}">${uLabel || '-'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'${fPrefix}Rate')">${formatRawOrDash(uRate)}</span></td>` :
@@ -2086,7 +2183,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 22. DYNAMIC FLOW ENGINE FOR PDF (ISOLATED MAIN ROWS & ZERO LEAK)
+// 22. DYNAMIC FLOW ENGINE FOR PDF (CLEAN SOLID BORDERS)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -2172,8 +2269,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             let accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
             let accTable = document.createElement('table'); accTable.className = 'theme-data-table';
             if (accThead) accTable.appendChild(accThead);
-            let accTbody = document.createElement('tbody');
-            accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap);
+            let accTbody = document.createElement('tbody');accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap);
             curPage.appendChild(accBlockWrap);
 
             let aIdx = 0;
@@ -2433,49 +2529,49 @@ function clearCompanyBankDetails() {
     closeBankDetailsModal(); refreshLivePdfPreviewSheet(); showCorporateToast("Bank Details cleared", "🗑️");
 }
 function openPermanentTextsModal() {
-    safeSetVal('pt_companyDesc', appSettings.companyDesc || ""); 
-    safeSetVal('pt_companyAddr', appSettings.companyAddr || "");
-    safeSetVal('pt_companyGst', appSettings.companyGst || ""); 
-    safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
+    safeSetVal('pt_companyDesc', appSettings.companyDesc !== undefined ? appSettings.companyDesc : ""); 
+    safeSetVal('pt_companyAddr', appSettings.companyAddr !== undefined ? appSettings.companyAddr : "");
+    safeSetVal('pt_companyGst', appSettings.companyGst !== undefined ? appSettings.companyGst : ""); 
+    safeSetVal('pt_footerWeb', appSettings.footerWeb !== undefined ? appSettings.footerWeb : "");
     
     // Kg Mode Texts
-    safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION"); 
-    safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle || "");
-    safeSetVal('pt_headerLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
-    safeSetVal('pt_milestoneHeading', appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
-    safeSetVal('pt_headerLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
-    safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
-    safeSetVal('pt_btnNamePrim', appSettings.btnNamePrim || "1. Primary");
-    safeSetVal('pt_btnNameSec', appSettings.btnNameSec || "2. Secondary");
-    safeSetVal('pt_btnNameClad', appSettings.btnNameClad || "3. Cladding");
-    safeSetVal('pt_btnNameAcc', appSettings.btnNameAcc || "4. Accessories");
-    safeSetVal('pt_btnNameErect', appSettings.btnNameErect || "5. Erection");
+    safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle !== undefined ? appSettings.pdfRibbonTitle : "QUOTATION"); 
+    safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle !== undefined ? appSettings.pdfScopeTitle : "");
+    safeSetVal('pt_headerLine1', appSettings.headerLine1 !== undefined ? appSettings.headerLine1 : "1. ESTIMATED STEEL WEIGHT:");
+    safeSetVal('pt_milestoneHeading', appSettings.milestoneHeading !== undefined ? appSettings.milestoneHeading : "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
+    safeSetVal('pt_headerLine2', appSettings.headerLine2 !== undefined ? appSettings.headerLine2 : "2. PRICE BREAKUP AS PER KG RATE:");
+    safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading !== undefined ? appSettings.accSectionHeading : "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
+    safeSetVal('pt_btnNamePrim', appSettings.btnNamePrim !== undefined ? appSettings.btnNamePrim : "1. Primary");
+    safeSetVal('pt_btnNameSec', appSettings.btnNameSec !== undefined ? appSettings.btnNameSec : "2. Secondary");
+    safeSetVal('pt_btnNameClad', appSettings.btnNameClad !== undefined ? appSettings.btnNameClad : "3. Cladding");
+    safeSetVal('pt_btnNameAcc', appSettings.btnNameAcc !== undefined ? appSettings.btnNameAcc : "4. Accessories");
+    safeSetVal('pt_btnNameErect', appSettings.btnNameErect !== undefined ? appSettings.btnNameErect : "5. Erection");
 
     // Sq.Ft Mode Texts
-    safeSetVal('pt_sqftPdfRibbonTitle', appSettings.sqftPdfRibbonTitle || "QUOTATION");
-    safeSetVal('pt_sqftPdfScopeTitle', appSettings.sqftPdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS");
-    safeSetVal('pt_sqftHeaderLine1', appSettings.sqftHeaderLine1 || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:");
-    safeSetVal('pt_sqftContractBarTitle', appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)");
-    safeSetVal('pt_sqftPrimLabel', appSettings.sqftPrimLabel || "Primary Structural Framing");
-    safeSetVal('pt_sqftCladLabel', appSettings.sqftCladLabel || "Roof & Wall Cladding System");
-    safeSetVal('pt_sqftAccLabel', appSettings.sqftAccLabel || "Building Accessories Package");
-    safeSetVal('pt_sqftErectLabel', appSettings.sqftErectLabel || "Turnkey Erection & Installation");
+    safeSetVal('pt_sqftPdfRibbonTitle', appSettings.sqftPdfRibbonTitle !== undefined ? appSettings.sqftPdfRibbonTitle : "QUOTATION");
+    safeSetVal('pt_sqftPdfScopeTitle', appSettings.sqftPdfScopeTitle !== undefined ? appSettings.sqftPdfScopeTitle : "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS");
+    safeSetVal('pt_sqftHeaderLine1', appSettings.sqftHeaderLine1 !== undefined ? appSettings.sqftHeaderLine1 : "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:");
+    safeSetVal('pt_sqftContractBarTitle', appSettings.sqftContractBarTitle !== undefined ? appSettings.sqftContractBarTitle : "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)");
+    safeSetVal('pt_sqftPrimLabel', appSettings.sqftPrimLabel !== undefined ? appSettings.sqftPrimLabel : "Primary Structural Framing");
+    safeSetVal('pt_sqftCladLabel', appSettings.sqftCladLabel !== undefined ? appSettings.sqftCladLabel : "Roof & Wall Cladding System");
+    safeSetVal('pt_sqftAccLabel', appSettings.sqftAccLabel !== undefined ? appSettings.sqftAccLabel : "Building Accessories Package");
+    safeSetVal('pt_sqftErectLabel', appSettings.sqftErectLabel !== undefined ? appSettings.sqftErectLabel : "Turnkey Erection & Installation");
 
     // Civil Mode Texts
-    safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
-    safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
-    safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
-    safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
-    safeSetVal('pt_civilFloorTitle', appSettings.civilFloorTitle || "3. FLOORING & PCC WORK DETAILS:");
-    safeSetVal('pt_btnNameFoundation', appSettings.btnNameFoundation || "1. Foundation Details");
-    safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick || "2. Brick Wall Details");
-    safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
+    safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle !== undefined ? appSettings.civilPdfRibbonTitle : "QUOTATION");
+    safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle !== undefined ? appSettings.civilJobTitle : "JOB DETAILS & TECHNICAL SPECIFICATIONS");
+    safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle !== undefined ? appSettings.civilFoundTitle : "1. FOUNDATION & RCC COLUMN DETAILS:");
+    safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle !== undefined ? appSettings.civilBrickTitle : "2. BRICK WALL, DPC & PLASTER DETAILS:");
+    safeSetVal('pt_civilFloorTitle', appSettings.civilFloorTitle !== undefined ? appSettings.civilFloorTitle : "3. FLOORING & PCC WORK DETAILS:");
+    safeSetVal('pt_btnNameFoundation', appSettings.btnNameFoundation !== undefined ? appSettings.btnNameFoundation : "1. Foundation Details");
+    safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick !== undefined ? appSettings.btnNameBrick : "2. Brick Wall Details");
+    safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring !== undefined ? appSettings.btnNameFlooring : "3. Flooring Details");
 
     // Common Signatures & Terms
-    safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-    safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
-    safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
-    safeSetVal('pt_pdfSignatoryText', appSettings.pdfSignatoryText || "Authorized Signatory");
+    safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle !== undefined ? appSettings.custAcceptanceTitle : "CUSTOMER ACCEPTANCE");
+    safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub !== undefined ? appSettings.custAcceptanceSub : "Authorized Signature & Stamp");
+    safeSetVal('pt_signCompHeader', appSettings.signCompHeader !== undefined ? appSettings.signCompHeader : "");
+    safeSetVal('pt_pdfSignatoryText', appSettings.pdfSignatoryText !== undefined ? appSettings.pdfSignatoryText : "Authorized Signatory");
 
     switchPermanentTextTab('kg'); openModalWithHistory('permanentTextsModal');
 }
@@ -2514,7 +2610,7 @@ function loadPhoneSettingsUI() {
 let currentSettingKey = '';
 function openLargeInput(key, title) {
     currentSettingKey = key; safeSetText('largeInputTitle', title);
-    safeSetVal('largeInputTextarea', appSettings[key] || ""); openModalWithHistory('largeInputModal');
+    safeSetVal('largeInputTextarea', appSettings[key] !== undefined ? appSettings[key] : ""); openModalWithHistory('largeInputModal');
 }
 function closeLargeInput() { closeModalSafe('largeInputModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
 function autoSaveLargeInputLive() {
