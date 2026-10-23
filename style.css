@@ -91,7 +91,7 @@ html, body { background: #0f172a; color: #000000; overflow-x: hidden; font-size:
     }
 }
 
-/* TICK BOX UI FIX (CLEAN, SOLID VISIBLE TICKS) */
+/* TICK BOX UI FIX */
 .tick-box-ui {
     width: 20px; height: 20px; border: 2px solid #000000; border-radius: 5px;
     display: inline-flex; align-items: center; justify-content: center;
@@ -109,6 +109,15 @@ html, body { background: #0f172a; color: #000000; overflow-x: hidden; font-size:
 }
 .tick-item-card.selected { border-color: #2563eb; background: #f0f7ff; }
 .tick-item-card.disabled-mod { opacity: 0.5; background: #f8fafc; }
+
+/* ACCESSORIES MODAL INPUTS ROW */
+.acc-item-card { background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+.acc-item-card.selected { border-color: #0c1e30; background: #fff; }
+.acc-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.acc-inputs-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr auto; gap: 6px; align-items: center; }
+.acc-input-cell input { width: 100%; padding: 5px 6px; border: 1.5px solid #94a3b8; border-radius: 5px; font-size: 12px; font-weight: 800; outline: none; }
+.acc-total-pill { font-size: 11px; font-weight: 900; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; }
+.acc-calc-txt { font-size: 11px; font-weight: 900; color: #0c1e30; white-space: nowrap; }
 
 /* PHONE INPUTS */
 .phone-row-dynamic { background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 8px; margin-bottom: 7px; display: flex !important; align-items: center !important; gap: 8px !important; }
