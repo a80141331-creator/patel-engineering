@@ -91,7 +91,7 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-// DEDICATED SQ.FT BLUEPRINT
+// DEDICATED SQ.FT BLUEPRINT (100% INDEPENDENT)
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
@@ -539,7 +539,7 @@ function attachDynamicPreviewObserver() {
 }
 window.addEventListener('resize', () => { autoDetectDeviceMode(); autoFitPreview(); });
 
-// 11. CLIENT DIRECTORY & MULTI-QUOTE GROUPING
+// 11. CLIENT DIRECTORY & MULTI-QUOTE GROUPING (DIRECT TOUCH TO OPEN - NO OPEN BUTTON)
 function getClientGroupKey(s) {
     const name = (s.clientName || '').trim().toLowerCase(), gst = (s.custGST || '').trim().toLowerCase();
     return (name && gst) ? `${name}__${gst}` : (name || 'untitled');
@@ -577,7 +577,7 @@ function openClientQuotationsModal(groupKey) {
         else if (site.quoteType === 'both_sqft') modeBadge = '📐 COMB. (SQ.FT)';
 
         container.innerHTML += `
-            <div class="client-group-card" onclick="loadSiteToDashboard('${site.id}'); closeModalSafe('clientQuotesModal');">
+            <div class="client-group-card" onclick="loadSiteToDashboard('${site.id}'); closeModalSafe('clientQuotesModal');" style="cursor:pointer;">
                 <div style="flex:1;">
                     <div style="display:flex;gap:6px;align-items:center;">
                         <span style="font-size:10px;font-weight:800;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;">${site.quoteNo || 'DRAFT'}</span>
@@ -588,7 +588,6 @@ function openClientQuotationsModal(groupKey) {
                 </div>
                 <div style="display:flex;gap:6px;align-items:center;">
                     <button class="btn-site-delete btn-ripple" onclick="event.stopPropagation();triggerCustomDelete('${site.id}','${site.clientName}');">🗑️</button>
-                    <span style="font-size:11.5px;font-weight:900;color:#fff;background:var(--header-bg);padding:6px 10px;border-radius:6px;">Open ➔</span>
                 </div>
             </div>`;
     });
@@ -609,7 +608,7 @@ function createNewQuoteForCurrentGroup() {
     }
 }
 
-// 12. HOMEPAGE & PROPOSALS LISTING
+// 12. HOMEPAGE (DIRECT TOUCH TO OPEN - "OPEN ➔" BUTTON REMOVED)
 let tempNewQuoteType = 'both';
 function setNewSiteQuoteType(type) {
     tempNewQuoteType = type;
@@ -643,28 +642,28 @@ function renderHomeScreen() {
             else if (site.quoteType === 'shed_sqft') modeBadge = '🏢 SHED (SQ.FT)';
             else if (site.quoteType === 'both_sqft') modeBadge = '📐 COMB. (SQ.FT)';
 
+            // DIRECT TOUCH CARD - NO OPEN BUTTON
             container.innerHTML += `
-                <div class="card card-3d" onclick="loadSiteToDashboard('${site.id}')" style="cursor:pointer;">
+                <div class="card card-3d btn-ripple" onclick="loadSiteToDashboard('${site.id}')" style="cursor:pointer;user-select:none;">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <div style="flex:1;padding-right:10px;">
                             <div style="display:flex;gap:6px;align-items:center;">
                                 <span style="font-size:10px;font-weight:800;color:#92400e;background:#fef3c7;padding:2px 7px;border-radius:4px;">${site.quoteNo || 'DRAFT'}</span>
                                 <span style="font-size:9.5px;font-weight:800;color:#1e40af;background:#dbeafe;padding:2px 6px;border-radius:4px;">${modeBadge}</span>
                             </div>
-                            <h3 style="font-size:15px;font-weight:800;color:#000;margin-top:5px;">${site.clientName || 'Untitled Client'}</h3>
-                            <p style="font-size:12px;color:#64748b;margin-top:2px;">📍 ${site.custAddress || 'Project Site'}</p>
-                            ${site.quoteType !== 'civil' ? `<p style="font-size:11.5px;font-weight:600;color:#475569;margin-top:3px;">Area: ${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</p>` : ''}
+                            <h3 style="font-size:15px;font-weight:900;color:#000;margin-top:5px;">${site.clientName || 'Untitled Client'}</h3>
+                            <p style="font-size:12px;color:#000;font-weight:700;margin-top:2px;">📍 ${site.custAddress || 'Project Site'}</p>
+                            ${site.quoteType !== 'civil' ? `<p style="font-size:11.5px;font-weight:800;color:#0c1e30;margin-top:3px;">Area: ${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</p>` : ''}
                         </div>
                         <div style="display:flex;gap:6px;align-items:center;">
                             <button class="btn-site-delete btn-ripple" onclick="event.stopPropagation();triggerCustomDelete('${site.id}','${site.clientName}')">🗑️</button>
-                            <span style="font-size:13px;font-weight:800;color:var(--header-bg);background:#f8fafc;border:1.5px solid #cbd5e1;padding:7px 11px;border-radius:8px;">Open ➔</span>
                         </div>
                     </div>
                 </div>`;
         } else {
             const leadSite = group[0];
             container.innerHTML += `
-                <div class="card card-3d" onclick="openClientQuotationsModal('${groupKey}')" style="cursor:pointer;border-left:5px solid #2563eb !important;background:linear-gradient(135deg,#ffffff 0%,#f0f7ff 100%);">
+                <div class="card card-3d btn-ripple" onclick="openClientQuotationsModal('${groupKey}')" style="cursor:pointer;border-left:5px solid #2563eb !important;background:linear-gradient(135deg,#ffffff 0%,#f0f7ff 100%);user-select:none;">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
                         <div style="flex:1;padding-right:10px;">
                             <div style="display:flex;gap:6px;align-items:center;">
@@ -672,10 +671,9 @@ function renderHomeScreen() {
                                 ${leadSite.custGST ? `<span style="font-size:9.5px;font-weight:800;color:#0f172a;background:#e2e8f0;padding:2px 6px;border-radius:4px;">GST: ${leadSite.custGST}</span>` : ''}
                             </div>
                             <h3 style="font-size:15px;font-weight:900;color:#0c1e30;margin-top:5px;">${leadSite.clientName}</h3>
-                            <p style="font-size:12px;color:#64748b;margin-top:2px;">📍 ${leadSite.custAddress || 'Project Client'}</p>
-                            <p style="font-size:11.5px;font-weight:700;color:#2563eb;margin-top:3px;">Click to view all ${group.length} quotations ➔</p>
+                            <p style="font-size:12px;color:#000;font-weight:700;margin-top:2px;">📍 ${leadSite.custAddress || 'Project Client'}</p>
+                            <p style="font-size:11.5px;font-weight:800;color:#2563eb;margin-top:3px;">Tap to view all ${group.length} quotations</p>
                         </div>
-                        <div style="display:flex;gap:6px;align-items:center;"><span style="font-size:13px;font-weight:900;color:#2563eb;background:#ffffff;border:1.5px solid #93c5fd;padding:7px 11px;border-radius:8px;">View List ➔</span></div>
                     </div>
                 </div>`;
         }
@@ -843,14 +841,14 @@ function saveEditCustomerDetails() {
     if (site.quoteType === 'civil') openCivilDashboardScreen(); else openScreen('screenSiteDashboard');
     showCorporateToast("Quotation & Customer Details Updated!", "👤");
 }
+
+// ROBUST LIVE PREVIEW DIRECT SYNC (IMMEDIATELY WRITES AND PRESERVES VALUE)
 function syncPreviewCustEdit(field, el) {
     const site = getCurrentSite(); if (!site) return;
-    site[field] = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites);
+    site[field] = el.innerText.trim();
+    syncDataToCloud('patel_app_sites', sites);
     safeSetText('dashSiteName', site.clientName); safeSetText('civilDashSiteName', site.clientName);
-    refreshLivePdfPreviewSheet(true);
 }
-
-// LIVE PREVIEW DIRECT SYNC FOR DESCRIPTIONS & HEADERS
 function syncPreviewRibbonTitle(el) {
     const site = getCurrentSite(); if (!site) return;
     const txt = el.innerText.trim();
@@ -870,17 +868,17 @@ function syncPreviewTableDescLive(el) {
     else { appSettings.headerLine2 = txt; syncDataToCloud('patel_app_settings', appSettings); }
 }
 function syncSqftPrimNameLive(idx, el) {
-    const site = getCurrentSite(); if (!site?.sqftPrimSpecs[idx]) return;
+    const site = getCurrentSite(); if (!site?.sqftPrimSpecs || !site.sqftPrimSpecs[idx]) return;
     site.sqftPrimSpecs[idx].text = el.innerText.trim();
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
 function syncSqftPrimDimLive(idx, field, el) {
-    const site = getCurrentSite(); if (!site?.sqftPrimSpecs[idx]) return;
+    const site = getCurrentSite(); if (!site?.sqftPrimSpecs || !site.sqftPrimSpecs[idx]) return;
     site.sqftPrimSpecs[idx][field] = el.innerText.trim();
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
 function syncSqftAccLive(idx, el) {
-    const site = getCurrentSite(); if (!site?.sqftAccessories[idx]) return;
+    const site = getCurrentSite(); if (!site?.sqftAccessories || !site.sqftAccessories[idx]) return;
     site.sqftAccessories[idx].name = el.innerText.trim();
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
@@ -1291,7 +1289,7 @@ function openModuleModal(type) {
         modalTitle.innerHTML = `📦 4. Building Accessories`; customLineInput.value = site.accCustomLine || "";
         checklistTitle.innerText = "Accessories List:"; checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
-            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Jo-jo accessory select hogi, wo PDF par Technical Specifications column me highlight pills bankar dikhegi.</p>`;
+            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Jo-jo accessory select hogi, wo PDF par Technical Specifications column me print hogi.</p>`;
             renderSqftAccessoriesChecklist();
         } else {
             inputsBox.innerHTML = `<p style="font-size:12px;color:#475569;margin:0;">Tick to include:</p>`;
@@ -1336,7 +1334,7 @@ function renderSqftPrimaryChecklist(list) {
 }
 
 function updatePrimaryDimField(idx, field, val) {
-    const site = getCurrentSite(); if (!site?.sqftPrimSpecs[idx]) return;
+    const site = getCurrentSite(); if (!site?.sqftPrimSpecs || !site.sqftPrimSpecs[idx]) return;
     site.sqftPrimSpecs[idx][field] = val;
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
 }
@@ -1514,6 +1512,17 @@ function deleteAccessoryItem(idx) {
     else { site.accessories.splice(idx, 1); renderAccessoriesChecklist(); }
     autoSaveModuleChanges();
 }
+function addNewAccessoryDirectly() {
+    const site = getCurrentSite(); if (!site) return;
+    if (isSqftMode(site)) {
+        site.sqftAccessories = site.sqftAccessories || [];
+        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), selected: true });
+    } else {
+        site.accessories = site.accessories || [];
+        site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "1", unit: "Nos", rate: "0", selected: true });
+    }
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+}
 
 function autoSaveModuleChanges() {
     const site = getCurrentSite(); if (!site) return;
@@ -1589,7 +1598,7 @@ function calcModuleTotals() {
         const sqft = (parseFloat(site.dimW) || 0) * (parseFloat(site.dimL) || 0);
         const sqRate = parseFloat(site.shedSqftRate) || 0, autoCost = sqft * sqRate;
         safeSetText('badgePrimTotal', 'Configured'); safeSetText('badgeSecTotal', 'Excluded');
-        safeSetText('badgeCladTotal', 'Included'); safeSetText('badgeAccTotal', 'Highlighted');
+        safeSetText('badgeCladTotal', 'Included'); safeSetText('badgeAccTotal', 'Configured');
         safeSetText('badgeErectTotal', 'Turnkey');
         safeSetText('shedSqftAutoCostBadge', autoCost > 0 ? "₹ " + Math.round(autoCost).toLocaleString('en-IN') : "-");
         const tax = getActiveTaxSlab('shed');
@@ -1659,7 +1668,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (ACCESSORIES IN TECHNICAL SPECS & THEMED SOLID TOTAL ROW)
+// 21. LIVE PREVIEW ENGINE (NO STAR LINE, ACCESSORIES IN COL 1, SIZES OPPOSITE IN COL 2, CLADDING ONLY THICKNESS)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1747,8 +1756,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 thead.innerHTML = `
                     <tr>
                         <th style="width:7%;text-align:center;">S.NO</th>
-                        <th style="width:33%;text-align:left;">ITEM / WORK COMPONENT</th>
-                        <th style="width:47%;text-align:left;">TECHNICAL SPECIFICATIONS & DIMENSIONS</th>
+                        <th style="width:40%;text-align:left;">ITEM / WORK COMPONENT</th>
+                        <th style="width:40%;text-align:left;">TECHNICAL SPECIFICATIONS & DIMENSIONS</th>
                         <th style="width:13%;text-align:center;">UNIT / SCOPE</th>
                     </tr>`;
             }
@@ -1758,64 +1767,75 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 tbody.innerHTML = "";
                 let sNo = 1;
 
-                // 1. PRIMARY STRUCTURE
+                // 1. PRIMARY STRUCTURE (ITEMS IN COL 1, SIZES OPPOSITE IN COL 2 WITHOUT PILL)
                 if (site.primEnabled !== false) {
                     const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
-                    let primSpecsHtml = "";
+                    let primNamesHtml = "", primSizesHtml = "";
+
                     if (primItems.length > 0) {
-                        primSpecsHtml = primItems.map((p, pIdx) => {
+                        primItems.forEach((p, pIdx) => {
                             const name = p.text || p;
-                            const dimTag = `<span class="sqft-spec-dim-badge">📐 L: <span contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span> ${p.dimUnit || 'mm'}</span>`;
-                            return `<div style="margin-bottom:2px;">• <b contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)">${name}</b> ${dimTag}</div>`;
-                        }).join('');
-                    } else { primSpecsHtml = `<div style="color:#000;">As per standard engineering design</div>`; }
+                            primNamesHtml += `<div style="padding:2px 0;line-height:1.4;">• <b contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)">${name}</b></div>`;
+                            
+                            const hasSize = (p.length || p.width);
+                            if (hasSize) {
+                                primSizesHtml += `<div style="padding:2px 0;line-height:1.4;font-weight:800;color:#000;">L: <span contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span> ${p.dimUnit || 'mm'}</div>`;
+                            } else {
+                                primSizesHtml += `<div style="padding:2px 0;line-height:1.4;">&nbsp;</div>`;
+                            }
+                        });
+                    } else {
+                        primNamesHtml = `<div style="font-weight:800;color:#000;">As per standard engineering design</div>`;
+                        primSizesHtml = `<div>&nbsp;</div>`;
+                    }
 
                     tbody.innerHTML += `
                         <tr>
                             <td style="text-align:center;font-weight:900;">${sNo++}</td>
                             <td>
-                                <b>${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.primCustomLine || ''}</div>
+                                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
+                                <div style="margin-top:4px;">${primNamesHtml}</div>
                             </td>
-                            <td><div class="sqft-spec-detail-box">${primSpecsHtml}</div></td>
+                            <td style="vertical-align:top;">
+                                <div style="font-weight:900;font-size:calc(9px * var(--pdf-font-scale));color:#000;margin-bottom:4px;">Member Dimensions:</div>
+                                <div>${primSizesHtml}</div>
+                            </td>
                             <td style="text-align:center;font-weight:900;color:#0c1e30;">Main Frame</td>
                         </tr>`;
                 }
 
-                // 2. ROOF & WALL CLADDING
+                // 2. ROOF & WALL CLADDING (ONLY THICKNESS PRINTED IN COL 2)
                 if (site.cladEnabled !== false) {
-                    const thickBadge = site.cladThickness ? `<span class="spec-highlight-pill" style="margin-left:0;">📐 Sheet Thickness: ${site.cladThickness}</span>` : '';
                     tbody.innerHTML += `
                         <tr>
                             <td style="text-align:center;font-weight:900;">${sNo++}</td>
                             <td>
-                                <b>${appSettings.sqftCladLabel || "Roof & Wall Cladding System"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.cladCustomLine || ''}</div>
+                                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftCladLabel || "Roof & Wall Cladding System"}</b>
                             </td>
-                            <td><div class="sqft-spec-detail-box"><div>• 0.50mm / Specified Profile Galvanized Colour Coated Sheeting</div><div>${thickBadge}</div></div></td>
+                            <td>
+                                <div style="font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000000;">Thickness: <span contenteditable="true" onblur="syncPreviewEdit(this,'cladThickness')">${site.cladThickness || '0.50 mm'}</span></div>
+                            </td>
                             <td style="text-align:center;font-weight:900;color:#0c1e30;">Covering</td>
                         </tr>`;
                 }
 
-                // 3. ACCESSORIES: HIGHLIGHTED PILLS SHOWN IN TECHNICAL SPECIFICATIONS (COLUMN 3)
+                // 3. ACCESSORIES (ITEMS PRINTED DIRECTLY IN COLUMN 1)
                 if (site.accEnabled !== false) {
                     const activeAcc = (site.sqftAccessories || []).filter(a => a.selected === true);
-                    let accPillsHtml = "";
+                    let accItemsColHtml = "";
                     if (activeAcc.length > 0) {
-                        accPillsHtml = activeAcc.map((a, aIdx) => `<span class="spec-highlight-pill" style="background:#f0f9ff;border-color:#0284c7;color:#0369a1;" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)">✓ ${a.name}</span>`).join(' ');
-                    } else { accPillsHtml = `<span style="color:#000;">No accessories specified</span>`; }
+                        accItemsColHtml = activeAcc.map((a, aIdx) => `<div style="padding:2px 0;line-height:1.4;">• <b contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)">${a.name}</b></div>`).join('');
+                    } else { accItemsColHtml = `<div style="color:#000;">No accessories specified</div>`; }
 
                     tbody.innerHTML += `
                         <tr>
                             <td style="text-align:center;font-weight:900;">${sNo++}</td>
                             <td>
-                                <b>${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
-                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.accCustomLine || 'All accessories complete with fasteners & flashings'}</div>
+                                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
+                                <div style="margin-top:4px;">${accItemsColHtml}</div>
                             </td>
-                            <td>
-                                <div class="sqft-spec-detail-box">
-                                    <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:3px;">${accPillsHtml}</div>
-                                </div>
+                            <td style="vertical-align:middle;">
+                                <div style="font-weight:800;color:#000000;font-size:calc(9px * var(--pdf-font-scale));">Complete Standard Turnkey Supply</div>
                             </td>
                             <td style="text-align:center;font-weight:900;color:#0369a1;">Package</td>
                         </tr>`;
@@ -1828,15 +1848,17 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         <tr>
                             <td style="text-align:center;font-weight:900;">${sNo++}</td>
                             <td>
-                                <b>${appSettings.sqftErectLabel || "Turnkey Erection & Installation"}</b>
+                                <b style="font-size:calc(9.5px * var(--pdf-font-scale));">${appSettings.sqftErectLabel || "Turnkey Erection & Installation"}</b>
                                 <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'erect')" style="font-size:calc(8px * var(--pdf-font-scale));color:#000;font-weight:700;margin-top:2px;">${site.erectCustomLine || ''}</div>
                             </td>
-                            <td><div class="sqft-spec-detail-box"><div class="item-specs-bullets">${erectBullets || 'Crane, Hydra & Labour'}</div></div></td>
+                            <td>
+                                <div style="font-weight:800;color:#000000;font-size:calc(9px * var(--pdf-font-scale));">${erectBullets || 'Crane, Hydra, Welding Machine & Labour'}</div>
+                            </td>
                             <td style="text-align:center;font-weight:900;color:#0c1e30;">Turnkey</td>
                         </tr>`;
                 }
 
-                // THEMED SOLID CONTRACT TOTAL ROW (NAVY/GOLD THEME + ZERO TAX CHECK)
+                // NO STAR LINE: Direct financial calculation
                 const sqRate = parseFloat(site.shedSqftRate) || 0, shedBasicCost = sqft * sqRate;
                 const tax = getActiveTaxSlab('shed'), taxAmt = shedBasicCost * tax.rate, grand = shedBasicCost + taxAmt;
                 const withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : 0;
@@ -1849,14 +1871,14 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 const shedAvgBox = document.getElementById('pdfShedAvgRateBox');
                 if (shedAvgBox) {
                     if (sqRate > 0) {
-                        safeSetText('pdfShedAvgRateLabel', tax.rate > 0 ? 'SHED RATE / SQ.FT (WITH GST):' : 'SHED RATE / SQ.FT (BASIC):');
+                        safeSetText('pdfShedAvgRateLabel', tax.rate > 0 ? 'SHED RATE / SQ.FT (WITH GST):' : 'SHED RATE / SQ.FT:');
                         safeSetText('pdfShedAvgRateVal', `₹ ${withTaxRate > 0 ? withTaxRate.toFixed(2) : sqRate.toFixed(2)} / Sq.Ft`);
                         shedAvgBox.style.display = 'flex';
                     } else shedAvgBox.style.display = 'none';
                 }
             }
         } else {
-            // KG / BOQ MODE
+            // KG / BOQ MODE (100% PRESERVED)
             if (sec1Wrap) sec1Wrap.style.display = 'block';
             const s1Tbody = document.getElementById('pdfSection1TableBody');
             if (s1Tbody) {
@@ -1970,7 +1992,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         const finBox = document.getElementById('financialStandardBox'), rateNotice = document.getElementById('rateOnlyNoticeBox');
         if (finBox && rateNotice) { finBox.style.display = isRateOnly ? 'none' : 'block'; rateNotice.style.display = isRateOnly ? 'block' : 'none'; }
         
-        // SEPARATE & SPACIOUS TERMS & CONDITIONS (SEAMLESS - NO RESTRICTIVE BORDERS)
+        // SEPARATE & SPACIOUS TERMS & CONDITIONS (CONTINUOUS BIG SINGLE BOX)
         const pTerms = isSqft ? (appSettings.sqftPaymentTerms || '') : (appSettings.paymentTerms || '');
         const gTerms = isSqft ? (appSettings.sqftTermsCond || '') : (appSettings.termsCond || '');
         const pKey = isSqft ? 'sqftPaymentTerms' : 'paymentTerms';
@@ -2085,7 +2107,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         if (p1CombBox) p1CombBox.style.display = 'none'; if (p2CombBox) p2CombBox.style.display = 'none';
     }
 
-    // COMPANY BANK ACCOUNT DETAILS (THEMED NAVY CARD)
+    // COMPANY BANK ACCOUNT DETAILS (WHITE THEMED ACCENTS)
     const p1BankBox = document.getElementById('pdfCompanyBankDetailsBox');
     const p2BankBox = document.getElementById('civilPdfCompanyBankDetailsBox');
     const hasBankData = !!(appSettings.bankName || appSettings.bankAccNo || appSettings.bankIfsc);
@@ -2508,6 +2530,10 @@ function openPermanentTextsModal() {
     safeSetVal('pt_sqftPdfScopeTitle', appSettings.sqftPdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS");
     safeSetVal('pt_sqftHeaderLine1', appSettings.sqftHeaderLine1 || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:");
     safeSetVal('pt_sqftContractBarTitle', appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)");
+    safeSetVal('pt_sqftPrimLabel', appSettings.sqftPrimLabel || "Primary Structural Framing");
+    safeSetVal('pt_sqftCladLabel', appSettings.sqftCladLabel || "Roof & Wall Cladding System");
+    safeSetVal('pt_sqftAccLabel', appSettings.sqftAccLabel || "Building Accessories Package");
+    safeSetVal('pt_sqftErectLabel', appSettings.sqftErectLabel || "Turnkey Erection & Installation");
 
     // Civil Mode Texts
     safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
@@ -2519,7 +2545,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick || "2. Brick Wall Details");
     safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
 
-    // Common Signatures
+    // Common Terms & Signatures
     safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
     safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
     safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
