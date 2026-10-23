@@ -80,6 +80,7 @@ const defaultMasterBlueprint = {
     },
     civilCustomCategories: []
 };
+
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
@@ -152,12 +153,13 @@ function isSqftMode(s) { return s && (s.quoteType === 'shed_sqft' || s.quoteType
 function hasCivilMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'civil'); }
 function hasShedMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'shed' || s.quoteType === 'shed_sqft'); }
 
+// AUTOMATICALLY SET MASTER BLUEPRINTS FOR FUTURE QUOTATIONS
 function syncSiteStructureToMasterBlueprint(s) {
     if (!s) return;
     try {
         if (isSqftMode(s)) {
-            if (s.sqftPrimSpecs) sqftMasterBlueprint.primSpecs = JSON.parse(JSON.stringify(s.sqftPrimSpecs));
-            if (s.sqftAccessories) sqftMasterBlueprint.accessories = JSON.parse(JSON.stringify(s.sqftAccessories));
+            if (s.sqftPrimSpecs) sqftMasterBlueprint.primSpecs = s.sqftPrimSpecs.map(p => ({ text: p.text, length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: p.selected !== false }));
+            if (s.sqftAccessories) sqftMasterBlueprint.accessories = s.sqftAccessories.map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", selected: a.selected !== false }));
             sqftMasterBlueprint.sqftScopeDesc = s.sqftScopeDesc || sqftMasterBlueprint.sqftScopeDesc;
             sqftMasterBlueprint.sqftTableDesc = s.sqftTableDesc || sqftMasterBlueprint.sqftTableDesc;
             sqftMasterBlueprint.primCustomLine = s.primCustomLine || sqftMasterBlueprint.primCustomLine;
@@ -170,10 +172,10 @@ function syncSiteStructureToMasterBlueprint(s) {
             if (db && isFirebaseConnected) db.ref('patel_sqft_master_blueprint').set(sqftMasterBlueprint).catch(() => {});
         } else {
             masterBlueprint.primCustomLine = s.primCustomLine || masterBlueprint.primCustomLine;
-            if (s.primSpecs) masterBlueprint.primSpecs = JSON.parse(JSON.stringify(s.primSpecs));
+            if (s.primSpecs) masterBlueprint.primSpecs = s.primSpecs.map(p => ({ text: p.text || p, selected: p.selected !== false }));
             masterBlueprint.primUnit = s.primUnit || "Kg";
             masterBlueprint.secCustomLine = s.secCustomLine || masterBlueprint.secCustomLine;
-            if (s.secSpecs) masterBlueprint.secSpecs = JSON.parse(JSON.stringify(s.secSpecs));
+            if (s.secSpecs) masterBlueprint.secSpecs = s.secSpecs.map(sec => ({ text: sec.text || sec, selected: sec.selected !== false }));
             masterBlueprint.secUnit = s.secUnit || "Kg";
             masterBlueprint.cladCustomLine = s.cladCustomLine || masterBlueprint.cladCustomLine;
             masterBlueprint.cladThickness = s.cladThickness || masterBlueprint.cladThickness;
@@ -181,7 +183,7 @@ function syncSiteStructureToMasterBlueprint(s) {
             masterBlueprint.accCustomLine = s.accCustomLine || masterBlueprint.accCustomLine;
             if (s.accessories) masterBlueprint.accessories = s.accessories.map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", rate: "", selected: a.selected !== false }));
             masterBlueprint.erectCustomLine = s.erectCustomLine || masterBlueprint.erectCustomLine;
-            if (s.erectSpecs) masterBlueprint.erectSpecs = JSON.parse(JSON.stringify(s.erectSpecs));
+            if (s.erectSpecs) masterBlueprint.erectSpecs = s.erectSpecs.map(e => ({ text: e.text || e, selected: e.selected !== false }));
             masterBlueprint.erectUnit = s.erectUnit || "Kg";
             if (s.moduleOrder) masterBlueprint.moduleOrder = [...s.moduleOrder];
             localStorage.setItem('patel_master_blueprint', JSON.stringify(masterBlueprint));
@@ -652,6 +654,8 @@ function openCreateSiteScreen() {
     safeSetVal('custNumber2', ""); safeSetVal('custAddress', ""); safeSetVal('custGST', ""); safeSetVal('custEmail', "");
     setNewSiteQuoteType('both'); openScreen('screenCreateSite');
 }
+
+// 100% BLANK INITIALIZATION & CARRIES FORWARD SAVED MASTER SETTINGS
 function saveNewBlankSiteAndOpen() {
     const clientNameInput = (document.getElementById('custName')?.value || "").trim();
     if (!clientNameInput) return showAppAlert("⚠️ Client Name Required", "Please enter Client Name.");
@@ -668,8 +672,8 @@ function saveNewBlankSiteAndOpen() {
         rateOnlyMode: false, civilRateOnlyMode: false,
         civilEnabled: hasCivilMode({ quoteType: tempNewQuoteType }), shedEnabled: hasShedMode({ quoteType: tempNewQuoteType }),
         dimW: "", dimL: "", dimH: "", shedSqftRate: "",
-        sqftScopeDesc: sqBp.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
-        sqftTableDesc: sqBp.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
+        sqftScopeDesc: appSettings.sqftPdfScopeTitle || sqBp.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
+        sqftTableDesc: appSettings.sqftHeaderLine1 || sqBp.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
         sqftPrimSpecs: (sqBp.primSpecs || []).map(p => ({ ...p, length: "", width: "", thk: "", selected: true })),
         sqftAccessories: (sqBp.accessories || []).map(a => ({ ...a, qty: "", unit: a.unit || "Nos", selected: true })),
         moduleOrder: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? ['prim', 'clad', 'acc', 'erect'] : ['prim', 'sec', 'clad', 'acc', 'erect'],
@@ -684,7 +688,7 @@ function saveNewBlankSiteAndOpen() {
         accessories: (bp.accessories || []).map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", rate: "", selected: a.selected !== false })),
         erectCustomLine: (tempNewQuoteType === 'shed_sqft' || tempNewQuoteType === 'both_sqft') ? (sqBp.erectCustomLine || "Crane, Hydra, Welding Machine, Expert Labour") : bp.erectCustomLine,
         erectSpecs: bp.erectSpecs ? bp.erectSpecs.map(e => ({ ...e, selected: true })) : [], erectRate: "", erectUnit: bp.erectUnit || "Kg",
-        customModules: (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })), civilScopeDesc: bp.civilScopeDesc,
+        customModules: (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })), civilScopeDesc: appSettings.civilScopeDesc || bp.civilScopeDesc,
         civilData: bp.civilData ? JSON.parse(JSON.stringify(bp.civilData)) : {},
         civilCustomCategories: (bp.civilCustomCategories || []).map(c => ({
             ...c, enabled: true, items: (c.items || []).map(it => ({ ...it, qty: "", rate: "", total: 0, enabled: it.enabled !== false }))
@@ -788,27 +792,46 @@ function syncPreviewCustEdit(field, el) {
     site[field] = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites);
     safeSetText('dashSiteName', site.clientName); safeSetText('civilDashSiteName', site.clientName);
 }
+
+// 2-WAY PERMANENT SYNC: SAVES IMMEDIATELY TO APP SETTINGS & MASTER BLUEPRINTS
 function syncPermanentTextLive(fieldKey, el) {
     const val = el.innerText.trim(); appSettings[fieldKey] = val;
     const site = getCurrentSite();
     if (site) {
-        if (fieldKey === 'sqftPdfScopeTitle' || fieldKey === 'pdfScopeTitle') site.sqftScopeDesc = val;
-        if (fieldKey === 'sqftHeaderLine1' || fieldKey === 'headerLine2') site.sqftTableDesc = val;
-        if (fieldKey === 'civilScopeDesc') site.civilScopeDesc = val;
-        syncDataToCloud('patel_app_sites', sites);
+        if (fieldKey === 'sqftPdfScopeTitle' || fieldKey === 'pdfScopeTitle') {
+            site.sqftScopeDesc = val; sqftMasterBlueprint.sqftScopeDesc = val; masterBlueprint.sqftScopeDesc = val;
+        }
+        if (fieldKey === 'sqftHeaderLine1' || fieldKey === 'headerLine2') {
+            site.sqftTableDesc = val; sqftMasterBlueprint.sqftTableDesc = val;
+        }
+        if (fieldKey === 'civilScopeDesc') {
+            site.civilScopeDesc = val; masterBlueprint.civilScopeDesc = val;
+        }
+        syncSiteStructureToMasterBlueprint(site);
     }
     syncDataToCloud('patel_app_settings', appSettings);
+    syncDataToCloud('patel_sqft_master_blueprint', sqftMasterBlueprint);
+    syncDataToCloud('patel_master_blueprint', masterBlueprint);
     const modalInp = document.getElementById('pt_' + fieldKey); if (modalInp) modalInp.value = val;
+    showCorporateToast("Saved as Permanent Default!", "✓");
 }
+
 function autoSavePermanentText(fieldKey, val) {
     appSettings[fieldKey] = val; const site = getCurrentSite();
     if (site) {
         if (fieldKey === 'sqftPdfScopeTitle' || fieldKey === 'pdfScopeTitle') site.sqftScopeDesc = val;
         if (fieldKey === 'sqftHeaderLine1' || fieldKey === 'headerLine2') site.sqftTableDesc = val;
         if (fieldKey === 'civilScopeDesc') site.civilScopeDesc = val;
-        syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
     }
-    syncDataToCloud('patel_app_settings', appSettings); applyCustomButtonNamesUI(); refreshLivePdfPreviewSheet(true);
+    if (fieldKey === 'sqftPdfScopeTitle') sqftMasterBlueprint.sqftScopeDesc = val;
+    if (fieldKey === 'sqftHeaderLine1') sqftMasterBlueprint.sqftTableDesc = val;
+    if (fieldKey === 'civilScopeDesc') masterBlueprint.civilScopeDesc = val;
+
+    syncDataToCloud('patel_app_settings', appSettings);
+    syncDataToCloud('patel_sqft_master_blueprint', sqftMasterBlueprint);
+    syncDataToCloud('patel_master_blueprint', masterBlueprint);
+    applyCustomButtonNamesUI(); refreshLivePdfPreviewSheet(true);
 }
 function syncSqftModuleTitle(fieldKey, el) {
     const val = el.innerText.trim(); appSettings[fieldKey] = val; syncDataToCloud('patel_app_settings', appSettings);
@@ -984,7 +1007,8 @@ function closeCivilScopeModal() { closeModalSafe('civilScopeModal'); }
 function saveCivilScopeModal() {
     const site = getCurrentSite(); if (!site) return;
     const nw = (document.getElementById('inp_civilScopeDescModal')?.value || "").trim();
-    site.civilScopeDesc = nw; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
+    site.civilScopeDesc = nw; masterBlueprint.civilScopeDesc = nw; appSettings.civilScopeDesc = nw;
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); syncDataToCloud('patel_app_settings', appSettings);
     safeSetText('civilScopeDescPreviewTxt', nw); closeCivilScopeModal(); refreshLivePdfPreviewSheet(); setTimeout(() => openCivilDashboardScreen(), 50);
 }
 
@@ -1363,8 +1387,7 @@ function openThemeUnitPickerForMod(modType) {
     const site = getCurrentSite(); if (!site) return;
     const curUnit = modType === 'prim' ? site.primUnit : modType === 'sec' ? site.secUnit : modType === 'clad' ? site.cladUnit : site.erectUnit;
     openThemeUnitPicker(curUnit || 'Kg', (u) => {
-        if (modType === 'prim') site.primUnit = u; else if (modType === 'sec') site.secUnit = u;
-        else if (modType === 'clad') site.cladUnit = u; else if (modType === 'erect') site.erectUnit = u;
+        if (modType === 'prim') site.primUnit = u; else if (modType === 'sec') site.secUnit = u; else if (modType === 'clad') site.cladUnit = u; else if (modType === 'erect') site.erectUnit = u;
         syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
         openModuleModal(modType); calcModuleTotals(); refreshLivePdfPreviewSheet();
     });
@@ -1416,7 +1439,7 @@ function addNewItemToModule() {
         site.secSpecs = site.secSpecs || []; site.secSpecs.push({ text: val, selected: true }); renderStandardChecklist(site.secSpecs);
     } else if (activeModType === 'acc') {
         if (isSqftMode(site)) { site.sqftAccessories = site.sqftAccessories || []; site.sqftAccessories.push({ name: val, qty: "", unit: "Nos", selected: true }); renderSqftAccessoriesChecklist(); }
-        else { site.accessories = site.accessories || []; site.accessories.push({ name: val, qty: "1", unit: "Nos", rate: "0", selected: true }); renderAccessoriesChecklist(); }
+        else { site.accessories = site.accessories || []; site.accessories.push({ name: val, qty: "", unit: "Nos", rate: "", selected: true }); renderAccessoriesChecklist(); }
     } else if (activeModType === 'erect') {
         site.erectSpecs = site.erectSpecs || []; site.erectSpecs.push({ text: val, selected: true }); renderStandardChecklist(site.erectSpecs);
     }
@@ -1429,8 +1452,11 @@ function addNewSqftPrimaryItemDirectly() {
 }
 function addNewAccessoryDirectly() {
     const site = getCurrentSite(); if (!site) return;
-    if (isSqftMode(site)) { site.sqftAccessories = site.sqftAccessories || []; site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), qty: "", unit: "Nos", selected: true }); }
-    else { site.accessories = site.accessories || []; site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "1", unit: "Nos", rate: "0", selected: true }); }
+    if (isSqftMode(site)) {
+        site.sqftAccessories = site.sqftAccessories || []; site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), qty: "", unit: "Nos", selected: true });
+    } else {
+        site.accessories = site.accessories || []; site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "", unit: "Nos", rate: "", selected: true });
+    }
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 function openShedUnitPicker(fPrefix) {
@@ -1575,7 +1601,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (UNIFIED ROW STRUCTURE - ZERO GAP NEAR COL 1)
+// 21. LIVE PREVIEW ENGINE (ZERO NESTED TABLES - CLEAN NATIVE 4-COLUMN SOLID BORDERS)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1668,35 +1694,10 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 if (!site.moduleOrder || site.moduleOrder.includes('sec')) site.moduleOrder = ['prim', 'clad', 'acc', 'erect'];
 
                 site.moduleOrder.forEach((mKey, orderIdx) => {
-                    // HELPER TO GENERATE UNIFIED 50/50 ROW
-                    const addUnifiedSqftRow = (titleKey, defaultTitle, customLine, fPrefix, rightContentHtml, scopeLabel, subListHtml = "") => {
-                        const tr = document.createElement('tr');
-                        tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
-                        tr.innerHTML = `
-                            <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
-                            <td colspan="2" style="width:80%;padding:0;vertical-align:top;border-right:1.5px solid #000;">
-                                <table class="nested-spec-table" style="width:100%;border-collapse:collapse;margin:0;padding:0;border:none !important;">
-                                    <tr style="border:none !important;">
-                                        <td style="width:50%;border:none !important;border-right:1.5px solid #000 !important;border-bottom:none !important;border-top:none !important;padding:3.5px 6px;vertical-align:top;">
-                                            <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('${titleKey}',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings[titleKey] || defaultTitle}</b>
-                                            <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'${fPrefix}')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${customLine || ''}</div>
-                                        </td>
-                                        <td style="width:50%;border:none !important;border-bottom:none !important;border-top:none !important;border-right:none !important;padding:3.5px 6px;vertical-align:top;">
-                                            ${rightContentHtml}
-                                        </td>
-                                    </tr>
-                                    ${subListHtml}
-                                </table>
-                            </td>
-                            <td style="width:13%;text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">${scopeLabel}</td>`;
-                        tbody.appendChild(tr);
-                        setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
-                    };
-
-                    // 1. PRIMARY STRUCTURE
+                    // 1. PRIMARY STRUCTURE (SOLID 4-COLUMN CELLS - NO GAP, NO CUT)
                     if (mKey === 'prim' && site.primEnabled !== false) {
                         const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
-                        let subRowsHtml = "";
+                        let leftItemsHtml = "", rightItemsHtml = "";
                         if (primItems.length > 0) {
                             primItems.forEach((p, pIdx) => {
                                 const name = p.text || p, hasSize = (p.length || p.width || p.thk);
@@ -1705,28 +1706,49 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                                     const thkPart = p.thk ? ` × Thk: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'thk',this)">${p.thk}</span>` : '';
                                     dimHtml = `L: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'length',this)">${p.length || '-'}</span> × W: <span class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimDimLive(${pIdx},'width',this)">${p.width || '-'}</span>${thkPart} ${p.dimUnit || 'mm'}`;
                                 }
-                                subRowsHtml += `
-                                    <tr style="border:none !important;">
-                                        <td style="width:50%;border:none !important;border-right:1.5px solid #000 !important;border-bottom:none !important;border-top:none !important;padding:2px 6px;vertical-align:middle;">
-                                            • <b class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)" style="font-size:calc(9.5px * var(--pdf-font-scale));">${name}</b>
-                                        </td>
-                                        <td style="width:50%;border:none !important;border-bottom:none !important;border-top:none !important;border-right:none !important;padding:2px 6px;vertical-align:middle;font-weight:800;color:#000;">
-                                            ${dimHtml}
-                                        </td>
-                                    </tr>`;
+                                leftItemsHtml += `<div class="sqft-pair-row">• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)">${name}</b></div>`;
+                                rightItemsHtml += `<div class="sqft-pair-row">${dimHtml}</div>`;
                             });
                         }
-                        addUnifiedSqftRow('sqftPrimLabel', "Primary Structural Framing", site.primCustomLine, 'prim', '&nbsp;', "Main Frame", subRowsHtml);
+                        const tr = document.createElement('tr');
+                        tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
+                        tr.innerHTML = `
+                            <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
+                            <td style="width:40%;vertical-align:top;">
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftPrimLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-bottom:4px;">${site.primCustomLine || ''}</div>
+                                ${leftItemsHtml}
+                            </td>
+                            <td style="width:40%;vertical-align:top;">
+                                <div style="font-size:calc(10.5px * var(--pdf-font-scale));visibility:hidden;margin-bottom:2px;">Spacer</div>
+                                <div style="font-size:calc(9px * var(--pdf-font-scale));visibility:hidden;margin-bottom:4px;">Spacer</div>
+                                ${rightItemsHtml}
+                            </td>
+                            <td style="width:13%;text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">Main Frame</td>`;
+                        tbody.appendChild(tr);
+                        setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 2. ROOF & WALL CLADDING (PERFECT ALIGNMENT - NO GAP)
+                    // 2. ROOF & WALL CLADDING (PERFECT NATIVE 4-COLUMN ALIGNMENT)
                     } else if (mKey === 'clad' && site.cladEnabled !== false) {
-                        const rightThickHtml = `<div style="font-weight:900;font-size:calc(10px * var(--pdf-font-scale));color:#000000;">Thickness: <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewEdit(this,'cladThickness')">${site.cladThickness || '0.50 mm'}</span></div>`;
-                        addUnifiedSqftRow('sqftCladLabel', "Roof & Wall Cladding System", site.cladCustomLine, 'clad', rightThickHtml, "Covering");
+                        const tr = document.createElement('tr');
+                        tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
+                        tr.innerHTML = `
+                            <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
+                            <td style="width:40%;vertical-align:middle;">
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftCladLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftCladLabel || "Roof & Wall Cladding System"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'clad')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.cladCustomLine || ''}</div>
+                            </td>
+                            <td style="width:40%;vertical-align:middle;">
+                                <div style="font-weight:900;font-size:calc(10px * var(--pdf-font-scale));color:#000000;">Thickness: <span class="editable-preview-title" contenteditable="true" onblur="syncPreviewEdit(this,'cladThickness')">${site.cladThickness || '0.50 mm'}</span></div>
+                            </td>
+                            <td style="width:13%;text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">Covering</td>`;
+                        tbody.appendChild(tr);
+                        setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
                     // 3. ACCESSORIES (QTY & UNIT LOCKED, BLACK COLOR, BLANK CHECK)
                     } else if (mKey === 'acc' && site.accEnabled !== false) {
                         const activeAcc = (site.sqftAccessories || []).filter(a => a.selected !== false);
-                        let subAccRowsHtml = "";
+                        let leftAccHtml = "", rightAccHtml = "";
                         if (activeAcc.length > 0) {
                             activeAcc.forEach((a, aIdx) => {
                                 const qVal = (a.qty || "").trim();
@@ -1734,31 +1756,64 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                                 if (qVal) {
                                     qtyCellContent = `<span class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)" style="color:#000000;font-weight:900;">${qVal}</span> <span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForSqftAcc(${aIdx})" style="color:#000000;border-color:#94a3b8;background:#f1f5f9;">${a.unit || 'Nos'} ▾</span>`;
                                 }
-                                subAccRowsHtml += `
-                                    <tr style="border:none !important;">
-                                        <td style="width:50%;border:none !important;border-right:1.5px solid #000 !important;border-bottom:none !important;border-top:none !important;padding:2px 6px;vertical-align:middle;">
-                                            • <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)" style="font-size:calc(9.5px * var(--pdf-font-scale));color:#000000;">${a.name}</b>
-                                        </td>
-                                        <td style="width:50%;border:none !important;border-bottom:none !important;border-top:none !important;border-right:none !important;padding:2px 6px;vertical-align:middle;font-weight:900;color:#000000;">
-                                            ${qtyCellContent}
-                                        </td>
-                                    </tr>`;
+                                leftAccHtml += `<div class="sqft-pair-row">• <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)" style="color:#000000;">${a.name}</b></div>`;
+                                rightAccHtml += `<div class="sqft-pair-row" style="font-weight:900;color:#000000;">${qtyCellContent}</div>`;
                             });
                         }
-                        addUnifiedSqftRow('sqftAccLabel', "Building Accessories Package", site.accCustomLine, 'acc', '&nbsp;', "Package", subAccRowsHtml);
+                        const tr = document.createElement('tr');
+                        tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
+                        tr.innerHTML = `
+                            <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
+                            <td style="width:40%;vertical-align:top;">
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftAccLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;margin-bottom:4px;">${site.accCustomLine || ''}</div>
+                                ${leftAccHtml}
+                            </td>
+                            <td style="width:40%;vertical-align:top;">
+                                <div style="font-size:calc(10.5px * var(--pdf-font-scale));visibility:hidden;margin-bottom:2px;">Spacer</div>
+                                <div style="font-size:calc(9px * var(--pdf-font-scale));visibility:hidden;margin-bottom:4px;">Spacer</div>
+                                ${rightAccHtml}
+                            </td>
+                            <td style="width:13%;text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">Package</td>`;
+                        tbody.appendChild(tr);
+                        setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
                     // 4. ERECTION & TURNKEY
                     } else if (mKey === 'erect' && site.erectEnabled !== false) {
                         const erectBullets = (site.erectSpecs || []).filter(e => e.selected === true).map(e => `<span>• ${e.text || e}</span>`).join(' ');
-                        const rightErectHtml = `<div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">${erectBullets || 'Crane, Hydra, Welding Machine & Labour'}</div>`;
-                        addUnifiedSqftRow('sqftErectLabel', "Turnkey Erection & Installation", site.erectCustomLine, 'erect', rightErectHtml, "Turnkey");
+                        const tr = document.createElement('tr');
+                        tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
+                        tr.innerHTML = `
+                            <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
+                            <td style="width:40%;vertical-align:middle;">
+                                <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftErectLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftErectLabel || "Turnkey Erection & Installation"}</b>
+                                <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'erect')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.erectCustomLine || ''}</div>
+                            </td>
+                            <td style="width:40%;vertical-align:middle;">
+                                <div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">${erectBullets || 'Crane, Hydra, Welding Machine & Labour'}</div>
+                            </td>
+                            <td style="width:13%;text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">Turnkey</td>`;
+                        tbody.appendChild(tr);
+                        setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
                     // 5. CUSTOM MODULES
                     } else {
                         const c = (site.customModules || []).find(m => m.id === mKey);
                         if (c && c.enabled !== false) {
-                            const rightCustHtml = `<div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">${c.qty ? (c.qty + ' ' + (c.unit || 'Lot')) : 'Standard Scope'}</div>`;
-                            addUnifiedSqftRow('', c.title, c.desc || '-', 'custom', rightCustHtml, c.unit || 'Lot');
+                            const tr = document.createElement('tr');
+                            tr.className = "sortable-item"; tr.dataset.sortIndex = orderIdx;
+                            tr.innerHTML = `
+                                <td style="width:7%;text-align:center;font-weight:900;vertical-align:middle;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${sNo++}</td>
+                                <td style="width:40%;vertical-align:middle;">
+                                    <b class="editable-preview-title" contenteditable="true" onblur="syncPreviewTitleEdit(this,'custom','${c.id}')" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${c.title}</b>
+                                    <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${c.desc || '-'}</div>
+                                </td>
+                                <td style="width:40%;vertical-align:middle;">
+                                    <div style="font-weight:800;color:#000000;font-size:calc(9.5px * var(--pdf-font-scale));">${c.qty ? (c.qty + ' ' + (c.unit || 'Lot')) : 'Standard Scope'}</div>
+                                </td>
+                                <td style="width:13%;text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">${c.unit || 'Lot'}</td>`;
+                            tbody.appendChild(tr);
+                            setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
                         }
                     }
                 });
@@ -2292,7 +2347,7 @@ async function downloadPDFDirectly(mode = 'both') {
     
     const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
     const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft'), isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
-    const shouldIncludeShed = (isBothMode && (mode=== 'shed' || mode === 'both')) || isShedOnly;
+    const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
     if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
@@ -2351,18 +2406,13 @@ function switchPermanentTextTab(tabKey) {
         document.getElementById('ptPanelCivil').style.display = 'block';
     }
 }
-
 function openBankDetailsModal() {
-    safeSetVal('inpBankName', appSettings.bankName || "");
-    safeSetVal('inpBankAccName', appSettings.bankAccName || "");
-    safeSetVal('inpBankAccNo', appSettings.bankAccNo || "");
-    safeSetVal('inpBankIfsc', appSettings.bankIfsc || "");
-    safeSetVal('inpBankBranch', appSettings.bankBranch || "");
-    safeSetVal('inpBankUpi', appSettings.bankUpi || "");
+    safeSetVal('inpBankName', appSettings.bankName || ""); safeSetVal('inpBankAccName', appSettings.bankAccName || "");
+    safeSetVal('inpBankAccNo', appSettings.bankAccNo || ""); safeSetVal('inpBankIfsc', appSettings.bankIfsc || "");
+    safeSetVal('inpBankBranch', appSettings.bankBranch || ""); safeSetVal('inpBankUpi', appSettings.bankUpi || "");
     openModalWithHistory('companyBankDetailsModal');
 }
 function closeBankDetailsModal() { closeModalSafe('companyBankDetailsModal'); }
-
 function saveCompanyBankDetails() {
     appSettings.bankName = (document.getElementById('inpBankName')?.value || "").trim();
     appSettings.bankAccName = (document.getElementById('inpBankAccName')?.value || "").trim();
@@ -2372,24 +2422,16 @@ function saveCompanyBankDetails() {
     appSettings.bankUpi = (document.getElementById('inpBankUpi')?.value || "").trim();
 
     syncDataToCloud('patel_app_settings', appSettings);
-    closeBankDetailsModal();
-    refreshLivePdfPreviewSheet();
-    showCorporateToast("Bank Account Details Saved!", "🏦");
+    closeBankDetailsModal(); refreshLivePdfPreviewSheet(); showCorporateToast("Bank Account Details Saved!", "🏦");
 }
-
 function clearCompanyBankDetails() {
     safeSetVal('inpBankName', ""); safeSetVal('inpBankAccName', ""); safeSetVal('inpBankAccNo', "");
     safeSetVal('inpBankIfsc', ""); safeSetVal('inpBankBranch', ""); safeSetVal('inpBankUpi', "");
-
     appSettings.bankName = ""; appSettings.bankAccName = ""; appSettings.bankAccNo = "";
     appSettings.bankIfsc = ""; appSettings.bankBranch = ""; appSettings.bankUpi = "";
-
     syncDataToCloud('patel_app_settings', appSettings);
-    closeBankDetailsModal();
-    refreshLivePdfPreviewSheet();
-    showCorporateToast("Bank Details cleared", "🗑️");
+    closeBankDetailsModal(); refreshLivePdfPreviewSheet(); showCorporateToast("Bank Details cleared", "🗑️");
 }
-
 function openPermanentTextsModal() {
     safeSetVal('pt_companyDesc', appSettings.companyDesc || ""); 
     safeSetVal('pt_companyAddr', appSettings.companyAddr || "");
@@ -2435,8 +2477,7 @@ function openPermanentTextsModal() {
     safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
     safeSetVal('pt_pdfSignatoryText', appSettings.pdfSignatoryText || "Authorized Signatory");
 
-    switchPermanentTextTab('kg');
-    openModalWithHistory('permanentTextsModal');
+    switchPermanentTextTab('kg'); openModalWithHistory('permanentTextsModal');
 }
 function closePermanentTextsModal() { closeModalSafe('permanentTextsModal'); }
 
@@ -2470,7 +2511,6 @@ function loadPhoneSettingsUI() {
     renderSettingsPhonesUI(); safeSetVal('setCompanyEmail', appSettings.companyEmail || "");
     safeSetVal('setFooterWeb', appSettings.footerWeb || ""); safeSetVal('setStartingQuoteNo', getNextQuoteSequenceNumber());
 }
-
 let currentSettingKey = '';
 function openLargeInput(key, title) {
     currentSettingKey = key; safeSetText('largeInputTitle', title);
@@ -2481,7 +2521,6 @@ function autoSaveLargeInputLive() {
     appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
     syncDataToCloud('patel_app_settings', appSettings); loadPhoneSettingsUI(); renderHomeScreen(); refreshLivePdfPreviewSheet();
 }
-
 function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -2500,19 +2539,15 @@ function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
     };
     reader.readAsDataURL(file);
 }
-
 function handleLogoUpload(input) {
     if (input.files && input.files[0]) {
         compressAndOptimizeBanner(input.files[0], 1000, 0.85, function(optimizedBase64) {
             appSettings.logoData = optimizedBase64;
             syncDataToCloud('patel_app_settings', appSettings);
             updateHeaderBannersUI(); refreshLivePdfPreviewSheet();
-            const fav = document.getElementById('dynamicAppFavicon');
-            const appleFav = document.getElementById('dynamicAppleIcon');
-            if (fav) fav.href = optimizedBase64;
-            if (appleFav) appleFav.href = optimizedBase64;
-            showCorporateToast("Company Header Banner Updated!", "🖼️");
-            input.value = '';
+            const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
+            if (fav) fav.href = optimizedBase64; if (appleFav) appleFav.href = optimizedBase64;
+            showCorporateToast("Company Header Banner Updated!", "🖼️"); input.value = '';
         });
     }
 }
@@ -2521,27 +2556,21 @@ function handleLogoUpload(input) {
 let canvas, ctx, isDrawing = false, sigEventsAttached = false;
 function openSignatureModal() {
     openModalWithHistory('sigModal');
-    canvas = document.getElementById('sigPad');
-    ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    canvas = document.getElementById('sigPad'); ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight;
     ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
-
     if (!sigEventsAttached) {
         canvas.addEventListener('touchstart', (e) => {
             isDrawing = true; ctx.beginPath();
             const t = e.touches[0], r = canvas.getBoundingClientRect();
-            ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
-            e.preventDefault();
+            ctx.moveTo(t.clientX - r.left, t.clientY - r.top); e.preventDefault();
         }, {passive:false});
         canvas.addEventListener('touchmove', (e) => {
             if (!isDrawing) return;
             const t = e.touches[0], r = canvas.getBoundingClientRect();
-            ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
-            ctx.stroke(); e.preventDefault();
+            ctx.lineTo(t.clientX - r.left, t.clientY - r.top); ctx.stroke(); e.preventDefault();
         }, {passive:false});
         canvas.addEventListener('touchend', () => isDrawing = false);
-
         canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
         canvas.addEventListener('mousemove', (e) => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
         canvas.addEventListener('mouseup', () => isDrawing = false);
@@ -2551,26 +2580,15 @@ function openSignatureModal() {
 function clearSignature() { if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height); }
 function closeSigModal() { closeModalSafe('sigModal'); }
 function saveSignature() {
-    appSettings.signatureData = canvas.toDataURL();
-    syncDataToCloud('patel_app_settings', appSettings);
-    closeSigModal(); refreshLivePdfPreviewSheet();
-    showCorporateToast("Digital Signature Saved Successfully!", "✍️");
+    appSettings.signatureData = canvas.toDataURL(); syncDataToCloud('patel_app_settings', appSettings);
+    closeSigModal(); refreshLivePdfPreviewSheet(); showCorporateToast("Digital Signature Saved Successfully!", "✍️");
 }
-
 window.onload = function() {
-    checkFirstTimeAuthentication();
-    initCloudFirstMasterSync();
-    renderHomeScreen();
-    loadPhoneSettingsUI();
-    applyScaleToSheet();
-    autoDetectDeviceMode();
-    updateHeaderBannersUI();
+    checkFirstTimeAuthentication(); initCloudFirstMasterSync(); renderHomeScreen(); loadPhoneSettingsUI();
+    applyScaleToSheet(); autoDetectDeviceMode(); updateHeaderBannersUI();
     if (appSettings.logoData) {
-        const fav = document.getElementById('dynamicAppFavicon');
-        const appleFav = document.getElementById('dynamicAppleIcon');
-        if (fav) fav.href = appSettings.logoData;
-        if (appleFav) appleFav.href = appSettings.logoData;
+        const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
+        if (fav) fav.href = appSettings.logoData; if (appleFav) appleFav.href = appSettings.logoData;
     }
-    initSamsungBootAnimation();
-    setTimeout(attachDynamicPreviewObserver, 200);
+    initSamsungBootAnimation(); setTimeout(attachDynamicPreviewObserver, 200);
 };
