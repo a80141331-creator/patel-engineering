@@ -96,10 +96,10 @@ const defaultSqftMasterBlueprint = {
     cladThickness: "0.50 mm", cladCustomLine: "0.50mm TATA BlueScope / JSW Colour Coated Profile Sheet",
     accCustomLine: "Standard Industrial Shed Accessories Package",
     accessories: [
-        { name: "Turbo Ventilators", qty: "6 Nos", selected: true },
-        { name: "Rainwater Gutters", qty: "120 R.Ft", selected: true },
-        { name: "Down Pipes (PVC)", qty: "8 Sets", selected: true },
-        { name: "Anchor Fastener Bolts", qty: "1 Lot", selected: true }
+        { name: "Turbo Ventilators", qty: "6", unit: "Nos", selected: true },
+        { name: "Rainwater Gutters", qty: "120", unit: "R.Ft", selected: true },
+        { name: "Down Pipes (PVC)", qty: "8", unit: "Set", selected: true },
+        { name: "Anchor Fastener Bolts", qty: "1", unit: "Lot", selected: true }
     ],
     erectCustomLine: "Crane, Hydra, Welding Machine, Expert Labour",
     erectSpecs: [{ text: "Crane", selected: true }, { text: "Hydra", selected: true }, { text: "Welding Machine", selected: true }, { text: "Labour", selected: true }]
@@ -1290,14 +1290,14 @@ function openModuleModal(type) {
     if (type === 'prim') {
         modalTitle.innerHTML = `🏗️ 1. Primary Framing Structure`;
         customLineInput.value = site.primCustomLine || "";
-        checklistTitle.innerText = isSqft ? "Member Dimensions & Specifications (Length, Width, Thk, Unit):" : "Checklist Specifications:";
+        checklistTitle.innerText = isSqft ? "Member Dimensions (Length, Width, Thickness, Unit):" : "Checklist Specifications:";
         checklistTitle.style.display = addRowBox.style.display = 'block';
 
         if (isSqft) {
             if (subNotice) subNotice.innerText = "Sq.Ft Mode: Overall shed rate applies. Enter Length, Width, Thickness & Unit for each member.";
             inputsBox.innerHTML = `
                 <div style="font-size:11px;font-weight:800;color:#0369a1;background:#e0f2fe;padding:6px 9px;border-radius:6px;border:1px solid #7dd3fc;">
-                    ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness (मोटाई) aur Unit neeche fill karein.
+                    ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness (मोटाई) aur Unit fill karein.
                 </div>`;
             renderSqftPrimaryChecklist(site.sqftPrimSpecs || []);
         } else {
@@ -1339,9 +1339,9 @@ function openModuleModal(type) {
         document.getElementById('modItemsCheckContainer').innerHTML = `<div style="font-size:12px;color:#64748b;padding:10px 0;">💡 Sheeting parameters sync automatically.</div>`;
     } else if (type === 'acc') {
         modalTitle.innerHTML = `📦 4. Building Accessories`; customLineInput.value = site.accCustomLine || "";
-        checklistTitle.innerText = "Accessories List (Name & Quantity):"; checklistTitle.style.display = addRowBox.style.display = 'block';
+        checklistTitle.innerText = "Accessories List (Name, Quantity & Unit):"; checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
-            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Quantity technical specifications column me samne print hogi.</p>`;
+            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Quantity & Unit details column me seedhe print honge. Agar khali chhodenge to blank rahega.</p>`;
             renderSqftAccessoriesChecklist();
         } else {
             inputsBox.innerHTML = `<p style="font-size:12px;color:#475569;margin:0;">Tick to include:</p>`;
@@ -1425,6 +1425,7 @@ function updatePrimaryDimField(idx, field, val) {
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
 }
 
+// ACCESSORIES CHECKLIST IN SQFT MODE (NAME + QUANTITY + UNIT PICKER)
 function renderSqftAccessoriesChecklist() {
     const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
     container.innerHTML = ""; const site = getCurrentSite();
@@ -1432,10 +1433,11 @@ function renderSqftAccessoriesChecklist() {
     site.sqftAccessories.forEach((acc, idx) => {
         const isSelected = acc.selected !== false;
         container.innerHTML += `
-            <div class="tick-item-card ${isSelected ? 'selected' : ''}" onclick="toggleAccessoryTick(${idx})" style="display:flex;align-items:center;gap:8px;">
+            <div class="tick-item-card ${isSelected ? 'selected' : ''}" onclick="toggleAccessoryTick(${idx})" style="display:flex;align-items:center;gap:6px;">
                 <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleAccessoryTick(${idx})">${isSelected ? '✓' : ''}</div>
-                <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:13px;font-weight:800;color:#0f172a;flex:1;outline:none;" placeholder="Accessory Item Name">
-                <input type="text" value="${acc.qty || ''}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'qty',this.value)" placeholder="Qty (Blank if none)" style="width:120px;padding:4px 6px;border:1.5px solid #cbd5e1;border-radius:6px;font-size:11.5px;font-weight:800;outline:none;background:#fff;">
+                <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:12.5px;font-weight:800;color:#0f172a;flex:1;outline:none;" placeholder="Accessory Item Name">
+                <input type="number" inputmode="decimal" value="${acc.qty || ''}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'qty',this.value)" placeholder="Qty" style="width:65px;padding:4px 6px;border:1.5px solid #cbd5e1;border-radius:6px;font-size:11.5px;font-weight:800;outline:none;background:#fff;text-align:center;">
+                <button type="button" class="theme-unit-btn btn-3d-secondary btn-ripple" style="width:65px;height:30px;font-size:11px;padding:2px 4px;" onclick="event.stopPropagation();openThemeUnitPicker('${acc.unit || 'Nos'}',(u)=>{updateAccessoryFieldFast(${idx},'unit',u);renderSqftAccessoriesChecklist();})">${acc.unit || 'Nos'} ▾</button>
                 <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteAccessoryItem(${idx})">🗑️</button>
             </div>`;
     });
@@ -1557,7 +1559,7 @@ function addNewItemToModule() {
     } else if (activeModType === 'acc') {
         if (isSqftMode(site)) {
             site.sqftAccessories = site.sqftAccessories || [];
-            site.sqftAccessories.push({ name: val, qty: "", selected: true });
+            site.sqftAccessories.push({ name: val, qty: "", unit: "Nos", selected: true });
             renderSqftAccessoriesChecklist();
         } else {
             site.accessories = site.accessories || [];
@@ -1583,7 +1585,7 @@ function addNewAccessoryDirectly() {
     const site = getCurrentSite(); if (!site) return;
     if (isSqftMode(site)) {
         site.sqftAccessories = site.sqftAccessories || [];
-        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), qty: "", selected: true });
+        site.sqftAccessories.push({ name: "New Accessory Item #" + (site.sqftAccessories.length + 1), qty: "", unit: "Nos", selected: true });
     } else {
         site.accessories = site.accessories || [];
         site.accessories.push({ name: "New Accessory Item #" + (site.accessories.length + 1), qty: "1", unit: "Nos", rate: "0", selected: true });
@@ -1604,6 +1606,12 @@ function openThemeUnitPickerForAcc(idx) {
     const site = getCurrentSite(); if (!site?.accessories?.[idx]) return;
     openThemeUnitPicker(site.accessories[idx].unit || 'Nos', (u) => {
         site.accessories[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
+    });
+}
+function openThemeUnitPickerForSqftAcc(idx) {
+    const site = getCurrentSite(); if (!site?.sqftAccessories?.[idx]) return;
+    openThemeUnitPicker(site.sqftAccessories[idx].unit || 'Nos', (u) => {
+        site.sqftAccessories[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
     });
 }
 function openCivilUnitPicker(secKey, idx) {
@@ -1743,7 +1751,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (STRUCTURED PAIRED-ROW LOCK - ZERO MISALIGNMENT)
+// 21. LIVE PREVIEW ENGINE (ZERO INNER HORIZONTAL LINES, HORIZONTAL LOCK & BLANK CHECK)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1846,7 +1854,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 }
 
                 site.moduleOrder.forEach((mKey, orderIdx) => {
-                    // 1. PRIMARY STRUCTURE (LOCKED ROW-BY-ROW WITH THICKNESS)
+                    // 1. PRIMARY STRUCTURE (LOCKED ROW-BY-ROW, NO INNER HORIZONTAL LINES)
                     if (mKey === 'prim' && site.primEnabled !== false) {
                         const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
                         let subRowsHtml = "";
@@ -1863,16 +1871,14 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 
                                 subRowsHtml += `
                                     <tr>
-                                        <td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;vertical-align:middle;border-bottom:${pIdx < primItems.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
+                                        <td style="width:50%;border:none;border-right:1.5px solid #000;padding:2px 6px;vertical-align:middle;">
                                             • <b class="editable-preview-title" contenteditable="true" onblur="syncSqftPrimNameLive(${pIdx},this)" style="font-size:calc(9.5px * var(--pdf-font-scale));">${name}</b>
                                         </td>
-                                        <td style="width:50%;padding:3.5px 6px;vertical-align:middle;font-weight:800;color:#000;border-bottom:${pIdx < primItems.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
+                                        <td style="width:50%;border:none;padding:2px 6px;vertical-align:middle;font-weight:800;color:#000;">
                                             ${dimHtml}
                                         </td>
                                     </tr>`;
                             });
-                        } else {
-                            subRowsHtml = `<tr><td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;">As per standard design</td><td style="width:50%;padding:3.5px 6px;">-</td></tr>`;
                         }
 
                         const tr = document.createElement('tr');
@@ -1882,13 +1888,11 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                             <td colspan="2" style="padding:0;vertical-align:top;border-right:1.5px solid #000;">
                                 <table style="width:100%;border-collapse:collapse;margin:0;padding:0;border:none;">
                                     <tr>
-                                        <td style="width:50%;border-right:1.5px solid #000;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;">
+                                        <td style="width:50%;border:none;border-right:1.5px solid #000;padding:3.5px 6px;vertical-align:top;">
                                             <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftPrimLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftPrimLabel || "Primary Structural Framing"}</b>
                                             <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'prim')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.primCustomLine || ''}</div>
                                         </td>
-                                        <td style="width:50%;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000;vertical-align:bottom;">
-                                            Member Dimensions & Thickness:
-                                        </td>
+                                        <td style="width:50%;border:none;padding:3.5px 6px;vertical-align:top;">&nbsp;</td>
                                     </tr>
                                     ${subRowsHtml}
                                 </table>
@@ -1914,7 +1918,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 3. ACCESSORIES (QTY IN TECHNICAL SPECIFICATIONS COL - STRICTLY HORIZONTALLY LOCKED)
+                    // 3. ACCESSORIES (QUANTITY + EDITABLE UNIT, STRICT HORIZONTAL LOCK, BLACK COLOR, BLANK IF NONE)
                     } else if (mKey === 'acc' && site.accEnabled !== false) {
                         const activeAcc = (site.sqftAccessories || []).filter(a => a.selected !== false);
                         let subAccRowsHtml = "";
@@ -1922,20 +1926,21 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         if (activeAcc.length > 0) {
                             activeAcc.forEach((a, aIdx) => {
                                 const qVal = (a.qty || "").trim();
-                                const qtyCellContent = qVal ? `<b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)" style="color:#0369a1;">${qVal}</b>` : `<span class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)" style="display:inline-block;min-width:30px;">&nbsp;</span>`;
+                                let qtyCellContent = "&nbsp;";
+                                if (qVal) {
+                                    qtyCellContent = `<span class="editable-preview-title" contenteditable="true" onblur="syncSqftAccQtyLive(${aIdx},this)" style="color:#000000;font-weight:900;">${qVal}</span> <span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForSqftAcc(${aIdx})" style="color:#000000;border-color:#94a3b8;background:#f1f5f9;">${a.unit || 'Nos'} ▾</span>`;
+                                }
 
                                 subAccRowsHtml += `
                                     <tr>
-                                        <td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;vertical-align:middle;border-bottom:${aIdx < activeAcc.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
-                                            • <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)" style="font-size:calc(9.5px * var(--pdf-font-scale));color:#000;">${a.name}</b>
+                                        <td style="width:50%;border:none;border-right:1.5px solid #000;padding:2px 6px;vertical-align:middle;">
+                                            • <b class="editable-preview-title" contenteditable="true" onblur="syncSqftAccLive(${aIdx},this)" style="font-size:calc(9.5px * var(--pdf-font-scale));color:#000000;">${a.name}</b>
                                         </td>
-                                        <td style="width:50%;padding:3.5px 6px;vertical-align:middle;font-weight:800;border-bottom:${aIdx < activeAcc.length - 1 ? '1px dashed #e2e8f0' : 'none'};">
+                                        <td style="width:50%;border:none;padding:2px 6px;vertical-align:middle;font-weight:900;color:#000000;">
                                             ${qtyCellContent}
                                         </td>
                                     </tr>`;
                             });
-                        } else {
-                            subAccRowsHtml = `<tr><td style="width:50%;border-right:1.5px solid #000;padding:3.5px 6px;">No accessories specified</td><td style="width:50%;padding:3.5px 6px;">&nbsp;</td></tr>`;
                         }
 
                         const tr = document.createElement('tr');
@@ -1945,18 +1950,16 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                             <td colspan="2" style="padding:0;vertical-align:top;border-right:1.5px solid #000;">
                                 <table style="width:100%;border-collapse:collapse;margin:0;padding:0;border:none;">
                                     <tr>
-                                        <td style="width:50%;border-right:1.5px solid #000;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;">
+                                        <td style="width:50%;border:none;border-right:1.5px solid #000;padding:3.5px 6px;vertical-align:top;">
                                             <b class="editable-preview-title" contenteditable="true" onblur="syncSqftModuleTitle('sqftAccLabel',this)" style="font-size:calc(10.5px * var(--pdf-font-scale));display:block;margin-bottom:2px;">${appSettings.sqftAccLabel || "Building Accessories Package"}</b>
                                             <div class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewTitleEdit(this,'acc')" style="font-size:calc(9px * var(--pdf-font-scale));color:#000;font-weight:700;">${site.accCustomLine || ''}</div>
                                         </td>
-                                        <td style="width:50%;padding:4px 6px;border-bottom:1.5px solid #000;background:#f8fafc;font-weight:900;font-size:calc(9.5px * var(--pdf-font-scale));color:#000;vertical-align:bottom;">
-                                            Required Quantity:
-                                        </td>
+                                        <td style="width:50%;border:none;padding:3.5px 6px;vertical-align:top;">&nbsp;</td>
                                     </tr>
                                     ${subAccRowsHtml}
                                 </table>
                             </td>
-                            <td style="text-align:center;font-weight:900;color:#0369a1;vertical-align:middle;">Package</td>`;
+                            <td style="text-align:center;font-weight:900;color:#0c1e30;vertical-align:middle;">Package</td>`;
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
@@ -2302,530 +2305,530 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
         const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
         const cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
-        const sec1Head = sectionEl.querySelector('#displayHeaderLine1')?.parentElement?.cloneNode(true);
-        const sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
-        const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true);
-        const sec2TblOrig = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper');
-        const sec3AccOrig = sectionEl.querySelector('#pdfAccBreakdownContainer');
-        const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
-        const bankBox = sectionEl.querySelector('#pdfCompanyBankDetailsBox')?.cloneNode(true);
-        const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
-        const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
+            const sec1Head = sectionEl.querySelector('#displayHeaderLine1')?.parentElement?.cloneNode(true);
+            const sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
+            const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true);
+            const sec2TblOrig = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper');
+            const sec3AccOrig = sectionEl.querySelector('#pdfAccBreakdownContainer');
+            const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
+            const bankBox = sectionEl.querySelector('#pdfCompanyBankDetailsBox')?.cloneNode(true);
+            const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
+            const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
 
-        let curPage = createPageBox(true), pageNum = 1;
-        if (hero) curPage.appendChild(hero.cloneNode(true));
-        if (substrip) curPage.appendChild(substrip.cloneNode(true));
-        if (cust) curPage.appendChild(cust.cloneNode(true));
+            let curPage = createPageBox(true), pageNum = 1;
+            if (hero) curPage.appendChild(hero.cloneNode(true));
+            if (substrip) curPage.appendChild(substrip.cloneNode(true));
+            if (cust) curPage.appendChild(cust.cloneNode(true));
 
-        if (!isSqft && sec1Head && sec1Tbl) {
-            curPage.appendChild(sec1Head.cloneNode(true));
-            curPage.appendChild(sec1Tbl.cloneNode(true));
-        }
-        if (sec2Head) curPage.appendChild(sec2Head.cloneNode(true));
-
-        const s2Thead = sec2TblOrig?.querySelector('thead')?.cloneNode(true);
-        const s2Rows = Array.from(sec2TblOrig?.querySelectorAll('tbody tr') || []);
-        let curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
-        let curTable = document.createElement('table'); curTable.className = 'theme-data-table';
-        if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
-        let curTbody = document.createElement('tbody');
-        curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
-
-        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-        let rIdx = 0;
-        while (rIdx < s2Rows.length) {
-            const rowClone = s2Rows[rIdx].cloneNode(true); curTbody.appendChild(rowClone);
-            if (curPage.offsetHeight > MAX_PAGE_LIMIT && curTbody.children.length > 1) {
-                curTbody.removeChild(rowClone); lockTableBottomBorder(curTable);
-                document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-                pageNum++; curPage = createPageBox(true);
-                const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                curPage.appendChild(contBar);
-                curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
-                curTable = document.createElement('table'); curTable.className = 'theme-data-table';
-                if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
-                curTbody = document.createElement('tbody');
-                curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
-                testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-                continue;
+            if (!isSqft && sec1Head && sec1Tbl) {
+                curPage.appendChild(sec1Head.cloneNode(true));
+                curPage.appendChild(sec1Tbl.cloneNode(true));
             }
-            rIdx++;
-        }
-        lockTableBottomBorder(curTable);
+            if (sec2Head) curPage.appendChild(sec2Head.cloneNode(true));
 
-        if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
-            const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
-            const accThead = sec3AccOrig.querySelector('thead')?.cloneNode(true);
-            const accRows = Array.from(sec3AccOrig.querySelectorAll('tbody tr') || []);
-            let accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
-            if (accHeadBar) accBlockWrap.appendChild(accHeadBar);
-            let accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
-            let accTable = document.createElement('table'); accTable.className = 'theme-data-table';
-            if (accThead) accTable.appendChild(accThead);
-            let accTbody = document.createElement('tbody');
-            accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap);
-            curPage.appendChild(accBlockWrap);
+            const s2Thead = sec2TblOrig?.querySelector('thead')?.cloneNode(true);
+            const s2Rows = Array.from(sec2TblOrig?.querySelectorAll('tbody tr') || []);
+            let curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
+            let curTable = document.createElement('table'); curTable.className = 'theme-data-table';
+            if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
+            let curTbody = document.createElement('tbody');
+            curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
 
-            let aIdx = 0;
-            while (aIdx < accRows.length) {
-                const aRowClone = accRows[aIdx].cloneNode(true); accTbody.appendChild(aRowClone);
-                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-                    accTbody.removeChild(aRowClone); lockTableBottomBorder(accTable);
-                    if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
-                    document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-                    pageNum++; curPage = createPageBox(true);
-                    const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                    contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                    curPage.appendChild(contBar);
-                    accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
-                    if (accHeadBar) accBlockWrap.appendChild(accHeadBar.cloneNode(true));
-                    accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
-                    accTable = document.createElement('table'); accTable.className = 'theme-data-table';
-                    if (accThead) accTable.appendChild(accThead.cloneNode(true));
-                    accTbody = document.createElement('tbody');
-                    accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap);
-                    curPage.appendChild(accBlockWrap);
-                    testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-                    continue;
-                }
-                aIdx++;
-            }
-            lockTableBottomBorder(accTable);
-        }
-
-        const finalBlock = document.createElement('div');
-        if (summary) finalBlock.appendChild(summary.cloneNode(true));
-        if (bankBox && bankBox.style.display !== 'none') finalBlock.appendChild(bankBox.cloneNode(true));
-        if (sigs) finalBlock.appendChild(sigs.cloneNode(true));
-        if (footer) finalBlock.appendChild(footer.cloneNode(true));
-        curPage.appendChild(finalBlock);
-
-        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-            curPage.removeChild(finalBlock); document.body.removeChild(testStage);
-            appendPageToOutput(outputContainer, curPage, false);
-            pageNum++; curPage = createPageBox(true);
-            const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — COMMERCIAL TERMS & SIGNATURES</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-            curPage.appendChild(contBar); curPage.appendChild(finalBlock);
             testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-        }
-        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
-
-    } else if (sectionType === 'CIVIL') {
-        const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
-        const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
-        const cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
-        const jobRibbon = sectionEl.querySelector('.civil-job-details-ribbon')?.cloneNode(true);
-        const secConfigs = [
-            { titleEl: sectionEl.querySelector('#civilFoundTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFoundationTableBody')?.closest('.table-wrapper') },
-            { titleEl: sectionEl.querySelector('#civilBrickTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilBrickWallTableBody')?.closest('.table-wrapper') },
-            { titleEl: sectionEl.querySelector('#civilFloorTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFlooringTableBody')?.closest('.table-wrapper') }
-        ];
-        const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
-        const civilBankBox = sectionEl.querySelector('#civilPdfCompanyBankDetailsBox')?.cloneNode(true);
-        const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
-        const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
-        const customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
-
-        let curPage = createPageBox(true), pageNum = 1;
-        if (hero) curPage.appendChild(hero.cloneNode(true));
-        if (substrip) curPage.appendChild(substrip.cloneNode(true));
-        if (cust) curPage.appendChild(cust.cloneNode(true));
-        if (jobRibbon) curPage.appendChild(jobRibbon.cloneNode(true));
-        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-
-        let secIdx = 0;
-        while (secIdx < secConfigs.length) {
-            const conf = secConfigs[secIdx];
-            if (!conf.tblWrap || conf.tblWrap.style.display === 'none') { secIdx++; continue; }
-            const tHead = conf.tblWrap.querySelector('thead')?.cloneNode(true);
-            const allRows = Array.from(conf.tblWrap.querySelectorAll('tbody tr') || []);
-            let titleClone = conf.titleEl ? conf.titleEl.cloneNode(true) : null;
-            if (titleClone) curPage.appendChild(titleClone);
-
-            let cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
-            let cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
-            if (tHead) cTable.appendChild(tHead.cloneNode(true));
-            let cTbody = document.createElement('tbody');
-            cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
-
-            let rowIdx = 0;
-            while (rowIdx < allRows.length) {
-                const rClone = allRows[rowIdx].cloneNode(true); cTbody.appendChild(rClone);
-                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-                    cTbody.removeChild(rClone); lockTableBottomBorder(cTable);
-                    if (cTbody.children.length === 0) { if (titleClone) curPage.removeChild(titleClone); curPage.removeChild(cTableWrap); }
+            let rIdx = 0;
+            while (rIdx < s2Rows.length) {
+                const rowClone = s2Rows[rIdx].cloneNode(true); curTbody.appendChild(rowClone);
+                if (curPage.offsetHeight > MAX_PAGE_LIMIT && curTbody.children.length > 1) {
+                    curTbody.removeChild(rowClone); lockTableBottomBorder(curTable);
                     document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                     pageNum++; curPage = createPageBox(true);
                     const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                    contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                    contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                     curPage.appendChild(contBar);
-                    if (titleClone && cTbody.children.length === 0) curPage.appendChild(titleClone.cloneNode(true));
-                    cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
-                    cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
-                    if (tHead) cTable.appendChild(tHead.cloneNode(true));
-                    cTbody = document.createElement('tbody');
-                    cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
+                    curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
+                    curTable = document.createElement('table'); curTable.className = 'theme-data-table';
+                    if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
+                    curTbody = document.createElement('tbody');
+                    curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
                     testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
                     continue;
                 }
-                rowIdx++;
+                rIdx++;
             }
-            lockTableBottomBorder(cTable); secIdx++;
-        }
+            lockTableBottomBorder(curTable);
 
-        if (customWrapper && customWrapper.children.length > 0) {
-            const custCatClone = customWrapper.cloneNode(true); curPage.appendChild(custCatClone);
+            if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
+                const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
+                const accThead = sec3AccOrig.querySelector('thead')?.cloneNode(true);
+                const accRows = Array.from(sec3AccOrig.querySelectorAll('tbody tr') || []);
+                let accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
+                if (accHeadBar) accBlockWrap.appendChild(accHeadBar);
+                let accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
+                let accTable = document.createElement('table'); accTable.className = 'theme-data-table';
+                if (accThead) accTable.appendChild(accThead);
+                let accTbody = document.createElement('tbody');
+                accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap);
+                curPage.appendChild(accBlockWrap);
+
+                let aIdx = 0;
+                while (aIdx < accRows.length) {
+                    const aRowClone = accRows[aIdx].cloneNode(true); accTbody.appendChild(aRowClone);
+                    if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                        accTbody.removeChild(aRowClone); lockTableBottomBorder(accTable);
+                        if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
+                        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+                        pageNum++; curPage = createPageBox(true);
+                        const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                        contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                        curPage.appendChild(contBar);
+                        accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
+                        if (accHeadBar) accBlockWrap.appendChild(accHeadBar.cloneNode(true));
+                        accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
+                        accTable = document.createElement('table'); accTable.className = 'theme-data-table';
+                        if (accThead) accTable.appendChild(accThead.cloneNode(true));
+                        accTbody = document.createElement('tbody');
+                        accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap);
+                        curPage.appendChild(accBlockWrap);
+                        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+                        continue;
+                    }
+                    aIdx++;
+                }
+                lockTableBottomBorder(accTable);
+            }
+
+            const finalBlock = document.createElement('div');
+            if (summary) finalBlock.appendChild(summary.cloneNode(true));
+            if (bankBox && bankBox.style.display !== 'none') finalBlock.appendChild(bankBox.cloneNode(true));
+            if (sigs) finalBlock.appendChild(sigs.cloneNode(true));
+            if (footer) finalBlock.appendChild(footer.cloneNode(true));
+            curPage.appendChild(finalBlock);
+
             if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-                curPage.removeChild(custCatClone); document.body.removeChild(testStage);
+                curPage.removeChild(finalBlock); document.body.removeChild(testStage);
                 appendPageToOutput(outputContainer, curPage, false);
                 pageNum++; curPage = createPageBox(true);
                 const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                curPage.appendChild(contBar); curPage.appendChild(custCatClone);
+                contBar.innerHTML = `<span>PATEL ENGINEERING — COMMERCIAL TERMS & SIGNATURES</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                curPage.appendChild(contBar); curPage.appendChild(finalBlock);
                 testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
             }
-        }
+            document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
 
-        const civilFinalBlock = document.createElement('div');
-        if (summary) civilFinalBlock.appendChild(summary.cloneNode(true));
-        if (civilBankBox && civilBankBox.style.display !== 'none') civilFinalBlock.appendChild(civilBankBox.cloneNode(true));
-        if (sigs) civilFinalBlock.appendChild(sigs.cloneNode(true));
-        if (footer) civilFinalBlock.appendChild(footer.cloneNode(true));
-        curPage.appendChild(civilFinalBlock);
+        } else if (sectionType === 'CIVIL') {
+            const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true);
+            const substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true);
+            const cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
+            const jobRibbon = sectionEl.querySelector('.civil-job-details-ribbon')?.cloneNode(true);
+            const secConfigs = [
+                { titleEl: sectionEl.querySelector('#civilFoundTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFoundationTableBody')?.closest('.table-wrapper') },
+                { titleEl: sectionEl.querySelector('#civilBrickTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilBrickWallTableBody')?.closest('.table-wrapper') },
+                { titleEl: sectionEl.querySelector('#civilFloorTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFlooringTableBody')?.closest('.table-wrapper') }
+            ];
+            const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true);
+            const civilBankBox = sectionEl.querySelector('#civilPdfCompanyBankDetailsBox')?.cloneNode(true);
+            const sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true);
+            const footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
+            const customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
 
-        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-            curPage.removeChild(civilFinalBlock); document.body.removeChild(testStage);
-            appendPageToOutput(outputContainer, curPage, false);
-            pageNum++; curPage = createPageBox(true);
-            const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-            curPage.appendChild(contBar); curPage.appendChild(civilFinalBlock);
+            let curPage = createPageBox(true), pageNum = 1;
+            if (hero) curPage.appendChild(hero.cloneNode(true));
+            if (substrip) curPage.appendChild(substrip.cloneNode(true));
+            if (cust) curPage.appendChild(cust.cloneNode(true));
+            if (jobRibbon) curPage.appendChild(jobRibbon.cloneNode(true));
             testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+
+            let secIdx = 0;
+            while (secIdx < secConfigs.length) {
+                const conf = secConfigs[secIdx];
+                if (!conf.tblWrap || conf.tblWrap.style.display === 'none') { secIdx++; continue; }
+                const tHead = conf.tblWrap.querySelector('thead')?.cloneNode(true);
+                const allRows = Array.from(conf.tblWrap.querySelectorAll('tbody tr') || []);
+                let titleClone = conf.titleEl ? conf.titleEl.cloneNode(true) : null;
+                if (titleClone) curPage.appendChild(titleClone);
+
+                let cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
+                let cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
+                if (tHead) cTable.appendChild(tHead.cloneNode(true));
+                let cTbody = document.createElement('tbody');
+                cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
+
+                let rowIdx = 0;
+                while (rowIdx < allRows.length) {
+                    const rClone = allRows[rowIdx].cloneNode(true); cTbody.appendChild(rClone);
+                    if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                        cTbody.removeChild(rClone); lockTableBottomBorder(cTable);
+                        if (cTbody.children.length === 0) { if (titleClone) curPage.removeChild(titleClone); curPage.removeChild(cTableWrap); }
+                        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+                        pageNum++; curPage = createPageBox(true);
+                        const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                        contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                        curPage.appendChild(contBar);
+                        if (titleClone && cTbody.children.length === 0) curPage.appendChild(titleClone.cloneNode(true));
+                        cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
+                        cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
+                        if (tHead) cTable.appendChild(tHead.cloneNode(true));
+                        cTbody = document.createElement('tbody');
+                        cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
+                        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+                        continue;
+                    }
+                    rowIdx++;
+                }
+                lockTableBottomBorder(cTable); secIdx++;
+            }
+
+            if (customWrapper && customWrapper.children.length > 0) {
+                const custCatClone = customWrapper.cloneNode(true); curPage.appendChild(custCatClone);
+                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                    curPage.removeChild(custCatClone); document.body.removeChild(testStage);
+                    appendPageToOutput(outputContainer, curPage, false);
+                    pageNum++; curPage = createPageBox(true);
+                    const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                    contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                    curPage.appendChild(contBar); curPage.appendChild(custCatClone);
+                    testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+                }
+            }
+
+            const civilFinalBlock = document.createElement('div');
+            if (summary) civilFinalBlock.appendChild(summary.cloneNode(true));
+            if (civilBankBox && civilBankBox.style.display !== 'none') civilFinalBlock.appendChild(civilBankBox.cloneNode(true));
+            if (sigs) civilFinalBlock.appendChild(sigs.cloneNode(true));
+            if (footer) civilFinalBlock.appendChild(footer.cloneNode(true));
+            curPage.appendChild(civilFinalBlock);
+
+            if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                curPage.removeChild(civilFinalBlock); document.body.removeChild(testStage);
+                appendPageToOutput(outputContainer, curPage, false);
+                pageNum++; curPage = createPageBox(true);
+                const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                curPage.appendChild(contBar); curPage.appendChild(civilFinalBlock);
+                testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+            }
+            document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
         }
-        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
     }
-}
 
-// 23. DIRECT DOWNLOAD ENGINE
-async function downloadPDFDirectly(mode = 'both') {
-    const site = getCurrentSite();
-    const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
-    
-    triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
-    if (typeof html2pdf === 'undefined') { window.print(); return; }
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    // 23. DIRECT DOWNLOAD ENGINE
+    async function downloadPDFDirectly(mode = 'both') {
+        const site = getCurrentSite();
+        const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
+        const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
+        const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
+        
+        triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
+        if (typeof html2pdf === 'undefined') { window.print(); return; }
+        if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
-    const origScroll = window.scrollY || window.pageYOffset;
-    window.scrollTo(0, 0);
+        const origScroll = window.scrollY || window.pageYOffset;
+        window.scrollTo(0, 0);
 
-    const source = document.getElementById('printableA4Sheet'); if (!source) return;
-    const stage = document.createElement('div');
-    stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
-    
-    const clone = source.cloneNode(true);
-    clone.style.setProperty('--pdf-scale', '1.0');
-    clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
-    clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
-        pill.innerText = pill.innerText.replace('▾', '').trim();
-        pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;';
-    });
-    clone.querySelector('.page-physical-gap')?.remove();
+        const source = document.getElementById('printableA4Sheet'); if (!source) return;
+        const stage = document.createElement('div');
+        stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
+        
+        const clone = source.cloneNode(true);
+        clone.style.setProperty('--pdf-scale', '1.0');
+        clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
+        clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
+            pill.innerText = pill.innerText.replace('▾', '').trim();
+            pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;';
+        });
+        clone.querySelector('.page-physical-gap')?.remove();
 
-    const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;';
-    
-    const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
-    const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft');
-    const isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
-    const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
-    const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
+        const outputContainer = document.createElement('div');
+        outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;';
+        
+        const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
+        const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft');
+        const isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
+        const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
+        const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
-    if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
-    if (shouldIncludeShed && shouldIncludeCivil) {
-        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
-        if (lastPage) lastPage.classList.add('has-page-break');
-    }
-    if (shouldIncludeCivil && p2) { p2.style.display = 'block'; buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL'); }
-
-    stage.appendChild(outputContainer); document.body.appendChild(stage);
-
-    const opt = {
-        margin: [6.35, 6.35, 6.35, 6.35], filename: fileName, image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2.0, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0, width: 746, windowWidth: 746, x: 0, y: 0, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-        pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
-    };
-
-    html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
-        if (document.body.contains(stage)) document.body.removeChild(stage);
-        window.scrollTo(0, origScroll);
-        if (window.PatelNativeEngine?.savePdfToPatelFolder) {
-            const base64Data = pdfObj.output('datauristring').split(',')[1];
-            window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
-            return;
+        if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
+        if (shouldIncludeShed && shouldIncludeCivil) {
+            const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
+            if (lastPage) lastPage.classList.add('has-page-break');
         }
-        try {
-            const blob = pdfObj.output('blob'), blobUrl = URL.createObjectURL(blob), a = document.createElement('a');
-            a.style.display = 'none'; a.href = blobUrl; a.download = fileName;
-            document.body.appendChild(a); a.click();
-            setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000);
-            showCorporateToast("✓ PDF Downloaded Successfully!");
-        } catch (e) { pdfObj.save(fileName); }
-    }).catch(function(err) {
-        if (document.body.contains(stage)) document.body.removeChild(stage);
-        window.scrollTo(0, origScroll);
-        html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
-    });
-}
+        if (shouldIncludeCivil && p2) { p2.style.display = 'block'; buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL'); }
 
-// 24. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
-function switchPermanentTextTab(tabKey) {
-    ['btnTabPtKg', 'btnTabPtSqft', 'btnTabPtCivil'].forEach(id => document.getElementById(id)?.classList.remove('active'));
-    document.getElementById('ptPanelKg').style.display = 'none';
-    document.getElementById('ptPanelSqft').style.display = 'none';
-    document.getElementById('ptPanelCivil').style.display = 'none';
+        stage.appendChild(outputContainer); document.body.appendChild(stage);
 
-    if (tabKey === 'kg') {
-        document.getElementById('btnTabPtKg')?.classList.add('active');
-        document.getElementById('ptPanelKg').style.display = 'block';
-    } else if (tabKey === 'sqft') {
-        document.getElementById('btnTabPtSqft')?.classList.add('active');
-        document.getElementById('ptPanelSqft').style.display = 'block';
-    } else if (tabKey === 'civil') {
-        document.getElementById('btnTabPtCivil')?.classList.add('active');
-        document.getElementById('ptPanelCivil').style.display = 'block';
-    }
-}
-
-function openBankDetailsModal() {
-    safeSetVal('inpBankName', appSettings.bankName || "");
-    safeSetVal('inpBankAccName', appSettings.bankAccName || "");
-    safeSetVal('inpBankAccNo', appSettings.bankAccNo || "");
-    safeSetVal('inpBankIfsc', appSettings.bankIfsc || "");
-    safeSetVal('inpBankBranch', appSettings.bankBranch || "");
-    safeSetVal('inpBankUpi', appSettings.bankUpi || "");
-    openModalWithHistory('companyBankDetailsModal');
-}
-function closeBankDetailsModal() { closeModalSafe('companyBankDetailsModal'); }
-
-function saveCompanyBankDetails() {
-    appSettings.bankName = (document.getElementById('inpBankName')?.value || "").trim();
-    appSettings.bankAccName = (document.getElementById('inpBankAccName')?.value || "").trim();
-    appSettings.bankAccNo = (document.getElementById('inpBankAccNo')?.value || "").trim();
-    appSettings.bankIfsc = (document.getElementById('inpBankIfsc')?.value || "").trim().toUpperCase();
-    appSettings.bankBranch = (document.getElementById('inpBankBranch')?.value || "").trim();
-    appSettings.bankUpi = (document.getElementById('inpBankUpi')?.value || "").trim();
-
-    syncDataToCloud('patel_app_settings', appSettings);
-    closeBankDetailsModal();
-    refreshLivePdfPreviewSheet();
-    showCorporateToast("Bank Account Details Saved!", "🏦");
-}
-
-function clearCompanyBankDetails() {
-    safeSetVal('inpBankName', ""); safeSetVal('inpBankAccName', ""); safeSetVal('inpBankAccNo', "");
-    safeSetVal('inpBankIfsc', ""); safeSetVal('inpBankBranch', ""); safeSetVal('inpBankUpi', "");
-
-    appSettings.bankName = ""; appSettings.bankAccName = ""; appSettings.bankAccNo = "";
-    appSettings.bankIfsc = ""; appSettings.bankBranch = ""; appSettings.bankUpi = "";
-
-    syncDataToCloud('patel_app_settings', appSettings);
-    closeBankDetailsModal();
-    refreshLivePdfPreviewSheet();
-    showCorporateToast("Bank Details cleared", "🗑️");
-}
-
-function openPermanentTextsModal() {
-    safeSetVal('pt_companyDesc', appSettings.companyDesc || ""); 
-    safeSetVal('pt_companyAddr', appSettings.companyAddr || "");
-    safeSetVal('pt_companyGst', appSettings.companyGst || ""); 
-    safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
-    
-    // Kg Mode Texts
-    safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION"); 
-    safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle || "");
-    safeSetVal('pt_headerLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
-    safeSetVal('pt_milestoneHeading', appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
-    safeSetVal('pt_headerLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
-    safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
-    safeSetVal('pt_btnNamePrim', appSettings.btnNamePrim || "1. Primary");
-    safeSetVal('pt_btnNameSec', appSettings.btnNameSec || "2. Secondary");
-    safeSetVal('pt_btnNameClad', appSettings.btnNameClad || "3. Cladding");
-    safeSetVal('pt_btnNameAcc', appSettings.btnNameAcc || "4. Accessories");
-    safeSetVal('pt_btnNameErect', appSettings.btnNameErect || "5. Erection");
-
-    // Sq.Ft Mode Texts
-    safeSetVal('pt_sqftPdfRibbonTitle', appSettings.sqftPdfRibbonTitle || "QUOTATION");
-    safeSetVal('pt_sqftPdfScopeTitle', appSettings.sqftPdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS");
-    safeSetVal('pt_sqftHeaderLine1', appSettings.sqftHeaderLine1 || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:");
-    safeSetVal('pt_sqftContractBarTitle', appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)");
-    safeSetVal('pt_sqftPrimLabel', appSettings.sqftPrimLabel || "Primary Structural Framing");
-    safeSetVal('pt_sqftCladLabel', appSettings.sqftCladLabel || "Roof & Wall Cladding System");
-    safeSetVal('pt_sqftAccLabel', appSettings.sqftAccLabel || "Building Accessories Package");
-    safeSetVal('pt_sqftErectLabel', appSettings.sqftErectLabel || "Turnkey Erection & Installation");
-
-    // Civil Mode Texts
-    safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
-    safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
-    safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
-    safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
-    safeSetVal('pt_civilFloorTitle', appSettings.civilFloorTitle || "3. FLOORING & PCC WORK DETAILS:");
-    safeSetVal('pt_btnNameFoundation', appSettings.btnNameFoundation || "1. Foundation Details");
-    safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick || "2. Brick Wall Details");
-    safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
-
-    // Common Signatures & Terms
-    safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
-    safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
-    safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
-    safeSetVal('pt_pdfSignatoryText', appSettings.pdfSignatoryText || "Authorized Signatory");
-
-    switchPermanentTextTab('kg');
-    openModalWithHistory('permanentTextsModal');
-}
-function closePermanentTextsModal() { closeModalSafe('permanentTextsModal'); }
-function autoSavePermanentText(fieldKey, val) {
-    appSettings[fieldKey] = val; 
-    syncDataToCloud('patel_app_settings', appSettings);
-    applyCustomButtonNamesUI(); 
-    refreshLivePdfPreviewSheet();
-}
-
-function renderSettingsPhonesUI() {
-    const box = document.getElementById('settingsPhonesListContainer'); if (!box) return;
-    box.innerHTML = "";
-    (appSettings.phones || []).forEach((phone, idx) => {
-        box.innerHTML += `
-            <div class="phone-row-dynamic">
-                <span class="phone-badge-prefix">📞 #${idx + 1}</span>
-                <input type="tel" value="${phone}" placeholder="Enter phone number..." oninput="updatePhoneSetting(${idx},this.value)">
-                <button type="button" class="btn-del-pro btn-ripple" onclick="deletePhoneSetting(${idx})">🗑️</button>
-            </div>`;
-    });
-}
-function addPhoneRowInSettings() {
-    if (!appSettings.phones) appSettings.phones = [];
-    appSettings.phones.push("+91 "); syncDataToCloud('patel_app_settings', appSettings); renderSettingsPhonesUI(); refreshLivePdfPreviewSheet();
-}
-function updatePhoneSetting(idx, val) {
-    if (!appSettings.phones) appSettings.phones = [];
-    appSettings.phones[idx] = val; syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet();
-}
-function deletePhoneSetting(idx) {
-    if (!appSettings.phones) return;
-    appSettings.phones.splice(idx, 1); syncDataToCloud('patel_app_settings', appSettings); renderSettingsPhonesUI(); refreshLivePdfPreviewSheet();
-}
-function saveCompanyEmailSetting(val) { appSettings.companyEmail = val.trim(); syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet(); }
-function saveFooterWebSetting(val) { appSettings.footerWeb = val.trim(); syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet(); }
-function loadPhoneSettingsUI() {
-    renderSettingsPhonesUI(); safeSetVal('setCompanyEmail', appSettings.companyEmail || "");
-    safeSetVal('setFooterWeb', appSettings.footerWeb || ""); safeSetVal('setStartingQuoteNo', getNextQuoteSequenceNumber());
-}
-
-let currentSettingKey = '';
-function openLargeInput(key, title) {
-    currentSettingKey = key; safeSetText('largeInputTitle', title);
-    safeSetVal('largeInputTextarea', appSettings[key] || ""); openModalWithHistory('largeInputModal');
-}
-function closeLargeInput() { closeModalSafe('largeInputModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
-function autoSaveLargeInputLive() {
-    appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
-    syncDataToCloud('patel_app_settings', appSettings); loadPhoneSettingsUI(); renderHomeScreen(); refreshLivePdfPreviewSheet();
-}
-
-function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            let width = img.width, height = img.height;
-            if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
-            canvas.width = width; canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            const isPng = file.type === 'image/png';
-            callback(canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', quality));
+        const opt = {
+            margin: [6.35, 6.35, 6.35, 6.35], filename: fileName, image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2.0, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0, width: 746, windowWidth: 746, x: 0, y: 0, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+            pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
         };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-}
 
-function handleLogoUpload(input) {
-    if (input.files && input.files[0]) {
-        compressAndOptimizeBanner(input.files[0], 1000, 0.85, function(optimizedBase64) {
-            appSettings.logoData = optimizedBase64;
-            syncDataToCloud('patel_app_settings', appSettings);
-            updateHeaderBannersUI(); refreshLivePdfPreviewSheet();
-            const fav = document.getElementById('dynamicAppFavicon');
-            const appleFav = document.getElementById('dynamicAppleIcon');
-            if (fav) fav.href = optimizedBase64;
-            if (appleFav) appleFav.href = optimizedBase64;
-            showCorporateToast("Company Header Banner Updated!", "🖼️");
-            input.value = '';
+        html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
+            if (document.body.contains(stage)) document.body.removeChild(stage);
+            window.scrollTo(0, origScroll);
+            if (window.PatelNativeEngine?.savePdfToPatelFolder) {
+                const base64Data = pdfObj.output('datauristring').split(',')[1];
+                window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
+                return;
+            }
+            try {
+                const blob = pdfObj.output('blob'), blobUrl = URL.createObjectURL(blob), a = document.createElement('a');
+                a.style.display = 'none'; a.href = blobUrl; a.download = fileName;
+                document.body.appendChild(a); a.click();
+                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000);
+                showCorporateToast("✓ PDF Downloaded Successfully!");
+            } catch (e) { pdfObj.save(fileName); }
+        }).catch(function(err) {
+            if (document.body.contains(stage)) document.body.removeChild(stage);
+            window.scrollTo(0, origScroll);
+            html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
         });
     }
-}
 
-// 25. DIGITAL SIGNATURE & WINDOW ONLOAD
-let canvas, ctx, isDrawing = false, sigEventsAttached = false;
-function openSignatureModal() {
-    openModalWithHistory('sigModal');
-    canvas = document.getElementById('sigPad');
-    ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+    // 24. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
+    function switchPermanentTextTab(tabKey) {
+        ['btnTabPtKg', 'btnTabPtSqft', 'btnTabPtCivil'].forEach(id => document.getElementById(id)?.classList.remove('active'));
+        document.getElementById('ptPanelKg').style.display = 'none';
+        document.getElementById('ptPanelSqft').style.display = 'none';
+        document.getElementById('ptPanelCivil').style.display = 'none';
 
-    if (!sigEventsAttached) {
-        canvas.addEventListener('touchstart', (e) => {
-            isDrawing = true; ctx.beginPath();
-            const t = e.touches[0], r = canvas.getBoundingClientRect();
-            ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
-            e.preventDefault();
-        }, {passive:false});
-        canvas.addEventListener('touchmove', (e) => {
-            if (!isDrawing) return;
-            const t = e.touches[0], r = canvas.getBoundingClientRect();
-            ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
-            ctx.stroke(); e.preventDefault();
-        }, {passive:false});
-        canvas.addEventListener('touchend', () => isDrawing = false);
-
-        canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
-        canvas.addEventListener('mousemove', (e) => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
-        canvas.addEventListener('mouseup', () => isDrawing = false);
-        sigEventsAttached = true;
+        if (tabKey === 'kg') {
+            document.getElementById('btnTabPtKg')?.classList.add('active');
+            document.getElementById('ptPanelKg').style.display = 'block';
+        } else if (tabKey === 'sqft') {
+            document.getElementById('btnTabPtSqft')?.classList.add('active');
+            document.getElementById('ptPanelSqft').style.display = 'block';
+        } else if (tabKey === 'civil') {
+            document.getElementById('btnTabPtCivil')?.classList.add('active');
+            document.getElementById('ptPanelCivil').style.display = 'block';
+        }
     }
-}
-function clearSignature() { if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height); }
-function closeSigModal() { closeModalSafe('sigModal'); }
-function saveSignature() {
-    appSettings.signatureData = canvas.toDataURL();
-    syncDataToCloud('patel_app_settings', appSettings);
-    closeSigModal(); refreshLivePdfPreviewSheet();
-    showCorporateToast("Digital Signature Saved Successfully!", "✍️");
-}
 
-window.onload = function() {
-    checkFirstTimeAuthentication();
-    initCloudFirstMasterSync();
-    renderHomeScreen();
-    loadPhoneSettingsUI();
-    applyScaleToSheet();
-    autoDetectDeviceMode();
-    updateHeaderBannersUI();
-    if (appSettings.logoData) {
-        const fav = document.getElementById('dynamicAppFavicon');
-        const appleFav = document.getElementById('dynamicAppleIcon');
-        if (fav) fav.href = appSettings.logoData;
-        if (appleFav) appleFav.href = appSettings.logoData;
+    function openBankDetailsModal() {
+        safeSetVal('inpBankName', appSettings.bankName || "");
+        safeSetVal('inpBankAccName', appSettings.bankAccName || "");
+        safeSetVal('inpBankAccNo', appSettings.bankAccNo || "");
+        safeSetVal('inpBankIfsc', appSettings.bankIfsc || "");
+        safeSetVal('inpBankBranch', appSettings.bankBranch || "");
+        safeSetVal('inpBankUpi', appSettings.bankUpi || "");
+        openModalWithHistory('companyBankDetailsModal');
     }
-    initSamsungBootAnimation();
-    setTimeout(attachDynamicPreviewObserver, 200);
-};
+    function closeBankDetailsModal() { closeModalSafe('companyBankDetailsModal'); }
+
+    function saveCompanyBankDetails() {
+        appSettings.bankName = (document.getElementById('inpBankName')?.value || "").trim();
+        appSettings.bankAccName = (document.getElementById('inpBankAccName')?.value || "").trim();
+        appSettings.bankAccNo = (document.getElementById('inpBankAccNo')?.value || "").trim();
+        appSettings.bankIfsc = (document.getElementById('inpBankIfsc')?.value || "").trim().toUpperCase();
+        appSettings.bankBranch = (document.getElementById('inpBankBranch')?.value || "").trim();
+        appSettings.bankUpi = (document.getElementById('inpBankUpi')?.value || "").trim();
+
+        syncDataToCloud('patel_app_settings', appSettings);
+        closeBankDetailsModal();
+        refreshLivePdfPreviewSheet();
+        showCorporateToast("Bank Account Details Saved!", "🏦");
+    }
+
+    function clearCompanyBankDetails() {
+        safeSetVal('inpBankName', ""); safeSetVal('inpBankAccName', ""); safeSetVal('inpBankAccNo', "");
+        safeSetVal('inpBankIfsc', ""); safeSetVal('inpBankBranch', ""); safeSetVal('inpBankUpi', "");
+
+        appSettings.bankName = ""; appSettings.bankAccName = ""; appSettings.bankAccNo = "";
+        appSettings.bankIfsc = ""; appSettings.bankBranch = ""; appSettings.bankUpi = "";
+
+        syncDataToCloud('patel_app_settings', appSettings);
+        closeBankDetailsModal();
+        refreshLivePdfPreviewSheet();
+        showCorporateToast("Bank Details cleared", "🗑️");
+    }
+
+    function openPermanentTextsModal() {
+        safeSetVal('pt_companyDesc', appSettings.companyDesc || ""); 
+        safeSetVal('pt_companyAddr', appSettings.companyAddr || "");
+        safeSetVal('pt_companyGst', appSettings.companyGst || ""); 
+        safeSetVal('pt_footerWeb', appSettings.footerWeb || "");
+        
+        // Kg Mode Texts
+        safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle || "QUOTATION"); 
+        safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle || "");
+        safeSetVal('pt_headerLine1', appSettings.headerLine1 || "1. ESTIMATED STEEL WEIGHT:");
+        safeSetVal('pt_milestoneHeading', appSettings.milestoneHeading || "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):");
+        safeSetVal('pt_headerLine2', appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:");
+        safeSetVal('pt_accSectionHeading', appSettings.accSectionHeading || "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:");
+        safeSetVal('pt_btnNamePrim', appSettings.btnNamePrim || "1. Primary");
+        safeSetVal('pt_btnNameSec', appSettings.btnNameSec || "2. Secondary");
+        safeSetVal('pt_btnNameClad', appSettings.btnNameClad || "3. Cladding");
+        safeSetVal('pt_btnNameAcc', appSettings.btnNameAcc || "4. Accessories");
+        safeSetVal('pt_btnNameErect', appSettings.btnNameErect || "5. Erection");
+
+        // Sq.Ft Mode Texts
+        safeSetVal('pt_sqftPdfRibbonTitle', appSettings.sqftPdfRibbonTitle || "QUOTATION");
+        safeSetVal('pt_sqftPdfScopeTitle', appSettings.sqftPdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS");
+        safeSetVal('pt_sqftHeaderLine1', appSettings.sqftHeaderLine1 || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:");
+        safeSetVal('pt_sqftContractBarTitle', appSettings.sqftContractBarTitle || "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)");
+        safeSetVal('pt_sqftPrimLabel', appSettings.sqftPrimLabel || "Primary Structural Framing");
+        safeSetVal('pt_sqftCladLabel', appSettings.sqftCladLabel || "Roof & Wall Cladding System");
+        safeSetVal('pt_sqftAccLabel', appSettings.sqftAccLabel || "Building Accessories Package");
+        safeSetVal('pt_sqftErectLabel', appSettings.sqftErectLabel || "Turnkey Erection & Installation");
+
+        // Civil Mode Texts
+        safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle || "QUOTATION");
+        safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle || "JOB DETAILS & TECHNICAL SPECIFICATIONS");
+        safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle || "1. FOUNDATION & RCC COLUMN DETAILS:");
+        safeSetVal('pt_civilBrickTitle', appSettings.civilBrickTitle || "2. BRICK WALL, DPC & PLASTER DETAILS:");
+        safeSetVal('pt_civilFloorTitle', appSettings.civilFloorTitle || "3. FLOORING & PCC WORK DETAILS:");
+        safeSetVal('pt_btnNameFoundation', appSettings.btnNameFoundation || "1. Foundation Details");
+        safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick || "2. Brick Wall Details");
+        safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring || "3. Flooring Details");
+
+        // Common Signatures & Terms
+        safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle || "CUSTOMER ACCEPTANCE");
+        safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub || "Authorized Signature & Stamp");
+        safeSetVal('pt_signCompHeader', appSettings.signCompHeader || "");
+        safeSetVal('pt_pdfSignatoryText', appSettings.pdfSignatoryText || "Authorized Signatory");
+
+        switchPermanentTextTab('kg');
+        openModalWithHistory('permanentTextsModal');
+    }
+    function closePermanentTextsModal() { closeModalSafe('permanentTextsModal'); }
+    function autoSavePermanentText(fieldKey, val) {
+        appSettings[fieldKey] = val; 
+        syncDataToCloud('patel_app_settings', appSettings);
+        applyCustomButtonNamesUI(); 
+        refreshLivePdfPreviewSheet();
+    }
+
+    function renderSettingsPhonesUI() {
+        const box = document.getElementById('settingsPhonesListContainer'); if (!box) return;
+        box.innerHTML = "";
+        (appSettings.phones || []).forEach((phone, idx) => {
+            box.innerHTML += `
+                <div class="phone-row-dynamic">
+                    <span class="phone-badge-prefix">📞 #${idx + 1}</span>
+                    <input type="tel" value="${phone}" placeholder="Enter phone number..." oninput="updatePhoneSetting(${idx},this.value)">
+                    <button type="button" class="btn-del-pro btn-ripple" onclick="deletePhoneSetting(${idx})">🗑️</button>
+                </div>`;
+        });
+    }
+    function addPhoneRowInSettings() {
+        if (!appSettings.phones) appSettings.phones = [];
+        appSettings.phones.push("+91 "); syncDataToCloud('patel_app_settings', appSettings); renderSettingsPhonesUI(); refreshLivePdfPreviewSheet();
+    }
+    function updatePhoneSetting(idx, val) {
+        if (!appSettings.phones) appSettings.phones = [];
+        appSettings.phones[idx] = val; syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet();
+    }
+    function deletePhoneSetting(idx) {
+        if (!appSettings.phones) return;
+        appSettings.phones.splice(idx, 1); syncDataToCloud('patel_app_settings', appSettings); renderSettingsPhonesUI(); refreshLivePdfPreviewSheet();
+    }
+    function saveCompanyEmailSetting(val) { appSettings.companyEmail = val.trim(); syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet(); }
+    function saveFooterWebSetting(val) { appSettings.footerWeb = val.trim(); syncDataToCloud('patel_app_settings', appSettings); refreshLivePdfPreviewSheet(); }
+    function loadPhoneSettingsUI() {
+        renderSettingsPhonesUI(); safeSetVal('setCompanyEmail', appSettings.companyEmail || "");
+        safeSetVal('setFooterWeb', appSettings.footerWeb || ""); safeSetVal('setStartingQuoteNo', getNextQuoteSequenceNumber());
+    }
+
+    let currentSettingKey = '';
+    function openLargeInput(key, title) {
+        currentSettingKey = key; safeSetText('largeInputTitle', title);
+        safeSetVal('largeInputTextarea', appSettings[key] || ""); openModalWithHistory('largeInputModal');
+    }
+    function closeLargeInput() { closeModalSafe('largeInputModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
+    function autoSaveLargeInputLive() {
+        appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
+        syncDataToCloud('patel_app_settings', appSettings); loadPhoneSettingsUI(); renderHomeScreen(); refreshLivePdfPreviewSheet();
+    }
+
+    function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                let width = img.width, height = img.height;
+                if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const isPng = file.type === 'image/png';
+                callback(canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', quality));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function handleLogoUpload(input) {
+        if (input.files && input.files[0]) {
+            compressAndOptimizeBanner(input.files[0], 1000, 0.85, function(optimizedBase64) {
+                appSettings.logoData = optimizedBase64;
+                syncDataToCloud('patel_app_settings', appSettings);
+                updateHeaderBannersUI(); refreshLivePdfPreviewSheet();
+                const fav = document.getElementById('dynamicAppFavicon');
+                const appleFav = document.getElementById('dynamicAppleIcon');
+                if (fav) fav.href = optimizedBase64;
+                if (appleFav) appleFav.href = optimizedBase64;
+                showCorporateToast("Company Header Banner Updated!", "🖼️");
+                input.value = '';
+            });
+        }
+    }
+
+    // 25. DIGITAL SIGNATURE & WINDOW ONLOAD
+    let canvas, ctx, isDrawing = false, sigEventsAttached = false;
+    function openSignatureModal() {
+        openModalWithHistory('sigModal');
+        canvas = document.getElementById('sigPad');
+        ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.strokeStyle = '#000';
+
+        if (!sigEventsAttached) {
+            canvas.addEventListener('touchstart', (e) => {
+                isDrawing = true; ctx.beginPath();
+                const t = e.touches[0], r = canvas.getBoundingClientRect();
+                ctx.moveTo(t.clientX - r.left, t.clientY - r.top);
+                e.preventDefault();
+            }, {passive:false});
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDrawing) return;
+                const t = e.touches[0], r = canvas.getBoundingClientRect();
+                ctx.lineTo(t.clientX - r.left, t.clientY - r.top);
+                ctx.stroke(); e.preventDefault();
+            }, {passive:false});
+            canvas.addEventListener('touchend', () => isDrawing = false);
+
+            canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
+            canvas.addEventListener('mousemove', (e) => { if (isDrawing) { ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); } });
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            sigEventsAttached = true;
+        }
+    }
+    function clearSignature() { if (ctx && canvas) ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    function closeSigModal() { closeModalSafe('sigModal'); }
+    function saveSignature() {
+        appSettings.signatureData = canvas.toDataURL();
+        syncDataToCloud('patel_app_settings', appSettings);
+        closeSigModal(); refreshLivePdfPreviewSheet();
+        showCorporateToast("Digital Signature Saved Successfully!", "✍️");
+    }
+
+    window.onload = function() {
+        checkFirstTimeAuthentication();
+        initCloudFirstMasterSync();
+        renderHomeScreen();
+        loadPhoneSettingsUI();
+        applyScaleToSheet();
+        autoDetectDeviceMode();
+        updateHeaderBannersUI();
+        if (appSettings.logoData) {
+            const fav = document.getElementById('dynamicAppFavicon');
+            const appleFav = document.getElementById('dynamicAppleIcon');
+            if (fav) fav.href = appSettings.logoData;
+            if (appleFav) appleFav.href = appSettings.logoData;
+        }
+        initSamsungBootAnimation();
+        setTimeout(attachDynamicPreviewObserver, 200);
+    };
