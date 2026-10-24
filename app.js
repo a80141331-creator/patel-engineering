@@ -591,15 +591,33 @@ function ensureCivilDataOnSite(site) {
         site.civilData[sec].items.forEach(it => { if (it.enabled === undefined) it.enabled = true; if (it.qty === undefined) it.qty = ""; if (it.rate === undefined) it.rate = ""; });
     });
 }
+function printVectorDirectly(mode = 'both') {
+    const site = getCurrentSite(); if (!site) return;
+    const p1 = document.getElementById('page1MsStructure'), p2 = document.getElementById('civilDedicatedPageSheet'), gap = document.getElementById('civilPageGapDivider');
+    const origP1 = p1 ? p1.style.display : '', origP2 = p2 ? p2.style.display : '', origGap = gap ? gap.style.display : '';
+    if (mode === 'shed') { if (p1) p1.style.setProperty('display', 'flow-root', 'important'); if (p2) p2.style.setProperty('display', 'none', 'important'); if (gap) gap.style.setProperty('display', 'none', 'important'); }
+    else if (mode === 'civil') { if (p1) p1.style.setProperty('display', 'none', 'important'); if (p2) p2.style.setProperty('display', 'flow-root', 'important'); if (gap) gap.style.setProperty('display', 'none', 'important'); }
+    else { if (hasShedMode(site) && p1) p1.style.setProperty('display', 'flow-root', 'important'); if (hasCivilMode(site) && p2) p2.style.setProperty('display', 'flow-root', 'important'); if (gap) gap.style.setProperty('display', (hasShedMode(site) && hasCivilMode(site)) ? 'block' : 'none', 'important'); }
+    playAppSound('chime'); triggerHaptic(30); window.print();
+    setTimeout(() => { if (p1) p1.style.display = origP1; if (p2) p2.style.display = origP2; if (gap) gap.style.display = origGap; }, 1000);
+}
 function renderDynamicPdfActionsBar() {
     const site = getCurrentSite(), bar = document.getElementById('dynamicPdfDownloadActionsBar'); if (!bar || !site) return;
     bar.innerHTML = "";
     if (site.quoteType === 'both' || site.quoteType === 'both_sqft') {
-        bar.innerHTML = `<button class="btn-main btn-3d-main btn-ripple" style="flex:2;padding:13px;" onclick="downloadPDFDirectly('both')"><span style="font-size:17px;">📑</span> COMBINED PDF</button><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:13px;font-weight:900;" onclick="downloadPDFDirectly('civil')">🧱 Civil Only</button><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:13px;font-weight:900;" onclick="downloadPDFDirectly('shed')">🏢 Shed Only</button>`;
+        bar.innerHTML = `
+            <button class="btn-main btn-3d-main btn-ripple" style="flex:1.8;padding:12px 6px;" onclick="downloadPDFDirectly('both')"><span style="font-size:16px;">⬇️</span> Download PDF</button>
+            <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:12px 4px;font-weight:900;" onclick="downloadPDFDirectly('civil')">🧱 Civil</button>
+            <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:12px 4px;font-weight:900;" onclick="downloadPDFDirectly('shed')">🏢 Shed</button>
+            <button class="btn-main btn-3d-green btn-ripple" style="flex:1.8;padding:12px 6px;" onclick="printVectorDirectly('both')"><span style="font-size:16px;">🖨️</span> Super Print</button>`;
     } else if (site.quoteType === 'civil') {
-        bar.innerHTML = `<button class="btn-main btn-3d-green btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('civil')"><span style="font-size:18px;">⬇️</span> DOWNLOAD CIVIL PDF</button>`;
+        bar.innerHTML = `
+            <button class="btn-main btn-3d-main btn-ripple" style="flex:1;padding:13px;" onclick="downloadPDFDirectly('civil')"><span style="font-size:17px;">⬇️</span> Download PDF</button>
+            <button class="btn-main btn-3d-green btn-ripple" style="flex:1;padding:13px;" onclick="printVectorDirectly('civil')"><span style="font-size:17px;">🖨️</span> Super Print (Real Text)</button>`;
     } else {
-        bar.innerHTML = `<button class="btn-main btn-3d-main btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('shed')"><span style="font-size:18px;">⬇️</span> DOWNLOAD SHED PDF</button>`;
+        bar.innerHTML = `
+            <button class="btn-main btn-3d-main btn-ripple" style="flex:1;padding:13px;" onclick="downloadPDFDirectly('shed')"><span style="font-size:17px;">⬇️</span> Download PDF</button>
+            <button class="btn-main btn-3d-green btn-ripple" style="flex:1;padding:13px;" onclick="printVectorDirectly('shed')"><span style="font-size:17px;">🖨️</span> Super Print (Real Text)</button>`;
     }
 }
 function applyCustomButtonNamesUI() {
@@ -1252,7 +1270,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     (cat.items || []).forEach((it, idx) => {
                         if (it.enabled !== false) {
                             const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0); civilTotalBasic += tot;
-                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.rate)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
                         }
                     });
                     customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span style="font-size:calc(9.5px * var(--pdf-font-scale));">${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
@@ -1272,7 +1290,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const isCivilActuallyValued = (civilGrandTotal > 0 || civilTotalBasic > 0);
     if (isShedActive && isCivilActive && isCivilActuallyValued) {
         const totalComb = shedGrandTotal + civilGrandTotal, combRate = sqft > 0 ? Math.round(totalComb / sqft) : 0;
-        const combHtml = `<div class="comb-row"><span>Shed Project Area:</span><b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b></div><div class="comb-row"><span>Combined Contract Total (Shed + Civil):</span><b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b></div><div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') : '-'} / Sq.Ft</b></div>`;
+        const combHtml = `<div class="comb-row"><span>Shed Project Area:</span><b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b></div><div class="comb-row"><span>Combined Contract Total (Shed + Civil):</span><b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b></div><div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') :'-'} / Sq.Ft</b></div>`;
         if (p1CombBox) { p1CombBox.innerHTML = combHtml; p1CombBox.style.display = isRateOnly ? 'none' : 'flex'; }
         if (p2CombBox) { p2CombBox.innerHTML = combHtml; p2CombBox.style.display = isCivilRateOnly ? 'none' : 'flex'; }
     } else { if (p1CombBox) p1CombBox.style.display = 'none'; if (p2CombBox) p2CombBox.style.display = 'none'; }
@@ -1534,7 +1552,7 @@ async function downloadPDFDirectly(mode = 'both') {
         filename: fileName,
         image: { type: 'jpeg', quality: 1.0 },
         html2canvas: {
-            scale: 3.0, // 3x higher resolution than before, crystal clear print
+            scale: 3.0,
             useCORS: true,
             letterRendering: true,
             scrollY: 0,
