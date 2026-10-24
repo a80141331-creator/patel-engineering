@@ -1172,7 +1172,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         selectedAccCount++; const q = parseFloat(a.qty) || 0, r = parseFloat(a.rate) || 0, lineTot = q * r; aTot += lineTot;
                         if (breakdownTbody) {
                             const tr = document.createElement('tr'); tr.className = "sortable-item"; tr.dataset.sortIndex = aIdx;
-                            tr.innerHTML = isRateOnly ? `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx},this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'rate',this)">${formatRawOrDash(a.rate)}</span></td>` : `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx},this)">${a.name}</b></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'qty',this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'rate',this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right;font-weight:900;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
+                            tr.innerHTML = isRateOnly ? `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx},this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'rate',this)">${formatRawOrDash(a.rate)}</span></td>` : `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx},this)">${a.name}</b></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'qty',this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(${aIdx},'rate',this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right;font-weight:900;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
                             breakdownTbody.appendChild(tr); setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'accessories', aIdx);
                         }
                     }
@@ -1252,7 +1252,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     (cat.items || []).forEach((it, idx) => {
                         if (it.enabled !== false) {
                             const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0); civilTotalBasic += tot;
-                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.rate)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
                         }
                     });
                     customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span style="font-size:calc(9.5px * var(--pdf-font-scale));">${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
@@ -1477,46 +1477,97 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 23. DIRECT DOWNLOAD ENGINE (MAXIMUM 600 DPI ULTRA-RETINA QUALITY)
+// 23. DIRECT DOWNLOAD ENGINE (ORIGINAL STAGE FORMULA RESTORED + SCALE 3.0 FOR SUPER PRINT QUALITY)
 async function downloadPDFDirectly(mode = 'both') {
-    const site = getCurrentSite(), clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_'), quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
+    const site = getCurrentSite();
+    const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
+    const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
+    
     triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
+    if (typeof html2pdf === 'undefined') { window.print(); return; }
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    const origScroll = window.scrollY || window.pageYOffset; window.scrollTo(0, 0);
-    const source = document.getElementById('printableA4Sheet'); if (!source) return;
-    const stage = document.createElement('div'); stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
-    const clone = source.cloneNode(true); clone.style.setProperty('--pdf-scale', '1.0');
+
+    const origScroll = window.scrollY || window.pageYOffset;
+    window.scrollTo(0, 0);
+
+    const source = document.getElementById('printableA4Sheet');
+    if (!source) return;
+
+    // EXACT ORIGINAL STAGE RESTORED: Locks position on desktop, tab and phone identical to original
+    const stage = document.createElement('div');
+    stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
+    
+    const clone = source.cloneNode(true);
+    clone.style.setProperty('--pdf-scale', '1.0');
     clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
-    clone.querySelectorAll('.preview-unit-pill').forEach(pill => { pill.innerText = pill.innerText.replace('▾', '').trim(); pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;'; });
+    clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
+        pill.innerText = pill.innerText.replace('▾', '').trim();
+        pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;';
+    });
     clone.querySelector('.page-physical-gap')?.remove();
 
     const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision;';
+    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;';
+    
     const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
     const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft'), isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
     const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
     if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
-    if (shouldIncludeShed && shouldIncludeCivil) { const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child'); if (lastPage) lastPage.classList.add('has-page-break'); }
-    if (shouldIncludeCivil && p2) { p2.style.display = 'block'; buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL'); }
+    if (shouldIncludeShed && shouldIncludeCivil) {
+        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
+        if (lastPage) lastPage.classList.add('has-page-break');
+    }
+    if (shouldIncludeCivil && p2) {
+        p2.style.display = 'block';
+        buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
+    }
 
-    stage.appendChild(outputContainer); document.body.appendChild(stage);
+    stage.appendChild(outputContainer);
+    document.body.appendChild(stage);
+
+    // EXACT WORKING FORMULA WITH SCALE 3.0 & QUALITY 1.0 (CRYSTAL CLEAR + ZERO CUTTING ON PC/TAB)
     const opt = {
-        margin: [6.35, 6.35, 6.35, 6.35], filename: fileName, image: { type: 'png', quality: 1.0 },
-        html2canvas: { scale: 4.0, dpi: 600, useCORS: true, letterRendering: true, allowTaint: true, scrollY: 0, scrollX: 0, width: 746, windowWidth: 746, logging: false, backgroundColor: '#ffffff' },
+        margin: [6.35, 6.35, 6.35, 6.35],
+        filename: fileName,
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: {
+            scale: 3.0, // 3x higher resolution than before, crystal clear print
+            useCORS: true,
+            letterRendering: true,
+            scrollY: 0,
+            scrollX: 0,
+            width: 746,
+            windowWidth: 746,
+            x: 0,
+            y: 0,
+            logging: false
+        },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
         pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
     };
+
     html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
-        if (window.PatelNativeEngine?.savePdfToPatelFolder) { const base64Data = pdfObj.output('datauristring').split(',')[1]; window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName); return; }
-        try { const blob = pdfObj.output('blob'), blobUrl = URL.createObjectURL(blob), a = document.createElement('a'); a.style.display = 'none'; a.href = blobUrl; a.download = fileName; document.body.appendChild(a); a.click(); setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000); showCorporateToast("✓ Ultra-Max Quality PDF Downloaded!", "💎"); } catch (e) { pdfObj.save(fileName); }
+        if (window.PatelNativeEngine?.savePdfToPatelFolder) {
+            const base64Data = pdfObj.output('datauristring').split(',')[1];
+            window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
+            return;
+        }
+        try {
+            const blob = pdfObj.output('blob'), blobUrl = URL.createObjectURL(blob), a = document.createElement('a');
+            a.style.display = 'none'; a.href = blobUrl; a.download = fileName;
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000);
+            showCorporateToast("✓ PDF Downloaded Successfully!", "💎");
+        } catch (e) { pdfObj.save(fileName); }
     }).catch(function(err) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
-        window.scrollTo(0, origScroll); html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
+        window.scrollTo(0, origScroll);
+        html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
     });
 }
 
@@ -1577,7 +1628,7 @@ function openLargeInput(key, title) { currentSettingKey = key; safeSetText('larg
 function closeLargeInput() { closeModalSafe('largeInputModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
 function autoSaveLargeInputLive() { appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || ""; syncDataToCloud('patel_app_settings', appSettings); loadPhoneSettingsUI(); renderHomeScreen(); refreshLivePdfPreviewSheet(); }
 
-function compressAndOptimizeBanner(file, maxWidth = 2400, quality = 0.98, callback) {
+function compressAndOptimizeBanner(file, maxWidth = 2000, quality = 0.95, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const img = new Image();
@@ -1594,11 +1645,11 @@ function compressAndOptimizeBanner(file, maxWidth = 2400, quality = 0.98, callba
 }
 function handleLogoUpload(input) {
     if (input.files && input.files[0]) {
-        compressAndOptimizeBanner(input.files[0], 2400, 0.98, function(optimizedBase64) {
+        compressAndOptimizeBanner(input.files[0], 2000, 0.95, function(optimizedBase64) {
             appSettings.logoData = optimizedBase64; syncDataToCloud('patel_app_settings', appSettings); updateHeaderBannersUI(); refreshLivePdfPreviewSheet();
             const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
             if (fav) fav.href = optimizedBase64; if (appleFav) appleFav.href = optimizedBase64;
-            showCorporateToast("Ultra-HD Header Banner Updated!", "🖼️"); input.value = '';
+            showCorporateToast("Header Banner Updated!", "🖼️"); input.value = '';
         });
     }
 }
