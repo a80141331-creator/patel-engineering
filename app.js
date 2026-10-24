@@ -1,7 +1,3 @@
-// ============================================================================
-// PATEL ENGINEERING - TRUE VECTOR ENGINE (100% REAL TEXT & VECTOR LININGS)
-// ============================================================================
-
 // 1. FIREBASE CONFIGURATION
 const firebaseConfig = { apiKey: "AIzaSyB_b6KlFizZGALLEZnRcJ0Pd16NUEF6QY8", authDomain: "patel-engineering-3b4c4.firebaseapp.com", databaseURL: "https://patel-engineering-3b4c4-default-rtdb.firebaseio.com", projectId: "patel-engineering-3b4c4", storageBucket: "patel-engineering-3b4c4.firebasestorage.app", messagingSenderId: "261245424222", appId: "1:261245424222:web:126273db274b515f8cdacf" };
 let db = null, isFirebaseConnected = false, isCloudInitialSyncDone = false;
@@ -433,7 +429,7 @@ function renderHomeScreen() {
             container.innerHTML += `<div class="card card-3d btn-ripple" onclick="loadSiteToDashboard('${site.id}')" style="cursor:pointer;user-select:none;"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;padding-right:10px;"><div style="display:flex;gap:6px;align-items:center;"><span style="font-size:10px;font-weight:900;color:#92400e;background:#fef3c7;padding:2px 7px;border-radius:4px;">${site.quoteNo || 'DRAFT'}</span><span style="font-size:9.5px;font-weight:900;color:#1e40af;background:#dbeafe;padding:2px 6px;border-radius:4px;">${modeBadge}</span></div><h3 style="font-size:15px;font-weight:900;color:#000;margin-top:5px;">${site.clientName || 'Untitled Client'}</h3><p style="font-size:12px;color:#000;font-weight:700;margin-top:2px;">📍 ${site.custAddress || 'Project Site'}</p>${site.quoteType !== 'civil' ? `<p style="font-size:11.5px;font-weight:900;color:#0c1e30;margin-top:3px;">Area: ${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</p>` : ''}</div><div style="display:flex;gap:6px;align-items:center;"><button class="btn-site-delete btn-ripple" onclick="event.stopPropagation();triggerCustomDelete('${site.id}','${site.clientName}')">🗑️</button></div></div></div>`;
         } else {
             const leadSite = group[0];
-            container.innerHTML += `<div class="card card-3d btn-ripple" onclick="openClientQuotationsModal('${groupKey}')" style="cursor:border-left:5px solid #2563eb !important;background:linear-gradient(135deg,#ffffff 0%,#f0f7ff 100%);user-select:none;"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;padding-right:10px;"><div style="display:flex;gap:6px;align-items:center;"><span style="font-size:10px;font-weight:900;color:#ffffff;background:#2563eb;padding:2px 8px;border-radius:4px;">📂 ${group.length} PROPOSALS</span>${leadSite.custGST ? `<span style="font-size:9.5px;font-weight:800;color:#0f172a;background:#e2e8f0;padding:2px 6px;border-radius:4px;">GST: ${leadSite.custGST}</span>` : ''}</div><h3 style="font-size:15px;font-weight:900;color:#0c1e30;margin-top:5px;">${leadSite.clientName}</h3><p style="font-size:12px;color:#000;font-weight:700;margin-top:2px;">📍 ${leadSite.custAddress || 'Project Client'}</p><p style="font-size:11.5px;font-weight:900;color:#2563eb;margin-top:3px;">Tap to view all ${group.length} quotations</p></div></div></div>`;
+            container.innerHTML += `<div class="card card-3d btn-ripple" onclick="openClientQuotationsModal('${groupKey}')" style="cursor:pointer;border-left:5px solid #2563eb !important;background:linear-gradient(135deg,#ffffff 0%,#f0f7ff 100%);user-select:none;"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="flex:1;padding-right:10px;"><div style="display:flex;gap:6px;align-items:center;"><span style="font-size:10px;font-weight:900;color:#ffffff;background:#2563eb;padding:2px 8px;border-radius:4px;">📂 ${group.length} PROPOSALS</span>${leadSite.custGST ? `<span style="font-size:9.5px;font-weight:800;color:#0f172a;background:#e2e8f0;padding:2px 6px;border-radius:4px;">GST: ${leadSite.custGST}</span>` : ''}</div><h3 style="font-size:15px;font-weight:900;color:#0c1e30;margin-top:5px;">${leadSite.clientName}</h3><p style="font-size:12px;color:#000;font-weight:700;margin-top:2px;">📍 ${leadSite.custAddress || 'Project Client'}</p><p style="font-size:11.5px;font-weight:900;color:#2563eb;margin-top:3px;">Tap to view all ${group.length} quotations</p></div></div></div>`;
         }
     });
 }
@@ -643,7 +639,8 @@ function toggleCivilModuleActiveState(secKey) {
     if (secKey === 'foundation') site.foundEnabled = !site.foundEnabled;
     else if (secKey === 'brickWall') site.brickEnabled = !site.brickEnabled;
     else if (secKey === 'flooring') site.floorEnabled = !site.floorEnabled;
-    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); updateCivilModulePillBadgesUI(); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
+    syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); updateCivilModulePillBadgesUI(); calcModuleTotals(); refreshLivePdfPreviewSheet();
+}
 function updateCivilModulePillBadgesUI() {
     const site = getCurrentSite(); if (!site) return;
     const setCivBadge = (badgeId, cardId, isEnabled) => {
@@ -1022,7 +1019,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (SCREEN DISPLAY)
+// 21. LIVE PREVIEW ENGINE
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1255,7 +1252,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     (cat.items || []).forEach((it, idx) => {
                         if (it.enabled !== false) {
                             const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0); civilTotalBasic += tot;
-                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.rate)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
                         }
                     });
                     customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span style="font-size:calc(9.5px * var(--pdf-font-scale));">${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
@@ -1295,337 +1292,283 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// ============================================================================
-// 23. PURE TRUE-VECTOR PDF ENGINE (100% BULLETPROOF & CRASH-FREE)
-// ============================================================================
+// 22. DYNAMIC FLOW ENGINE FOR PDF
+function createPageBox(isTest = false) {
+    const p = document.createElement('div');
+    if (isTest) { p.className = 'a4-page-box'; p.style.cssText = 'width:746px!important;margin:0!important;padding:0!important;background:#ffffff!important;display:flow-root!important;height:auto!important;border:2px solid #000000!important;'; }
+    else p.className = 'pdf-page-slice';
+    return p;
+}
+function finalizePageBox(pageEl) { pageEl.className = 'pdf-page-slice'; return pageEl; }
+function lockTableBottomBorder(tableEl) { if (!tableEl) return; const lastRow = tableEl.querySelector(':scope > tbody > tr:last-child'); if (lastRow) Array.from(lastRow.children).forEach(td => { td.style.borderBottom = '2px solid #000000'; }); }
+function appendPageToOutput(outputContainer, pageEl, isLastPage = false) { finalizePageBox(pageEl); if (!isLastPage) pageEl.classList.add('has-page-break'); outputContainer.appendChild(pageEl); }
+function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
+    const MAX_PAGE_LIMIT = 980, testStage = document.createElement('div');
+    testStage.style.cssText = 'width:746px!important;position:absolute;left:-9999px;top:0;background:#fff;padding:0;margin:0;display:flow-root;';
+    const site = getCurrentSite(), isSqft = isSqftMode(site);
+
+    if (sectionType === 'SHED') {
+        const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true), substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true), cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
+        const sec1Head = sectionEl.querySelector('#displayHeaderLine1')?.parentElement?.cloneNode(true), sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
+        const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true), sec2TblOrig = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper'), sec3AccOrig = sectionEl.querySelector('#pdfAccBreakdownContainer');
+        const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true), bankBox = sectionEl.querySelector('#pdfCompanyBankDetailsBox')?.cloneNode(true), sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true), footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
+
+        let curPage = createPageBox(true), pageNum = 1;
+        if (hero) curPage.appendChild(hero.cloneNode(true)); if (substrip) curPage.appendChild(substrip.cloneNode(true)); if (cust) curPage.appendChild(cust.cloneNode(true));
+        if (!isSqft && sec1Head && sec1Tbl) { curPage.appendChild(sec1Head.cloneNode(true)); curPage.appendChild(sec1Tbl.cloneNode(true)); }
+        if (sec2Head) curPage.appendChild(sec2Head.cloneNode(true));
+
+        const s2Thead = sec2TblOrig?.querySelector(':scope > table > thead')?.cloneNode(true), s2Rows = Array.from(sec2TblOrig?.querySelectorAll(':scope > table > tbody > tr') || []);
+        let curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
+        let curTable = document.createElement('table'); curTable.className = 'theme-data-table';
+        if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
+        let curTbody = document.createElement('tbody'); curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
+
+        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+        let rIdx = 0;
+        while (rIdx < s2Rows.length) {
+            const rowClone = s2Rows[rIdx].cloneNode(true); curTbody.appendChild(rowClone);
+            if (curPage.offsetHeight > MAX_PAGE_LIMIT && curTbody.children.length > 1) {
+                curTbody.removeChild(rowClone); lockTableBottomBorder(curTable);
+                document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+                pageNum++; curPage = createPageBox(true);
+                const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                curPage.appendChild(contBar);
+                curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
+                curTable = document.createElement('table'); curTable.className = 'theme-data-table';
+                if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
+                curTbody = document.createElement('tbody'); curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
+                testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+                continue;
+            }
+            rIdx++;
+        }
+        lockTableBottomBorder(curTable);
+
+        if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
+            const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true), accThead = sec3AccOrig.querySelector(':scope > table > thead')?.cloneNode(true), accRows = Array.from(sec3AccOrig.querySelectorAll(':scope > table > tbody > tr') || []);
+            let accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
+            if (accHeadBar) accBlockWrap.appendChild(accHeadBar);
+            let accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
+            let accTable = document.createElement('table'); accTable.className = 'theme-data-table';
+            if (accThead) accTable.appendChild(accThead);
+            let accTbody = document.createElement('tbody'); accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap); curPage.appendChild(accBlockWrap);
+
+            let aIdx = 0;
+            while (aIdx < accRows.length) {
+                const aRowClone = accRows[aIdx].cloneNode(true); accTbody.appendChild(aRowClone);
+                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                    accTbody.removeChild(aRowClone); lockTableBottomBorder(accTable);
+                    if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
+                    document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+                    pageNum++; curPage = createPageBox(true);
+                    const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                    contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                    curPage.appendChild(contBar);
+                    accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
+                    if (accHeadBar) accBlockWrap.appendChild(accHeadBar.cloneNode(true));
+                    accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
+                    accTable = document.createElement('table'); accTable.className = 'theme-data-table';
+                    if (accThead) accTable.appendChild(accThead.cloneNode(true));
+                    accTbody = document.createElement('tbody'); accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap); curPage.appendChild(accBlockWrap);
+                    testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+                    continue;
+                }
+                aIdx++;
+            }
+            lockTableBottomBorder(accTable);
+        }
+
+        const finalBlock = document.createElement('div');
+        if (summary) finalBlock.appendChild(summary.cloneNode(true));
+        if (bankBox && bankBox.style.display !== 'none') finalBlock.appendChild(bankBox.cloneNode(true));
+        if (sigs) finalBlock.appendChild(sigs.cloneNode(true));
+        if (footer) finalBlock.appendChild(footer.cloneNode(true));
+        curPage.appendChild(finalBlock);
+
+        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+            curPage.removeChild(finalBlock); document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+            pageNum++; curPage = createPageBox(true);
+            const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+            contBar.innerHTML = `<span>PATEL ENGINEERING — COMMERCIAL TERMS & SIGNATURES</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+            curPage.appendChild(contBar); curPage.appendChild(finalBlock);
+            testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+        }
+        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
+
+    } else if (sectionType === 'CIVIL') {
+        const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true), substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true), cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true), jobRibbon = sectionEl.querySelector('.civil-job-details-ribbon')?.cloneNode(true);
+        const secConfigs = [
+            { titleEl: sectionEl.querySelector('#civilFoundTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFoundationTableBody')?.closest('.table-wrapper') },
+            { titleEl: sectionEl.querySelector('#civilBrickTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilBrickWallTableBody')?.closest('.table-wrapper') },
+            { titleEl: sectionEl.querySelector('#civilFloorTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFlooringTableBody')?.closest('.table-wrapper') }
+        ];
+        const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true), civilBankBox = sectionEl.querySelector('#civilPdfCompanyBankDetailsBox')?.cloneNode(true), sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true), footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true), customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
+
+        let curPage = createPageBox(true), pageNum = 1;
+        if (hero) curPage.appendChild(hero.cloneNode(true)); if (substrip) curPage.appendChild(substrip.cloneNode(true)); if (cust) curPage.appendChild(cust.cloneNode(true)); if (jobRibbon) curPage.appendChild(jobRibbon.cloneNode(true));
+        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+
+        let secIdx = 0;
+        while (secIdx < secConfigs.length) {
+            const conf = secConfigs[secIdx]; if (!conf.tblWrap || conf.tblWrap.style.display === 'none') { secIdx++; continue; }
+            const tHead = conf.tblWrap.querySelector(':scope > table > thead')?.cloneNode(true), allRows = Array.from(conf.tblWrap.querySelectorAll(':scope > table > tbody > tr') || []);
+            let titleClone = conf.titleEl ? conf.titleEl.cloneNode(true) : null;
+            if (titleClone) curPage.appendChild(titleClone);
+
+            let cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
+            let cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
+            if (tHead) cTable.appendChild(tHead.cloneNode(true));
+            let cTbody = document.createElement('tbody'); cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
+
+            let rowIdx = 0;
+            while (rowIdx < allRows.length) {
+                const rClone = allRows[rowIdx].cloneNode(true); cTbody.appendChild(rClone);
+                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                    cTbody.removeChild(rClone); lockTableBottomBorder(cTable);
+                    if (cTbody.children.length === 0) { if (titleClone) curPage.removeChild(titleClone); curPage.removeChild(cTableWrap); }
+                    document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+                    pageNum++; curPage = createPageBox(true);
+                    const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                    contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                    curPage.appendChild(contBar);
+                    if (titleClone && cTbody.children.length === 0) curPage.appendChild(titleClone.cloneNode(true));
+                    cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
+                    cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
+                    if (tHead) cTable.appendChild(tHead.cloneNode(true));
+                    cTbody = document.createElement('tbody'); cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
+                    testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+                    continue;
+                }
+                rowIdx++;
+            }
+            lockTableBottomBorder(cTable); secIdx++;
+        }
+
+        if (customWrapper && customWrapper.children.length > 0) {
+            const custCatClone = customWrapper.cloneNode(true); curPage.appendChild(custCatClone);
+            if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+                curPage.removeChild(custCatClone); document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+                pageNum++; curPage = createPageBox(true);
+                const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+                contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+                curPage.appendChild(contBar); curPage.appendChild(custCatClone);
+                testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+            }
+        }
+
+        const civilFinalBlock = document.createElement('div');
+        if (summary) civilFinalBlock.appendChild(summary.cloneNode(true));
+        if (civilBankBox && civilBankBox.style.display !== 'none') civilFinalBlock.appendChild(civilBankBox.cloneNode(true));
+        if (sigs) civilFinalBlock.appendChild(sigs.cloneNode(true));
+        if (footer) civilFinalBlock.appendChild(footer.cloneNode(true));
+        curPage.appendChild(civilFinalBlock);
+
+        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
+            curPage.removeChild(civilFinalBlock); document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
+            pageNum++; curPage = createPageBox(true);
+            const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
+            contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+            curPage.appendChild(contBar); curPage.appendChild(civilFinalBlock);
+            testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
+        }
+        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
+    }
+}
+
+// 23. DIRECT DOWNLOAD ENGINE (ORIGINAL STAGE FORMULA RESTORED + SCALE 3.0 FOR SUPER PRINT QUALITY)
 async function downloadPDFDirectly(mode = 'both') {
-    const site = getCurrentSite(); if (!site) return;
-    const clientClean = (site.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const quoteClean = (site.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
+    const site = getCurrentSite();
+    const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
+    const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
     
     triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
+    if (typeof html2pdf === 'undefined') { window.print(); return; }
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
-    const jsPDFConstructor = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
-    if (!jsPDFConstructor) {
-        showCorporateToast("PDF Library loading, please wait...", "⚠️");
-        return;
+    const origScroll = window.scrollY || window.pageYOffset;
+    window.scrollTo(0, 0);
+
+    const source = document.getElementById('printableA4Sheet');
+    if (!source) return;
+
+    // EXACT ORIGINAL STAGE RESTORED: Locks position on desktop, tab and phone identical to original
+    const stage = document.createElement('div');
+    stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
+    
+    const clone = source.cloneNode(true);
+    clone.style.setProperty('--pdf-scale', '1.0');
+    clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
+    clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
+        pill.innerText = pill.innerText.replace('▾', '').trim();
+        pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;';
+    });
+    clone.querySelector('.page-physical-gap')?.remove();
+
+    const outputContainer = document.createElement('div');
+    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;';
+    
+    const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
+    const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft'), isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
+    const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
+    const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
+
+    if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
+    if (shouldIncludeShed && shouldIncludeCivil) {
+        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
+        if (lastPage) lastPage.classList.add('has-page-break');
+    }
+    if (shouldIncludeCivil && p2) {
+        p2.style.display = 'block';
+        buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
-    const doc = new jsPDFConstructor({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const isSqft = isSqftMode(site), isRateOnly = (site.rateOnlyMode === true);
-    const compAddr = appSettings.companyAddr || "Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)";
-    const compGst = appSettings.companyGst || "08AHFPL0222M2ZF";
-    const compPhones = (appSettings.phones || []).filter(Boolean).join(", ") || "+91 9799635249";
-    const compEmail = (appSettings.companyEmail || "").trim(), compWeb = (appSettings.footerWeb || "").trim();
-    const issueDateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-    const sqft = (parseFloat(site.dimW) || 0) * (parseFloat(site.dimL) || 0);
+    stage.appendChild(outputContainer);
+    document.body.appendChild(stage);
 
-    // 2. VECTOR HEADER & RIBBON
-    function drawHeaderAndSubstrip(pDoc, ribbonText, quoteNum) {
-        pDoc.setFillColor(12, 30, 48);
-        pDoc.rect(10, 8, 190, 2, 'F');
+    // EXACT WORKING FORMULA WITH SCALE 3.0 & QUALITY 1.0 (CRYSTAL CLEAR + ZERO CUTTING ON PC/TAB)
+    const opt = {
+        margin: [6.35, 6.35, 6.35, 6.35],
+        filename: fileName,
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: {
+            scale: 3.0, // 3x higher resolution than before, crystal clear print
+            useCORS: true,
+            letterRendering: true,
+            scrollY: 0,
+            scrollX: 0,
+            width: 746,
+            windowWidth: 746,
+            x: 0,
+            y: 0,
+            logging: false
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+        pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
+    };
 
-        // Safe Image handling
-        let hasImageLoaded = false;
-        if (appSettings.logoData && (appSettings.logoData.startsWith('data:image/png') || appSettings.logoData.startsWith('data:image/jpeg'))) {
-            try { pDoc.addImage(appSettings.logoData, 'JPEG', 10, 11, 75, 23); hasImageLoaded = true; } catch(e) { hasImageLoaded = false; }
+    html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
+        if (document.body.contains(stage)) document.body.removeChild(stage);
+        window.scrollTo(0, origScroll);
+        if (window.PatelNativeEngine?.savePdfToPatelFolder) {
+            const base64Data = pdfObj.output('datauristring').split(',')[1];
+            window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
+            return;
         }
-        if (!hasImageLoaded) {
-            pDoc.setFont('helvetica', 'bold'); pDoc.setFontSize(18); pDoc.setTextColor(12, 30, 48);
-            pDoc.text(appSettings.ownerName || "PATEL ENGINEERING", 12, 22);
-            pDoc.setFontSize(8); pDoc.setFont('helvetica', 'normal');
-            pDoc.text("PEB Structure | Industrial Sheds | Roofing Solutions", 12, 28);
-        }
-
-        // Navy Blue Polygon on Right
-        pDoc.setFillColor(12, 30, 48);
-        pDoc.triangle(120, 10, 132, 35, 132, 10, 'F');
-        pDoc.rect(132, 10, 68, 25, 'F');
-
-        pDoc.setTextColor(255, 255, 255);
-        pDoc.setFont('helvetica', 'bold'); pDoc.setFontSize(15);
-        pDoc.text(ribbonText, 195, 18, { align: 'right' });
-        pDoc.setFontSize(8); pDoc.setFont('helvetica', 'normal');
-        pDoc.text("Quote Ref: " + quoteNum, 195, 24, { align: 'right' });
-        pDoc.text("Issue Date: " + issueDateStr, 195, 29, { align: 'right' });
-
-        // Substrip bar
-        pDoc.setFillColor(12, 30, 48);
-        pDoc.rect(10, 36, 190, 5.5, 'F');
-        pDoc.setTextColor(255, 255, 255);
-        pDoc.setFontSize(7.5);
-        pDoc.text("Works & Office: " + compAddr, 12, 40);
-        pDoc.setFont('helvetica', 'bold');
-        pDoc.text("GSTIN: " + compGst, 198, 40, { align: 'right' });
-    }
-
-    // 3. CUSTOMER DETAILS & DIMENSIONS
-    function drawCustomerDetailsBlock(pDoc, scopeTitle, startY) {
-        pDoc.setDrawColor(0, 0, 0); pDoc.setLineWidth(0.35);
-        pDoc.rect(10, startY, 190, 23);
-        pDoc.line(108, startY, 108, startY + 23);
-
-        pDoc.setTextColor(0, 0, 0); pDoc.setFont('helvetica', 'bold'); pDoc.setFontSize(8);
-        pDoc.text(scopeTitle, 12, startY + 4, { maxWidth: 94 });
-        pDoc.setFontSize(6.5); pDoc.text("PROJECT SIZE / SHED DIMENSIONS:", 12, startY + 9.5);
-
-        const dimY = startY + 11.5;
-        pDoc.setDrawColor(0, 0, 0); pDoc.setLineWidth(0.25);
-        pDoc.rect(12, dimY, 93, 8.5);
-        pDoc.setFillColor(224, 242, 254);
-        pDoc.rect(68, dimY, 37, 8.5, 'FD');
-
-        pDoc.setFontSize(6.5); pDoc.setFont('helvetica', 'normal');
-        pDoc.text("Width", 15, dimY + 3); pDoc.text("Length", 32, dimY + 3); pDoc.text("Height", 51, dimY + 3); pDoc.text("Total Area", 72, dimY + 3);
-        pDoc.setFontSize(8); pDoc.setFont('helvetica', 'bold');
-        pDoc.text(site.dimW ? site.dimW + " Ft" : "-", 15, dimY + 7); pDoc.text("x", 28, dimY + 6);
-        pDoc.text(site.dimL ? site.dimL + " Ft" : "-", 32, dimY + 7); pDoc.text("x", 47, dimY + 6);
-        pDoc.text(site.dimH ? site.dimH + " Ft" : "-", 51, dimY + 7); pDoc.text("=", 65, dimY + 6);
-        pDoc.setTextColor(12, 30, 48); pDoc.text(sqft > 0 ? sqft.toLocaleString('en-IN') + " Sq.Ft" : "-", 72, dimY + 7);
-
-        pDoc.setTextColor(0, 0, 0);
-        const contactLine = [site.custContactPerson, site.custRole ? ('(' + site.custRole + ')') : ''].filter(Boolean).join(' ') || "-";
-        const phonesLine = [site.custNumber1, site.custNumber2].filter(Boolean).join(" / ") || "-";
-        const infoRows = [["Client:", site.clientName || "-"], ["Contact Person:", contactLine], ["Contact Number:", phonesLine], ["Customer GST:", site.custGST || "-"], ["Site Address:", site.custAddress || "-"]];
-        let cY = startY + 4;
-        infoRows.forEach(([lbl, val]) => {
-            pDoc.setFont('helvetica', 'bold'); pDoc.setFontSize(7); pDoc.text(lbl, 110, cY);
-            pDoc.setFont('helvetica', 'normal'); pDoc.text(String(val), 198, cY, { align: 'right', maxWidth: 62 });
-            cY += 4.2;
-        });
-    }
-
-    // 4. FOOTER BAR
-    function drawFooterBar(pDoc) {
-        pDoc.setFillColor(12, 30, 48);
-        pDoc.rect(10, 287, 190, 6, 'F');
-        pDoc.setTextColor(255, 255, 255); pDoc.setFontSize(6.5); pDoc.setFont('helvetica', 'normal');
-        pDoc.text("Phones: " + compPhones + "  |  GSTIN: " + compGst, 12, 290.5);
-        pDoc.text(compAddr + (compEmail ? " | " + compEmail : ""), 12, 292);
-        if (compWeb) pDoc.text(compWeb, 198, 291, { align: 'right' });
-    }
-
-    // PAGE 1: SHED QUOTATION
-    if (hasShedMode(site) && (mode === 'shed' || mode === 'both')) {
-        drawHeaderAndSubstrip(doc, (appSettings.pdfRibbonTitle || "QUOTATION"), (site.quoteNo || "PE/2026/01"));
-        drawCustomerDetailsBlock(doc, (isSqft ? (site.sqftScopeDesc || "QUOTATION FOR PEB - SQ.FT BASIS") : (appSettings.pdfScopeTitle || "QUOTATION FOR PRE-ENGINEERED BUILDING")), 43);
-
-        let tableStartY = 68;
-        doc.setFillColor(226, 232, 240);
-        doc.rect(10, tableStartY, 190, 5, 'F');
-        doc.setFillColor(12, 30, 48);
-        doc.rect(10, tableStartY, 2.5, 5, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(0, 0, 0);
-        doc.text(isSqft ? (site.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:") : (appSettings.headerLine2 || "1. PRICE BREAKUP AS PER KG RATE:"), 14, tableStartY + 3.5);
-
-        let tableHeaders = [], tableData = [], colStyles = {};
-        if (isSqft) {
-            tableHeaders = [['S.NO', 'ITEM / WORK COMPONENT', 'TECHNICAL SPECIFICATIONS & DIMENSIONS', 'UNIT / SCOPE']];
-            colStyles = { 0: { cellWidth: 12, halign: 'center', fontStyle: 'bold' }, 1: { cellWidth: 70 }, 2: { cellWidth: 80 }, 3: { cellWidth: 28, halign: 'center', fontStyle: 'bold' } };
-            
-            let sNo = 1;
-            if (site.primEnabled !== false) {
-                let primLeft = (appSettings.sqftPrimLabel || "Primary Structural Framing") + "\n" + (site.sqftPrimCustomLine || "");
-                let primRight = "";
-                (site.sqftPrimSpecs || []).filter(p => p.selected !== false).forEach(p => {
-                    primLeft += `\n• ${p.text || ""}`;
-                    let dimText = (p.length || p.width || p.thk) ? `L: ${p.length || '-'} x W: ${p.width || '-'}` + (p.thk ? ` x Thk: ${p.thk}` : '') + ` ${p.dimUnit || 'mm'}` : "-";
-                    primRight += (primRight ? "\n" : "") + dimText;
-                });
-                tableData.push([String(sNo++), primLeft, primRight, 'Main Frame']);
-            }
-            if (site.cladEnabled !== false) {
-                tableData.push([String(sNo++), (appSettings.sqftCladLabel || "Roof & Wall Cladding System") + "\n" + (site.sqftCladCustomLine || ""), "Thickness: " + (site.cladThickness || "0.50 mm"), 'Covering']);
-            }
-            if (site.accEnabled !== false) {
-                let accLeft = (appSettings.sqftAccLabel || "Building Accessories Package") + "\n" + (site.sqftAccCustomLine || "");
-                let accRight = "";
-                (site.sqftAccessories || []).filter(a => a.selected !== false).forEach(a => {
-                    accLeft += `\n• ${a.name || ""}`;
-                    accRight += (accRight ? "\n" : "") + (a.qty ? `${a.qty} ${a.unit || 'Nos'}` : "-");
-                });
-                tableData.push([String(sNo++), accLeft, accRight, 'Package']);
-            }
-            if (site.erectEnabled !== false) {
-                let erectSpecs = (site.erectSpecs || []).filter(e => e.selected === true).map(e => "• " + (e.text || e)).join("\n");
-                tableData.push([String(sNo++), (appSettings.sqftErectLabel || "Turnkey Erection & Installation") + "\n" + (site.sqftErectCustomLine || ""), erectSpecs || "Crane, Hydra, Welding Machine & Labour", 'Turnkey']);
-            }
-        } else {
-            tableHeaders = isRateOnly ? [['S.NO', 'DESCRIPTION', 'UNIT', 'CONTRACT RATE (₹)']] : [['S.NO', 'DESCRIPTION', 'QTY', 'UNIT', 'RATE (₹)', 'AMOUNT (INR)']];
-            colStyles = isRateOnly ? { 0: { cellWidth: 12, halign: 'center' }, 1: { cellWidth: 120 }, 2: { cellWidth: 25, halign: 'center' }, 3: { cellWidth: 33, halign: 'right' } } :
-                                     { 0: { cellWidth: 10, halign: 'center' }, 1: { cellWidth: 82 }, 2: { cellWidth: 22, halign: 'center' }, 3: { cellWidth: 18, halign: 'center' }, 4: { cellWidth: 24, halign: 'right' }, 5: { cellWidth: 34, halign: 'right' } };
-            let sNo = 1;
-            const pWt = (parseFloat(site.primWeight) || 0), pRt = (parseFloat(site.primRate) || 0);
-            if (site.primEnabled !== false) tableData.push(isRateOnly ? [String(sNo++), "Primary Structure: " + (site.primCustomLine || ""), site.primUnit || "Kg", "Rs. " + pRt] : [String(sNo++), "Primary Structure: " + (site.primCustomLine || ""), String(pWt), site.primUnit || "Kg", String(pRt), "Rs. " + Math.round(pWt * pRt).toLocaleString('en-IN')]);
-            const sWt = (parseFloat(site.secWeight) || 0), sRt = (parseFloat(site.secRate) || 0);
-            if (site.secEnabled !== false) tableData.push(isRateOnly ? [String(sNo++), "Secondary Structure: " + (site.secCustomLine || ""), site.secUnit || "Kg", "Rs. " + sRt] : [String(sNo++), "Secondary Structure: " + (site.secCustomLine || ""), String(sWt), site.secUnit || "Kg", String(sRt), "Rs. " + Math.round(sWt * sRt).toLocaleString('en-IN')]);
-            const cSq = (parseFloat(site.cladSqFt) || 0), cRt = (parseFloat(site.cladRate) || 0);
-            if (site.cladEnabled !== false) tableData.push(isRateOnly ? [String(sNo++), "Roof & Wall Cladding: " + (site.cladCustomLine || ""), site.cladUnit || "Sq.Ft", "Rs. " + cRt] : [String(sNo++), "Roof & Wall Cladding: " + (site.cladCustomLine || ""), String(cSq), site.cladUnit || "Sq.Ft", String(cRt), "Rs. " + Math.round(cSq * cRt).toLocaleString('en-IN')]);
-            if (site.erectEnabled !== false) {
-                const autoWt = (site.primEnabled !== false ? pWt : 0) + (site.secEnabled !== false ? sWt : 0), eRt = (parseFloat(site.erectRate) || 0);
-                tableData.push(isRateOnly ? [String(sNo++), "Erection & Installation: " + (site.erectCustomLine || ""), site.erectUnit || "Kg", "Rs. " + eRt] : [String(sNo++), "Erection & Installation: " + (site.erectCustomLine || ""), String(autoWt), site.erectUnit || "Kg", String(eRt), "Rs. " + Math.round(autoWt * eRt).toLocaleString('en-IN')]);
-            }
-        }
-
-        // AUTO-TABLE CALL
-        if (typeof doc.autoTable === 'function') {
-            doc.autoTable({
-                startY: tableStartY + 5.5,
-                head: tableHeaders,
-                body: tableData,
-                theme: 'grid',
-                headStyles: { fillColor: [12, 30, 48], textColor: 255, fontStyle: 'bold', fontSize: 7.5, halign: 'center', cellPadding: 2 },
-                styles: { fontSize: 7, cellPadding: 1.8, textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.25, font: 'helvetica' },
-                alternateRowStyles: { fillColor: [248, 250, 252] },
-                columnStyles: colStyles,
-                margin: { left: 10, right: 10 }
-            });
-        }
-
-        let finalY = doc.lastAutoTable ? (doc.lastAutoTable.finalY + 3) : 150;
-
-        // SUMMARY, TERMS & FINANCIALS
-        const summaryHeight = 44;
-        doc.setDrawColor(0, 0, 0); 
-        doc.setLineWidth(0.35);
-        doc.rect(10, finalY, 190, summaryHeight);
-        doc.line(110, finalY, 110, finalY + summaryHeight);
-
-        // Left Terms
-        doc.setFont('helvetica', 'bold'); 
-        doc.setFontSize(7.5); 
-        doc.setTextColor(0, 0, 0);
-        doc.text("Terms & Conditions:", 12, finalY + 4);
-        doc.setFontSize(6.5); 
-        doc.setFont('helvetica', 'normal');
-        const termsText = (isSqft ? appSettings.sqftPaymentTerms : appSettings.paymentTerms) || "";
-        doc.text(termsText, 12, finalY + 8, { maxWidth: 94 });
-
-        // Right Financials
-        const sqRate = parseFloat(site.shedSqftRate) || 0, shedBasicCost = sqft * sqRate;
-        const tax = getActiveTaxSlab('shed'), taxAmt = shedBasicCost * tax.rate, grand = shedBasicCost + taxAmt;
-        const withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : sqRate;
-
-        doc.setFont('helvetica', 'normal'); 
-        doc.setFontSize(7.5);
-        doc.text("Total Basic Cost:", 112, finalY + 5);
-        doc.setFont('helvetica', 'bold');
-        doc.text("Rs. " + Math.round(shedBasicCost).toLocaleString('en-IN'), 198, finalY + 5, { align: 'right' });
-
-        if (tax.split) {
-            doc.setFont('helvetica', 'normal');
-            doc.text("CGST @ 9%:", 112, finalY + 9.5);
-            doc.text("Rs. " + Math.round(shedBasicCost * 0.09).toLocaleString('en-IN'), 198, finalY + 9.5, { align: 'right' });
-            doc.text("SGST @ 9%:", 112, finalY + 14);
-            doc.text("Rs. " + Math.round(shedBasicCost * 0.09).toLocaleString('en-IN'), 198, finalY + 14, { align: 'right' });
-        }
-
-        // Solid Navy Total Bar
-        doc.setFillColor(12, 30, 48);
-        doc.rect(112, finalY + 17, 86, 7.5, 'F');
-        doc.setTextColor(255, 255, 255); 
-        doc.setFont('helvetica', 'bold'); 
-        doc.setFontSize(8);
-        doc.text("GRAND TOTAL WITH GST:", 114, finalY + 22);
-        doc.text("Rs. " + Math.round(grand).toLocaleString('en-IN'), 196, finalY + 22, { align: 'right' });
-
-        // Shed rate pill
-        doc.setFillColor(241, 245, 249);
-        doc.rect(112, finalY + 26, 86, 6, 'F');
-        doc.setTextColor(0, 0, 0); 
-        doc.setFontSize(7);
-        doc.text("SHED RATE / SQ.FT (WITH GST):", 114, finalY + 30);
-        doc.text("Rs. " + withTaxRate.toFixed(2) + " / Sq.Ft", 196, finalY + 30, { align: 'right' });
-
-        // BANK DETAILS
-        let bankY = finalY + summaryHeight + 2.5;
-        if (appSettings.bankName || appSettings.bankAccNo) {
-            doc.setFillColor(12, 30, 48); 
-            doc.rect(10, bankY, 190, 4.5, 'F');
-            doc.setTextColor(255, 255, 255); 
-            doc.setFontSize(6.5); 
-            doc.setFont('helvetica', 'bold');
-            doc.text("COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):", 12, bankY + 3.2);
-
-            doc.setFillColor(248, 250, 252); 
-            doc.setDrawColor(0, 0, 0);
-            doc.rect(10, bankY + 4.5, 190, 8, 'FD');
-            doc.setTextColor(0, 0, 0); 
-            doc.setFontSize(6.5);
-            doc.text("Bank Name: " + (appSettings.bankName || "-"), 12, bankY + 8);
-            doc.text("Account Name: " + (appSettings.bankAccName || "-"), 75, bankY + 8);
-            doc.text("Account No: " + (appSettings.bankAccNo || "-"), 140, bankY + 8);
-            doc.text("IFSC Code: " + (appSettings.bankIfsc || "-"), 12, bankY + 11.5);
-            doc.text("Branch: " + (appSettings.bankBranch || "-"), 75, bankY + 11.5);
-            doc.text("UPI ID: " + (appSettings.bankUpi || "-"), 140, bankY + 11.5);
-            bankY += 14;
-        }
-
-        // SIGNATURES
-        let sigY = bankY + 4;
-        doc.setDrawColor(0, 0, 0); 
-        doc.setLineWidth(0.35);
-        doc.line(15, sigY + 12, 75, sigY + 12);
-        doc.line(135, sigY + 12, 195, sigY + 12);
-
-        if (appSettings.signatureData && (appSettings.signatureData.startsWith('data:image/png') || appSettings.signatureData.startsWith('data:image/jpeg'))) {
-            try { doc.addImage(appSettings.signatureData, 'PNG', 145, sigY - 2, 40, 13); } catch(e) {}
-        }
-
-        doc.setFont('helvetica', 'bold'); 
-        doc.setFontSize(7.5); 
-        doc.setTextColor(0, 0, 0);
-        doc.text("CUSTOMER ACCEPTANCE", 45, sigY + 15.5, { align: 'center' });
-        doc.text("FOR " + (appSettings.ownerName || "PATEL ENGINEERING"), 165, sigY + 15.5, { align: 'center' });
-        doc.setFontSize(6); 
-        doc.setFont('helvetica', 'normal');
-        doc.text("Authorized Signature & Stamp", 45, sigY + 18.5, { align: 'center' });
-        doc.text("Authorized Signatory", 165, sigY + 18.5, { align: 'center' });
-
-        drawFooterBar(doc);
-    }
-
-    // ==========================================
-    // PAGE 2: CIVIL WORKS (IF APPLICABLE)
-    // ==========================================
-    if (hasCivilMode(site) && (mode === 'civil' || mode === 'both')) {
-        if (hasShedMode(site) && mode === 'both') doc.addPage();
-
-        drawHeaderAndSubstrip(doc, "QUOTATION", (site.quoteNo || "PE/2026/01"));
-        drawCustomerDetailsBlock(doc, site.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS", 43);
-
-        let civTableData = [];
-        ensureCivilDataOnSite(site);
-        const civ = site.civilData;
-
-        ['foundation', 'brickWall', 'flooring'].forEach((secKey, sIdx) => {
-            if (site[secKey === 'foundation' ? 'foundEnabled' : (secKey === 'brickWall' ? 'brickEnabled' : 'floorEnabled')] !== false) {
-                (civ[secKey]?.items || []).filter(it => it.enabled !== false).forEach((it, iIdx) => {
-                    const amt = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0);
-                    civTableData.push([`${sIdx + 1}.${iIdx + 1}`, it.name, it.qty || "-", it.unit || "Lot", it.rate ? "Rs. " + it.rate : "-", amt > 0 ? "Rs. " + Math.round(amt).toLocaleString('en-IN') : "-"]);
-                });
-            }
-        });
-
-        if (typeof doc.autoTable === 'function') {
-            doc.autoTable({
-                startY: 70,
-                head: [['S.N', 'ITEM / WORK DESCRIPTION', 'QTY / AREA', 'UNIT', 'RATE (₹)', 'AMOUNT (₹)']],
-                body: civTableData,
-                theme: 'grid',
-                headStyles: { fillColor: [12, 30, 48], textColor: 255, fontStyle: 'bold', fontSize: 7.5, halign: 'center' },
-                styles: { fontSize: 7, cellPadding: 1.8, textColor: [0, 0, 0], lineColor: [0, 0, 0], lineWidth: 0.25 },
-                margin: { left: 10, right: 10 }
-            });
-        }
-
-        drawFooterBar(doc);
-    }
-
-    // DIRECT 1-CLICK SAVE (100% REAL VECTOR PDF)
-    doc.save(fileName);
-    showCorporateToast("✓ True Vector PDF Downloaded!", "💎");
+        try {
+            const blob = pdfObj.output('blob'), blobUrl = URL.createObjectURL(blob), a = document.createElement('a');
+            a.style.display = 'none'; a.href = blobUrl; a.download = fileName;
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000);
+            showCorporateToast("✓ PDF Downloaded Successfully!", "💎");
+        } catch (e) { pdfObj.save(fileName); }
+    }).catch(function(err) {
+        if (document.body.contains(stage)) document.body.removeChild(stage);
+        window.scrollTo(0, origScroll);
+        html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
+    });
 }
 
 // 24. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
