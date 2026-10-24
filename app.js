@@ -1,3 +1,7 @@
+// ============================================================================
+// PATEL ENGINEERING - QUOTATION ENGINE (ULTRA-HD 600 DPI PRINT EDITION)
+// ============================================================================
+
 // 1. FIREBASE CONFIGURATION
 const firebaseConfig = {
     apiKey: "AIzaSyB_b6KlFizZGALLEZnRcJ0Pd16NUEF6QY8", authDomain: "patel-engineering-3b4c4.firebaseapp.com",
@@ -81,7 +85,7 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-// DEDICATED SQ.FT BLUEPRINT (100% INDEPENDENT FROM KG BLUEPRINT)
+// DEDICATED SQ.FT BLUEPRINT
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
@@ -160,12 +164,11 @@ function isSqftMode(s) { return s && (s.quoteType === 'shed_sqft' || s.quoteType
 function hasCivilMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'civil'); }
 function hasShedMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'shed' || s.quoteType === 'shed_sqft'); }
 
-// STRICT INDEPENDENT BLUEPRINT SYNC: KG & SQFT NEVER TOUCH EACH OTHER
+// STRICT INDEPENDENT BLUEPRINT SYNC
 function syncSiteStructureToMasterBlueprint(s) {
     if (!s) return;
     try {
         if (isSqftMode(s)) {
-            // SQFT BLUEPRINT ONLY
             if (s.sqftPrimSpecs) {
                 sqftMasterBlueprint.primSpecs = s.sqftPrimSpecs.map(p => ({
                     text: p.text || "", length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: p.selected !== false
@@ -189,7 +192,6 @@ function syncSiteStructureToMasterBlueprint(s) {
             localStorage.setItem('patel_sqft_master_blueprint', JSON.stringify(sqftMasterBlueprint));
             if (db && isFirebaseConnected) db.ref('patel_sqft_master_blueprint').set(sqftMasterBlueprint).catch(() => {});
         } else {
-            // KG BLUEPRINT ONLY
             if (s.primSpecs) masterBlueprint.primSpecs = s.primSpecs.map(p => ({ text: p.text || p, selected: p.selected !== false }));
             if (s.secSpecs) masterBlueprint.secSpecs = s.secSpecs.map(sec => ({ text: sec.text || sec, selected: sec.selected !== false }));
             if (s.accessories) masterBlueprint.accessories = s.accessories.map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", rate: "", selected: a.selected !== false }));
@@ -676,7 +678,7 @@ function openCreateSiteScreen() {
     setNewSiteQuoteType('both'); openScreen('screenCreateSite');
 }
 
-// 100% BLANK INITIALIZATION & CARRIES FORWARD ONLY MODE-SPECIFIC BLUEPRINT
+// BLANK INITIALIZATION & BLUEPRINT CARRY FORWARD
 function saveNewBlankSiteAndOpen() {
     const clientNameInput = (document.getElementById('custName')?.value || "").trim();
     if (!clientNameInput) return showAppAlert("⚠️ Client Name Required", "Please enter Client Name.");
@@ -695,7 +697,7 @@ function saveNewBlankSiteAndOpen() {
         civilEnabled: hasCivilMode({ quoteType: tempNewQuoteType }), shedEnabled: hasShedMode({ quoteType: tempNewQuoteType }),
         dimW: "", dimL: "", dimH: "", shedSqftRate: "",
 
-        // SQFT SPECIFIC SETUP (BLANK INPUTS, RETAINS ADDED ITEMS)
+        // SQFT SPECIFIC SETUP
         sqftScopeDesc: appSettings.sqftPdfScopeTitle !== undefined ? appSettings.sqftPdfScopeTitle : (sqBp.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS"),
         sqftTableDesc: appSettings.sqftHeaderLine1 !== undefined ? appSettings.sqftHeaderLine1 : (sqBp.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:"),
         sqftPrimSpecs: (sqBp.primSpecs || []).map(p => ({ text: p.text || "", length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: true })),
@@ -707,7 +709,7 @@ function saveNewBlankSiteAndOpen() {
         moduleOrder: isNewSqft ? (sqBp.moduleOrder || ['prim', 'clad', 'acc', 'erect']) : (bp.moduleOrder || ['prim', 'sec', 'clad', 'acc', 'erect']),
         customModules: isNewSqft ? (sqBp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })) : (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })),
 
-        // KG SPECIFIC SETUP (100% SEPARATE & BLANK INPUTS)
+        // KG SPECIFIC SETUP
         primEnabled: true, secEnabled: true, cladEnabled: true, accEnabled: true, erectEnabled: true,
         primSpecs: (bp.primSpecs || []).map(p => ({ text: p.text || p, selected: true })),
         secSpecs: (bp.secSpecs || []).map(s => ({ text: s.text || s, selected: true })),
@@ -831,7 +833,6 @@ function syncPreviewCustEdit(field, el) {
     safeSetText('dashSiteName', site.clientName); safeSetText('civilDashSiteName', site.clientName);
 }
 
-// 2-WAY PERMANENT TEXT SYNC ENGINE: PRESERVES BLANK (EMPTY) WITHOUT REVERTING
 function syncPermanentTextLive(fieldKey, el) {
     const val = el.innerText.trim(); appSettings[fieldKey] = val;
     const site = getCurrentSite();
@@ -892,7 +893,6 @@ function syncSqftAccQtyLive(idx, el) {
     site.sqftAccessories[idx].qty = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
 
-// EDIT TITLE / HEADER LINE IN PREVIEW (ACCEPTS BLANK WITHOUT RESTORING DEFAULTS)
 function syncPreviewTitleEdit(el, fPrefix, mKey = null) {
     const site = getCurrentSite(); if (!site) return;
     const txt = el.innerText.trim();
@@ -1242,7 +1242,7 @@ function autoSaveAndUpdate() {
     syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 
-// 18. STRUCTURE MODULE MODALS (SEPARATE & PERSISTENT TITLE LINES)
+// 18. STRUCTURE MODULE MODALS
 let activeModType = null;
 function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
@@ -1251,7 +1251,6 @@ function openModuleModal(type) {
     const subNotice = document.getElementById('modModalSubNotice');
     safeSetVal('customItemInput', ""); const isSqft = isSqftMode(site);
 
-    // MODE-SPECIFIC VALUE LOADING (NEVER FALLS BACK TO DEFAULT IF SET EMPTY)
     if (isSqft) {
         if (type === 'prim') customLineInput.value = site.sqftPrimCustomLine !== undefined ? site.sqftPrimCustomLine : "";
         else if (type === 'clad') customLineInput.value = site.sqftCladCustomLine !== undefined ? site.sqftCladCustomLine : "";
@@ -1271,7 +1270,7 @@ function openModuleModal(type) {
         checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
             if (subNotice) subNotice.innerText = "Sq.Ft Mode: Overall shed rate applies. Enter Length, Width, Thickness & Unit for each member.";
-            inputsBox.innerHTML = `<div style="font-size:11px;font-weight:800;color:#0369a1;background:#e0f2fe;padding:6px 9px;border-radius:6px;border:1px solid #7dd3fc;">ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness (मोटाई) aur Unit fill karein.</div>`;
+            inputsBox.innerHTML = `<div style="font-size:11px;font-weight:800;color:#0369a1;background:#e0f2fe;padding:6px 9px;border-radius:6px;border:1px solid #7dd3fc;">ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness aur Unit fill karein.</div>`;
             renderSqftPrimaryChecklist(site.sqftPrimSpecs || []);
         } else {
             if (subNotice) subNotice.innerText = "Title, header line & specifications control";
@@ -1334,7 +1333,6 @@ function openModuleModal(type) {
     openModalWithHistory('moduleSelectionModal');
 }
 
-// FULL CONTROL AUTO-SAVE: PRESERVES EMPTY STRING WITHOUT RESTORING OLD VALUE
 function autoSaveModuleChanges() {
     const site = getCurrentSite(); if (!site) return;
     const customLineVal = (document.getElementById('modalInputCustomLine')?.value || "").trim();
@@ -1693,7 +1691,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (SEPARATE HEADERS & ZERO NESTED TABLE GAPS)
+// 21. LIVE PREVIEW ENGINE
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1714,7 +1712,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     else { if (pWebWrap) pWebWrap.style.display = 'none'; if (cWebWrap) cWebWrap.style.display = 'none'; }
 
     updateHeaderBannersUI();
-    // 100% SEPARATE HEADINGS FOR EACH MODE
     safeSetText('pdfRibbonTitle', isSqft ? (appSettings.sqftPdfRibbonTitle !== undefined ? appSettings.sqftPdfRibbonTitle : "QUOTATION") : (appSettings.pdfRibbonTitle !== undefined ? appSettings.pdfRibbonTitle : "QUOTATION"));
     safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle !== undefined ? appSettings.civilPdfRibbonTitle : "QUOTATION");
     safeSetText('pdfScopeTitle', isSqft ? (site.sqftScopeDesc !== undefined ? site.sqftScopeDesc : (appSettings.sqftPdfScopeTitle || "")) : (site.primCustomLine !== undefined ? site.primCustomLine : (appSettings.pdfScopeTitle || "")));
@@ -1787,7 +1784,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 if (!site.moduleOrder || site.moduleOrder.includes('sec')) site.moduleOrder = ['prim', 'clad', 'acc', 'erect'];
 
                 site.moduleOrder.forEach((mKey, orderIdx) => {
-                    // 1. PRIMARY STRUCTURE (SQFT INDEPENDENT CUSTOM LINE)
                     if (mKey === 'prim' && site.primEnabled !== false) {
                         const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
                         let leftItemsHtml = "", rightItemsHtml = "";
@@ -1822,7 +1818,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 2. ROOF & WALL CLADDING (SQFT INDEPENDENT CUSTOM LINE)
                     } else if (mKey === 'clad' && site.cladEnabled !== false) {
                         const cladCustomLineDisplay = site.sqftCladCustomLine !== undefined ? site.sqftCladCustomLine : (sqftMasterBlueprint.sqftCladCustomLine || "");
                         const tr = document.createElement('tr');
@@ -1840,7 +1835,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 3. ACCESSORIES (SQFT INDEPENDENT CUSTOM LINE & ITEMS)
                     } else if (mKey === 'acc' && site.accEnabled !== false) {
                         const activeAcc = (site.sqftAccessories || []).filter(a => a.selected !== false);
                         let leftAccHtml = "", rightAccHtml = "";
@@ -1874,7 +1868,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 4. ERECTION & TURNKEY (SQFT INDEPENDENT CUSTOM LINE)
                     } else if (mKey === 'erect' && site.erectEnabled !== false) {
                         const erectBullets = (site.erectSpecs || []).filter(e => e.selected === true).map(e => `<span>• ${e.text || e}</span>`).join(' ');
                         const erectCustomLineDisplay = site.sqftErectCustomLine !== undefined ? site.sqftErectCustomLine : (sqftMasterBlueprint.sqftErectCustomLine || "");
@@ -1893,7 +1886,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 5. CUSTOM MODULES
                     } else {
                         const c = (site.customModules || []).find(m => m.id === mKey);
                         if (c && c.enabled !== false) {
@@ -1932,7 +1924,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 }
             }
         } else {
-            // KG / BOQ MODE (100% PRESERVED INDEPENDENT KG LINES)
             if (sec1Wrap) sec1Wrap.style.display = 'block';
             const s1Tbody = document.getElementById('pdfSection1TableBody');
             if (s1Tbody) {
@@ -2183,7 +2174,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 22. DYNAMIC FLOW ENGINE FOR PDF (CLEAN SOLID BORDERS)
+// 22. DYNAMIC FLOW ENGINE FOR PDF
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -2413,7 +2404,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 23. DIRECT DOWNLOAD ENGINE
+// 23. DIRECT DOWNLOAD ENGINE (MAXIMUM 600 DPI ULTRA-RETINA QUALITY)
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2421,11 +2412,18 @@ async function downloadPDFDirectly(mode = 'both') {
     const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
     
     triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
-    if (typeof html2pdf === 'undefined') { window.print(); return; }
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    
+    // Ensure all web fonts are 100% loaded before rendering
+    if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready;
+    }
 
-    const origScroll = window.scrollY || window.pageYOffset; window.scrollTo(0, 0);
-    const source = document.getElementById('printableA4Sheet'); if (!source) return;
+    const origScroll = window.scrollY || window.pageYOffset; 
+    window.scrollTo(0, 0);
+    
+    const source = document.getElementById('printableA4Sheet'); 
+    if (!source) return;
+    
     const stage = document.createElement('div');
     stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
     
@@ -2439,7 +2437,7 @@ async function downloadPDFDirectly(mode = 'both') {
     clone.querySelector('.page-physical-gap')?.remove();
 
     const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;';
+    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:geometricPrecision;';
     
     const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
     const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft'), isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
@@ -2453,11 +2451,27 @@ async function downloadPDFDirectly(mode = 'both') {
     }
     if (shouldIncludeCivil && p2) { p2.style.display = 'block'; buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL'); }
 
-    stage.appendChild(outputContainer); document.body.appendChild(stage);
+    stage.appendChild(outputContainer); 
+    document.body.appendChild(stage);
 
+    // MAXIMUM POSSIBLE RESOLUTION SETTINGS (SCALE 4.0 + 600 DPI + LOSSLESS PNG)
     const opt = {
-        margin: [6.35, 6.35, 6.35, 6.35], filename: fileName, image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2.0, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0, width: 746, windowWidth: 746, x: 0, y: 0, logging: false },
+        margin: [6.35, 6.35, 6.35, 6.35],
+        filename: fileName,
+        image: { type: 'png', quality: 1.0 },
+        html2canvas: {
+            scale: 4.0, // 746 * 4 = 2984px resolution (Laser Print Ready)
+            dpi: 600,
+            useCORS: true,
+            letterRendering: true,
+            allowTaint: true,
+            scrollY: 0,
+            scrollX: 0,
+            width: 746,
+            windowWidth: 746,
+            logging: false,
+            backgroundColor: '#ffffff'
+        },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
         pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
     };
@@ -2465,6 +2479,7 @@ async function downloadPDFDirectly(mode = 'both') {
     html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
         window.scrollTo(0, origScroll);
+        
         if (window.PatelNativeEngine?.savePdfToPatelFolder) {
             const base64Data = pdfObj.output('datauristring').split(',')[1];
             window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
@@ -2475,7 +2490,7 @@ async function downloadPDFDirectly(mode = 'both') {
             a.style.display = 'none'; a.href = blobUrl; a.download = fileName;
             document.body.appendChild(a); a.click();
             setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000);
-            showCorporateToast("✓ PDF Downloaded Successfully!");
+            showCorporateToast("✓ Ultra-Max Quality PDF Downloaded!", "💎");
         } catch (e) { pdfObj.save(fileName); }
     }).catch(function(err) {
         if (document.body.contains(stage)) document.body.removeChild(stage);
@@ -2484,10 +2499,7 @@ async function downloadPDFDirectly(mode = 'both') {
     });
 }
 
-// 24. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
-function switchPermanentTextTab(tabKey) {
-    ['btnTabPtKg', 'btnTabPtSqft', 'btnTabPtCivil'].forEach(id => document.getElementById(id)?.classList.remove('active'));
-    document.getElementById('ptPanelKg').style.display = 'none';
+// 24. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS (CONTINUED)
     document.getElementById('ptPanelSqft').style.display = 'none';
     document.getElementById('ptPanelCivil').style.display = 'none';
 
@@ -2617,7 +2629,9 @@ function autoSaveLargeInputLive() {
     appSettings[currentSettingKey] = document.getElementById('largeInputTextarea')?.value || "";
     syncDataToCloud('patel_app_settings', appSettings); loadPhoneSettingsUI(); renderHomeScreen(); refreshLivePdfPreviewSheet();
 }
-function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
+
+// ULTRA-HD LOGO & BANNER OPTIMIZER (NO QUALITY LOSS)
+function compressAndOptimizeBanner(file, maxWidth = 2400, quality = 0.98, callback) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const img = new Image();
@@ -2627,6 +2641,8 @@ function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
             if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
             canvas.width = width; canvas.height = height;
             const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(img, 0, 0, width, height);
             const isPng = file.type === 'image/png';
             callback(canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', quality));
@@ -2637,13 +2653,13 @@ function compressAndOptimizeBanner(file, maxWidth, quality, callback) {
 }
 function handleLogoUpload(input) {
     if (input.files && input.files[0]) {
-        compressAndOptimizeBanner(input.files[0], 1000, 0.85, function(optimizedBase64) {
+        compressAndOptimizeBanner(input.files[0], 2400, 0.98, function(optimizedBase64) {
             appSettings.logoData = optimizedBase64;
             syncDataToCloud('patel_app_settings', appSettings);
             updateHeaderBannersUI(); refreshLivePdfPreviewSheet();
             const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
             if (fav) fav.href = optimizedBase64; if (appleFav) appleFav.href = optimizedBase64;
-            showCorporateToast("Company Header Banner Updated!", "🖼️"); input.value = '';
+            showCorporateToast("Ultra-HD Header Banner Updated!", "🖼️"); input.value = '';
         });
     }
 }
