@@ -2663,7 +2663,6 @@ function handleLogoUpload(input) {
         });
     }
 }
-
 // 25. DIGITAL SIGNATURE & WINDOW ONLOAD
 let canvas, ctx, isDrawing = false, sigEventsAttached = false;
 function openSignatureModal() {
