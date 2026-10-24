@@ -10,6 +10,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -210,7 +212,7 @@
                                                     <div id="rateOnlyNoticeBox" class="rate-only-contract-bar"><b>🏷️ RATE CONTRACT BASIS QUOTATION</b><span>Quotation prepared on Rate Contract Basis. Amounts & Grand Total excluded as per client request.</span></div>
                                                 </div>
                                             </div>
-                                            <!-- BANK DETAILS DIAGRAM (WHITE THEMED ACCENTS) -->
+                                            <!-- BANK DETAILS DIAGRAM -->
                                             <div id="pdfCompanyBankDetailsBox" class="company-bank-card-diagram" style="display:none;">
                                                 <div class="bank-card-head"><span style="color:#ffffff !important;">🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span></div>
                                                 <div class="bank-card-grid">
@@ -313,7 +315,7 @@
                 <!-- CIVIL PREVIEW PANE -->
                 <div class="dash-preview-pane">
                     <div class="pane-scroll-nav"><span class="pane-title-badge">📑 Civil Document Preview</span><div class="scroll-btns-wrap"><button type="button" class="btn-pane-scroll" onclick="scrollCivilPreviewPane(-320)">▲ Upar</button><button type="button" class="btn-pane-scroll" onclick="scrollCivilPreviewPane(320)">▼ Neeche</button></div></div>
-                    <div class="font-scale-bar card-3d"><span style="font-size:11px;font-weight:800;">🔍 Civil Preview Zoom:</span><div style="display:flex;align-items:center;gap:6px;"><button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.05)">A -</button><span id="civilScaleIndicatorText" style="font-size:11.5px;font-weight:900;min-width:40px;text-align:center;color:var(--gold-light);">100%</span><button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.05)">A +</button><button class="btn-font-ctrl btn-ripple" style="font-size:9.5px;padding:3px 5px;" onclick="resetPdfScale()">Reset</button></div></div>
+                    <div class="font-scale-bar card-3d"><span style="font-size:11px;font-weight:800;">🔍 Civil Preview Zoom:</span><div style="display:flex;align-items:center;gap:6px;"><button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(-0.05)">A -</button><span id="scaleIndicatorText" style="font-size:11.5px;font-weight:900;min-width:40px;text-align:center;color:var(--gold-light);">100%</span><button class="btn-font-ctrl btn-ripple" onclick="changePdfScale(0.05)">A +</button><button class="btn-font-ctrl btn-ripple" style="font-size:9.5px;padding:3px 5px;" onclick="resetPdfScale()">Reset</button></div></div>
                     <div class="pdf-section-wrapper" style="margin-top:6px;"><h3 class="section-title">Civil Sheet Live Preview</h3><div class="pdf-sheet-frame card-3d"><div class="mobile-preview-viewport" id="civilViewportWrap"><div id="civilScalingWrapper"><div id="civilLiveSheetDisplayBox"></div></div></div></div></div>
                 </div>
             </div>
@@ -336,13 +338,10 @@
             <div class="settings-grid">
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('paymentTerms','Kg Shed Payment Terms & Schedule')" style="border-left:4px solid #ca8a04;"><span class="icon">💳</span><div><div class="title">Kg Shed Payment Terms</div><div class="subtitle">Kg Basis Advance & Schedule</div></div></div>
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('termsCond','Kg Shed Terms & Conditions')" style="border-left:4px solid #ca8a04;"><span class="icon">📜</span><div><div class="title">Kg Shed Terms & Cond.</div><div class="subtitle">Kg Delivery, Civil & Power</div></div></div>
-
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('sqftPaymentTerms','Sq.Ft Shed Payment Terms & Schedule')" style="border-left:4px solid #0284c7;"><span class="icon">💰</span><div><div class="title">Sq.Ft Payment Terms</div><div class="subtitle">Sq.Ft Stage Billing Schedule</div></div></div>
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('sqftTermsCond','Sq.Ft Shed Terms & Conditions')" style="border-left:4px solid #0284c7;"><span class="icon">📋</span><div><div class="title">Sq.Ft Terms & Cond.</div><div class="subtitle">Sq.Ft Contract Scope & Terms</div></div></div>
-
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('civilPaymentTerms','Civil Payment Terms & Schedule')" style="border-left:4px solid #16a34a;"><span class="icon">🏗️</span><div><div class="title">Civil Payment Terms</div><div class="subtitle">Civil advance & stage bill</div></div></div>
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('civilTermsCond','Civil Terms & Conditions')" style="border-left:4px solid #16a34a;"><span class="icon">🧱</span><div><div class="title">Civil Terms & Conditions</div><div class="subtitle">Water, soil excavation etc.</div></div></div>
-
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openBankDetailsModal()" style="border-left:4px solid #38bdf8;"><span class="icon">🏦</span><div><div class="title">Company Bank Details</div><div class="subtitle">A/C No, IFSC, Bank Name</div></div></div>
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openSignatureModal()" style="border-left:4px solid #38bdf8;"><span class="icon">✍️</span><div><div class="title">Digital Sign</div><div class="subtitle">Touchpad Signature</div></div></div>
                 <div class="setting-grid-card card-3d-press btn-ripple" onclick="openLargeInput('companyAddr','Company Full Address')"><span class="icon">📍</span><div><div class="title">Company Address</div><div class="subtitle">Bhawani Nagar, Bhilwara</div></div></div>
@@ -521,33 +520,4 @@
             if (!clients.length) {
                 container.innerHTML = `<div style="text-align:center;padding:24px 10px;color:#64748b;font-weight:700;">No saved clients found. Details will save automatically when you create proposals.</div>`;
             } else {
-                container.innerHTML = "";
-                clients.forEach((c, idx) => {
-                    container.innerHTML += `
-                        <div class="client-group-card btn-ripple" onclick="selectSavedClientByIndex(${idx})">
-                            <div style="flex:1;"><strong style="font-size:13px;color:#0c1e30;display:block;">${c.clientName}</strong><span style="font-size:11px;color:#64748b;">${c.custGST ? `GST: ${c.custGST} | ` : ''}📍 ${c.custAddress || 'Site Location'}</span><div style="font-size:10.5px;color:#0369a1;font-weight:700;margin-top:2px;">📞 ${c.custNumber1 || '-'} (${c.custContactPerson || '-'})</div></div>
-                            <span style="font-size:11px;font-weight:900;background:#e0f2fe;color:#0369a1;padding:5px 9px;border-radius:6px;">Auto-fill ➔</span>
-                        </div>`;
-                });
-            }
-            openModalWithHistory('savedClientModal');
-        }
-        function selectSavedClientByIndex(idx) {
-            const clients = (typeof getUniqueSavedClients === 'function') ? getUniqueSavedClients() : [];
-            const c = clients[idx]; if (!c) return;
-            const prefix = currentClientPickerTarget === 'edit' ? 'editCust' : 'cust';
-            safeSetVal(prefix + 'Name', c.clientName || '');
-            safeSetVal(prefix + 'ContactPerson', c.custContactPerson || '');
-            safeSetVal(prefix + 'Role', c.custRole || '');
-            safeSetVal(prefix + 'Number1', c.custNumber1 || '');
-            safeSetVal(prefix + 'Number2', c.custNumber2 || '');
-            safeSetVal(prefix + 'Address', c.custAddress || '');
-            safeSetVal(prefix + 'GST', c.custGST || '');
-            safeSetVal(prefix + 'Email', c.custEmail || '');
-            closeModalSafe('savedClientModal');
-            if (typeof showCorporateToast === 'function') showCorporateToast(`Client "${c.clientName}" details auto-filled!`, "👤");
-        }
-    </script>
-    <script src="app.js"></script>
-</body>
-</html>
+                container
