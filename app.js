@@ -1,3 +1,7 @@
+// ============================================================================
+// PATEL ENGINEERING - TRUE VECTOR ENGINE (REAL TEXT & VECTOR LININGS)
+// ============================================================================
+
 // 1. FIREBASE CONFIGURATION
 const firebaseConfig = { apiKey: "AIzaSyB_b6KlFizZGALLEZnRcJ0Pd16NUEF6QY8", authDomain: "patel-engineering-3b4c4.firebaseapp.com", databaseURL: "https://patel-engineering-3b4c4-default-rtdb.firebaseio.com", projectId: "patel-engineering-3b4c4", storageBucket: "patel-engineering-3b4c4.firebasestorage.app", messagingSenderId: "261245424222", appId: "1:261245424222:web:126273db274b515f8cdacf" };
 let db = null, isFirebaseConnected = false, isCloudInitialSyncDone = false;
@@ -591,33 +595,18 @@ function ensureCivilDataOnSite(site) {
         site.civilData[sec].items.forEach(it => { if (it.enabled === undefined) it.enabled = true; if (it.qty === undefined) it.qty = ""; if (it.rate === undefined) it.rate = ""; });
     });
 }
-function printVectorDirectly(mode = 'both') {
-    const site = getCurrentSite(); if (!site) return;
-    const p1 = document.getElementById('page1MsStructure'), p2 = document.getElementById('civilDedicatedPageSheet'), gap = document.getElementById('civilPageGapDivider');
-    const origP1 = p1 ? p1.style.display : '', origP2 = p2 ? p2.style.display : '', origGap = gap ? gap.style.display : '';
-    if (mode === 'shed') { if (p1) p1.style.setProperty('display', 'flow-root', 'important'); if (p2) p2.style.setProperty('display', 'none', 'important'); if (gap) gap.style.setProperty('display', 'none', 'important'); }
-    else if (mode === 'civil') { if (p1) p1.style.setProperty('display', 'none', 'important'); if (p2) p2.style.setProperty('display', 'flow-root', 'important'); if (gap) gap.style.setProperty('display', 'none', 'important'); }
-    else { if (hasShedMode(site) && p1) p1.style.setProperty('display', 'flow-root', 'important'); if (hasCivilMode(site) && p2) p2.style.setProperty('display', 'flow-root', 'important'); if (gap) gap.style.setProperty('display', (hasShedMode(site) && hasCivilMode(site)) ? 'block' : 'none', 'important'); }
-    playAppSound('chime'); triggerHaptic(30); window.print();
-    setTimeout(() => { if (p1) p1.style.display = origP1; if (p2) p2.style.display = origP2; if (gap) gap.style.display = origGap; }, 1000);
-}
 function renderDynamicPdfActionsBar() {
     const site = getCurrentSite(), bar = document.getElementById('dynamicPdfDownloadActionsBar'); if (!bar || !site) return;
     bar.innerHTML = "";
     if (site.quoteType === 'both' || site.quoteType === 'both_sqft') {
         bar.innerHTML = `
-            <button class="btn-main btn-3d-main btn-ripple" style="flex:1.8;padding:12px 6px;" onclick="downloadPDFDirectly('both')"><span style="font-size:16px;">⬇️</span> Download PDF</button>
-            <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:12px 4px;font-weight:900;" onclick="downloadPDFDirectly('civil')">🧱 Civil</button>
-            <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:12px 4px;font-weight:900;" onclick="downloadPDFDirectly('shed')">🏢 Shed</button>
-            <button class="btn-main btn-3d-green btn-ripple" style="flex:1.8;padding:12px 6px;" onclick="printVectorDirectly('both')"><span style="font-size:16px;">🖨️</span> Super Print</button>`;
+            <button class="btn-main btn-3d-main btn-ripple" style="flex:2;padding:13px;" onclick="downloadPDFDirectly('both')"><span style="font-size:17px;">📑</span> COMBINED PDF</button>
+            <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:13px;font-weight:900;" onclick="downloadPDFDirectly('civil')">🧱 Civil Only</button>
+            <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:13px;font-weight:900;" onclick="downloadPDFDirectly('shed')">🏢 Shed Only</button>`;
     } else if (site.quoteType === 'civil') {
-        bar.innerHTML = `
-            <button class="btn-main btn-3d-main btn-ripple" style="flex:1;padding:13px;" onclick="downloadPDFDirectly('civil')"><span style="font-size:17px;">⬇️</span> Download PDF</button>
-            <button class="btn-main btn-3d-green btn-ripple" style="flex:1;padding:13px;" onclick="printVectorDirectly('civil')"><span style="font-size:17px;">🖨️</span> Super Print (Real Text)</button>`;
+        bar.innerHTML = `<button class="btn-main btn-3d-green btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('civil')"><span style="font-size:18px;">⬇️</span> DOWNLOAD CIVIL PDF</button>`;
     } else {
-        bar.innerHTML = `
-            <button class="btn-main btn-3d-main btn-ripple" style="flex:1;padding:13px;" onclick="downloadPDFDirectly('shed')"><span style="font-size:17px;">⬇️</span> Download PDF</button>
-            <button class="btn-main btn-3d-green btn-ripple" style="flex:1;padding:13px;" onclick="printVectorDirectly('shed')"><span style="font-size:17px;">🖨️</span> Super Print (Real Text)</button>`;
+        bar.innerHTML = `<button class="btn-main btn-3d-main btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('shed')"><span style="font-size:18px;">⬇️</span> DOWNLOAD SHED PDF</button>`;
     }
 }
 function applyCustomButtonNamesUI() {
@@ -1290,7 +1279,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const isCivilActuallyValued = (civilGrandTotal > 0 || civilTotalBasic > 0);
     if (isShedActive && isCivilActive && isCivilActuallyValued) {
         const totalComb = shedGrandTotal + civilGrandTotal, combRate = sqft > 0 ? Math.round(totalComb / sqft) : 0;
-        const combHtml = `<div class="comb-row"><span>Shed Project Area:</span><b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b></div><div class="comb-row"><span>Combined Contract Total (Shed + Civil):</span><b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b></div><div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') :'-'} / Sq.Ft</b></div>`;
+        const combHtml = `<div class="comb-row"><span>Shed Project Area:</span><b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b></div><div class="comb-row"><span>Combined Contract Total (Shed + Civil):</span><b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b></div><div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') : '-'} / Sq.Ft</b></div>`;
         if (p1CombBox) { p1CombBox.innerHTML = combHtml; p1CombBox.style.display = isRateOnly ? 'none' : 'flex'; }
         if (p2CombBox) { p2CombBox.innerHTML = combHtml; p2CombBox.style.display = isCivilRateOnly ? 'none' : 'flex'; }
     } else { if (p1CombBox) p1CombBox.style.display = 'none'; if (p2CombBox) p2CombBox.style.display = 'none'; }
@@ -1310,7 +1299,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 22. DYNAMIC FLOW ENGINE FOR PDF
+// 22. DYNAMIC FLOW ENGINE FOR PDF PREVIEW MIRRORING
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) { p.className = 'a4-page-box'; p.style.cssText = 'width:746px!important;margin:0!important;padding:0!important;background:#ffffff!important;display:flow-root!important;height:auto!important;border:2px solid #000000!important;'; }
@@ -1512,7 +1501,7 @@ async function downloadPDFDirectly(mode = 'both') {
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    // EXACT ORIGINAL STAGE RESTORED: Locks position on desktop, tab and phone identical to original
+    // EXACT WORKING STAGE: Locks position on desktop, tab and phone identical to original
     const stage = document.createElement('div');
     stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
     
