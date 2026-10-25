@@ -1234,7 +1234,6 @@ function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
     const modalTitle = document.getElementById('modModalTitle'), customLineInput = document.getElementById('modalInputCustomLine');
     const inputsBox = document.getElementById('modInputsBox'), checklistTitle = document.getElementById('lblChecklistTitle'), addRowBox = document.getElementById('addItemRowBox');
-    const subNotice = document.getElementById('modModalSubNotice');
     safeSetVal('customItemInput', ""); const isSqft = isSqftMode(site);
 
     if (isSqft) {
@@ -2220,7 +2219,6 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                 curTbody.removeChild(rowClone); lockTableBottomBorder(curTable);
                 document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                 pageNum++; curPage = createPageBox(true);
-                // ⭐ नए पेज (Page 2) के ऊपर कंपनी की छोटी हेडर पट्टी ⭐
                 const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                 contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                 curPage.appendChild(contBar);
@@ -2236,7 +2234,6 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
         lockTableBottomBorder(curTable);
 
-        // ⭐ ACCESSORIES TABLE DETAILS BUG FIXED ⭐
         if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
             const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
             const accThead = sec3AccOrig.querySelector('table thead')?.cloneNode(true);
@@ -2258,7 +2255,6 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                     if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
                     document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                     pageNum++; curPage = createPageBox(true);
-                    // ⭐ ACCESSORIES NEW PAGE HEADER ⭐
                     const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                     contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                     curPage.appendChild(contBar);
@@ -2392,7 +2388,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR ENGINE ⭐
+// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR ENGINE (FIXED: DOUBLE PDF & DESKTOP SHRINK) ⭐
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2402,14 +2398,14 @@ async function downloadPDFDirectly(mode = 'both') {
     triggerHaptic(50); 
     playAppSound('chime');
 
-    // पुराना कंटेनर साफ़ करें अगर मौजूद हो
-    const oldCont = document.getElementById('vectorPrintOutputContainer');
-    if (oldCont) oldCont.remove();
+    // 1. अगर पहले का कोई पुराना प्रिंट कंटेनर या स्टाइल हो तो हटाएं
+    document.getElementById('vectorPrintOutputContainer')?.remove();
+    document.getElementById('vectorPrintStyleSheet')?.remove();
 
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    // 1. स्टेज कंटेनर में क्लोन बनाएँ और पेज स्लाइसिंग करें
+    // 2. क्लोन तैयार करें
     const clone = source.cloneNode(true);
     clone.style.setProperty('--pdf-scale', '1.0');
     clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
@@ -2430,7 +2426,7 @@ async function downloadPDFDirectly(mode = 'both') {
     const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
-    // स्लाइसिंग इंजन चलाएं ताकि Page 2 पर छोटी हेडर पट्टी और 0.25 इंच मार्जिन आए
+    // स्लाइसिंग इंजन चलाएं
     if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     if (shouldIncludeShed && shouldIncludeCivil) {
         const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
@@ -2441,30 +2437,73 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
-    // स्लाइस्ड कंटेनर को DOM में जोड़ें और प्रिंट एक्टिव करें
+    // ⭐ FIX: स्पेशल प्रिंट CSS इंजेक्ट करें जिससे डेस्कटॉप पर डबल PDF और संकुचित (shrink) होना पूरी तरह बंद हो जाए
+    const printStyle = document.createElement('style');
+    printStyle.id = 'vectorPrintStyleSheet';
+    printStyle.innerHTML = `
+        @media print {
+            /* मुख्य बॉडी और डेस्कटॉप डैशबोर्ड को प्रिंट में छिपाएं */
+            body * {
+                visibility: hidden !important;
+            }
+            /* सिर्फ और सिर्फ स्लाइस्ड बेस्ट PDF कंटेनर को विज़िबल और फुल-साइज करें */
+            #vectorPrintOutputContainer, #vectorPrintOutputContainer * {
+                visibility: visible !important;
+            }
+            #vectorPrintOutputContainer {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+                background: #ffffff !important;
+            }
+            .pdf-page-slice {
+                width: 746px !important;
+                margin: 0 auto 0 auto !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                box-sizing: border-box !important;
+                border: 2px solid #000000 !important;
+            }
+            .pdf-page-slice:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 6mm !important;
+            }
+        }
+    `;
+    document.head.appendChild(printStyle);
     document.body.appendChild(outputContainer);
-    document.body.classList.add('is-printing-vector');
+
+    const originalTitle = document.title;
+    document.title = fileName;
 
     const cleanupPrint = () => {
-        document.body.classList.remove('is-printing-vector');
-        const cont = document.getElementById('vectorPrintOutputContainer');
-        if (cont) cont.remove();
-        fireConfettiCelebration(); // कन्फेटी प्रिंट पूरा होने के बाद ही चलेगी
+        document.title = originalTitle;
+        document.getElementById('vectorPrintOutputContainer')?.remove();
+        document.getElementById('vectorPrintStyleSheet')?.remove();
+        fireConfettiCelebration();
     };
 
-    // 🌟 1. ANDROID AIDE VECTOR PRINT (100% TRUE VECTOR TEXT)
+    // 1. Android Native Engine Support
     if (window.PatelNativeEngine?.printNativeVectorPdf) {
         window.PatelNativeEngine.printNativeVectorPdf(fileName);
         setTimeout(cleanupPrint, 3500);
         return;
     }
 
-    // 🌟 2. BROWSER VECTOR PRINT (SAVE AS PDF - TRUE VECTOR)
-    if (window.print) {
+    // 2. Standard Browser Print (Desktop Chrome / Safari / Edge)
+    window.onafterprint = cleanupPrint;
+    setTimeout(() => {
         window.print();
-        setTimeout(cleanupPrint, 1200);
-        return;
-    }
+        setTimeout(cleanupPrint, 2500);
+    }, 150);
 }
 
 // 23. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
@@ -2674,4 +2713,3 @@ window.onload = function() {
     initSamsungBootAnimation(); 
     setTimeout(attachDynamicPreviewObserver, 200);
 };
-    
