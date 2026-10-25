@@ -39,7 +39,7 @@ function showCorporateToast(msg, icon = '✓') {
 function scrollPreviewPane(d) { const vp = document.getElementById('viewportWrap'); if (vp) { vp.scrollBy({ top: d, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); } }
 function scrollCivilPreviewPane(d) { const vp = document.getElementById('civilViewportWrap'); if (vp) { vp.scrollBy({ top: d, behavior: 'smooth' }); playAppSound('click'); triggerHaptic(10); } }
 
-// 3. MASTER BLUEPRINTS (SEPARATE TEMPLATES FOR KG & SQ.FT)
+// 3. MASTER BLUEPRINTS
 const defaultMasterBlueprint = {
     primCustomLine: "Fabrication with FE 345 Steel, Cutting, Welding, 1 Coat Primer",
     primSpecs: [{ text: "Fabrication with FE", selected: true }, { text: "345 Steel", selected: true }, { text: "Cutting", selected: true }, { text: "Welding", selected: true }, { text: "1 Coat Primer", selected: true }],
@@ -81,7 +81,6 @@ const defaultMasterBlueprint = {
     civilCustomCategories: []
 };
 
-// DEDICATED SQ.FT BLUEPRINT (100% INDEPENDENT FROM KG BLUEPRINT)
 const defaultSqftMasterBlueprint = {
     sqftScopeDesc: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftTableDesc: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:",
@@ -113,28 +112,24 @@ const defaultAppSettings = {
     ownerName: "PATEL ENGINEERING", companyAddr: "Bhawani Nagar, Bhilwara - 311001 (Rajasthan, India)",
     companyGst: "08AHFPL0222M2ZF", phones: ["+91 9799635249", "+91 7737734122", "+91 9829111111"],
     companyEmail: "info@patelengineering.com", footerWeb: "www.patelengineering.com", startingQuoteSeq: 1,
-    // KG MODE PERMANENT TEXTS
     pdfRibbonTitle: "QUOTATION", pdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS",
     headerLine1: "1. ESTIMATED STEEL WEIGHT:", milestoneHeading: "TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):",
     headerLine2: "2. PRICE BREAKUP AS PER KG RATE:", accSectionHeading: "3. BUILDING ACCESSORIES ITEM-WISE BREAKDOWN:",
     btnNamePrim: "1. Primary", btnNameSec: "2. Secondary", btnNameClad: "3. Cladding", btnNameAcc: "4. Accessories", btnNameErect: "5. Erection",
     paymentTerms: "• 40% Advance along with Purchase Order & Foundation drawing approval.\n• 50% Progressive payment against proforma invoice before dispatch.\n• 10% Final payment after successful completion of erection on site.",
     termsCond: "• Delivery within 4-6 weeks from approval of anchor drawings.\n• Uninterrupted water & 3-phase electricity at site under client scope.\n• All structural steel weights are estimated as per standard engineering tolerance.",
-    // SQ.FT MODE PERMANENT TEXTS
     sqftPdfRibbonTitle: "QUOTATION", sqftPdfScopeTitle: "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS",
     sqftHeaderLine1: "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:", sqftContractBarTitle: "COMPLETE PEB SHED CONTRACT (ON SQ.FT COVERED AREA BASIS)",
     sqftPrimLabel: "Primary Structural Framing", sqftCladLabel: "Roof & Wall Cladding System", sqftAccLabel: "Building Accessories Package", sqftErectLabel: "Turnkey Erection & Installation",
     sqftBtnNamePrim: "1. Primary Framing", sqftBtnNameClad: "2. Cladding System", sqftBtnNameAcc: "3. Accessories", sqftBtnNameErect: "4. Turnkey Erection",
     sqftPaymentTerms: "• 35% Advance with Order Confirmation & Foundation Drawing Approval.\n• 50% Progressive payment stage-wise against site delivery of structure & sheets.\n• 15% Final payment after complete handover of shed structure.",
     sqftTermsCond: "• Total covered shed area billing as per actual agreed layout dimensions.\n• Civil foundations, uninterrupted water & 3-phase power under client scope.\n• All framing & roofing work executed under turnkey single-contract rate.",
-    // CIVIL MODE PERMANENT TEXTS
     civilPdfRibbonTitle: "QUOTATION", civilScopeDesc: "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS",
     civilJobTitle: "JOB DETAILS & TECHNICAL SPECIFICATIONS", civilFoundTitle: "1. FOUNDATION & RCC COLUMN DETAILS:",
     civilBrickTitle: "2. BRICK WALL, DPC & PLASTER DETAILS:", civilFloorTitle: "3. FLOORING & PCC WORK DETAILS:",
     btnNameFoundation: "1. Foundation Details", btnNameBrick: "2. Brick Wall Details", btnNameFlooring: "3. Flooring Details",
     civilPaymentTerms: "• 30% Advance along with formal Civil Work order confirmation.\n• 50% Running progressive payment based on site progress (Plinth/DPC/Wall).\n• 20% Final payment upon successful completion of Flooring & PCC work.",
     civilTermsCond: "• Water & 3-phase electricity connection to be provided free of charge by client at site.\n• Unforeseen hard-rock excavation or dewatering if required will be extra as per mutual consent.\n• Adequate secured storage space for cement & steel reinforcement to be provided at site.",
-    // COMMON DETAILS
     projectSizeHeading: "📐 PROJECT SIZE / SHED DIMENSIONS:", termsTitle: "Terms & Conditions:", civilTermsTitle: "Civil Work Terms & Conditions:",
     thankYouText: "THANK YOU FOR YOUR BUSINESS WITH US.", civilThankYouText: "THANK YOU FOR YOUR CIVIL CONTRACT.",
     custAcceptanceTitle: "CUSTOMER ACCEPTANCE", custAcceptanceSub: "Authorized Signature & Stamp",
@@ -160,12 +155,10 @@ function isSqftMode(s) { return s && (s.quoteType === 'shed_sqft' || s.quoteType
 function hasCivilMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'civil'); }
 function hasShedMode(s) { return s && (s.quoteType === 'both' || s.quoteType === 'both_sqft' || s.quoteType === 'shed' || s.quoteType === 'shed_sqft'); }
 
-// STRICT INDEPENDENT BLUEPRINT SYNC: KG & SQFT NEVER TOUCH EACH OTHER
 function syncSiteStructureToMasterBlueprint(s) {
     if (!s) return;
     try {
         if (isSqftMode(s)) {
-            // SQFT BLUEPRINT ONLY
             if (s.sqftPrimSpecs) {
                 sqftMasterBlueprint.primSpecs = s.sqftPrimSpecs.map(p => ({
                     text: p.text || "", length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: p.selected !== false
@@ -189,7 +182,6 @@ function syncSiteStructureToMasterBlueprint(s) {
             localStorage.setItem('patel_sqft_master_blueprint', JSON.stringify(sqftMasterBlueprint));
             if (db && isFirebaseConnected) db.ref('patel_sqft_master_blueprint').set(sqftMasterBlueprint).catch(() => {});
         } else {
-            // KG BLUEPRINT ONLY
             if (s.primSpecs) masterBlueprint.primSpecs = s.primSpecs.map(p => ({ text: p.text || p, selected: p.selected !== false }));
             if (s.secSpecs) masterBlueprint.secSpecs = s.secSpecs.map(sec => ({ text: sec.text || sec, selected: sec.selected !== false }));
             if (s.accessories) masterBlueprint.accessories = s.accessories.map(a => ({ name: a.name, qty: "", unit: a.unit || "Nos", rate: "", selected: a.selected !== false }));
@@ -676,7 +668,6 @@ function openCreateSiteScreen() {
     setNewSiteQuoteType('both'); openScreen('screenCreateSite');
 }
 
-// 100% BLANK INITIALIZATION & CARRIES FORWARD ONLY MODE-SPECIFIC BLUEPRINT
 function saveNewBlankSiteAndOpen() {
     const clientNameInput = (document.getElementById('custName')?.value || "").trim();
     if (!clientNameInput) return showAppAlert("⚠️ Client Name Required", "Please enter Client Name.");
@@ -695,7 +686,6 @@ function saveNewBlankSiteAndOpen() {
         civilEnabled: hasCivilMode({ quoteType: tempNewQuoteType }), shedEnabled: hasShedMode({ quoteType: tempNewQuoteType }),
         dimW: "", dimL: "", dimH: "", shedSqftRate: "",
 
-        // SQFT SPECIFIC SETUP (BLANK INPUTS, RETAINS ADDED ITEMS)
         sqftScopeDesc: appSettings.sqftPdfScopeTitle !== undefined ? appSettings.sqftPdfScopeTitle : (sqBp.sqftScopeDesc || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS"),
         sqftTableDesc: appSettings.sqftHeaderLine1 !== undefined ? appSettings.sqftHeaderLine1 : (sqBp.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:"),
         sqftPrimSpecs: (sqBp.primSpecs || []).map(p => ({ text: p.text || "", length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: true })),
@@ -707,7 +697,6 @@ function saveNewBlankSiteAndOpen() {
         moduleOrder: isNewSqft ? (sqBp.moduleOrder || ['prim', 'clad', 'acc', 'erect']) : (bp.moduleOrder || ['prim', 'sec', 'clad', 'acc', 'erect']),
         customModules: isNewSqft ? (sqBp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })) : (bp.customModules || []).map(m => ({ ...m, qty: "", rate: "", total: 0 })),
 
-        // KG SPECIFIC SETUP (100% SEPARATE & BLANK INPUTS)
         primEnabled: true, secEnabled: true, cladEnabled: true, accEnabled: true, erectEnabled: true,
         primSpecs: (bp.primSpecs || []).map(p => ({ text: p.text || p, selected: true })),
         secSpecs: (bp.secSpecs || []).map(s => ({ text: s.text || s, selected: true })),
@@ -724,7 +713,6 @@ function saveNewBlankSiteAndOpen() {
         accCustomLine: bp.accCustomLine !== undefined ? bp.accCustomLine : "Turbo Ventilators, Gutters, Down Pipes, Anchor Bolts, Nuts & Bolts",
         erectCustomLine: bp.erectCustomLine !== undefined ? bp.erectCustomLine : "Crane, Hydra, Welding Machine, Labour",
 
-        // CIVIL SETUP
         foundEnabled: true, brickEnabled: true, floorEnabled: true,
         civilScopeDesc: appSettings.civilScopeDesc !== undefined ? appSettings.civilScopeDesc : (bp.civilScopeDesc || "TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS"),
         civilData: bp.civilData ? JSON.parse(JSON.stringify(bp.civilData)) : {},
@@ -831,7 +819,6 @@ function syncPreviewCustEdit(field, el) {
     safeSetText('dashSiteName', site.clientName); safeSetText('civilDashSiteName', site.clientName);
 }
 
-// 2-WAY PERMANENT TEXT SYNC ENGINE: PRESERVES BLANK (EMPTY) WITHOUT REVERTING
 function syncPermanentTextLive(fieldKey, el) {
     const val = el.innerText.trim(); appSettings[fieldKey] = val;
     const site = getCurrentSite();
@@ -892,7 +879,6 @@ function syncSqftAccQtyLive(idx, el) {
     site.sqftAccessories[idx].qty = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
 
-// EDIT TITLE / HEADER LINE IN PREVIEW (ACCEPTS BLANK WITHOUT RESTORING DEFAULTS)
 function syncPreviewTitleEdit(el, fPrefix, mKey = null) {
     const site = getCurrentSite(); if (!site) return;
     const txt = el.innerText.trim();
@@ -1242,7 +1228,7 @@ function autoSaveAndUpdate() {
     syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet();
 }
 
-// 18. STRUCTURE MODULE MODALS (SEPARATE & PERSISTENT TITLE LINES)
+// 18. STRUCTURE MODULE MODALS
 let activeModType = null;
 function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
@@ -1251,7 +1237,6 @@ function openModuleModal(type) {
     const subNotice = document.getElementById('modModalSubNotice');
     safeSetVal('customItemInput', ""); const isSqft = isSqftMode(site);
 
-    // MODE-SPECIFIC VALUE LOADING (NEVER FALLS BACK TO DEFAULT IF SET EMPTY)
     if (isSqft) {
         if (type === 'prim') customLineInput.value = site.sqftPrimCustomLine !== undefined ? site.sqftPrimCustomLine : "";
         else if (type === 'clad') customLineInput.value = site.sqftCladCustomLine !== undefined ? site.sqftCladCustomLine : "";
@@ -1271,7 +1256,7 @@ function openModuleModal(type) {
         checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
             if (subNotice) subNotice.innerText = "Sq.Ft Mode: Overall shed rate applies. Enter Length, Width, Thickness & Unit for each member.";
-            inputsBox.innerHTML = `<div style="font-size:11px;font-weight:800;color:#0369a1;background:#e0f2fe;padding:6px 9px;border-radius:6px;border:1px solid #7dd3fc;">ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness (मोटाई) aur Unit fill karein.</div>`;
+            inputsBox.innerHTML = `<div style="font-size:11px;font-weight:800;color:#0369a1;background:#e0f2fe;padding:6px 9px;border-radius:6px;border:1px solid #7dd3fc;">ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness & Unit fill karein.</div>`;
             renderSqftPrimaryChecklist(site.sqftPrimSpecs || []);
         } else {
             if (subNotice) subNotice.innerText = "Title, header line & specifications control";
@@ -1315,7 +1300,7 @@ function openModuleModal(type) {
         checklistTitle.innerText = isSqft ? "Accessories List (Name, Quantity & Unit):" : "Accessories Breakdown (Quantity, Unit & Rate):";
         checklistTitle.style.display = addRowBox.style.display = 'block';
         if (isSqft) {
-            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Quantity & Unit technical specifications column me print honge. Khali chhodne par blank rahega.</p>`;
+            inputsBox.innerHTML = `<p style="font-size:11.5px;color:#0369a1;font-weight:800;margin:0;">💡 Sq.Ft Mode: Quantity & Unit technical specifications column me print honge.</p>`;
             renderSqftAccessoriesChecklist();
         } else {
             inputsBox.innerHTML = `<p style="font-size:12px;color:#475569;margin:0;">Kg Mode: Har item ki Quantity, Unit aur Rate fill karein:</p>`;
@@ -1334,7 +1319,6 @@ function openModuleModal(type) {
     openModalWithHistory('moduleSelectionModal');
 }
 
-// FULL CONTROL AUTO-SAVE: PRESERVES EMPTY STRING WITHOUT RESTORING OLD VALUE
 function autoSaveModuleChanges() {
     const site = getCurrentSite(); if (!site) return;
     const customLineVal = (document.getElementById('modalInputCustomLine')?.value || "").trim();
@@ -1484,6 +1468,19 @@ function openThemeUnitPickerForMod(modType) {
         openModuleModal(modType); calcModuleTotals(); refreshLivePdfPreviewSheet();
     });
 }
+function openThemeUnitPickerForAcc(idx) {
+    const site = getCurrentSite(); if (!site?.accessories?.[idx]) return;
+    openThemeUnitPicker(site.accessories[idx].unit || 'Nos', (u) => {
+        site.accessories[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals();
+        renderAccessoriesChecklist(); refreshLivePdfPreviewSheet();
+    });
+}
+function openThemeUnitPickerForSqftAcc(idx) {
+    const site = getCurrentSite(); if (!site?.sqftAccessories?.[idx]) return;
+    openThemeUnitPicker(site.sqftAccessories[idx].unit || 'Nos', (u) => {
+        site.sqftAccessories[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
+    });
+}
 function closeModuleModal() { closeModalSafe('moduleSelectionModal'); calcModuleTotals(); refreshLivePdfPreviewSheet(); }
 function renderStandardChecklist(list) {
     const container = document.getElementById('modItemsCheckContainer'); if (!container) return;
@@ -1557,19 +1554,6 @@ function openShedUnitPicker(fPrefix) {
     openThemeUnitPicker(curUnit || 'Kg', (u) => {
         if (fPrefix === 'prim') site.primUnit = u; else if (fPrefix === 'sec') site.secUnit = u; else if (fPrefix === 'clad') site.cladUnit = u; else if (fPrefix === 'erect') site.erectUnit = u;
         syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals(); refreshLivePdfPreviewSheet();
-    });
-}
-function openThemeUnitPickerForAcc(idx) {
-    const site = getCurrentSite(); if (!site?.accessories?.[idx]) return;
-    openThemeUnitPicker(site.accessories[idx].unit || 'Nos', (u) => {
-        site.accessories[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); calcModuleTotals();
-        renderAccessoriesChecklist(); refreshLivePdfPreviewSheet();
-    });
-}
-function openThemeUnitPickerForSqftAcc(idx) {
-    const site = getCurrentSite(); if (!site?.sqftAccessories?.[idx]) return;
-    openThemeUnitPicker(site.sqftAccessories[idx].unit || 'Nos', (u) => {
-        site.sqftAccessories[idx].unit = u; syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); refreshLivePdfPreviewSheet();
     });
 }
 function openCivilUnitPicker(secKey, idx) {
@@ -1660,7 +1644,7 @@ function calcModuleTotals() {
 
         let aTot = 0;
         if (site.accEnabled !== false) {
-            (site.accessories || []).forEach(a => { if (a.selected === true) aTot += (parseFloat(a.qty) || 0) * (parseFloat(a.rate) || 0); });
+            (site.accessories || []).forEach(a => { if (a.selected !== false) aTot += (parseFloat(a.qty) || 0) * (parseFloat(a.rate) || 0); });
         }
         if (site.accEnabled === false) safeSetText('badgeAccTotal', 'Disabled');
         else if (isRateOnly) safeSetText('badgeAccTotal', 'Package');
@@ -1693,7 +1677,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 21. LIVE PREVIEW ENGINE (SEPARATE HEADERS & ZERO NESTED TABLE GAPS)
+// 20. LIVE PREVIEW ENGINE
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -1714,7 +1698,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     else { if (pWebWrap) pWebWrap.style.display = 'none'; if (cWebWrap) cWebWrap.style.display = 'none'; }
 
     updateHeaderBannersUI();
-    // 100% SEPARATE HEADINGS FOR EACH MODE
     safeSetText('pdfRibbonTitle', isSqft ? (appSettings.sqftPdfRibbonTitle !== undefined ? appSettings.sqftPdfRibbonTitle : "QUOTATION") : (appSettings.pdfRibbonTitle !== undefined ? appSettings.pdfRibbonTitle : "QUOTATION"));
     safeSetText('civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle !== undefined ? appSettings.civilPdfRibbonTitle : "QUOTATION");
     safeSetText('pdfScopeTitle', isSqft ? (site.sqftScopeDesc !== undefined ? site.sqftScopeDesc : (appSettings.sqftPdfScopeTitle || "")) : (site.primCustomLine !== undefined ? site.primCustomLine : (appSettings.pdfScopeTitle || "")));
@@ -1787,7 +1770,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 if (!site.moduleOrder || site.moduleOrder.includes('sec')) site.moduleOrder = ['prim', 'clad', 'acc', 'erect'];
 
                 site.moduleOrder.forEach((mKey, orderIdx) => {
-                    // 1. PRIMARY STRUCTURE (SQFT INDEPENDENT CUSTOM LINE)
                     if (mKey === 'prim' && site.primEnabled !== false) {
                         const primItems = (site.sqftPrimSpecs || []).filter(p => p.selected !== false);
                         let leftItemsHtml = "", rightItemsHtml = "";
@@ -1822,7 +1804,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 2. ROOF & WALL CLADDING (SQFT INDEPENDENT CUSTOM LINE)
                     } else if (mKey === 'clad' && site.cladEnabled !== false) {
                         const cladCustomLineDisplay = site.sqftCladCustomLine !== undefined ? site.sqftCladCustomLine : (sqftMasterBlueprint.sqftCladCustomLine || "");
                         const tr = document.createElement('tr');
@@ -1840,7 +1821,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 3. ACCESSORIES (SQFT INDEPENDENT CUSTOM LINE & ITEMS)
                     } else if (mKey === 'acc' && site.accEnabled !== false) {
                         const activeAcc = (site.sqftAccessories || []).filter(a => a.selected !== false);
                         let leftAccHtml = "", rightAccHtml = "";
@@ -1874,7 +1854,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 4. ERECTION & TURNKEY (SQFT INDEPENDENT CUSTOM LINE)
                     } else if (mKey === 'erect' && site.erectEnabled !== false) {
                         const erectBullets = (site.erectSpecs || []).filter(e => e.selected === true).map(e => `<span>• ${e.text || e}</span>`).join(' ');
                         const erectCustomLineDisplay = site.sqftErectCustomLine !== undefined ? site.sqftErectCustomLine : (sqftMasterBlueprint.sqftErectCustomLine || "");
@@ -1893,7 +1872,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         tbody.appendChild(tr);
                         setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'shed_modules', orderIdx);
 
-                    // 5. CUSTOM MODULES
                     } else {
                         const c = (site.customModules || []).find(m => m.id === mKey);
                         if (c && c.enabled !== false) {
@@ -1932,7 +1910,6 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 }
             }
         } else {
-            // KG / BOQ MODE (100% PRESERVED INDEPENDENT KG LINES)
             if (sec1Wrap) sec1Wrap.style.display = 'block';
             const s1Tbody = document.getElementById('pdfSection1TableBody');
             if (s1Tbody) {
@@ -1975,7 +1952,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
             }
             if (site.accEnabled !== false) {
                 (site.accessories || []).forEach((a, aIdx) => {
-                    if (a.selected === true) {
+                    if (a.selected !== false) {
                         selectedAccCount++;
                         const q = parseFloat(a.qty) || 0, r = parseFloat(a.rate) || 0, lineTot = q * r; aTot += lineTot;
                         if (breakdownTbody) {
@@ -2183,7 +2160,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 22. DYNAMIC FLOW ENGINE FOR PDF (CLEAN SOLID BORDERS)
+// 21. FLOW ENGINE (WITH FIXED ACCESSORIES TABLE SELECTION)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -2260,10 +2237,11 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
         lockTableBottomBorder(curTable);
 
+        // ⭐ FIXED ACCESSORIES SELECTION: DOES NOT FAIL OR REMOVE THE BLOCK ⭐
         if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
             const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
-            const accThead = sec3AccOrig.querySelector(':scope > table > thead')?.cloneNode(true);
-            const accRows = Array.from(sec3AccOrig.querySelectorAll(':scope > table > tbody > tr') || []);
+            const accThead = sec3AccOrig.querySelector('table thead')?.cloneNode(true);
+            const accRows = Array.from(sec3AccOrig.querySelectorAll('#pdfAccBreakdownBody > tr') || []);
             let accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
             if (accHeadBar) accBlockWrap.appendChild(accHeadBar);
             let accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
@@ -2414,78 +2392,54 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 23. DIRECT DOWNLOAD ENGINE
+// 22. ⭐ TRUE VECTOR TEXT PDF GENERATOR ENGINE ⭐
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
+    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}`;
     
     triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
-    if (typeof html2pdf === 'undefined') { window.print(); return; }
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
 
-    const origScroll = window.scrollY || window.pageYOffset; window.scrollTo(0, 0);
-    const source = document.getElementById('printableA4Sheet'); if (!source) return;
-    const stage = document.createElement('div');
-    stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
-    
-    const clone = source.cloneNode(true);
-    clone.style.setProperty('--pdf-scale', '1.0');
-    clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
-    clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
-        pill.innerText = pill.innerText.replace('▾', '').trim();
-        pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;';
-    });
-    clone.querySelector('.page-physical-gap')?.remove();
-
-    const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;';
-    
-    const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
-    const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft'), isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
+    const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft');
+    const isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
     const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
-    if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
-    if (shouldIncludeShed && shouldIncludeCivil) {
-        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
-        if (lastPage) lastPage.classList.add('has-page-break');
+    const p1 = document.getElementById('page1MsStructure');
+    const p2 = document.getElementById('civilDedicatedPageSheet');
+    const gap = document.getElementById('civilPageGapDivider');
+
+    const origP1 = p1 ? p1.style.display : '';
+    const origP2 = p2 ? p2.style.display : '';
+    const origGap = gap ? gap.style.display : '';
+
+    if (!shouldIncludeShed && p1) p1.style.setProperty('display', 'none', 'important');
+    if (!shouldIncludeCivil && p2) p2.style.setProperty('display', 'none', 'important');
+    if ((!shouldIncludeShed || !shouldIncludeCivil) && gap) gap.style.setProperty('display', 'none', 'important');
+
+    // 🌟 1. ANDROID NATIVE VECTOR PRINT (ZERO BLUR, CRISP REAL FONTS)
+    if (window.PatelNativeEngine?.printNativeVectorPdf) {
+        window.PatelNativeEngine.printNativeVectorPdf(fileName);
+        setTimeout(() => {
+            if (p1) p1.style.display = origP1;
+            if (p2) p2.style.display = origP2;
+            if (gap) gap.style.display = origGap;
+        }, 1200);
+        return;
     }
-    if (shouldIncludeCivil && p2) { p2.style.display = 'block'; buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL'); }
 
-    stage.appendChild(outputContainer); document.body.appendChild(stage);
-
-    const opt = {
-        margin: [6.35, 6.35, 6.35, 6.35], filename: fileName, image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2.0, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0, width: 746, windowWidth: 746, x: 0, y: 0, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-        pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
-    };
-
-    html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
-        if (document.body.contains(stage)) document.body.removeChild(stage);
-        window.scrollTo(0, origScroll);
-        if (window.PatelNativeEngine?.savePdfToPatelFolder) {
-            const base64Data = pdfObj.output('datauristring').split(',')[1];
-            window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
-            return;
-        }
-        try {
-            const blob = pdfObj.output('blob'), blobUrl = URL.createObjectURL(blob), a = document.createElement('a');
-            a.style.display = 'none'; a.href = blobUrl; a.download = fileName;
-            document.body.appendChild(a); a.click();
-            setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000);
-            showCorporateToast("✓ PDF Downloaded Successfully!");
-        } catch (e) { pdfObj.save(fileName); }
-    }).catch(function(err) {
-        if (document.body.contains(stage)) document.body.removeChild(stage);
-        window.scrollTo(0, origScroll);
-        html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
-    });
+    // 🌟 2. BROWSER VECTOR PRINT (SAVE AS PDF - 100% VECTOR QUALITY)
+    if (window.print) {
+        window.print();
+        if (p1) p1.style.display = origP1;
+        if (p2) p2.style.display = origP2;
+        if (gap) gap.style.display = origGap;
+        return;
+    }
 }
 
-// 24. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
+// 23. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
 function switchPermanentTextTab(tabKey) {
     ['btnTabPtKg', 'btnTabPtSqft', 'btnTabPtCivil'].forEach(id => document.getElementById(id)?.classList.remove('active'));
     document.getElementById('ptPanelKg').style.display = 'none';
@@ -2535,7 +2489,6 @@ function openPermanentTextsModal() {
     safeSetVal('pt_companyGst', appSettings.companyGst !== undefined ? appSettings.companyGst : ""); 
     safeSetVal('pt_footerWeb', appSettings.footerWeb !== undefined ? appSettings.footerWeb : "");
     
-    // Kg Mode Texts
     safeSetVal('pt_pdfRibbonTitle', appSettings.pdfRibbonTitle !== undefined ? appSettings.pdfRibbonTitle : "QUOTATION"); 
     safeSetVal('pt_pdfScopeTitle', appSettings.pdfScopeTitle !== undefined ? appSettings.pdfScopeTitle : "");
     safeSetVal('pt_headerLine1', appSettings.headerLine1 !== undefined ? appSettings.headerLine1 : "1. ESTIMATED STEEL WEIGHT:");
@@ -2548,7 +2501,6 @@ function openPermanentTextsModal() {
     safeSetVal('pt_btnNameAcc', appSettings.btnNameAcc !== undefined ? appSettings.btnNameAcc : "4. Accessories");
     safeSetVal('pt_btnNameErect', appSettings.btnNameErect !== undefined ? appSettings.btnNameErect : "5. Erection");
 
-    // Sq.Ft Mode Texts
     safeSetVal('pt_sqftPdfRibbonTitle', appSettings.sqftPdfRibbonTitle !== undefined ? appSettings.sqftPdfRibbonTitle : "QUOTATION");
     safeSetVal('pt_sqftPdfScopeTitle', appSettings.sqftPdfScopeTitle !== undefined ? appSettings.sqftPdfScopeTitle : "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - SQ.FT BASIS");
     safeSetVal('pt_sqftHeaderLine1', appSettings.sqftHeaderLine1 !== undefined ? appSettings.sqftHeaderLine1 : "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:");
@@ -2558,7 +2510,6 @@ function openPermanentTextsModal() {
     safeSetVal('pt_sqftAccLabel', appSettings.sqftAccLabel !== undefined ? appSettings.sqftAccLabel : "Building Accessories Package");
     safeSetVal('pt_sqftErectLabel', appSettings.sqftErectLabel !== undefined ? appSettings.sqftErectLabel : "Turnkey Erection & Installation");
 
-    // Civil Mode Texts
     safeSetVal('pt_civilPdfRibbonTitle', appSettings.civilPdfRibbonTitle !== undefined ? appSettings.civilPdfRibbonTitle : "QUOTATION");
     safeSetVal('pt_civilJobTitle', appSettings.civilJobTitle !== undefined ? appSettings.civilJobTitle : "JOB DETAILS & TECHNICAL SPECIFICATIONS");
     safeSetVal('pt_civilFoundTitle', appSettings.civilFoundTitle !== undefined ? appSettings.civilFoundTitle : "1. FOUNDATION & RCC COLUMN DETAILS:");
@@ -2568,7 +2519,6 @@ function openPermanentTextsModal() {
     safeSetVal('pt_btnNameBrick', appSettings.btnNameBrick !== undefined ? appSettings.btnNameBrick : "2. Brick Wall Details");
     safeSetVal('pt_btnNameFlooring', appSettings.btnNameFlooring !== undefined ? appSettings.btnNameFlooring : "3. Flooring Details");
 
-    // Common Signatures & Terms
     safeSetVal('pt_custAcceptanceTitle', appSettings.custAcceptanceTitle !== undefined ? appSettings.custAcceptanceTitle : "CUSTOMER ACCEPTANCE");
     safeSetVal('pt_custAcceptanceSub', appSettings.custAcceptanceSub !== undefined ? appSettings.custAcceptanceSub : "Authorized Signature & Stamp");
     safeSetVal('pt_signCompHeader', appSettings.signCompHeader !== undefined ? appSettings.signCompHeader : "");
@@ -2649,7 +2599,7 @@ function handleLogoUpload(input) {
     }
 }
 
-// 25. DIGITAL SIGNATURE & WINDOW ONLOAD
+// 24. DIGITAL SIGNATURE & WINDOW ONLOAD
 let canvas, ctx, isDrawing = false, sigEventsAttached = false;
 function openSignatureModal() {
     openModalWithHistory('sigModal');
