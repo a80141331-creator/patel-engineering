@@ -208,9 +208,9 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .continuation-header-bar { width: 100% !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; color: #fff !important; padding: 5px 12px !important; display: flex !important; justify-content: space-between !important; align-items: center !important; border-bottom: 2px solid #000000 !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; }
 
 /* CUSTOMER DETAILS BLOCK */
-.customer-details-block { margin: 0 !important; padding: 7px 12px !important; display: table !important; table-layout: fixed !important; background: #fff !important; border-bottom: 2px solid #000000 !important; width: 100% !important; }
+.customer-details-block { margin: 0 !important; padding: 6px 12px !important; display: table !important; table-layout: fixed !important; background: #fff !important; border-bottom: 2px solid #000000 !important; width: 100% !important; }
 .scope-left-column { display: table-cell !important; width: 52% !important; vertical-align: top !important; padding-right: 10px !important; }
-.scope-heading-dark { font-size: calc(10.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; line-height: 1.3; margin-bottom: 3.5px; }
+.scope-heading-dark { font-size: calc(10px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; line-height: 1.3; margin-bottom: 3px; }
 .project-size-heading-label { font-size: calc(9px * var(--pdf-font-scale)); font-weight: 900; color: #000000; text-transform: uppercase; margin-bottom: 2px; }
 .project-dim-columns { display: flex; align-items: center; justify-content: space-between; gap: 2px; background: #fff; border: 1.5px solid #000000 !important; border-radius: 4px; padding: 2px 4px; width: 100%; }
 .dim-col-item { display: flex; flex-direction: column; align-items: center; padding: 0 2px; }
@@ -226,18 +226,18 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .client-list-row span.val { display: table-cell !important; width: auto !important; font-weight: 800 !important; color: #000000 !important; text-align: right !important; }
 
 /* TABLES BASE */
-.section-header-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 4.5px 12px !important; font-size: calc(10.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
-.table-wrapper { padding: 0 !important; margin: 0 !important; width: 100% !important; }
+.section-header-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 4px 12px !important; font-size: calc(10px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; width: 100% !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+.table-wrapper { padding: 0 !important; margin: 0 !important; width: 100% !important; break-inside: auto !important; }
 .theme-data-table, .civil-schedule-table { width: 100% !important; border-collapse: collapse !important; border-spacing: 0 !important; table-layout: fixed !important; font-size: calc(10px * var(--pdf-font-scale)) !important; border: 2px solid #000000 !important; }
-.theme-data-table th, .civil-schedule-table th { background: var(--th-primary) !important; color: #fff !important; font-weight: 900 !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; text-transform: uppercase; padding: 5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-right: 1.5px solid #000000 !important; }
+.theme-data-table th, .civil-schedule-table th { background: var(--th-primary) !important; color: #fff !important; font-weight: 900 !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; text-transform: uppercase; padding: 4.5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-right: 1.5px solid #000000 !important; }
 
 /* MAIN TABLE CELLS */
 .theme-data-table > tbody > tr > td, 
 .civil-schedule-table > tbody > tr > td { 
-    padding: 4.5px 6px !important; 
+    padding: 3.5px 6px !important; 
     border-bottom: 1.5px solid #000000 !important; 
     border-right: 1.5px solid #000000 !important; 
-    font-size: calc(10px * var(--pdf-font-scale)) !important; 
+    font-size: calc(9.5px * var(--pdf-font-scale)) !important; 
     font-weight: 800 !important; 
     color: #000000 !important; 
     vertical-align: middle; 
@@ -257,7 +257,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
     border-bottom: 2px solid #000000 !important; 
 }
 .executive-weight-total-row { background: #cbd5e1 !important; }
-.executive-weight-total-row td { padding: 4.5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; color: #000000 !important; font-weight: 900 !important; }
+.executive-weight-total-row td { padding: 4px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; color: #000000 !important; font-weight: 900 !important; }
 
 /* NESTED TABLES */
 .theme-data-table table,
@@ -290,8 +290,8 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 }
 
 /* HIGHLIGHTED BULLETS & PILLS */
-.item-specs-bullets { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000 !important; margin-top: 3px !important; line-height: 1.35 !important; }
-.item-specs-bullets span { display: inline-block !important; background: #e0f2fe !important; color: #0c1e30 !important; font-weight: 800 !important; border: 1px solid #0284c7 !important; padding: 1.5px 5px !important; border-radius: 4px !important; margin: 1px 1.5px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; }
+.item-specs-bullets { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000 !important; margin-top: 2px !important; line-height: 1.3 !important; }
+.item-specs-bullets span { display: inline-block !important; background: #e0f2fe !important; color: #0c1e30 !important; font-weight: 800 !important; border: 1px solid #0284c7 !important; padding: 1px 4.5px !important; border-radius: 3px !important; margin: 1px 1.5px !important; font-size: calc(8.5px * var(--pdf-font-scale)) !important; }
 .spec-highlight-pill { display: inline-block !important; background: #e0f2fe !important; color: #0c1e30 !important; font-weight: 800 !important; border: 1px solid #0284c7 !important; padding: 1.5px 5px !important; border-radius: 4px !important; margin-top: 2px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; }
 
 /* SQ.FT 3-COLUMN SEPARATE DETAILS */
@@ -299,13 +299,13 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .sqft-spec-dim-badge { display: inline-flex; align-items: center; gap: 4px; background: #f1f5f9; border: 1.5px solid #000000; border-radius: 4px; padding: 1px 5px; font-weight: 800; font-size: calc(9px * var(--pdf-font-scale)) !important; color: #000000; margin: 1px 0; }
 
 .civil-job-details-ribbon { background: var(--th-primary) !important; color: #fff !important; padding: 4.5px 10px !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase; width: 100% !important; border-bottom: 2px solid #000000 !important; }
-.civil-category-title-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 3.5px 10px !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; width: 100% !important; }
+.civil-category-title-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 3.5px 10px !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; width: 100% !important; break-inside: avoid !important; page-break-inside: avoid !important; }
 
 /* SUMMARY & SEAMLESS TERMS */
-.theme-bottom-summary-grid { padding: 5px 12px 3px 12px !important; display: grid !important; grid-template-columns: 54% 46% !important; gap: 10px !important; width: 100% !important; border-bottom: 2px solid #000000 !important; }
-.terms-column h4 { font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-bottom: 3px; }
-.terms-column p, .editable-terms-preview-box p { font-size: calc(9px * var(--pdf-font-scale)) !important; color: #000000 !important; line-height: 1.35 !important; font-weight: 800 !important; }
-.thank-you-line { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-top: 4px; }
+.theme-bottom-summary-grid { padding: 5px 12px 3px 12px !important; display: grid !important; grid-template-columns: 54% 46% !important; gap: 10px !important; width: 100% !important; border-bottom: 2px solid #000000 !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+.terms-column h4 { font-size: calc(9.5px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-bottom: 2px; }
+.terms-column p, .editable-terms-preview-box p { font-size: calc(9px * var(--pdf-font-scale)) !important; color: #000000 !important; line-height: 1.3 !important; font-weight: 800 !important; }
+.thank-you-line { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; color: #000000; text-transform: uppercase; margin-top: 3px; }
 .calc-row-unit { display: flex; justify-content: space-between; padding: 1px 2px; font-size: calc(10px * var(--pdf-font-scale)) !important; font-weight: 900 !important; }
 .tax-breakdown-vertical { width: 100%; display: flex; flex-direction: column; gap: 1px; margin: 2px 0; padding: 1.5px 0; border-top: 1.5px dashed #000000; border-bottom: 1.5px dashed #000000; }
 .tax-split-row { display: flex; justify-content: space-between; align-items: center; }
@@ -320,28 +320,28 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .btn-preview-add-inline, .btn-acc-preview-add { font-size: 9px !important; font-weight: 900 !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; color: #fff !important; padding: 2px 6px !important; border-radius: 3px !important; border: 1px solid #38bdf8 !important; cursor: pointer !important; }
 .rate-prefix { font-weight: 800; color: #000000; }
 
-.terms-seamless-block { margin-bottom: 5px; background: transparent !important; border: none !important; }
+.terms-seamless-block { margin-bottom: 4px; background: transparent !important; border: none !important; }
 .terms-seamless-block b { color: #0c1e30; font-size: calc(9px * var(--pdf-font-scale)); text-transform: uppercase; }
 
 /* COMPANY BANK DETAILS */
-.company-bank-card-diagram { margin: 4px 12px 3px 12px !important; background: #ffffff !important; border: 2px solid #000000 !important; border-radius: 6px !important; padding: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; }
-.bank-card-head { background: #0c1e30 !important; color: #ffffff !important; padding: 5px 10px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase !important; display: flex !important; align-items: center !important; gap: 4px !important; border-bottom: 1.5px solid #000000 !important; }
+.company-bank-card-diagram { margin: 4px 12px 3px 12px !important; background: #ffffff !important; border: 2px solid #000000 !important; border-radius: 6px !important; padding: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+.bank-card-head { background: #0c1e30 !important; color: #ffffff !important; padding: 4.5px 10px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase !important; display: flex !important; align-items: center !important; gap: 4px !important; border-bottom: 1.5px solid #000000 !important; }
 .bank-card-head span { color: #ffffff !important; }
-.bank-card-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 5px 14px !important; padding: 7px 12px !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; background: #f8fafc !important; }
+.bank-card-grid { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 4px 14px !important; padding: 6px 12px !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; background: #f8fafc !important; }
 .bank-card-grid .bank-item { display: flex !important; align-items: center !important; gap: 5px !important; color: #000000 !important; font-weight: 800 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
 .bank-card-grid .bank-item span { color: #475569 !important; font-weight: 900 !important; }
 .bank-card-grid .bank-item b { color: #000000 !important; font-weight: 900 !important; }
 
 /* DUAL SIGNATURE BLOCK */
-.signature-dual-grid { padding: 8px 14px 10px 14px !important; display: flex !important; justify-content: space-between !important; align-items: flex-end !important; margin-top: 0 !important; background: #fff !important; width: 100% !important; border-top: 2px solid #000000 !important; }
+.signature-dual-grid { padding: 6px 14px 8px 14px !important; display: flex !important; justify-content: space-between !important; align-items: flex-end !important; margin-top: 0 !important; background: #fff !important; width: 100% !important; border-top: 2px solid #000000 !important; break-inside: avoid !important; page-break-inside: avoid !important; }
 .sign-box-col { width: 190px !important; text-align: center; display: flex; flex-direction: column; align-items: center; }
-.sign-stamp-area { height: 48px !important; min-height: 48px !important; display: flex; align-items: center; justify-content: center; margin-bottom: 3px; }
+.sign-stamp-area { height: 38px !important; min-height: 38px !important; display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
 .sign-rule-line { width: 150px !important; height: 1.5px !important; background: #000000 !important; margin: 2px auto 3px auto !important; }
 .sign-heading-main { font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase; color: #000; }
 .sign-sub-caption { font-size: calc(8px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #000000; text-transform: uppercase; }
 
-.geo-footer-wrapper { position: relative; width: 100% !important; background: #fff; border-top: 2px solid #000000 !important; overflow: hidden; display: flex; }
-.footer-full-bar { width: 100% !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; display: flex; flex-direction: column; padding: 5px 12px !important; color: #fff; gap: 2px; }
+.geo-footer-wrapper { position: relative; width: 100% !important; background: #fff; border-top: 2px solid #000000 !important; overflow: hidden; display: flex; break-inside: avoid !important; page-break-inside: avoid !important; }
+.footer-full-bar { width: 100% !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; display: flex; flex-direction: column; padding: 4.5px 12px !important; color: #fff; gap: 2px; }
 .footer-row-item { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #fff !important; }
 .gstin-pill-inline { background: #fff; color: #0c1e30 !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; padding: 1px 5px; border-radius: 3px; }
 
@@ -379,7 +379,8 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 #printableA4Sheet, #civilLiveSheetDisplayBox { width: 746px !important; min-width: 746px !important; max-width: 746px !important; display: block !important; margin: 0 !important; touch-action: pan-y !important; }
 
 /* =========================================================
-   PRINT MEDIA - BULLETPROOF TRUE VECTOR ENGINE (FIXES BLANK PDF)
+   PRINT MEDIA - 100% TRUE VECTOR PRINT ENGINE
+   (FIXES: DESKTOP LEFT CUT, CONFETTI EFFECT & BOTTOM PAGE BREAKS)
    ========================================================= */
 @media print {
     @page { 
@@ -402,7 +403,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
         overflow: visible !important;
     }
 
-    /* 1. HIDE ALL UI PANELS & BUTTONS (NO BLANK SPACES) */
+    /* 1. HIDE UI ELEMENTS, BUTTONS AND CONFETTI CANVAS */
     .top-bar,
     .fixed-bottom-bar,
     .dash-controls-pane,
@@ -422,11 +423,13 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
     .btn-preview-add-inline,
     .btn-acc-preview-add,
     .btn-del-pro,
-    .page-physical-gap {
+    .page-physical-gap,
+    canvas, /* ⭐ कन्फेटी इफ़ेक्ट को PDF से गायब करता है ⭐ */
+    #confetti-canvas {
         display: none !important;
     }
 
-    /* 2. RESET ALL PARENT CONTAINERS (REMOVES MOBILE SCALE & NEGATIVE MARGINS) */
+    /* 2. UNWRAP & CENTER SHEET (FIXES DESKTOP LEFT-CUT COMPLETELY) */
     .app-view,
     body.mode-phone .app-view,
     body.mode-tab .app-view,
@@ -439,7 +442,8 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
     .pdf-sheet-frame,
     .mobile-preview-viewport,
     #viewportWrap,
-    #scalingWrapper {
+    #scalingWrapper,
+    #civilScalingWrapper {
         display: block !important;
         position: static !important;
         width: 100% !important;
@@ -447,10 +451,13 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
         height: auto !important;
         max-height: none !important;
         min-height: 0 !important;
-        margin: 0 !important;
+        margin: 0 auto !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        left: auto !important;
         padding: 0 !important;
         overflow: visible !important;
-        transform: none !important; /* ⭐ CRITICAL: मोबाइल का ज़ूम हटाकर सीधा A4 बनाया ⭐ */
+        transform: none !important; /* मोबाइल व डेस्कटॉप का स्केल रीसेट */
         box-shadow: none !important;
         border: none !important;
         background: transparent !important;
@@ -461,6 +468,8 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
         display: block !important;
         position: relative !important;
         width: 746px !important;
+        min-width: 746px !important;
+        max-width: 746px !important;
         margin: 0 auto !important;
         padding: 0 !important;
         transform: none !important;
@@ -470,6 +479,8 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
     .a4-page-box {
         display: block !important;
         width: 746px !important;
+        min-width: 746px !important;
+        max-width: 746px !important;
         margin: 0 auto !important;
         border: 2px solid #000000 !important;
         box-shadow: none !important;
@@ -480,6 +491,17 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
     .a4-page-box:last-child {
         page-break-after: auto !important;
         break-after: auto !important;
+    }
+
+    /* 4. PREVENT SPLITTING CARDS IN HALF (नीचे से कटना बंद) */
+    .company-bank-card-diagram,
+    .signature-dual-grid,
+    .theme-bottom-summary-grid,
+    .section-header-bar,
+    .theme-data-table tr,
+    .civil-schedule-table tr {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
     }
 
     .preview-unit-pill {
