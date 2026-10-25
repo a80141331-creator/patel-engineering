@@ -932,13 +932,13 @@ function renderDynamicPdfActionsBar() {
     bar.innerHTML = "";
     if (site.quoteType === 'both' || site.quoteType === 'both_sqft') {
         bar.innerHTML = `
-            <button class="btn-main btn-3d-main btn-ripple" style="flex:2;padding:13px;" onclick="downloadPDFDirectly('both')"><span style="font-size:17px;">📥</span> DOWNLOAD COMBINED PDF</button>
+            <button class="btn-main btn-3d-main btn-ripple" style="flex:2;padding:13px;" onclick="downloadPDFDirectly('both')"><span style="font-size:17px;">📑</span> COMBINED PDF</button>
             <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:13px;font-weight:900;" onclick="downloadPDFDirectly('civil')">🧱 Civil Only</button>
             <button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:13px;font-weight:900;" onclick="downloadPDFDirectly('shed')">🏢 Shed Only</button>`;
     } else if (site.quoteType === 'civil') {
-        bar.innerHTML = `<button class="btn-main btn-3d-green btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('civil')"><span style="font-size:18px;">📥</span> DOWNLOAD CIVIL PDF</button>`;
+        bar.innerHTML = `<button class="btn-main btn-3d-green btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('civil')"><span style="font-size:18px;">⬇️</span> DOWNLOAD CIVIL PDF</button>`;
     } else {
-        bar.innerHTML = `<button class="btn-main btn-3d-main btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('shed')"><span style="font-size:18px;">📥</span> DOWNLOAD SHED PDF</button>`;
+        bar.innerHTML = `<button class="btn-main btn-3d-main btn-ripple" style="width:100%;padding:14px;" onclick="downloadPDFDirectly('shed')"><span style="font-size:18px;">⬇️</span> DOWNLOAD SHED PDF</button>`;
     }
 }
 function applyCustomButtonNamesUI() {
@@ -1234,6 +1234,7 @@ function openModuleModal(type) {
     activeModType = type; const site = getCurrentSite(); if (!site) return;
     const modalTitle = document.getElementById('modModalTitle'), customLineInput = document.getElementById('modalInputCustomLine');
     const inputsBox = document.getElementById('modInputsBox'), checklistTitle = document.getElementById('lblChecklistTitle'), addRowBox = document.getElementById('addItemRowBox');
+    const subNotice = document.getElementById('modModalSubNotice');
     safeSetVal('customItemInput', ""); const isSqft = isSqftMode(site);
 
     if (isSqft) {
@@ -2160,8 +2161,10 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
 // 21. FLOW ENGINE (SLICES MULTI-PAGE DOCUMENT WITH SMALL HEADER BAR)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
-    p.className = 'pdf-page-slice';
-    p.style.cssText = 'width:746px!important;margin:0 auto!important;padding:0!important;background:#ffffff!important;display:flow-root!important;box-sizing:border-box!important;border:2px solid #000000!important;';
+    if (isTest) {
+        p.className = 'a4-page-box';
+        p.style.cssText = 'width:746px!important;margin:0!important;padding:0!important;background:#ffffff!important;display:flow-root!important;height:auto!important;border:2px solid #000000!important;';
+    } else p.className = 'pdf-page-slice';
     return p;
 }
 function finalizePageBox(pageEl) { pageEl.className = 'pdf-page-slice'; return pageEl; }
@@ -2217,6 +2220,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                 curTbody.removeChild(rowClone); lockTableBottomBorder(curTable);
                 document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                 pageNum++; curPage = createPageBox(true);
+                // ⭐ नए पेज (Page 2) के ऊपर कंपनी की छोटी हेडर पट्टी ⭐
                 const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                 contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                 curPage.appendChild(contBar);
@@ -2232,7 +2236,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
         lockTableBottomBorder(curTable);
 
-        // ACCESSORIES TABLE DETAILS
+        // ⭐ ACCESSORIES TABLE DETAILS BUG FIXED ⭐
         if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
             const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
             const accThead = sec3AccOrig.querySelector('table thead')?.cloneNode(true);
@@ -2254,7 +2258,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                     if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
                     document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                     pageNum++; curPage = createPageBox(true);
-                    
+                    // ⭐ ACCESSORIES NEW PAGE HEADER ⭐
                     const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                     contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                     curPage.appendChild(contBar);
@@ -2388,24 +2392,24 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. ⭐ 100% DIRECT DOWNLOAD ENGINE (NO PRINT POPUP, TRUE VECTOR) ⭐
+// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR ENGINE ⭐
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
-
-    triggerHaptic(50);
+    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}`;
+    
+    triggerHaptic(50); 
     playAppSound('chime');
-    showCorporateToast("⏳ Generating PDF, please wait...", "⏳");
 
-    // 1. केवल सेकंड वाला (स्लाइस्ड) वर्शन प्रोसेस करें, पहला वर्शन पूरी तरह हटाएँ
+    // पुराना कंटेनर साफ़ करें अगर मौजूद हो
     const oldCont = document.getElementById('vectorPrintOutputContainer');
     if (oldCont) oldCont.remove();
 
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
+    // 1. स्टेज कंटेनर में क्लोन बनाएँ और पेज स्लाइसिंग करें
     const clone = source.cloneNode(true);
     clone.style.setProperty('--pdf-scale', '1.0');
     clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
@@ -2417,7 +2421,6 @@ async function downloadPDFDirectly(mode = 'both') {
 
     const outputContainer = document.createElement('div');
     outputContainer.id = 'vectorPrintOutputContainer';
-    outputContainer.style.cssText = 'width:746px;margin:0 auto;background:#fff;';
 
     const p1 = clone.querySelector('#page1MsStructure');
     const p2 = clone.querySelector('#civilDedicatedPageSheet');
@@ -2427,7 +2430,7 @@ async function downloadPDFDirectly(mode = 'both') {
     const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
-    // केवल दूसरा (स्लाइस्ड) वर्शन तैयार होगा
+    // स्लाइसिंग इंजन चलाएं ताकि Page 2 पर छोटी हेडर पट्टी और 0.25 इंच मार्जिन आए
     if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     if (shouldIncludeShed && shouldIncludeCivil) {
         const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
@@ -2438,91 +2441,29 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
-    // 2. पूरे CSS स्टाइल्स को तैयार करें ताकि True Vector PDF का लेआउट बिल्कुल सही बने
-    const allStyles = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'))
-        .map(s => s.outerHTML)
-        .join('\n');
+    // स्लाइस्ड कंटेनर को DOM में जोड़ें और प्रिंट एक्टिव करें
+    document.body.appendChild(outputContainer);
+    document.body.classList.add('is-printing-vector');
 
-    const completeHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
-        ${allStyles}
-        <style>
-            body { background: #ffffff !important; margin: 0 !important; padding: 0 !important; }
-            .pdf-page-slice { width: 746px !important; margin: 0 auto !important; box-sizing: border-box !important; }
-            .has-page-break { page-break-after: always !important; break-after: page !important; }
-        </style>
-    </head>
-    <body>
-        ${outputContainer.innerHTML}
-    </body>
-    </html>`;
+    const cleanupPrint = () => {
+        document.body.classList.remove('is-printing-vector');
+        const cont = document.getElementById('vectorPrintOutputContainer');
+        if (cont) cont.remove();
+        fireConfettiCelebration(); // कन्फेटी प्रिंट पूरा होने के बाद ही चलेगी
+    };
 
-    try {
-        // 3. Vercel Serverless Headless Chromium API को कॉल करें (100% True Vector Text)
-        const response = await fetch('/api/generate-pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ html: completeHtml, fileName: fileName })
-        });
+    // 🌟 1. ANDROID AIDE VECTOR PRINT (100% TRUE VECTOR TEXT)
+    if (window.PatelNativeEngine?.printNativeVectorPdf) {
+        window.PatelNativeEngine.printNativeVectorPdf(fileName);
+        setTimeout(cleanupPrint, 3500);
+        return;
+    }
 
-        if (!response.ok) throw new Error('Server PDF error: ' + response.statusText);
-
-        const pdfBlob = await response.blob();
-
-        // 🌟 CASE A: ANDROID AIDE APP - DIRECT SILENT SAVE TO DOWNLOADS FOLDER 🌟
-        if (window.PatelNativeEngine && window.PatelNativeEngine.savePdfToPatelFolder) {
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                const base64Data = reader.result.split(',')[1];
-                window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
-                fireConfettiCelebration();
-            };
-            reader.readAsDataURL(pdfBlob);
-            return;
-        }
-
-        // 🌟 CASE B: DESKTOP / BROWSER - DIRECT FILE DOWNLOAD (NO PRINT DIALOG) 🌟
-        const blobUrl = window.URL.createObjectURL(pdfBlob);
-        const downloadLink = document.createElement('a');
-        downloadLink.href = blobUrl;
-        downloadLink.download = fileName;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        window.URL.revokeObjectURL(blobUrl);
-
-        showCorporateToast("✓ PDF Downloaded successfully!", "📥");
-        fireConfettiCelebration();
-
-    } catch (err) {
-        console.warn("Vercel Puppeteer failed, using fallback client-side download:", err);
-        // Fallback: अगर सर्वर ऑफलाइन हो तो डायरेक्ट फाइल सेविंग
-        if (typeof html2pdf !== 'undefined') {
-            const opt = {
-                margin: [6.35, 6.35, 6.35, 6.35],
-                filename: fileName,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
-                if (window.PatelNativeEngine && window.PatelNativeEngine.savePdfToPatelFolder) {
-                    const b64 = btoa(pdfObj.output());
-                    window.PatelNativeEngine.savePdfToPatelFolder(b64, fileName);
-                } else {
-                    pdfObj.save(fileName);
-                    showCorporateToast("✓ PDF Downloaded directly!", "📥");
-                }
-                fireConfettiCelebration();
-            });
-        } else {
-            showAppAlert("Download Error", "PDF generate karne me samasya aayi. Kripya dobara try karein.");
-        }
+    // 🌟 2. BROWSER VECTOR PRINT (SAVE AS PDF - TRUE VECTOR)
+    if (window.print) {
+        window.print();
+        setTimeout(cleanupPrint, 1200);
+        return;
     }
 }
 
@@ -2733,3 +2674,4 @@ window.onload = function() {
     initSamsungBootAnimation(); 
     setTimeout(attachDynamicPreviewObserver, 200);
 };
+    
