@@ -226,13 +226,13 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .client-list-row span.label { display: table-cell !important; width: 95px !important; font-weight: 900 !important; color: #000000 !important; }
 .client-list-row span.val { display: table-cell !important; width: auto !important; font-weight: 800 !important; color: #000000 !important; text-align: right !important; }
 
-/* TABLES BASE (STRICT FIXED TABLE LAYOUT TO PREVENT GAPS) */
+/* TABLES BASE */
 .section-header-bar { margin: 0 !important; background: #e2e8f0 !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-left: 6px solid var(--th-primary) !important; padding: 4.5px 12px !important; font-size: calc(10.5px * var(--pdf-font-scale)) !important; font-weight: 900 !important; color: #000000 !important; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; width: 100% !important; }
 .table-wrapper { padding: 0 !important; margin: 0 !important; width: 100% !important; }
 .theme-data-table, .civil-schedule-table { width: 100% !important; border-collapse: collapse !important; border-spacing: 0 !important; table-layout: fixed !important; font-size: calc(10px * var(--pdf-font-scale)) !important; border: 2px solid #000000 !important; }
 .theme-data-table th, .civil-schedule-table th { background: var(--th-primary) !important; color: #fff !important; font-weight: 900 !important; font-size: calc(9.5px * var(--pdf-font-scale)) !important; text-transform: uppercase; padding: 5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; border-right: 1.5px solid #000000 !important; }
 
-/* MAIN TABLE CELLS: 100% SOLID OUTER LINES */
+/* MAIN TABLE CELLS */
 .theme-data-table > tbody > tr > td, 
 .civil-schedule-table > tbody > tr > td { 
     padding: 4.5px 6px !important; 
@@ -260,9 +260,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .executive-weight-total-row { background: #cbd5e1 !important; }
 .executive-weight-total-row td { padding: 4.5px 6px !important; border-top: 2px solid #000000 !important; border-bottom: 2px solid #000000 !important; color: #000000 !important; font-weight: 900 !important; }
 
-/* =========================================================
-   NESTED TABLES: PERFECT VERTICAL DIVIDER & ZERO INNER LINES
-   ========================================================= */
+/* NESTED TABLES */
 .theme-data-table table,
 .theme-data-table table tr,
 .theme-data-table table td,
@@ -326,7 +324,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .terms-seamless-block { margin-bottom: 5px; background: transparent !important; border: none !important; }
 .terms-seamless-block b { color: #0c1e30; font-size: calc(9px * var(--pdf-font-scale)); text-transform: uppercase; }
 
-/* COMPANY BANK DETAILS (WHITE THEMED ACCENTS) */
+/* COMPANY BANK DETAILS */
 .company-bank-card-diagram { margin: 4px 12px 3px 12px !important; background: #ffffff !important; border: 2px solid #000000 !important; border-radius: 6px !important; padding: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; }
 .bank-card-head { background: #0c1e30 !important; color: #ffffff !important; padding: 5px 10px !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900 !important; text-transform: uppercase !important; display: flex !important; align-items: center !important; gap: 4px !important; border-bottom: 1.5px solid #000000 !important; }
 .bank-card-head span { color: #ffffff !important; }
@@ -345,7 +343,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 
 .geo-footer-wrapper { position: relative; width: 100% !important; background: #fff; border-top: 2px solid #000000 !important; overflow: hidden; display: flex; }
 .footer-full-bar { width: 100% !important; background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; display: flex; flex-direction: column; padding: 5px 12px !important; color: #fff; gap: 2px; }
-.footer-row-item { display: flex; align-items: center flex-wrap: wrap; gap: 8px; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #fff !important; }
+.footer-row-item { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 800 !important; color: #fff !important; }
 .gstin-pill-inline { background: #fff; color: #0c1e30 !important; font-size: calc(9px * var(--pdf-font-scale)) !important; font-weight: 900; padding: 1px 5px; border-radius: 3px; }
 
 /* MODALS & CONTROLS */
@@ -381,14 +379,58 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 #scalingWrapper, #civilScalingWrapper { transform-origin: top left !important; width: 746px !important; min-width: 746px !important; max-width: 746px !important; margin: 0 !important; display: block !important; height: auto !important; touch-action: pan-y !important; transition: transform 0.12s ease-out; }
 #printableA4Sheet, #civilLiveSheetDisplayBox { width: 746px !important; min-width: 746px !important; max-width: 746px !important; display: block !important; margin: 0 !important; touch-action: pan-y !important; }
 
-/* PRINT MEDIA */
+/* =========================================================
+   PRINT MEDIA - 100% TRUE VECTOR PRINT & EXACT COLORS
+   ========================================================= */
 @media print {
-    @page { size: A4 portrait; margin: 0.25in !important; }
-    html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; color: #000 !important; font-weight: 800 !important; }
-    body * { visibility: hidden !important; }
-    #printableA4Sheet, #printableA4Sheet * { visibility: visible !important; }
-    #printableA4Sheet { position: absolute !important; left: 0 !important; top: 0 !important; width: 746px !important; margin: 0 auto !important; padding: 0 !important; box-shadow: none !important; }
-    .a4-page-box { box-shadow: none !important; width: 746px !important; padding: 0 !important; border: 2px solid #000000 !important; }
-    .page-physical-gap, .fixed-bottom-bar, .top-bar, .shed-assembly-overlay, .drag-handle, .master-auth-overlay, button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .btn-ripple { display: none !important; }
-    .preview-unit-pill { border: none !important; background: transparent !important; padding: 0 !important; color: #000 !important; font-weight: 800 !important; box-shadow: none !important; }
+    @page { 
+        size: A4 portrait; 
+        margin: 0 !important; 
+    }
+    *, html, body { 
+        -webkit-print-color-adjust: exact !important; 
+        print-color-adjust: exact !important; 
+        color-adjust: exact !important; 
+    }
+    html, body { 
+        background: #ffffff !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        color: #000000 !important; 
+        font-weight: 800 !important; 
+    }
+    body * { 
+        visibility: hidden !important; 
+    }
+    #printableA4Sheet, #printableA4Sheet * { 
+        visibility: visible !important; 
+    }
+    #printableA4Sheet { 
+        position: absolute !important; 
+        left: 0 !important; 
+        top: 0 !important; 
+        width: 746px !important; 
+        margin: 0 auto !important; 
+        padding: 0 !important; 
+        box-shadow: none !important; 
+    }
+    .a4-page-box { 
+        box-shadow: none !important; 
+        width: 746px !important; 
+        padding: 0 !important; 
+        border: 2px solid #000000 !important; 
+    }
+    .page-physical-gap, .fixed-bottom-bar, .top-bar, .shed-assembly-overlay, 
+    .drag-handle, .master-auth-overlay, button, .btn-preview-add-inline, 
+    .btn-acc-preview-add, .btn-del-pro, .btn-ripple { 
+        display: none !important; 
+    }
+    .preview-unit-pill { 
+        border: none !important; 
+        background: transparent !important; 
+        padding: 0 !important; 
+        color: #000000 !important; 
+        font-weight: 800 !important; 
+        box-shadow: none !important; 
+    }
 }
