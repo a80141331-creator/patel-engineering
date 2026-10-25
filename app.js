@@ -1,3 +1,7 @@
+// ==========================================================================
+// PATEL ENGINEERING - COMPLETE APPLICATION JAVASCRIPT (TRUE VECTOR ENGINE)
+// ==========================================================================
+
 // 1. FIREBASE CONFIGURATION
 const firebaseConfig = { apiKey: "AIzaSyB_b6KlFizZGALLEZnRcJ0Pd16NUEF6QY8", authDomain: "patel-engineering-3b4c4.firebaseapp.com", databaseURL: "https://patel-engineering-3b4c4-default-rtdb.firebaseio.com", projectId: "patel-engineering-3b4c4", storageBucket: "patel-engineering-3b4c4.firebasestorage.app", messagingSenderId: "261245424222", appId: "1:261245424222:web:126273db274b515f8cdacf" };
 let db = null, isFirebaseConnected = false, isCloudInitialSyncDone = false;
@@ -93,7 +97,7 @@ function syncSiteStructureToMasterBlueprint(s) {
     try {
         if (isSqftMode(s)) {
             if (s.sqftPrimSpecs) sqftMasterBlueprint.primSpecs = s.sqftPrimSpecs.map(p => ({ text: p.text || "", length: "", width: "", thk: "", dimUnit: p.dimUnit || "mm", selected: p.selected !== false }));
-            if (s.sqftAccessories) sqftMasterBlueprint.accessories = s.sqftAccessories.map(a => ({ name: a.name || "", qty: "", unit: a.unit || "Nos", selected: a.selected !== false }));
+            if (s.sqftAccessories) sqftMasterBlueprint.accessories = s.sqftAccessories.map(a => ({ name: a.name || "", qty: "", unit: a.unit || "Nos", selected: p => p.selected !== false }));
             if (s.sqftScopeDesc !== undefined) sqftMasterBlueprint.sqftScopeDesc = s.sqftScopeDesc;
             if (s.sqftTableDesc !== undefined) sqftMasterBlueprint.sqftTableDesc = s.sqftTableDesc;
             if (s.sqftPrimCustomLine !== undefined) sqftMasterBlueprint.sqftPrimCustomLine = s.sqftPrimCustomLine;
@@ -509,7 +513,7 @@ function loadSiteToDashboard(siteId) {
     setTimeout(attachDynamicPreviewObserver, 150);
 }
 
-// 13. EDIT CUSTOMER & 2-WAY PERMANENT SYNC
+// 13. EDIT CUSTOMER & 2-WAY PREVIEW SYNC (FIXED: CIVIL INPUTS QTY & RATE PROPERLY SYNC)
 let tempEditQuoteType = 'both';
 function openEditCustomerModal() {
     const site = getCurrentSite(); if (!site) return;
@@ -576,7 +580,33 @@ function syncPreviewTitleEdit(el, fPrefix, mKey = null) {
     else { if (fPrefix === 'prim') site.primCustomLine = txt; else if (fPrefix === 'sec') site.secCustomLine = txt; else if (fPrefix === 'clad') site.cladCustomLine = txt; else if (fPrefix === 'acc') site.accCustomLine = txt; else if (fPrefix === 'erect') site.erectCustomLine = txt; }
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
-function syncPreviewEdit(el, field) { const site = getCurrentSite(); if (!site) return; site[field] = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet(true); }
+
+// FULL CIVIL & SHED PREVIEW INPUT FIX
+function syncPreviewEdit(el, field) {
+    const site = getCurrentSite(); if (!site) return;
+    const val = el.innerText.trim();
+    if (field.startsWith('civ_')) {
+        const parts = field.split('_'); // ['civ', secKey, idx, prop]
+        const secKey = parts[1], idx = parseInt(parts[2], 10), prop = parts[3];
+        if (site.civilData && site.civilData[secKey] && site.civilData[secKey].items && site.civilData[secKey].items[idx]) {
+            site.civilData[secKey].items[idx][prop] = (val === '-' ? '' : val);
+            syncSiteStructureToMasterBlueprint(site);
+        }
+    } else if (field.startsWith('civcat_')) {
+        const parts = field.split('_'); // ['civcat', cIdx, idx, prop]
+        const cIdx = parseInt(parts[1], 10), idx = parseInt(parts[2], 10), prop = parts[3];
+        if (site.civilCustomCategories && site.civilCustomCategories[cIdx] && site.civilCustomCategories[cIdx].items && site.civilCustomCategories[cIdx].items[idx]) {
+            site.civilCustomCategories[cIdx].items[idx][prop] = (val === '-' ? '' : val);
+            syncSiteStructureToMasterBlueprint(site);
+        }
+    } else {
+        site[field] = (val === '-' ? '' : val);
+    }
+    syncDataToCloud('patel_app_sites', sites);
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet(true);
+}
+
 function syncAccTitleEdit(idx, el) { const site = getCurrentSite(); if (!site?.accessories || !site.accessories[idx]) return; site.accessories[idx].name = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); }
 function syncPreviewAccEdit(idx, field, el) { const site = getCurrentSite(); if (!site?.accessories || !site.accessories[idx]) return; site.accessories[idx][field] = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet(true); }
 function syncCivilTitleEdit(el, secKey, idx) { const site = getCurrentSite(); if (!site?.civilData?.[secKey]?.items?.[idx]) return; site.civilData[secKey].items[idx].name = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site); }
@@ -1225,6 +1255,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         ensureCivilDataOnSite(site); const civ = site.civilData;
         const cleanCivHead = isCivilRateOnly ? `<tr><th style="width:8%;text-align:center;">S.N</th><th style="width:56%;text-align:left;">ITEM / WORK DESCRIPTION</th><th style="width:14%;text-align:center;">UNIT</th><th style="width:22%;text-align:right;">CONTRACT RATE (₹)</th></tr>` : `<tr><th style="width:7%;text-align:center;">S.N</th><th style="width:45%;text-align:left;">ITEM / WORK DESCRIPTION</th><th style="width:14%;text-align:center;">QTY / AREA</th><th style="width:10%;text-align:center;">UNIT</th><th style="width:11%;text-align:right;">RATE (₹)</th><th style="width:13%;text-align:right;">AMOUNT (₹)</th></tr>`;
         safeSetHtml('civilFoundationTableHead', cleanCivHead); safeSetHtml('civilBrickWallTableHead', cleanCivHead); safeSetHtml('civilFlooringTableHead', cleanCivHead);
+        
+        // CIVIL TABLE GENERATOR WITH 100% WORKING EDITABLE QTY & RATE
         const renderCivSection = (secKey, secPrefix, tbodyId, titleKey, defaultTitle, isEnabled) => {
             const sec = civ[secKey], finalTitle = appSettings[titleKey] || sec.title || defaultTitle; safeSetText(titleKey, finalTitle);
             const titleEl = document.getElementById(titleKey)?.parentElement, tbody = document.getElementById(tbodyId), tblWrap = tbody?.closest('.table-wrapper');
@@ -1243,6 +1275,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         renderCivSection('foundation', '1', 'civilFoundationTableBody', 'civilFoundTitle', "1. FOUNDATION & RCC COLUMN DETAILS:", site.foundEnabled !== false);
         renderCivSection('brickWall', '2', 'civilBrickWallTableBody', 'civilBrickTitle', "2. BRICK WALL, DPC & PLASTER DETAILS:", site.brickEnabled !== false);
         renderCivSection('flooring', '3', 'civilFlooringTableBody', 'civilFloorTitle', "3. FLOORING & PCC WORK DETAILS:", site.floorEnabled !== false);
+        
         const customCivWrapper = document.getElementById('civilCustomCategoriesPage2Wrapper');
         if (customCivWrapper) {
             customCivWrapper.innerHTML = "";
@@ -1252,7 +1285,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     (cat.items || []).forEach((it, idx) => {
                         if (it.enabled !== false) {
                             const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0); civilTotalBasic += tot;
-                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.rate)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                            rowsHtml += isCivilRateOnly ? `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` : `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
                         }
                     });
                     customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span style="font-size:calc(9.5px * var(--pdf-font-scale));">${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
@@ -1292,283 +1325,40 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 22. DYNAMIC FLOW ENGINE FOR PDF
-function createPageBox(isTest = false) {
-    const p = document.createElement('div');
-    if (isTest) { p.className = 'a4-page-box'; p.style.cssText = 'width:746px!important;margin:0!important;padding:0!important;background:#ffffff!important;display:flow-root!important;height:auto!important;border:2px solid #000000!important;'; }
-    else p.className = 'pdf-page-slice';
-    return p;
-}
-function finalizePageBox(pageEl) { pageEl.className = 'pdf-page-slice'; return pageEl; }
-function lockTableBottomBorder(tableEl) { if (!tableEl) return; const lastRow = tableEl.querySelector(':scope > tbody > tr:last-child'); if (lastRow) Array.from(lastRow.children).forEach(td => { td.style.borderBottom = '2px solid #000000'; }); }
-function appendPageToOutput(outputContainer, pageEl, isLastPage = false) { finalizePageBox(pageEl); if (!isLastPage) pageEl.classList.add('has-page-break'); outputContainer.appendChild(pageEl); }
-function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
-    const MAX_PAGE_LIMIT = 980, testStage = document.createElement('div');
-    testStage.style.cssText = 'width:746px!important;position:absolute;left:-9999px;top:0;background:#fff;padding:0;margin:0;display:flow-root;';
-    const site = getCurrentSite(), isSqft = isSqftMode(site);
-
-    if (sectionType === 'SHED') {
-        const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true), substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true), cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true);
-        const sec1Head = sectionEl.querySelector('#displayHeaderLine1')?.parentElement?.cloneNode(true), sec1Tbl = sectionEl.querySelector('#pdfSection1TableBody')?.closest('.table-wrapper')?.cloneNode(true);
-        const sec2Head = sectionEl.querySelector('#displayHeaderLine2')?.parentElement?.cloneNode(true), sec2TblOrig = sectionEl.querySelector('#pdfTableBody')?.closest('.table-wrapper'), sec3AccOrig = sectionEl.querySelector('#pdfAccBreakdownContainer');
-        const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true), bankBox = sectionEl.querySelector('#pdfCompanyBankDetailsBox')?.cloneNode(true), sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true), footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true);
-
-        let curPage = createPageBox(true), pageNum = 1;
-        if (hero) curPage.appendChild(hero.cloneNode(true)); if (substrip) curPage.appendChild(substrip.cloneNode(true)); if (cust) curPage.appendChild(cust.cloneNode(true));
-        if (!isSqft && sec1Head && sec1Tbl) { curPage.appendChild(sec1Head.cloneNode(true)); curPage.appendChild(sec1Tbl.cloneNode(true)); }
-        if (sec2Head) curPage.appendChild(sec2Head.cloneNode(true));
-
-        const s2Thead = sec2TblOrig?.querySelector(':scope > table > thead')?.cloneNode(true), s2Rows = Array.from(sec2TblOrig?.querySelectorAll(':scope > table > tbody > tr') || []);
-        let curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
-        let curTable = document.createElement('table'); curTable.className = 'theme-data-table';
-        if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
-        let curTbody = document.createElement('tbody'); curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
-
-        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-        let rIdx = 0;
-        while (rIdx < s2Rows.length) {
-            const rowClone = s2Rows[rIdx].cloneNode(true); curTbody.appendChild(rowClone);
-            if (curPage.offsetHeight > MAX_PAGE_LIMIT && curTbody.children.length > 1) {
-                curTbody.removeChild(rowClone); lockTableBottomBorder(curTable);
-                document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-                pageNum++; curPage = createPageBox(true);
-                const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                curPage.appendChild(contBar);
-                curTableWrap = document.createElement('div'); curTableWrap.className = 'table-wrapper';
-                curTable = document.createElement('table'); curTable.className = 'theme-data-table';
-                if (s2Thead) curTable.appendChild(s2Thead.cloneNode(true));
-                curTbody = document.createElement('tbody'); curTable.appendChild(curTbody); curTableWrap.appendChild(curTable); curPage.appendChild(curTableWrap);
-                testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-                continue;
-            }
-            rIdx++;
-        }
-        lockTableBottomBorder(curTable);
-
-        if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
-            const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true), accThead = sec3AccOrig.querySelector(':scope > table > thead')?.cloneNode(true), accRows = Array.from(sec3AccOrig.querySelectorAll(':scope > table > tbody > tr') || []);
-            let accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
-            if (accHeadBar) accBlockWrap.appendChild(accHeadBar);
-            let accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
-            let accTable = document.createElement('table'); accTable.className = 'theme-data-table';
-            if (accThead) accTable.appendChild(accThead);
-            let accTbody = document.createElement('tbody'); accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap); curPage.appendChild(accBlockWrap);
-
-            let aIdx = 0;
-            while (aIdx < accRows.length) {
-                const aRowClone = accRows[aIdx].cloneNode(true); accTbody.appendChild(aRowClone);
-                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-                    accTbody.removeChild(aRowClone); lockTableBottomBorder(accTable);
-                    if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
-                    document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-                    pageNum++; curPage = createPageBox(true);
-                    const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                    contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                    curPage.appendChild(contBar);
-                    accBlockWrap = document.createElement('div'); accBlockWrap.id = 'pdfAccBreakdownContainer';
-                    if (accHeadBar) accBlockWrap.appendChild(accHeadBar.cloneNode(true));
-                    accTblWrap = document.createElement('div'); accTblWrap.className = 'table-wrapper';
-                    accTable = document.createElement('table'); accTable.className = 'theme-data-table';
-                    if (accThead) accTable.appendChild(accThead.cloneNode(true));
-                    accTbody = document.createElement('tbody'); accTable.appendChild(accTbody); accTblWrap.appendChild(accTable); accBlockWrap.appendChild(accTblWrap); curPage.appendChild(accBlockWrap);
-                    testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-                    continue;
-                }
-                aIdx++;
-            }
-            lockTableBottomBorder(accTable);
-        }
-
-        const finalBlock = document.createElement('div');
-        if (summary) finalBlock.appendChild(summary.cloneNode(true));
-        if (bankBox && bankBox.style.display !== 'none') finalBlock.appendChild(bankBox.cloneNode(true));
-        if (sigs) finalBlock.appendChild(sigs.cloneNode(true));
-        if (footer) finalBlock.appendChild(footer.cloneNode(true));
-        curPage.appendChild(finalBlock);
-
-        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-            curPage.removeChild(finalBlock); document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-            pageNum++; curPage = createPageBox(true);
-            const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — COMMERCIAL TERMS & SIGNATURES</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-            curPage.appendChild(contBar); curPage.appendChild(finalBlock);
-            testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-        }
-        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
-
-    } else if (sectionType === 'CIVIL') {
-        const hero = sectionEl.querySelector('.geo-header-wrapper')?.cloneNode(true), substrip = sectionEl.querySelector('.company-substrip-bar')?.cloneNode(true), cust = sectionEl.querySelector('.customer-details-block')?.cloneNode(true), jobRibbon = sectionEl.querySelector('.civil-job-details-ribbon')?.cloneNode(true);
-        const secConfigs = [
-            { titleEl: sectionEl.querySelector('#civilFoundTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFoundationTableBody')?.closest('.table-wrapper') },
-            { titleEl: sectionEl.querySelector('#civilBrickTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilBrickWallTableBody')?.closest('.table-wrapper') },
-            { titleEl: sectionEl.querySelector('#civilFloorTitle')?.parentElement, tblWrap: sectionEl.querySelector('#civilFlooringTableBody')?.closest('.table-wrapper') }
-        ];
-        const summary = sectionEl.querySelector('.theme-bottom-summary-grid')?.cloneNode(true), civilBankBox = sectionEl.querySelector('#civilPdfCompanyBankDetailsBox')?.cloneNode(true), sigs = sectionEl.querySelector('.signature-dual-grid')?.cloneNode(true), footer = sectionEl.querySelector('.geo-footer-wrapper')?.cloneNode(true), customWrapper = sectionEl.querySelector('#civilCustomCategoriesPage2Wrapper');
-
-        let curPage = createPageBox(true), pageNum = 1;
-        if (hero) curPage.appendChild(hero.cloneNode(true)); if (substrip) curPage.appendChild(substrip.cloneNode(true)); if (cust) curPage.appendChild(cust.cloneNode(true)); if (jobRibbon) curPage.appendChild(jobRibbon.cloneNode(true));
-        testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-
-        let secIdx = 0;
-        while (secIdx < secConfigs.length) {
-            const conf = secConfigs[secIdx]; if (!conf.tblWrap || conf.tblWrap.style.display === 'none') { secIdx++; continue; }
-            const tHead = conf.tblWrap.querySelector(':scope > table > thead')?.cloneNode(true), allRows = Array.from(conf.tblWrap.querySelectorAll(':scope > table > tbody > tr') || []);
-            let titleClone = conf.titleEl ? conf.titleEl.cloneNode(true) : null;
-            if (titleClone) curPage.appendChild(titleClone);
-
-            let cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
-            let cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
-            if (tHead) cTable.appendChild(tHead.cloneNode(true));
-            let cTbody = document.createElement('tbody'); cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
-
-            let rowIdx = 0;
-            while (rowIdx < allRows.length) {
-                const rClone = allRows[rowIdx].cloneNode(true); cTbody.appendChild(rClone);
-                if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-                    cTbody.removeChild(rClone); lockTableBottomBorder(cTable);
-                    if (cTbody.children.length === 0) { if (titleClone) curPage.removeChild(titleClone); curPage.removeChild(cTableWrap); }
-                    document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-                    pageNum++; curPage = createPageBox(true);
-                    const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                    contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                    curPage.appendChild(contBar);
-                    if (titleClone && cTbody.children.length === 0) curPage.appendChild(titleClone.cloneNode(true));
-                    cTableWrap = document.createElement('div'); cTableWrap.className = 'table-wrapper';
-                    cTable = document.createElement('table'); cTable.className = 'civil-schedule-table';
-                    if (tHead) cTable.appendChild(tHead.cloneNode(true));
-                    cTbody = document.createElement('tbody'); cTable.appendChild(cTbody); cTableWrap.appendChild(cTable); curPage.appendChild(cTableWrap);
-                    testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-                    continue;
-                }
-                rowIdx++;
-            }
-            lockTableBottomBorder(cTable); secIdx++;
-        }
-
-        if (customWrapper && customWrapper.children.length > 0) {
-            const custCatClone = customWrapper.cloneNode(true); curPage.appendChild(custCatClone);
-            if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-                curPage.removeChild(custCatClone); document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-                pageNum++; curPage = createPageBox(true);
-                const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-                contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL SPECIFICATIONS (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-                curPage.appendChild(contBar); curPage.appendChild(custCatClone);
-                testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-            }
-        }
-
-        const civilFinalBlock = document.createElement('div');
-        if (summary) civilFinalBlock.appendChild(summary.cloneNode(true));
-        if (civilBankBox && civilBankBox.style.display !== 'none') civilFinalBlock.appendChild(civilBankBox.cloneNode(true));
-        if (sigs) civilFinalBlock.appendChild(sigs.cloneNode(true));
-        if (footer) civilFinalBlock.appendChild(footer.cloneNode(true));
-        curPage.appendChild(civilFinalBlock);
-
-        if (curPage.offsetHeight > MAX_PAGE_LIMIT) {
-            curPage.removeChild(civilFinalBlock); document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
-            pageNum++; curPage = createPageBox(true);
-            const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
-            curPage.appendChild(contBar); curPage.appendChild(civilFinalBlock);
-            testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
-        }
-        document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, true);
-    }
-}
-
-// 23. DIRECT DOWNLOAD ENGINE (ORIGINAL STAGE FORMULA RESTORED + SCALE 3.0 FOR SUPER PRINT QUALITY)
-async function downloadPDFDirectly(mode = 'both') {
+// 23. TRUE VECTOR TEXT PDF ENGINE (NO HTML2CANVAS / NO SCREENSHOT RASTERIZATION)
+function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
-    const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
-    
-    triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
-    if (typeof html2pdf === 'undefined') { window.print(); return; }
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    if (!site) return;
 
-    const origScroll = window.scrollY || window.pageYOffset;
-    window.scrollTo(0, 0);
+    const clientClean = (site.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
+    const quoteClean = (site.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
+    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}`;
 
-    const source = document.getElementById('printableA4Sheet');
-    if (!source) return;
+    triggerHaptic(50);
+    playAppSound('chime');
+    fireConfettiCelebration();
 
-    // EXACT ORIGINAL STAGE RESTORED: Locks position on desktop, tab and phone identical to original
-    const stage = document.createElement('div');
-    stage.style.cssText = 'position:fixed;left:0;top:0;width:746px!important;max-width:746px!important;background:#ffffff;z-index:-99999;margin:0;padding:0;overflow:hidden;';
-    
-    const clone = source.cloneNode(true);
-    clone.style.setProperty('--pdf-scale', '1.0');
-    clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
-    clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
-        pill.innerText = pill.innerText.replace('▾', '').trim();
-        pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;';
-    });
-    clone.querySelector('.page-physical-gap')?.remove();
-
-    const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width:746px!important;min-width:746px!important;max-width:746px!important;margin:0!important;padding:0!important;display:block!important;';
-    
-    const p1 = clone.querySelector('#page1MsStructure'), p2 = clone.querySelector('#civilDedicatedPageSheet');
-    const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft'), isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
-    const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
-    const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
-
-    if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
-    if (shouldIncludeShed && shouldIncludeCivil) {
-        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
-        if (lastPage) lastPage.classList.add('has-page-break');
-    }
-    if (shouldIncludeCivil && p2) {
-        p2.style.display = 'block';
-        buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
+    // Set dynamic print mode classes
+    document.body.classList.remove('print-mode-shed', 'print-mode-civil', 'print-mode-both');
+    if (mode === 'shed') {
+        document.body.classList.add('print-mode-shed');
+    } else if (mode === 'civil') {
+        document.body.classList.add('print-mode-civil');
+    } else {
+        document.body.classList.add('print-mode-both');
     }
 
-    stage.appendChild(outputContainer);
-    document.body.appendChild(stage);
+    // Set page title for native vector PDF default file name
+    const origTitle = document.title;
+    document.title = fileName;
 
-    // EXACT WORKING FORMULA WITH SCALE 3.0 & QUALITY 1.0 (CRYSTAL CLEAR + ZERO CUTTING ON PC/TAB)
-    const opt = {
-        margin: [6.35, 6.35, 6.35, 6.35],
-        filename: fileName,
-        image: { type: 'jpeg', quality: 1.0 },
-        html2canvas: {
-            scale: 3.0, // 3x higher resolution than before, crystal clear print
-            useCORS: true,
-            letterRendering: true,
-            scrollY: 0,
-            scrollX: 0,
-            width: 746,
-            windowWidth: 746,
-            x: 0,
-            y: 0,
-            logging: false
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-        pagebreak: { mode: ['css', 'legacy'], after: '.has-page-break' }
-    };
-
-    html2pdf().set(opt).from(outputContainer).toPdf().get('pdf').then(function(pdfObj) {
-        if (document.body.contains(stage)) document.body.removeChild(stage);
-        window.scrollTo(0, origScroll);
-        if (window.PatelNativeEngine?.savePdfToPatelFolder) {
-            const base64Data = pdfObj.output('datauristring').split(',')[1];
-            window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
-            return;
-        }
-        try {
-            const blob = pdfObj.output('blob'), blobUrl = URL.createObjectURL(blob), a = document.createElement('a');
-            a.style.display = 'none'; a.href = blobUrl; a.download = fileName;
-            document.body.appendChild(a); a.click();
-            setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(blobUrl); }, 1000);
-            showCorporateToast("✓ PDF Downloaded Successfully!", "💎");
-        } catch (e) { pdfObj.save(fileName); }
-    }).catch(function(err) {
-        if (document.body.contains(stage)) document.body.removeChild(stage);
-        window.scrollTo(0, origScroll);
-        html2pdf().set(opt).from(outputContainer).save().catch(() => window.print());
-    });
+    // Trigger Browser Vector Print Engine
+    setTimeout(() => {
+        window.print();
+        document.title = origTitle;
+        document.body.classList.remove('print-mode-shed', 'print-mode-civil', 'print-mode-both');
+        showCorporateToast("✓ True Vector PDF Generated!", "💎");
+    }, 120);
 }
 
 // 24. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
