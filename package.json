@@ -1,0 +1,10 @@
+{
+  "name": "patel-engineering",
+  "version": "1.0.0",
+  "description": "Patel Engineering Quotation PDF Generator",
+  "main": "index.html",
+  "dependencies": {
+    "@sparticuz/chromium": "^123.0.0",
+    "puppeteer-core": "^22.6.0"
+  }
+}
