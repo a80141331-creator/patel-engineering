@@ -319,7 +319,7 @@ function autoDetectDeviceMode() {
     if (w >= 1025) setDeviceViewMode('desktop', false); else if (w >= 768) setDeviceViewMode('tab', false); else setDeviceViewMode('phone', false);
 }
 
-// 7. DOM HELPERS & FORMATTERS
+// 7. DOM HELPERS & FORMATTERS (WITH ANIMATE NUMBER ROLL)
 function safeSetText(id, t) { const el = document.getElementById(id); if (el) el.innerText = (t !== undefined && t !== null) ? t : ''; }
 function safeSetHtml(id, h) { const el = document.getElementById(id); if (el) el.innerHTML = (h !== undefined && h !== null) ? h : ''; }
 function safeSetVal(id, v) { const el = document.getElementById(id); if (el) el.value = (v !== undefined && v !== null) ? v : ''; }
@@ -329,13 +329,14 @@ function closeAppAlert() { closeModalSafe('customAlertModal'); }
 function triggerHaptic(d = 15) { if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(d); }
 function fireConfettiCelebration() { if (typeof confetti === 'function') confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } }); }
 
+// ⭐ SMOOTH NUMBER ROLLING EFFECT ⭐
 function animateNumberRoll(elemId, targetNumber, prefix = "₹ ", suffix = "") {
     const el = document.getElementById(elemId); if (!el) return;
     const target = Math.round(targetNumber) || 0;
     if (target === 0) { el.innerText = "-"; return; }
     const currentText = el.innerText.replace(/[^0-9]/g, ''), start = parseInt(currentText, 10) || 0;
     if (start === target) { el.innerText = prefix + target.toLocaleString('en-IN') + suffix; return; }
-    const duration = 1000, startTime = performance.now();
+    const duration = 650, startTime = performance.now();
     function step(currentTime) {
         const elapsed = currentTime - startTime, progress = Math.min(elapsed / duration, 1);
         const ease = 1 - Math.pow(1 - progress, 3), currentVal = Math.floor(start + (target - start) * ease);
@@ -594,7 +595,8 @@ function setNewSiteQuoteType(type) {
 }
 function renderHomeScreen() {
     safeSetText('appLogoName', appSettings.ownerName || "PATEL ENGINEERING");
-    safeSetText('statTotalSites', sites.length); safeSetText('statActiveQuotes', sites.length);
+    animateNumberRoll('statTotalSites', sites.length, "");
+    animateNumberRoll('statActiveQuotes', sites.length, "");
     if (appSettings.logoData) safeSetHtml('appLogoBadge', `<img src="${appSettings.logoData}" alt="Logo">`);
     const container = document.getElementById('sitesListContainer'); if (!container) return;
     container.innerHTML = "";
@@ -897,10 +899,44 @@ function syncPreviewTitleEdit(el, fPrefix, mKey = null) {
     }
     syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
 }
+
+// ⭐ FIX: CIVIL PREVIEW MEIN QUANTITY & RATE EDIT KARNE KA FUNCTION ⭐
 function syncPreviewEdit(el, field) {
     const site = getCurrentSite(); if (!site) return;
-    site[field] = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); calcModuleTotals(); refreshLivePdfPreviewSheet(true);
+    const val = el.innerText.trim().replace(/₹/g, '').trim();
+
+    if (field.startsWith('civ_')) {
+        // format: civ_sectionKey_idx_property e.g. civ_foundation_0_qty
+        const parts = field.split('_');
+        if (parts.length >= 4) {
+            const secKey = parts[1];
+            const idx = parseInt(parts[2], 10);
+            const prop = parts[3]; // 'qty' ya 'rate'
+            if (site.civilData?.[secKey]?.items?.[idx]) {
+                site.civilData[secKey].items[idx][prop] = val;
+                syncSiteStructureToMasterBlueprint(site);
+            }
+        }
+    } else if (field.startsWith('civcat_')) {
+        // format: civcat_cIdx_idx_property e.g. civcat_0_1_qty
+        const parts = field.split('_');
+        if (parts.length >= 4) {
+            const cIdx = parseInt(parts[1], 10);
+            const idx = parseInt(parts[2], 10);
+            const prop = parts[3];
+            if (site.civilCustomCategories?.[cIdx]?.items?.[idx]) {
+                site.civilCustomCategories[cIdx].items[idx][prop] = val;
+                syncSiteStructureToMasterBlueprint(site);
+            }
+        }
+    } else {
+        site[field] = val;
+    }
+    syncDataToCloud('patel_app_sites', sites);
+    calcModuleTotals();
+    refreshLivePdfPreviewSheet(true);
 }
+
 function syncAccTitleEdit(idx, el) {
     const site = getCurrentSite(); if (!site?.accessories || !site.accessories[idx]) return;
     site.accessories[idx].name = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
@@ -912,6 +948,14 @@ function syncPreviewAccEdit(idx, field, el) {
 function syncCivilTitleEdit(el, secKey, idx) {
     const site = getCurrentSite(); if (!site?.civilData?.[secKey]?.items?.[idx]) return;
     site.civilData[secKey].items[idx].name = el.innerText.trim(); syncDataToCloud('patel_app_sites', sites); syncSiteStructureToMasterBlueprint(site);
+}
+function syncCivilCatTitleEdit(cIdx, idx, el) {
+    const site = getCurrentSite();
+    if (site?.civilCustomCategories?.[cIdx]?.items?.[idx]) {
+        site.civilCustomCategories[cIdx].items[idx].name = el.innerText.trim();
+        syncDataToCloud('patel_app_sites', sites);
+        syncSiteStructureToMasterBlueprint(site);
+    }
 }
 function syncPreviewTermsEdit(field, el) {
     const val = el.innerText.trim(); appSettings[field] = val; syncDataToCloud('patel_app_settings', appSettings);
@@ -1138,7 +1182,7 @@ function openAddUniversalModuleModal(mode) {
 }
 function recalcUmodPreviewAmount() {
     const q = parseFloat(document.getElementById('umod_qty')?.value) || 0, r = parseFloat(document.getElementById('umod_rate')?.value) || 0;
-    safeSetText('umodCalculatedAmtText', (q * r) > 0 ? '₹ ' + Math.round(q * r).toLocaleString('en-IN') : '-');
+    animateNumberRoll('umodCalculatedAmtText', q * r, "₹ ");
 }
 function openThemeUnitPickerForUniversalMod() {
     openThemeUnitPicker(universalModUnit, (u) => { universalModUnit = u; safeSetText('btn_umod_unit', u + " ▾"); });
@@ -1218,10 +1262,10 @@ function autoSaveAndUpdate() {
     site.dimW = document.getElementById('dimW')?.value || ""; site.dimL = document.getElementById('dimL')?.value || ""; site.dimH = document.getElementById('dimH')?.value || "";
     site.shedSqftRate = document.getElementById('shedSqftRateInput')?.value || "";
     const sqft = (parseFloat(site.dimW) || 0) * (parseFloat(site.dimL) || 0);
-    safeSetText('dashSqFtText', sqft > 0 ? sqft.toLocaleString('en-IN') + " Sq.Ft" : "0 Sq.Ft");
+    animateNumberRoll('dashSqFtText', sqft, "", " Sq.Ft");
     if (isSqftMode(site)) {
         const sqRate = parseFloat(site.shedSqftRate) || 0, autoCost = sqft * sqRate;
-        safeSetText('shedSqftAutoCostBadge', autoCost > 0 ? "₹ " + Math.round(autoCost).toLocaleString('en-IN') : "-");
+        animateNumberRoll('shedSqftAutoCostBadge', autoCost, "₹ ");
         const tax = getActiveTaxSlab('shed'), withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : 0;
         safeSetText('shedSqftWithTaxRateBadge', withTaxRate > 0 ? `₹ ${withTaxRate.toFixed(2)} / Sq.Ft` : (sqRate > 0 ? `₹ ${sqRate.toFixed(2)} / Sq.Ft (No Tax)` : "-"));
     }
@@ -1611,6 +1655,8 @@ function updateTaxDisplay() {
     safeSetText('selectedTaxNameText', shedTax.name); safeSetText('selectedTaxDescText', shedTax.desc);
     safeSetText('civilSelectedTaxNameText', civilTax.name); safeSetText('civilSelectedTaxDescText', civilTax.desc);
 }
+
+// ⭐ CALC MODULE TOTALS WITH ALL ROLLING NUMBERS ⭐
 function calcModuleTotals() {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode, isSqft = isSqftMode(site);
@@ -1620,7 +1666,7 @@ function calcModuleTotals() {
         safeSetText('badgePrimTotal', 'Configured'); safeSetText('badgeSecTotal', 'Excluded');
         safeSetText('badgeCladTotal', 'Included'); safeSetText('badgeAccTotal', 'Configured');
         safeSetText('badgeErectTotal', 'Turnkey');
-        safeSetText('shedSqftAutoCostBadge', autoCost > 0 ? "₹ " + Math.round(autoCost).toLocaleString('en-IN') : "-");
+        animateNumberRoll('shedSqftAutoCostBadge', autoCost, "₹ ");
         const tax = getActiveTaxSlab('shed'), withTaxRate = (tax.rate > 0 && sqRate > 0) ? (sqRate + (sqRate * tax.rate)) : 0;
         safeSetText('shedSqftWithTaxRateBadge', withTaxRate > 0 ? `₹ ${withTaxRate.toFixed(2)} / Sq.Ft` : (sqRate > 0 ? `₹ ${sqRate.toFixed(2)} / Sq.Ft (No Tax)` : "-"));
     } else {
@@ -1658,9 +1704,21 @@ function calcModuleTotals() {
             let tot = 0; (site.civilData[secKey]?.items || []).forEach(it => { if (it.enabled !== false) tot += (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0); }); return tot;
         };
         const fTot = getSecTotal('foundation'), bTot = getSecTotal('brickWall'), flTot = getSecTotal('flooring');
-        safeSetText('badgeCivFoundTotal', site.foundEnabled === false ? 'Disabled' : (site.civilRateOnlyMode ? 'Unit Rates' : (fTot > 0 ? 'Rs. ' + Math.round(fTot).toLocaleString('en-IN') : 'Edit ➔')));
-        safeSetText('badgeCivBrickTotal', site.brickEnabled === false ? 'Disabled' : (site.civilRateOnlyMode ? 'Unit Rates' : (bTot > 0 ? 'Rs. ' + Math.round(bTot).toLocaleString('en-IN') : 'Edit ➔')));
-        safeSetText('badgeCivFloorTotal', site.floorEnabled === false ? 'Disabled' : (site.civilRateOnlyMode ? 'Unit Rates' : (flTot > 0 ? 'Rs. ' + Math.round(flTot).toLocaleString('en-IN') : 'Edit ➔')));
+        
+        if (site.foundEnabled === false) safeSetText('badgeCivFoundTotal', 'Disabled');
+        else if (site.civilRateOnlyMode) safeSetText('badgeCivFoundTotal', 'Unit Rates');
+        else if (fTot > 0) animateNumberRoll('badgeCivFoundTotal', fTot, "Rs. ");
+        else safeSetText('badgeCivFoundTotal', 'Edit ➔');
+
+        if (site.brickEnabled === false) safeSetText('badgeCivBrickTotal', 'Disabled');
+        else if (site.civilRateOnlyMode) safeSetText('badgeCivBrickTotal', 'Unit Rates');
+        else if (bTot > 0) animateNumberRoll('badgeCivBrickTotal', bTot, "Rs. ");
+        else safeSetText('badgeCivBrickTotal', 'Edit ➔');
+
+        if (site.floorEnabled === false) safeSetText('badgeCivFloorTotal', 'Disabled');
+        else if (site.civilRateOnlyMode) safeSetText('badgeCivFloorTotal', 'Unit Rates');
+        else if (flTot > 0) animateNumberRoll('badgeCivFloorTotal', flTot, "Rs. ");
+        else safeSetText('badgeCivFloorTotal', 'Edit ➔');
     }
 }
 function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
@@ -1674,7 +1732,7 @@ function renderVerticalTaxRowsHtml(basicCost, taxSlab) {
     return `<div class="tax-split-row"><span class="tax-lbl">${taxSlab.name}:</span><span class="tax-amt">${taxAmt > 0 ? '₹ ' + taxAmt.toLocaleString('en-IN') : '-'}</span></div>`;
 }
 
-// 20. LIVE PREVIEW ENGINE
+// 20. LIVE PREVIEW ENGINE (COMBINE RATE GLITCH FULLY FIXED)
 function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     const site = getCurrentSite(); if (!site) return;
     const isRateOnly = site.rateOnlyMode === true, isCivilRateOnly = site.civilRateOnlyMode === true, isSqft = isSqftMode(site);
@@ -2005,7 +2063,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 animateNumberRoll('pdfFinBasic', basic, "Rs. "); safeSetHtml('pdfTaxBreakdownRows', renderVerticalTaxRowsHtml(basic, tax));
                 animateNumberRoll('pdfFinGrand', grand, "Rs. "); triggerTotalBarShimmer();
                 const shedAvgBox = document.getElementById('pdfShedAvgRateBox');
-                if (shedAvgBox) {if (sqft > 0 && !isRateOnly && grand > 0) {
+                if (shedAvgBox) {
+                    if (sqft > 0 && !isRateOnly && grand > 0) {
                         safeSetText('pdfShedAvgRateLabel', 'SHED RATE / SQ.FT:');
                         safeSetText('pdfShedAvgRateVal', `₹ ${Math.round(grand / sqft).toLocaleString('en-IN')} / Sq.Ft`);
                         shedAvgBox.style.display = 'flex';
@@ -2085,8 +2144,8 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                         if (it.enabled !== false) {
                             const tot = (parseFloat(it.qty) || 0) * (parseFloat(it.rate) || 0); civilTotalBasic += tot;
                             rowsHtml += isCivilRateOnly ?
-                                `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` :
-                                `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
+                                `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilCatTitleEdit(${cIdx},${idx},this)">${it.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td></tr>` :
+                                `<tr><td style="text-align:center;font-weight:900;">${idx + 1}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilCatTitleEdit(${cIdx},${idx},this)">${it.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_qty')">${formatRawOrDash(it.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilCustomCatUnitPicker(${cIdx},${idx})">${it.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civcat_${cIdx}_${idx}_rate')">${formatRawOrDash(it.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${tot > 0 ? '₹ ' + Math.round(tot).toLocaleString('en-IN') : '-'}</td></tr>`;
                         }
                     });
                     customCivWrapper.innerHTML += `<div class="civil-category-title-bar"><span style="font-size:calc(9.5px * var(--pdf-font-scale));">${cat.categoryName}:</span></div><div class="table-wrapper"><table class="civil-schedule-table"><thead>${cleanCivHead}</thead><tbody>${rowsHtml}</tbody></table></div>`;
@@ -2114,19 +2173,59 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
         safeSetHtml('civilPdfSignImgBox', appSettings.signatureData ? `<img src="${appSettings.signatureData}" style="max-height:44px;width:auto;display:block;margin:0 auto;">` : '');
     }
 
-    // COMBINED PACKAGE STRIP
-    const p1CombBox = document.getElementById('pdfCombinedPackageBox'), p2CombBox = document.getElementById('civilPdfCombinedPackageBox');
-    const isCivilActuallyValued = (civilGrandTotal > 0 || civilTotalBasic > 0);
-    if (isShedActive && isCivilActive && isCivilActuallyValued) {
-        const totalComb = shedGrandTotal + civilGrandTotal, combRate = sqft > 0 ? Math.round(totalComb / sqft) : 0;
+    // ⭐ COMBINED PACKAGE STRIP (BUG SOLVED: SHED ONLY / CIVIL EMPTY PAR BILKUL HIDE RAHEGA) ⭐
+    const p1CombBox = document.getElementById('pdfCombinedPackageBox');
+    const p2CombBox = document.getElementById('civilPdfCombinedPackageBox');
+    const isCombinedMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft');
+
+    // Check if Civil actually has any entered quantity & rate work
+    let civilHasEnteredWork = false;
+    if (site.civilData) {
+        ['foundation', 'brickWall', 'flooring'].forEach(sec => {
+            const isSecEnabled = site[sec === 'foundation' ? 'foundEnabled' : (sec === 'brickWall' ? 'brickEnabled' : 'floorEnabled')] !== false;
+            if (isSecEnabled) {
+                (site.civilData[sec]?.items || []).forEach(it => {
+                    if (it.enabled !== false && (parseFloat(it.qty) || 0) > 0 && (parseFloat(it.rate) || 0) > 0) {
+                        civilHasEnteredWork = true;
+                    }
+                });
+            }
+        });
+    }
+    (site.civilCustomCategories || []).forEach(cat => {
+        if (cat.enabled !== false) {
+            (cat.items || []).forEach(it => {
+                if (it.enabled !== false && (parseFloat(it.qty) || 0) > 0 && (parseFloat(it.rate) || 0) > 0) {
+                    civilHasEnteredWork = true;
+                }
+            });
+        }
+    });
+
+    const shouldShowCombined = isCombinedMode && 
+                               isShedActive && 
+                               isCivilActive && 
+                               civilHasEnteredWork && 
+                               civilGrandTotal > 0 && 
+                               shedGrandTotal > 0 && 
+                               sqft > 0 && 
+                               !isRateOnly && 
+                               !isCivilRateOnly;
+
+    if (shouldShowCombined) {
+        const totalComb = shedGrandTotal + civilGrandTotal;
+        const combRate = sqft > 0 ? Math.round(totalComb / sqft) : 0;
         const combHtml = `
-            <div class="comb-row"><span>Shed Project Area:</span><b>${sqft > 0 ? sqft.toLocaleString('en-IN') + ' Sq.Ft' : '-'}</b></div>
-            <div class="comb-row"><span>Combined Contract Total (Shed + Civil):</span><b>${totalComb > 0 ? '₹ ' + Math.round(totalComb).toLocaleString('en-IN') : '-'}</b></div>
-            <div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b>${combRate > 0 ? '₹ ' + combRate.toLocaleString('en-IN') : '-'} / Sq.Ft</b></div>`;
-        if (p1CombBox) { p1CombBox.innerHTML = combHtml; p1CombBox.style.display = isRateOnly ? 'none' : 'flex'; }
-        if (p2CombBox) { p2CombBox.innerHTML = combHtml; p2CombBox.style.display = isCivilRateOnly ? 'none' : 'flex'; }
+            <div class="comb-row"><span>Shed Project Area:</span><b>${sqft.toLocaleString('en-IN')} Sq.Ft</b></div>
+            <div class="comb-row"><span>Combined Contract Total (Shed + Civil):</span><b id="combContractTotalDisplay">₹ ${Math.round(totalComb).toLocaleString('en-IN')}</b></div>
+            <div class="comb-rate-pill"><span>COMBINED RATE / SQ.FT:</span><b id="combRatePerSqftDisplay">₹ ${combRate.toLocaleString('en-IN')} / Sq.Ft</b></div>`;
+        if (p1CombBox) { p1CombBox.innerHTML = combHtml; p1CombBox.style.display = 'flex'; }
+        if (p2CombBox) { p2CombBox.innerHTML = combHtml; p2CombBox.style.display = 'flex'; }
+        animateNumberRoll('combContractTotalDisplay', totalComb, "₹ ");
+        animateNumberRoll('combRatePerSqftDisplay', combRate, "₹ ", " / Sq.Ft");
     } else {
-        if (p1CombBox) p1CombBox.style.display = 'none'; if (p2CombBox) p2CombBox.style.display = 'none';
+        if (p1CombBox) { p1CombBox.innerHTML = ''; p1CombBox.style.display = 'none'; }
+        if (p2CombBox) { p2CombBox.innerHTML = ''; p2CombBox.style.display = 'none'; }
     }
 
     // COMPANY BANK ACCOUNT DETAILS
@@ -2717,4 +2816,3 @@ window.onload = function() {
     initSamsungBootAnimation(); 
     setTimeout(attachDynamicPreviewObserver, 200);
 };
-                    
