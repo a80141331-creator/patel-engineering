@@ -265,7 +265,7 @@ function checkFirstTimeAuthentication(isRemoteKick = false) {
 function verifyMasterPasscode() {
     const entered = (document.getElementById('inpMasterPasscode')?.value || "").trim().toUpperCase(), err = document.getElementById('authErrorMsg');
     if (entered === masterSecurityPasscode) {
-        triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration(); localStorage.setItem('pe_app_auth_token', masterSecurityPasscode);
+        triggerHaptic(50); playAppSound('chime'); localStorage.setItem('pe_app_auth_token', masterSecurityPasscode);
         const lock = document.getElementById('appFirstTimeLockScreen'); if (lock) { lock.style.opacity = '0'; setTimeout(() => { lock.style.display = 'none'; }, 400); }
     } else {
         triggerHaptic(100); if (err) { err.innerText = "⚠️ Invalid Passcode. Access Denied!"; err.style.display = 'block'; setTimeout(() => { err.style.display = 'none'; }, 3000); }
@@ -488,7 +488,7 @@ function autoFitPreview() {
         const availableWidth = viewport.clientWidth || viewport.offsetWidth;
         if (availableWidth > 0) {
             let baseFit = availableWidth / 746;
-            if (baseFit > 1.15 && isDesktop) { baseFit = 1.0; wrapper.style.marginLeft = `${Math.round((availableWidth - 746) / 2)}px`; } else wrapper.style.marginLeft = '0px';
+            if (baseFit > 1.15 && isDesktop) { baseFit = 1.0; wrapper.style.marginLeft = '0px'; } else wrapper.style.marginLeft = '0px';
             wrapper.style.transformOrigin = 'top left'; wrapper.style.transform = `scale(${baseFit})`;
             const unscaledHeight = sheet.offsetHeight || wrapper.offsetHeight;
             wrapper.style.marginBottom = (baseFit !== 1.0 && unscaledHeight > 0) ? `-${Math.round(unscaledHeight * (1 - baseFit))}px` : '0px';
@@ -501,7 +501,7 @@ function autoFitPreview() {
         const cWidth = civilVp.clientWidth || civilVp.offsetWidth;
         if (cWidth > 0) {
             let cBaseFit = cWidth / 746;
-            if (cBaseFit > 1.15 && isDesktop) { cBaseFit = 1.0; civilWrap.style.marginLeft = `${Math.round((cWidth - 746) / 2)}px`; } else civilWrap.style.marginLeft = '0px';
+            if (cBaseFit > 1.15 && isDesktop) { cBaseFit = 1.0; civilWrap.style.marginLeft = '0px'; } else civilWrap.style.marginLeft = '0px';
             civilWrap.style.transformOrigin = 'top left'; civilWrap.style.transform = `scale(${cBaseFit})`;
             const cUnscaledHeight = (civilSheet && civilSheet.offsetHeight) ? civilSheet.offsetHeight : civilWrap.offsetHeight;
             civilWrap.style.marginBottom = (cBaseFit !== 1.0 && cUnscaledHeight > 0) ? `-${Math.round(cUnscaledHeight * (1 - cBaseFit))}px` : '0px';
@@ -1259,7 +1259,6 @@ function openModuleModal(type) {
             inputsBox.innerHTML = `<div style="font-size:11px;font-weight:800;color:#0369a1;background:#e0f2fe;padding:6px 9px;border-radius:6px;border:1px solid #7dd3fc;">ℹ️ Sq.Ft Mode: Har member ki Length, Width, Thickness & Unit fill karein.</div>`;
             renderSqftPrimaryChecklist(site.sqftPrimSpecs || []);
         } else {
-            if (subNotice) subNotice.innerText = "Title, header line & specifications control";
             inputsBox.innerHTML = `
                 <div class="row-3">
                     <div class="form-group" style="margin:0;"><label>Unit</label><button type="button" class="theme-unit-btn btn-3d-secondary btn-ripple" onclick="openThemeUnitPickerForMod('prim')">${site.primUnit || 'Kg'} ▾</button></div>
@@ -2160,7 +2159,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 21. FLOW ENGINE (WITH FIXED ACCESSORIES TABLE SELECTION)
+// 21. FLOW ENGINE (SLICES PAGES WITH TOP MARGINS & CONTINUATION HEADER)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -2222,6 +2221,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                 curTbody.removeChild(rowClone); lockTableBottomBorder(curTable);
                 document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                 pageNum++; curPage = createPageBox(true);
+                // ⭐ नए पेज (Page 2) के ऊपर कंपनी की छोटी हेडर पट्टी ⭐
                 const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                 contBar.innerHTML = `<span>PATEL ENGINEERING — SHED QUOTATION (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                 curPage.appendChild(contBar);
@@ -2237,7 +2237,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
         lockTableBottomBorder(curTable);
 
-        // ⭐ FIXED ACCESSORIES SELECTION: DOES NOT FAIL OR REMOVE THE BLOCK ⭐
+        // ⭐ ACCESSORIES DETAILS TABLE (BUG FIXED - TABLE THEAD & BODY FIXED) ⭐
         if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
             const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
             const accThead = sec3AccOrig.querySelector('table thead')?.cloneNode(true);
@@ -2259,6 +2259,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                     if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
                     document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                     pageNum++; curPage = createPageBox(true);
+                    // ⭐ ACCESSORIES NEW PAGE CONTINUATION HEADER ⭐
                     const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                     contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                     curPage.appendChild(contBar);
@@ -2290,7 +2291,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             appendPageToOutput(outputContainer, curPage, false);
             pageNum++; curPage = createPageBox(true);
             const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — COMMERCIAL TERMS & SIGNATURES</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+            contBar.innerHTML = `<span>PATEL ENGINEERING — COMMERCIAL TERMS & SIGNATURES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
             curPage.appendChild(contBar); curPage.appendChild(finalBlock);
             testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
         }
@@ -2384,7 +2385,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
             appendPageToOutput(outputContainer, curPage, false);
             pageNum++; curPage = createPageBox(true);
             const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
-            contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL TERMS & SUMMARY</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
+            contBar.innerHTML = `<span>PATEL ENGINEERING — CIVIL TERMS & SUMMARY (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
             curPage.appendChild(contBar); curPage.appendChild(civilFinalBlock);
             testStage.innerHTML = ''; testStage.appendChild(curPage); document.body.appendChild(testStage);
         }
@@ -2392,49 +2393,76 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. ⭐ TRUE VECTOR TEXT PDF GENERATOR ENGINE ⭐
+// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR ENGINE ⭐
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}`;
     
-    triggerHaptic(50); playAppSound('chime'); fireConfettiCelebration();
+    triggerHaptic(50); playAppSound('chime');
+
+    // पुराना कंटेनर साफ़ करें अगर मौजूद हो
+    const oldCont = document.getElementById('vectorPrintOutputContainer');
+    if (oldCont) oldCont.remove();
+
+    const source = document.getElementById('printableA4Sheet');
+    if (!source) return;
+
+    const clone = source.cloneNode(true);
+    clone.style.setProperty('--pdf-scale', '1.0');
+    clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
+    clone.querySelectorAll('.preview-unit-pill').forEach(pill => {
+        pill.innerText = pill.innerText.replace('▾', '').trim();
+        pill.style.cssText = 'color:#000;background:transparent;border:none;box-shadow:none;padding:0;font-weight:700;';
+    });
+    clone.querySelector('.page-physical-gap')?.remove();
+
+    const outputContainer = document.createElement('div');
+    outputContainer.id = 'vectorPrintOutputContainer';
+
+    const p1 = clone.querySelector('#page1MsStructure');
+    const p2 = clone.querySelector('#civilDedicatedPageSheet');
 
     const isBothMode = (site.quoteType === 'both' || site.quoteType === 'both_sqft');
     const isShedOnly = (site.quoteType === 'shed' || site.quoteType === 'shed_sqft');
     const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
-    const p1 = document.getElementById('page1MsStructure');
-    const p2 = document.getElementById('civilDedicatedPageSheet');
-    const gap = document.getElementById('civilPageGapDivider');
+    // स्लाइसिंग इंजन चलाएं ताकि Page 2 पर छोटी पट्टी और टॉप मार्जिन आए
+    if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
+    if (shouldIncludeShed && shouldIncludeCivil) {
+        const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
+        if (lastPage) lastPage.classList.add('has-page-break');
+    }
+    if (shouldIncludeCivil && p2) {
+        p2.style.display = 'block';
+        buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
+    }
 
-    const origP1 = p1 ? p1.style.display : '';
-    const origP2 = p2 ? p2.style.display : '';
-    const origGap = gap ? gap.style.display : '';
+    // स्लाइस्ड कंटेनर को DOM में जोड़ें और प्रिंट फ्लैग ऑन करें
+    const targetParent = document.getElementById('scalingWrapper') || document.body;
+    targetParent.appendChild(outputContainer);
+    document.body.classList.add('is-printing-vector');
 
-    if (!shouldIncludeShed && p1) p1.style.setProperty('display', 'none', 'important');
-    if (!shouldIncludeCivil && p2) p2.style.setProperty('display', 'none', 'important');
-    if ((!shouldIncludeShed || !shouldIncludeCivil) && gap) gap.style.setProperty('display', 'none', 'important');
+    const cleanupPrint = () => {
+        document.body.classList.remove('is-printing-vector');
+        const cont = document.getElementById('vectorPrintOutputContainer');
+        if (cont) cont.remove();
+        fireConfettiCelebration(); // कन्फेटी प्रिंट के बाद ही चलेगा
+    };
 
-    // 🌟 1. ANDROID NATIVE VECTOR PRINT (ZERO BLUR, CRISP REAL FONTS)
+    // 🌟 1. ANDROID NATIVE VECTOR PRINT (SLICED MULTI-PAGE TRUE VECTOR)
     if (window.PatelNativeEngine?.printNativeVectorPdf) {
         window.PatelNativeEngine.printNativeVectorPdf(fileName);
-        setTimeout(() => {
-            if (p1) p1.style.display = origP1;
-            if (p2) p2.style.display = origP2;
-            if (gap) gap.style.display = origGap;
-        }, 1200);
+        setTimeout(cleanupPrint, 3000);
         return;
     }
 
-    // 🌟 2. BROWSER VECTOR PRINT (SAVE AS PDF - 100% VECTOR QUALITY)
+    // 🌟 2. BROWSER VECTOR PRINT (SAVE AS PDF)
     if (window.print) {
         window.print();
-        if (p1) p1.style.display = origP1;
-        if (p2) p2.style.display = origP2;
-        if (gap) gap.style.display = origGap;
+        setTimeout(cleanupPrint, 1000);
         return;
     }
 }
@@ -2631,11 +2659,18 @@ function saveSignature() {
     closeSigModal(); refreshLivePdfPreviewSheet(); showCorporateToast("Digital Signature Saved Successfully!", "✍️");
 }
 window.onload = function() {
-    checkFirstTimeAuthentication(); initCloudFirstMasterSync(); renderHomeScreen(); loadPhoneSettingsUI();
-    applyScaleToSheet(); autoDetectDeviceMode(); updateHeaderBannersUI();
+    checkFirstTimeAuthentication(); 
+    initCloudFirstMasterSync(); 
+    renderHomeScreen(); 
+    loadPhoneSettingsUI();
+    applyScaleToSheet(); 
+    autoDetectDeviceMode(); 
+    updateHeaderBannersUI();
     if (appSettings.logoData) {
         const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
-        if (fav) fav.href = appSettings.logoData; if (appleFav) appleFav.href = appSettings.logoData;
+        if (fav) fav.href = appSettings.logoData; 
+        if (appleFav) appleFav.href = appSettings.logoData;
     }
-    initSamsungBootAnimation(); setTimeout(attachDynamicPreviewObserver, 200);
+    initSamsungBootAnimation(); 
+    setTimeout(attachDynamicPreviewObserver, 200);
 };
