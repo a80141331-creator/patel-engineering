@@ -7,18 +7,15 @@
     <link rel="icon" type="image/svg+xml" id="dynamicAppFavicon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%230f2942' stroke='%23ca8a04' stroke-width='16'/%3E%3Ctext x='50%25' y='57%25' font-family='Arial,sans-serif' font-weight='900' font-size='220' fill='%23fef08a' text-anchor='middle' dominant-baseline='middle'%3EPE%3C/text%3E%3Ctext x='50%25' y='435' font-family='Arial,sans-serif' font-weight='900' font-size='34' fill='%23ffffff' text-anchor='middle' letter-spacing='8'%3EPATEL%3C/text%3E%3C/svg%3E">
     <link rel="apple-touch-icon" id="dynamicAppleIcon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%230f2942' stroke='%23ca8a04' stroke-width='16'/%3E%3Ctext x='50%25' y='57%25' font-family='Arial,sans-serif' font-weight='900' font-size='220' fill='%23fef08a' text-anchor='middle' dominant-baseline='middle'%3EPE%3C/text%3E%3Ctext x='50%25' y='435' font-family='Arial,sans-serif' font-weight='900' font-size='34' fill='%23ffffff' text-anchor='middle' letter-spacing='8'%3EPATEL%3C/text%3E%3C/svg%3E">
     <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#0c1e30">
-    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <!-- CELEBRATION EFFECTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- GOOGLE FONTS -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="mode-phone">
     <div id="appToastContainer" class="toast-container"></div>
-    
     <!-- MASTER GATEWAY -->
     <div id="appFirstTimeLockScreen" class="master-auth-overlay" style="display:none;">
         <div class="auth-card card-3d">
@@ -31,7 +28,6 @@
             <p style="font-size:10.5px;color:#64748b;margin-top:10px;">* Master passcode badalte hi unauthorized devices lock ho jayenge.</p>
         </div>
     </div>
-
     <!-- 3D BOOT ANIMATION -->
     <div id="appBootSplashScreen" class="shed-assembly-overlay" onclick="skipBootAnimation()">
         <div class="shed-light-mesh"></div><div class="shed-truss-lines"></div>
@@ -43,7 +39,6 @@
             <div class="shed-assembly-beam"></div>
         </div>
     </div>
-
     <!-- SCREEN 1: HOME -->
     <div id="screenHome" class="app-view active">
         <header class="top-bar bar-3d">
@@ -70,7 +65,6 @@
             <h3 class="section-title">Recent Client Sites (Touch To Open)</h3><div id="sitesListContainer"></div>
         </div>
     </div>
-
     <!-- SCREEN 2: CREATE SITE -->
     <div id="screenCreateSite" class="app-view">
         <header class="top-bar bar-3d">
@@ -99,7 +93,6 @@
         </div>
         <div class="fixed-bottom-bar"><div class="bottom-bar-inner"><button class="btn-main btn-3d-main btn-ripple" onclick="saveNewBlankSiteAndOpen()">💾 CREATE & ENTER SITE DASHBOARD →</button></div></div>
     </div>
-
     <!-- SCREEN 3: SHED DASHBOARD -->
     <div id="screenSiteDashboard" class="app-view">
         <header class="top-bar bar-3d">
@@ -151,7 +144,6 @@
                         <div id="customModulesListContainer" class="modules-grid-container" style="margin-top:-3px;"></div>
                     </div>
                 </div>
-                
                 <!-- PREVIEW PANE -->
                 <div class="dash-preview-pane">
                     <div class="pane-scroll-nav"><span class="pane-title-badge">📑 Document Preview</span><div class="scroll-btns-wrap"><button type="button" class="btn-pane-scroll" onclick="scrollPreviewPane(-320)">▲ Upar</button><button type="button" class="btn-pane-scroll" onclick="scrollPreviewPane(320)">▼ Neeche</button></div></div>
@@ -218,7 +210,7 @@
                                                     <div id="rateOnlyNoticeBox" class="rate-only-contract-bar"><b>🏷️ RATE CONTRACT BASIS QUOTATION</b><span>Quotation prepared on Rate Contract Basis. Amounts & Grand Total excluded as per client request.</span></div>
                                                 </div>
                                             </div>
-                                            <!-- BANK DETAILS DIAGRAM -->
+                                            <!-- BANK DETAILS DIAGRAM (WHITE THEMED ACCENTS) -->
                                             <div id="pdfCompanyBankDetailsBox" class="company-bank-card-diagram" style="display:none;">
                                                 <div class="bank-card-head"><span style="color:#ffffff !important;">🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):</span></div>
                                                 <div class="bank-card-grid">
@@ -238,9 +230,7 @@
                                             <!-- FOOTER -->
                                             <div class="geo-footer-wrapper"><div class="footer-full-bar"><div class="footer-row-item"><span id="pdfFooterPhonesWrap">📞 <b>Phones:</b> <span id="pdfFooterPhones">-</span></span><span class="gstin-pill-inline">📑 GSTIN: <b id="pdfCompanyGst">08AHFPL0222M2ZF</b></span></div><div class="footer-row-item"><span>📍 <span id="pdfFooterAddrMini">Bhawani Nagar, Bhilwara - 311001 (Raj.)</span></span><span id="pdfFooterEmailWrap">✉️ <span id="pdfFooterEmail">-</span></span><span id="pdfFooterWebWrap">🌐 <span id="pdfFooterWebDisplay">-</span></span></div></div></div>
                                         </div>
-                                        
                                         <div class="page-physical-gap" id="civilPageGapDivider" style="display:none;"></div>
-                                        
                                         <!-- PAGE 2: CIVIL -->
                                         <div class="a4-page-box civil-dedicated-page" id="civilDedicatedPageSheet" style="display:none;">
                                             <div class="geo-header-wrapper"><div class="top-accent-bar"></div><div class="header-logo-area"><img id="civilPdfHeaderBannerImg" class="brand-banner-img" src="" alt="PATEL ENGINEERING"></div><div class="header-quote-poly-block"><div class="quote-main-heading editable-preview-title" id="civilPdfRibbonTitle" contenteditable="true" onblur="syncPermanentTextLive('civilPdfRibbonTitle',this)">QUOTATION</div><div class="quote-meta-list"><div>Quote Ref: <b id="civilPdfQuoteNo">PE/2026/01</b></div><div>Issue Date: <b id="civilPdfCurrentDate">20 Oct 2026</b></div></div></div></div>
@@ -301,7 +291,6 @@
         </div>
         <div class="fixed-bottom-bar bar-3d"><div class="bottom-bar-inner" id="dynamicPdfDownloadActionsBar"></div></div>
     </div>
-
     <!-- SCREEN 4: CIVIL DASHBOARD -->
     <div id="screenCivilDashboard" class="app-view">
         <header class="top-bar bar-3d"><div class="nav-back-title"><button class="icon-btn btn-3d-secondary btn-ripple" onclick="handleCivilBackNav()">← Back</button><div><h2 id="civilDashSiteName" style="font-size:14px;">Civil Work Manager</h2><p style="font-size:10.5px;color:var(--gold-light);" id="civilDashQuoteNo">Civil Scope</p></div></div><div class="top-actions"><div class="device-mode-pill pill-3d"><button class="btn-device-mode btn-device-phone btn-ripple" onclick="setDeviceViewMode('phone',true)">📱</button><button class="btn-device-mode btn-device-tab btn-ripple" onclick="setDeviceViewMode('tab',true)">💻</button><button class="btn-device-mode btn-device-desktop btn-ripple" onclick="setDeviceViewMode('desktop',true)">🖥️</button></div></div></header>
@@ -311,7 +300,7 @@
                     <button type="button" class="btn-edit-cust-trigger btn-ripple" onclick="openEditCustomerModal()"><span class="icon">👤</span><div class="text-wrap"><strong>EDIT CUSTOMER & QUOTATION DETAILS</strong><small>Change Name, Phone, Address & Switch Mode</small></div><span class="arrow">➔</span></button>
                     <div class="compact-toggle-bar" id="civilCompactToggleBar" style="margin-bottom:10px;"><div class="toggle-pill-btn btn-3d-press btn-ripple" id="pillBtnCivilScreenCivRateMode" onclick="toggleCivilRateOnlyMode()"><span id="pillTxtCivilScreenCivRateMode">Civil BOQ</span><span class="pill-indicator"></span></div></div>
                     <div class="card card-accent-top card-3d"><div style="display:flex;justify-content:space-between;align-items:center;"><div><span class="card-eyebrow">Civil Scope (Page Header)</span><h4 id="civilScopeDescPreviewTxt" style="font-size:12px;font-weight:800;color:#0f172a;margin-top:2px;">TECHNICAL SPECIFICATION SCHEDULE FOR CIVIL & RCC WORKS</h4></div><button class="btn-secondary btn-3d-secondary btn-ripple" style="padding:5px 10px;font-size:11px;" onclick="openCivilScopeModal()">📝 Edit Scope</button></div></div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:6px;"><h3 class="section-title" style="margin:0;">Civil Specifications Cards</h3><button class="btn-secondary btn-3d-secondary btn-ripple" style="padding:4px 8px;font-size:10.5px;" onclick="openAddUniversalModuleModal('civil')">➕ Add Civil Module</button></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin:10px 0 6px;"><h3 class="section-title" style="margin:0;">Civil Specifications Cards</h3><button class="btn-secondary btn-3d-secondary btn-ripple" style="padding:4px 8px;font-size:10.5px;" onclick="openAddUniversalModuleModal('civil')">➕ Add Civil Module</button></div>
                     <div class="modules-grid-container">
                         <div class="module-grid-card card-3d-press btn-ripple" id="cardCivFound" style="border-left:4px solid #16a34a;" onclick="openCivilParamModal('foundation')"><span class="mod-switch-pill on" id="badgeCivFoundStatus" onclick="event.stopPropagation();toggleCivilModuleActiveState('foundation')">ON</span><div><div class="mod-card-top"><span class="mod-card-icon">🧱</span><span class="mod-card-title" id="dashBtnTitleFoundation">1. Foundation Details</span></div><span class="mod-card-tag">Footing, RCC Column, Steel</span></div><span class="mod-card-badge" id="badgeCivFoundTotal" style="background:#166534;">Edit ➔</span></div>
                         <div class="module-grid-card card-3d-press btn-ripple" id="cardCivBrick" style="border-left:4px solid #16a34a;" onclick="openCivilParamModal('brickWall')"><span class="mod-switch-pill on" id="badgeCivBrickStatus" onclick="event.stopPropagation();toggleCivilModuleActiveState('brickWall')">ON</span><div><div class="mod-card-top"><span class="mod-card-icon">🧱</span><span class="mod-card-title" id="dashBtnTitleBrick">2. Brick Wall Details</span></div><span class="mod-card-tag">Stone Foundation, DPC, Plaster</span></div><span class="mod-card-badge" id="badgeCivBrickTotal" style="background:#166534;">Edit ➔</span></div>
@@ -330,7 +319,6 @@
             </div>
         </div>
     </div>
-
     <!-- SCREEN 5: SETTINGS -->
     <div id="screenSettings" class="app-view">
         <header class="top-bar bar-3d"><div class="nav-back-title"><button class="icon-btn btn-3d-secondary btn-ripple" onclick="openScreen('screenHome')">← Back</button><h2>Settings & Custom Details</h2></div></header>
@@ -362,7 +350,6 @@
             </div>
         </div>
     </div>
-
     <!-- MODAL: BANK DETAILS -->
     <div id="companyBankDetailsModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:90vh;">
@@ -374,7 +361,6 @@
             <div style="display:flex;gap:8px;margin-top:14px;"><button class="btn-del-pro btn-ripple" style="flex:1;justify-content:center;padding:10px;" onclick="clearCompanyBankDetails()">🗑️ Clear (Make Blank)</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveCompanyBankDetails()">✓ SAVE BANK DETAILS</button></div>
         </div>
     </div>
-
     <!-- MODAL: CLIENT MULTI-QUOTES -->
     <div id="clientQuotesModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:92vh;overflow-y:auto;">
@@ -383,7 +369,6 @@
             <div style="display:flex;gap:8px;"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeModalSafe('clientQuotesModal')">Close</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="createNewQuoteForCurrentGroup()">➕ Create New Quote For This Client</button></div>
         </div>
     </div>
-
     <!-- MODAL: SAVED CLIENT PICKER -->
     <div id="savedClientModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:85vh;overflow-y:auto;">
@@ -392,7 +377,6 @@
             <button class="btn-secondary btn-3d-secondary btn-ripple" style="width:100%;justify-content:center;padding:10px;" onclick="closeModalSafe('savedClientModal')">Cancel</button>
         </div>
     </div>
-
     <!-- MODAL: EDIT CUSTOMER -->
     <div id="editCustomerModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:94vh;">
@@ -416,7 +400,6 @@
             <div style="display:flex;gap:8px;margin-top:12px;"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeEditCustomerModal()">Cancel</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveEditCustomerDetails()">✓ SAVE & SWITCH DASHBOARD</button></div>
         </div>
     </div>
-
     <!-- MODAL: CHANGE MASTER PASSCODE -->
     <div id="changePasscodeModal" class="modal">
         <div class="modal-body modal-3d">
@@ -426,7 +409,6 @@
             <div style="display:flex;gap:8px;margin-top:12px;"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeChangePasscodeModal()">Cancel</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveNewMasterPasscode()">UPDATE PASSCODE</button></div>
         </div>
     </div>
-
     <!-- MODAL: CIVIL PARAMETERS -->
     <div id="civilParamModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:94vh;">
@@ -435,7 +417,6 @@
             <div style="display:flex;gap:8px;"><button type="button" class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;justify-content:center;padding:10px;font-weight:800;" onclick="addCustomRowToActiveCivilSection()">➕ Add Item</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="closeCivilParamModal()">✓ DONE / SAVE</button></div>
         </div>
     </div>
-
     <!-- MODAL: UNIVERSAL MODULE ADDER -->
     <div id="universalModuleModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:92vh;overflow-y:auto;">
@@ -453,7 +434,6 @@
             <div style="display:flex;gap:8px;margin-top:12px;"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeUniversalModuleModal()">Cancel</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveUniversalModule()">SAVE MODULE</button></div>
         </div>
     </div>
-
     <!-- MODAL: CIVIL SCOPE -->
     <div id="civilScopeModal" class="modal">
         <div class="modal-body modal-3d">
@@ -462,7 +442,6 @@
             <div style="display:flex;gap:8px;margin-top:12px;"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeCivilScopeModal()">Cancel</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="saveCivilScopeModal()">SAVE SCOPE</button></div>
         </div>
     </div>
-
     <!-- MODAL: PERMANENT TEXTS -->
     <div id="permanentTextsModal" class="modal">
         <div class="modal-body modal-3d" style="max-height:94vh;">
@@ -509,7 +488,6 @@
             <button class="btn-main btn-3d-main btn-ripple" onclick="closePermanentTextsModal()">✓ DONE / CLOSE</button>
         </div>
     </div>
-
     <!-- MODAL: MODULE SELECTION -->
     <div id="moduleSelectionModal" class="modal">
         <div class="modal-body modal-3d">
@@ -522,23 +500,17 @@
             <button class="btn-main btn-3d-main btn-ripple" onclick="closeModuleModal()">✓ DONE / CLOSE</button>
         </div>
     </div>
-
     <!-- MODAL: TAX PICKER -->
     <div id="taxModal" class="modal"><div class="modal-body modal-3d"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><h3 style="font-size:14.5px;font-weight:800;color:#000;" id="taxModalHeadingTitle">Choose Applicable Tax Slab</h3><button class="btn-del-pro btn-ripple" onclick="closeTaxPickerModal()">✕ Close</button></div><div id="taxSlabListContainer"></div></div></div>
-    
     <!-- MODAL: LARGE INPUT -->
     <div id="largeInputModal" class="modal"><div class="modal-body modal-3d"><h3 id="largeInputTitle" style="margin-bottom:8px;font-size:14.5px;color:#000;">Edit Detail</h3><textarea id="largeInputTextarea" rows="5" style="width:100%;padding:9px;border:1.5px solid #cbd5e1;border-radius:7px;font-size:13px;" oninput="autoSaveLargeInputLive()"></textarea><div style="display:flex;gap:8px;margin-top:10px;"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="closeLargeInput()">Close</button><button class="btn-main btn-3d-main btn-ripple" style="flex:2;" onclick="closeLargeInput()">✓ SAVED / DONE</button></div></div></div>
-    
     <!-- MODAL: SIGNATURE -->
     <div id="sigModal" class="modal"><div class="modal-body modal-3d"><h3 style="margin-bottom:6px;font-size:14.5px;color:#000;">Touchpad Digital Signature</h3><canvas id="sigPad"></canvas><div style="display:flex;gap:8px;margin-top:10px;"><button class="btn-del-pro btn-ripple" onclick="clearSignature()">Clear</button><button class="btn-secondary btn-3d-secondary btn-ripple" onclick="closeSigModal()">Cancel</button><button class="btn-main btn-3d-main btn-ripple" onclick="saveSignature()">SAVE SIGNATURE</button></div></div></div>
-    
     <!-- MODAL: UNIT PICKER -->
     <div id="unitPickerModal" class="modal"><div class="modal-body modal-3d"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:2px solid var(--header-bg);padding-bottom:6px;"><div><h3 style="font-size:14.5px;font-weight:900;color:#0f2942;">📏 Select Engineering Unit</h3><p style="font-size:10.5px;color:#64748b;">Choose standard engineering units</p></div><button class="btn-del-pro btn-ripple" onclick="closeUnitPickerModal()">✕ Close</button></div><div class="unit-picker-grid" id="unitPickerGrid"></div></div></div>
-    
     <!-- MODAL: ALERT & CONFIRM -->
     <div id="customAlertModal" class="confirm-dialog-modal"><div class="confirm-card card-3d"><h3 id="alertModalTitle" style="color:var(--header-bg);">Notification</h3><p id="alertModalDesc">Message text</p><button class="btn-main btn-3d-main btn-ripple" onclick="closeAppAlert()">OK</button></div></div>
     <div id="customConfirmModal" class="confirm-dialog-modal"><div class="confirm-card card-3d"><h3 id="confirmTitle">Confirm Action</h3><p id="confirmDesc">Are you sure?</p><div class="confirm-actions"><button class="btn-secondary btn-3d-secondary btn-ripple" style="flex:1;" onclick="resolveCustomConfirm(false)">Cancel</button><button class="btn-del-pro btn-ripple" style="flex:1;justify-content:center;padding:9px;" onclick="resolveCustomConfirm(true)">Delete</button></div></div></div>
-    
     <!-- INLINE CLIENT PICKER SCRIPT -->
     <script>
         let currentClientPickerTarget = 'create';
@@ -578,4 +550,4 @@
     </script>
     <script src="app.js"></script>
 </body>
-</html>
+                                                                                                                                                                 </html>
