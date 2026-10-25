@@ -1956,7 +1956,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                             const tr = document.createElement('tr'); tr.className = "sortable-item"; tr.dataset.sortIndex = aIdx;
                             tr.innerHTML = isRateOnly ?
                                 `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx},this)">${a.name}</b></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'rate',this)">${formatRawOrDash(a.rate)}</span></td>` :
-                                `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx},this)">${a.name}</b></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'qty',this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(${aIdx},'rate',this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right;font-weight:900;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
+                                `<td><span class="drag-handle" id="handle_acc_${aIdx}" title="Drag to reorder">⋮⋮</span> <b class="editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncAccTitleEdit(${aIdx},this)">${a.name}</b></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'qty',this)">${formatRawOrDash(a.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openThemeUnitPickerForAcc(${aIdx})">${a.unit || 'Nos'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewAccEdit(${aIdx},'rate',this)">${formatRawOrDash(a.rate)}</span></td><td style="text-align:right;font-weight:900;">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : '-'}</td>`;
                             breakdownTbody.appendChild(tr); setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'accessories', aIdx);
                         }
                     }
@@ -2005,8 +2005,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 animateNumberRoll('pdfFinBasic', basic, "Rs. "); safeSetHtml('pdfTaxBreakdownRows', renderVerticalTaxRowsHtml(basic, tax));
                 animateNumberRoll('pdfFinGrand', grand, "Rs. "); triggerTotalBarShimmer();
                 const shedAvgBox = document.getElementById('pdfShedAvgRateBox');
-                if (shedAvgBox) {
-                    if (sqft > 0 && !isRateOnly && grand > 0) {
+                if (sqft > 0 && !isRateOnly && grand > 0) {
                         safeSetText('pdfShedAvgRateLabel', 'SHED RATE / SQ.FT:');
                         safeSetText('pdfShedAvgRateVal', `₹ ${Math.round(grand / sqft).toLocaleString('en-IN')} / Sq.Ft`);
                         shedAvgBox.style.display = 'flex';
@@ -2388,7 +2387,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. ⭐ DIRECT 1-CLICK PDF DOWNLOAD (NO PRINT DIALOG POPUP) ⭐
+// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR (APP & DESKTOP 100% FIXED) ⭐
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2397,10 +2396,10 @@ async function downloadPDFDirectly(mode = 'both') {
     
     triggerHaptic(50); 
     playAppSound('chime');
-    showCorporateToast("Generating PDF... Please wait", "⏳");
 
-    // 1. पुराने अस्थायी कंटेनर को साफ़ करें
+    // 1. पुराने अस्थायी कंटेनर और स्टाइल्स को साफ़ करें
     document.getElementById('vectorPrintOutputContainer')?.remove();
+    document.getElementById('vectorPrintStyleSheet')?.remove();
 
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
@@ -2417,7 +2416,6 @@ async function downloadPDFDirectly(mode = 'both') {
 
     const outputContainer = document.createElement('div');
     outputContainer.id = 'vectorPrintOutputContainer';
-    outputContainer.style.cssText = 'width: 746px !important; background: #ffffff !important; margin: 0 auto !important; padding: 0 !important;';
 
     const p1 = clone.querySelector('#page1MsStructure');
     const p2 = clone.querySelector('#civilDedicatedPageSheet');
@@ -2438,36 +2436,78 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
-    // बैकग्राउंड में रखें ताकि रेंडरिंग सही हो
-    outputContainer.style.position = 'fixed';
-    outputContainer.style.left = '-9999px';
-    outputContainer.style.top = '0';
+    // ⭐ DESKTOP FIX: स्क्रीन के डैशबोर्ड को छुपाएँ ताकि सिर्फ बेस्ट वाली PDF ही दिखे ⭐
+    const printStyle = document.createElement('style');
+    printStyle.id = 'vectorPrintStyleSheet';
+    printStyle.innerHTML = `
+        @media print {
+            body {
+                background: #ffffff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* डेस्कटॉप का ओरिजिनल डैशबोर्ड और प्रीव्यू पूरी तरह बंद */
+            body > *:not(#vectorPrintOutputContainer) {
+                display: none !important;
+                visibility: hidden !important;
+            }
+            /* सिर्फ वही सेकंड वाली बेस्ट PDF दिखेगी */
+            #vectorPrintOutputContainer {
+                display: block !important;
+                visibility: visible !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+            }
+            .pdf-page-slice {
+                width: 746px !important;
+                margin: 0 auto !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                box-sizing: border-box !important;
+                border: 2px solid #000000 !important;
+                background: #ffffff !important;
+            }
+            .pdf-page-slice:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 6.35mm !important; /* सटीक 0.25 इंच मार्जिन */
+            }
+        }
+    `;
+    document.head.appendChild(printStyle);
     document.body.appendChild(outputContainer);
 
-    // 3. डायरेक्ट फाइल डाउनलोड ऑप्शन्स
-    const opt = {
-        margin:       [6.35, 6.35, 6.35, 6.35],
-        filename:     fileName + '.pdf',
-        image:        { type: 'jpeg', quality: 1.0 },
-        html2canvas:  { scale: 2.8, useCORS: true, logging: false },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak:    { mode: ['css', 'legacy'] }
+    const originalTitle = document.title;
+    document.title = fileName;
+
+    const cleanup = () => {
+        document.title = originalTitle;
+        document.getElementById('vectorPrintOutputContainer')?.remove();
+        document.getElementById('vectorPrintStyleSheet')?.remove();
+        fireConfettiCelebration();
     };
 
-    // 4. सीधे फाइल डाउनलोड ट्रिगर करें (बिना प्रिंट स्क्रीन के)
-    if (typeof html2pdf !== 'undefined') {
-        html2pdf().set(opt).from(outputContainer).save().then(() => {
-            outputContainer.remove();
-            showCorporateToast("✓ PDF Successfully Downloaded!", "📥");
-            fireConfettiCelebration();
-        }).catch(err => {
-            console.error("PDF Download error:", err);
-            outputContainer.remove();
-        });
-    } else {
-        showCorporateToast("PDF Library loading error!", "⚠️");
-        outputContainer.remove();
+    // 🌟 1. ANDROID APP (PHONE / TAB) - 100% Working Native Engine
+    if (window.PatelNativeEngine?.printNativeVectorPdf) {
+        window.PatelNativeEngine.printNativeVectorPdf(fileName);
+        setTimeout(cleanup, 3500);
+        return;
     }
+
+    // 🌟 2. DESKTOP BROWSER (CHROME / PC) - 100% True Vector (No Blank, No Double PDF)
+    window.onafterprint = cleanup;
+    setTimeout(() => {
+        window.print();
+        setTimeout(cleanup, 2000);
+    }, 150);
 }
 
 // 23. PERMANENT TEXTS MODAL, 3 TABS & BANK DETAILS CONTROLS
@@ -2677,3 +2717,4 @@ window.onload = function() {
     initSamsungBootAnimation(); 
     setTimeout(attachDynamicPreviewObserver, 200);
 };
+                    
