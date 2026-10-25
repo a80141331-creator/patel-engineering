@@ -68,7 +68,6 @@ html, body { background: #0f172a; color: #000000; overflow-x: hidden; font-size:
 .editable-preview-title, [contenteditable="true"] { outline: none !important; border-radius: 3px; transition: background 0.15s ease, box-shadow 0.15s ease; cursor: text; display: inline-block; }
 .editable-preview-title:hover, [contenteditable="true"]:hover { background: rgba(37, 99, 235, 0.08) !important; }
 .editable-preview-title:focus, [contenteditable="true"]:focus { background: #ffffff !important; box-shadow: 0 0 0 2px #2563eb !important; color: #000000 !important; padding: 2px 4px !important; border-radius: 4px; }
-@media print { .editable-preview-title, [contenteditable="true"] { background: transparent !important; box-shadow: none !important; } }
 
 /* TICK BOX UI */
 .tick-box-ui { width: 20px; height: 20px; border: 2px solid #000000; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; color: transparent; cursor: pointer; background: #ffffff; flex-shrink: 0; transition: all 0.15s ease; }
@@ -380,7 +379,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 #printableA4Sheet, #civilLiveSheetDisplayBox { width: 746px !important; min-width: 746px !important; max-width: 746px !important; display: block !important; margin: 0 !important; touch-action: pan-y !important; }
 
 /* =========================================================
-   PRINT MEDIA - 100% TRUE VECTOR PRINT & EXACT COLORS
+   PRINT MEDIA - BULLETPROOF TRUE VECTOR ENGINE (FIXES BLANK PDF)
    ========================================================= */
 @media print {
     @page { 
@@ -397,40 +396,98 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
         margin: 0 !important; 
         padding: 0 !important; 
         color: #000000 !important; 
-        font-weight: 800 !important; 
+        font-weight: 800 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
     }
-    body * { 
-        visibility: hidden !important; 
+
+    /* 1. HIDE ALL UI PANELS & BUTTONS (NO BLANK SPACES) */
+    .top-bar,
+    .fixed-bottom-bar,
+    .dash-controls-pane,
+    .pane-scroll-nav,
+    .font-scale-bar,
+    .toast-container,
+    .master-auth-overlay,
+    .shed-assembly-overlay,
+    .modal,
+    .confirm-dialog-modal,
+    #screenHome,
+    #screenCreateSite,
+    #screenCivilDashboard,
+    #screenSettings,
+    button,
+    .drag-handle,
+    .btn-preview-add-inline,
+    .btn-acc-preview-add,
+    .btn-del-pro,
+    .page-physical-gap {
+        display: none !important;
     }
-    #printableA4Sheet, #printableA4Sheet * { 
-        visibility: visible !important; 
+
+    /* 2. RESET ALL PARENT CONTAINERS (REMOVES MOBILE SCALE & NEGATIVE MARGINS) */
+    .app-view,
+    body.mode-phone .app-view,
+    body.mode-tab .app-view,
+    body.mode-desktop .app-view,
+    .content,
+    body.mode-desktop .content,
+    .dashboard-split-layout,
+    .dash-preview-pane,
+    .pdf-section-wrapper,
+    .pdf-sheet-frame,
+    .mobile-preview-viewport,
+    #viewportWrap,
+    #scalingWrapper {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        transform: none !important; /* ⭐ CRITICAL: मोबाइल का ज़ूम हटाकर सीधा A4 बनाया ⭐ */
+        box-shadow: none !important;
+        border: none !important;
+        background: transparent !important;
     }
-    #printableA4Sheet { 
-        position: absolute !important; 
-        left: 0 !important; 
-        top: 0 !important; 
-        width: 746px !important; 
-        margin: 0 auto !important; 
-        padding: 0 !important; 
-        box-shadow: none !important; 
+
+    /* 3. PRINTABLE SHEET DISPLAY */
+    #printableA4Sheet {
+        display: block !important;
+        position: relative !important;
+        width: 746px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        transform: none !important;
+        overflow: visible !important;
     }
-    .a4-page-box { 
-        box-shadow: none !important; 
-        width: 746px !important; 
-        padding: 0 !important; 
-        border: 2px solid #000000 !important; 
+
+    .a4-page-box {
+        display: block !important;
+        width: 746px !important;
+        margin: 0 auto !important;
+        border: 2px solid #000000 !important;
+        box-shadow: none !important;
+        page-break-after: always !important;
+        break-after: page !important;
     }
-    .page-physical-gap, .fixed-bottom-bar, .top-bar, .shed-assembly-overlay, 
-    .drag-handle, .master-auth-overlay, button, .btn-preview-add-inline, 
-    .btn-acc-preview-add, .btn-del-pro, .btn-ripple { 
-        display: none !important; 
+
+    .a4-page-box:last-child {
+        page-break-after: auto !important;
+        break-after: auto !important;
     }
-    .preview-unit-pill { 
-        border: none !important; 
-        background: transparent !important; 
-        padding: 0 !important; 
-        color: #000000 !important; 
-        font-weight: 800 !important; 
-        box-shadow: none !important; 
+
+    .preview-unit-pill {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        color: #000000 !important;
+        font-weight: 800 !important;
+        box-shadow: none !important;
     }
 }
