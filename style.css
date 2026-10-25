@@ -211,7 +211,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 .substrip-addr { display: flex !important; align-items: center !important; gap: 4px !important; color: #fff !important; font-weight: 800; }
 .substrip-gst { background: #1e3a5f !important; padding: 1.5px 6px !important; border-radius: 4px !important; border: 1px solid #38bdf8 !important; color: #fff !important; font-weight: 900; }
 
-/* ⭐ छोटी हेडर पट्टी (CONTINUATION BAR) ⭐ */
+/* छोटी हेडर पट्टी (CONTINUATION BAR) */
 .continuation-header-bar { 
     width: 100% !important; 
     background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important; 
@@ -403,13 +403,12 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
 #printableA4Sheet, #civilLiveSheetDisplayBox { width: 746px !important; min-width: 746px !important; max-width: 746px !important; display: block !important; margin: 0 !important; touch-action: pan-y !important; }
 
 /* =========================================================
-   PRINT MEDIA - 100% TRUE VECTOR PRINT ENGINE
-   (PAGE SLICE & CONTINUATION HEADER PRESERVATION)
+   ⭐ TRUE VECTOR PRINT MEDIA (0.25 INCH MARGIN & NO CUTTING) ⭐
    ========================================================= */
 @media print {
     @page { 
         size: A4 portrait; 
-        margin: 0 !important; 
+        margin: 6.35mm !important; /* ⭐ सटीक 0.25 इंच (1/4 in) मार्जिन ⭐ */
     }
     *, html, body { 
         -webkit-print-color-adjust: exact !important; 
@@ -427,7 +426,7 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
         overflow: visible !important;
     }
 
-    /* 1. HIDE UI ELEMENTS, BUTTONS AND CONFETTI CANVAS */
+    /* 1. UI एलिमेंट्स और कन्फेटी कैनवास को छुपाएं */
     .top-bar,
     .fixed-bottom-bar,
     .dash-controls-pane,
@@ -448,12 +447,13 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
     .btn-acc-preview-add,
     .btn-del-pro,
     .page-physical-gap,
-    canvas,
-    #confetti-canvas {
+    canvas, /* ⭐ कन्फेटी इफ़ेक्ट को PDF से हमेशा के लिए छुपाता है ⭐ */
+    #confetti-canvas,
+    body > canvas {
         display: none !important;
     }
 
-    /* 2. UNWRAP & CENTER SHEET (FIXES DESKTOP LEFT-CUT) */
+    /* 2. सभी कंटेनर्स को रीसेट करें (डेस्कटॉप पर बाईं तरफ़ से कटना 100% ख़त्म) */
     .app-view,
     body.mode-phone .app-view,
     body.mode-tab .app-view,
@@ -481,68 +481,49 @@ body.mode-desktop .mobile-preview-viewport { flex: 1 !important; height: 100% !i
         left: auto !important;
         padding: 0 !important;
         overflow: visible !important;
-        transform: none !important;
+        transform: none !important; /* ज़ूम स्केल हटाकर ओरिजिनल A4 */
         box-shadow: none !important;
         border: none !important;
         background: transparent !important;
     }
 
-    /* 3. DYNAMIC VECTOR PRINT SLICE CONTAINER */
-    #vectorPrintOutputContainer {
+    /* 3. A4 शीट बिल्कुल 746px पर सेंटर रहेगी (A4 के 197.3mm प्रिंटेबल एरिया पर परफेक्ट फिट) */
+    #printableA4Sheet {
         display: block !important;
+        position: relative !important;
         width: 746px !important;
+        min-width: 746px !important;
+        max-width: 746px !important;
         margin: 0 auto !important;
         padding: 0 !important;
+        transform: none !important;
+        overflow: visible !important;
     }
 
-    /* प्रिंट के समय अन-स्लाइस्ड प्रीव्यू को छुपाएं अगर स्लाइस्ड मौजूद है */
-    body.is-printing-vector #printableA4Sheet {
-        display: none !important;
-    }
-
-    /* ⭐ प्रत्येक पेज स्लाइस (PAGE 1, PAGE 2, ETC.) ⭐ */
-    .pdf-page-slice {
+    .a4-page-box {
         display: block !important;
         width: 746px !important;
         min-width: 746px !important;
         max-width: 746px !important;
-        min-height: 1060px !important; /* A4 शीट की पूरी ऊंचाई */
         margin: 0 auto !important;
-        padding: 0 !important;
         border: 2px solid #000000 !important;
         box-shadow: none !important;
-        background: #ffffff !important;
         page-break-after: always !important;
         break-after: page !important;
-        position: relative !important;
-        box-sizing: border-box !important;
     }
 
-    .pdf-page-slice:last-child {
+    .a4-page-box:last-child {
         page-break-after: auto !important;
         break-after: auto !important;
     }
 
-    /* ⭐ नए पेज (Page 2) के ऊपर छोटी हेडर पट्टी ⭐ */
-    .continuation-header-bar {
-        display: flex !important;
-        width: 100% !important;
-        background: linear-gradient(135deg, #0c1e30, #1e3a5f) !important;
-        color: #ffffff !important;
-        padding: 6px 12px !important;
-        border-bottom: 2px solid #000000 !important;
-        font-size: 10px !important;
-        font-weight: 900 !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        box-sizing: border-box !important;
-    }
-
-    /* प्रिवेंट कार्ड स्प्लिटिंग */
+    /* 4. कार्ड्स और टेबल को बीच में से कटने से रोकें */
     .company-bank-card-diagram,
     .signature-dual-grid,
     .theme-bottom-summary-grid,
-    .section-header-bar {
+    .section-header-bar,
+    .theme-data-table tr,
+    .civil-schedule-table tr {
         break-inside: avoid !important;
         page-break-inside: avoid !important;
     }
