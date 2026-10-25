@@ -1,5 +1,5 @@
 // ==========================================================================
-// PATEL ENGINEERING - COMPLETE APPLICATION ENGINE (TRUE VECTOR & ACTUAL DESIGN)
+// PATEL ENGINEERING - COMPLETE APPLICATION JAVASCRIPT (FULL REPLACEMENT)
 // ==========================================================================
 
 // 1. FIREBASE CONFIGURATION
@@ -513,7 +513,7 @@ function loadSiteToDashboard(siteId) {
     setTimeout(attachDynamicPreviewObserver, 150);
 }
 
-// 13. EDIT CUSTOMER & 2-WAY PREVIEW SYNC (CIVIL PREVIEW IN-LINE EDITING FIX)
+// 13. EDIT CUSTOMER & 2-WAY PREVIEW SYNC (CIVIL LIVE PREVIEW QTY & RATE FIX)
 let tempEditQuoteType = 'both';
 function openEditCustomerModal() {
     const site = getCurrentSite(); if (!site) return;
@@ -1365,7 +1365,7 @@ function downloadPDFDirectly(mode = 'both') {
     let shedBasicTotal = 0, shedGrandTotal = 0, autoTotalSteelWeightKg = 0;
     let civilBasicTotal = 0, civilGrandTotal = 0;
 
-    // --- EXACT HEADER WITH VECTOR POLYGON ---
+    // Exact Header with Angled Cut Polygon
     const buildExactHeader = (quoteTitle, quoteRef) => ({
         table: {
             widths: ['52%', '48%'],
@@ -1383,22 +1383,14 @@ function downloadPDFDirectly(mode = 'both') {
                         ]
                     },
                     {
-                        table: {
-                            widths: ['*'],
-                            body: [
-                                [
-                                    {
-                                        fillColor: '#0c1e30',
-                                        stack: [
-                                            { text: quoteTitle, fontSize: 17, bold: true, color: '#ffffff', alignment: 'right', letterSpacing: 1.5 },
-                                            { text: `Quote Ref: ${quoteRef}\nIssue Date: ${issueDateStr}`, fontSize: 8.5, color: '#ffffff', alignment: 'right', margin: [0, 2, 0, 0] }
-                                        ],
-                                        margin: [8, 5, 8, 5]
-                                    }
-                                ]
-                            ]
-                        },
-                        layout: 'noBorders'
+                        svg: `<svg width="275" height="66" viewBox="0 0 275 66">
+                            <polygon points="40,0 275,0 275,66 0,66" fill="#0c1e30"/>
+                            <text x="260" y="28" font-family="Arial,sans-serif" font-weight="900" font-size="19" fill="#ffffff" text-anchor="end" letter-spacing="2">${quoteTitle}</text>
+                            <text x="260" y="46" font-family="Arial,sans-serif" font-weight="700" font-size="8.5" fill="#ffffff" text-anchor="end">Quote Ref: ${quoteRef}</text>
+                            <text x="260" y="58" font-family="Arial,sans-serif" font-weight="700" font-size="8.5" fill="#ffffff" text-anchor="end">Issue Date: ${issueDateStr}</text>
+                        </svg>`,
+                        width: 275,
+                        alignment: 'right'
                     }
                 ]
             ]
@@ -1464,6 +1456,29 @@ function downloadPDFDirectly(mode = 'both') {
         margin: [0, 0, 0, 4]
     });
 
+    const buildSectionBar = (titleLeft, titleRight = '') => ({
+        table: {
+            widths: ['*'],
+            body: [
+                [{
+                    fillColor: '#e2e8f0',
+                    columns: [
+                        { text: titleLeft, bold: true, fontSize: 8.5, color: '#000000' },
+                        { text: titleRight, bold: true, fontSize: 7.5, color: '#000000', alignment: 'right' }
+                    ],
+                    margin: [6, 2.5, 6, 2.5]
+                }]
+            ]
+        },
+        layout: {
+            hLineWidth: () => 1.5,
+            vLineWidth: (i) => (i === 0 ? 6 : 1.5),
+            hLineColor: () => '#000000',
+            vLineColor: (i) => (i === 0 ? '#0c1e30' : '#000000')
+        },
+        margin: [0, 0, 0, 0]
+    });
+
     const buildExactBankBox = () => {
         if (!appSettings.bankName && !appSettings.bankAccNo) return [];
         return [
@@ -1471,7 +1486,7 @@ function downloadPDFDirectly(mode = 'both') {
                 table: {
                     widths: ['*'],
                     body: [
-                        [{ text: '🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):', bold: true, fontSize: 8, color: '#ffffff', fillColor: '#0c1e30', margin: [4, 2, 4, 2] }],
+                        [{ text: '🏦 COMPANY BANK ACCOUNT DETAILS (FOR NEFT / RTGS / IMPS / UPI):', bold: true, fontSize: 8, color: '#ffffff', fillColor: '#0c1e30', margin: [6, 2.5, 6, 2.5] }],
                         [
                             {
                                 columns: [
@@ -1496,7 +1511,7 @@ function downloadPDFDirectly(mode = 'both') {
                         ]
                     ]
                 },
-                layout: { hLineWidth: () => 1, vLineWidth: () => 1, hLineColor: () => '#000000', vLineColor: () => '#000000' },
+                layout: { hLineWidth: () => 1.5, vLineWidth: () => 1.5, hLineColor: () => '#000000', vLineColor: () => '#000000' },
                 margin: [0, 4, 0, 4]
             }
         ];
@@ -1509,7 +1524,7 @@ function downloadPDFDirectly(mode = 'both') {
                 [
                     {
                         stack: [
-                            { text: '', margin: [0, 15, 0, 0] },
+                            { text: '', margin: [0, 16, 0, 0] },
                             { text: '_______________________________', bold: true },
                             { text: appSettings.custAcceptanceTitle || 'CUSTOMER ACCEPTANCE', bold: true, fontSize: 8.5, margin: [0, 2, 0, 0] },
                             { text: appSettings.custAcceptanceSub || 'Authorized Signature & Stamp', fontSize: 7, color: '#334155' }
@@ -1518,7 +1533,7 @@ function downloadPDFDirectly(mode = 'both') {
                     },
                     {
                         stack: [
-                            appSettings.signatureData ? { image: appSettings.signatureData, width: 80, height: 24, alignment: 'center' } : { text: '', margin: [0, 15, 0, 0] },
+                            appSettings.signatureData ? { image: appSettings.signatureData, width: 80, height: 22, alignment: 'center' } : { text: '', margin: [0, 16, 0, 0] },
                             { text: '_______________________________', bold: true },
                             { text: appSettings.signCompHeader || 'FOR PATEL ENGINEERING', bold: true, fontSize: 8.5, margin: [0, 2, 0, 0] },
                             { text: appSettings.pdfSignatoryText || 'Authorized Signatory', fontSize: 7, color: '#334155' }
@@ -1542,13 +1557,19 @@ function downloadPDFDirectly(mode = 'both') {
                             {
                                 columns: [
                                     { text: `📞 Phones: ${compPhones}`, fontSize: 7.5, color: '#ffffff' },
-                                    { text: `📑 GSTIN: ${compGst}`, fontSize: 7.5, color: '#ffffff', alignment: 'right' }
+                                    {
+                                        table: {
+                                            body: [[{ text: `📑 GSTIN: ${compGst}`, fontSize: 7.5, bold: true, color: '#0c1e30', fillColor: '#ffffff' }]]
+                                        },
+                                        layout: 'noBorders',
+                                        alignment: 'right'
+                                    }
                                 ]
                             },
                             {
                                 columns: [
-                                    { text: `📍 ${compAddr}`, fontSize: 7.5, color: '#ffffff' },
-                                    { text: `✉️ ${compEmail} | 🌐 ${appSettings.footerWeb || 'www.patelengineering.com'}`, fontSize: 7.5, color: '#ffffff', alignment: 'right' }
+                                    { text: `📍 ${compAddr}`, fontSize: 7.5, color: '#ffffff', margin: [0, 2, 0, 0] },
+                                    { text: `✉️ ${compEmail} | 🌐 ${appSettings.footerWeb || 'www.patelengineering.com'}`, fontSize: 7.5, color: '#ffffff', alignment: 'right', margin: [0, 2, 0, 0] }
                                 ]
                             }
                         ],
@@ -1564,25 +1585,22 @@ function downloadPDFDirectly(mode = 'both') {
 
     let docContent = [];
 
-    // ==========================================
-    // 1. SHED SECTION (PAGE 1 & 2)
-    // ==========================================
+    // 1. SHED SECTION
     if (shouldIncludeShed) {
         docContent.push(buildExactHeader(isSqft ? (appSettings.sqftPdfRibbonTitle || "QUOTATION") : (appSettings.pdfRibbonTitle || "QUOTATION"), site.quoteNo || 'PE/2026/01'));
         docContent.push(buildExactSubstrip());
         docContent.push(buildExactCustomerBlock(isSqft ? (site.sqftScopeDesc || "QUOTATION FOR PREFABRICATED WAREHOUSE - SQ.FT BASIS") : (site.primCustomLine || "QUOTATION FOR PRE-ENGINEERED BUILDING (PEB) - KG BASIS")));
 
-        // --- SECTION 1 (ESTIMATED STEEL WEIGHT - KG ONLY) ---
         if (!isSqft) {
             const pWtKg = (site.primEnabled !== false) ? (parseFloat(site.primWeight) || 0) : 0;
             const sWtKg = (site.secEnabled !== false) ? (parseFloat(site.secWeight) || 0) : 0;
             autoTotalSteelWeightKg = pWtKg + sWtKg;
 
+            docContent.push(buildSectionBar('1. ESTIMATED STEEL WEIGHT:', 'ENGINEERING ESTIMATE'));
             docContent.push({
                 table: {
                     widths: ['70%', '30%'],
                     body: [
-                        [{ text: '1. ESTIMATED STEEL WEIGHT:', bold: true, fontSize: 8.5, color: '#000000', fillColor: '#e2e8f0', margin: [4, 2, 0, 2] }, { text: 'ENGINEERING ESTIMATE', alignment: 'right', fontSize: 7.5, bold: true, fillColor: '#e2e8f0', margin: [0, 2, 4, 2] }],
                         [{ text: [{ text: 'Primary Structure: ', bold: true }, site.primCustomLine || 'Fabrication with FE 345 Steel, 1 Coat Primer'], fontSize: 8 }, { text: `${pWtKg.toLocaleString('en-IN')} Kg (${(pWtKg/1000).toFixed(1)} MT)`, alignment: 'right', bold: true, fontSize: 8 }],
                         [{ text: [{ text: 'Secondary Structure: ', bold: true }, site.secCustomLine || 'Z Purlin 200 & 150 Galvanized'], fontSize: 8 }, { text: `${sWtKg.toLocaleString('en-IN')} Kg (${(sWtKg/1000).toFixed(1)} MT)`, alignment: 'right', bold: true, fontSize: 8 }],
                         [{ text: 'TOTAL STRUCTURE WEIGHT (PRIMARY + SECONDARY):', bold: true, fontSize: 8.5, fillColor: '#cbd5e1' }, { text: `${autoTotalSteelWeightKg.toLocaleString('en-IN')} Kg (${(autoTotalSteelWeightKg/1000).toFixed(1)} MT)`, alignment: 'right', bold: true, fontSize: 8.5, fillColor: '#cbd5e1' }],
@@ -1590,11 +1608,12 @@ function downloadPDFDirectly(mode = 'both') {
                     ]
                 },
                 layout: { hLineWidth: () => 1, vLineWidth: () => 1, hLineColor: () => '#000000', vLineColor: () => '#000000' },
-                margin: [0, 0, 0, 4]
+                margin: [0, 0, 0, 0]
             });
         }
 
-        // --- SECTION 2 (PRICE BREAKUP / TECHNICAL WORK DESCRIPTION) ---
+        docContent.push(buildSectionBar(isSqft ? (site.sqftTableDesc || "1. SHED SPECIFICATIONS & TECHNICAL WORK DESCRIPTION:") : (appSettings.headerLine2 || "2. PRICE BREAKUP AS PER KG RATE:")));
+
         let boqRows = [];
         if (isSqft) {
             boqRows.push([
@@ -1653,11 +1672,9 @@ function downloadPDFDirectly(mode = 'both') {
             docContent.push({
                 table: { widths: ['7%', '43%', '37%', '13%'], body: boqRows },
                 layout: { hLineWidth: () => 1, vLineWidth: () => 1, hLineColor: () => '#000000', vLineColor: () => '#000000' },
-                margin: [0, 0, 0, 4]
+                margin: [0, 0, 0, 0]
             });
-
         } else {
-            // Kg Mode Boq
             boqRows.push([
                 { text: 'S.NO', style: 'th', alignment: 'center' },
                 { text: 'DESCRIPTION', style: 'th' },
@@ -1671,9 +1688,10 @@ function downloadPDFDirectly(mode = 'both') {
             const pWt = (site.primEnabled !== false) ? (parseFloat(site.primWeight) || 0) : 0;
             const pRt = parseFloat(site.primRate) || 0, pTot = pWt * pRt;
             if (site.primEnabled !== false) {
+                let pills = (site.primSpecs || []).filter(s => s.selected).map(s => ({ text: ` ${s.text || s} `, background: '#e0f2fe', color: '#0c1e30', bold: true, fontSize: 7 }));
                 boqRows.push([
                     { text: String(sIdx++), alignment: 'center', bold: true },
-                    { text: [{ text: 'Primary Structure:\n', bold: true }, { text: site.primCustomLine || '', fontSize: 8 }] },
+                    { text: [{ text: 'Primary Structure:\n', bold: true }, { text: (site.primCustomLine || '') + '\n', fontSize: 8 }, ...pills] },
                     { text: pWt ? pWt.toLocaleString('en-IN') : '-', alignment: 'center', bold: true },
                     { text: site.primUnit || 'Kg', alignment: 'center' },
                     { text: pRt ? `₹ ${pRt}` : '-', alignment: 'right' },
@@ -1684,9 +1702,10 @@ function downloadPDFDirectly(mode = 'both') {
             const sWt = (site.secEnabled !== false) ? (parseFloat(site.secWeight) || 0) : 0;
             const sRt = parseFloat(site.secRate) || 0, sTot = sWt * sRt;
             if (site.secEnabled !== false) {
+                let pills = (site.secSpecs || []).filter(s => s.selected).map(s => ({ text: ` ${s.text || s} `, background: '#e0f2fe', color: '#0c1e30', bold: true, fontSize: 7 }));
                 boqRows.push([
                     { text: String(sIdx++), alignment: 'center', bold: true },
-                    { text: [{ text: 'Secondary Structure:\n', bold: true }, { text: site.secCustomLine || '', fontSize: 8 }] },
+                    { text: [{ text: 'Secondary Structure:\n', bold: true }, { text: (site.secCustomLine || '') + '\n', fontSize: 8 }, ...pills] },
                     { text: sWt ? sWt.toLocaleString('en-IN') : '-', alignment: 'center', bold: true },
                     { text: site.secUnit || 'Kg', alignment: 'center' },
                     { text: sRt ? `₹ ${sRt}` : '-', alignment: 'right' },
@@ -1699,7 +1718,7 @@ function downloadPDFDirectly(mode = 'both') {
             if (site.cladEnabled !== false) {
                 boqRows.push([
                     { text: String(sIdx++), alignment: 'center', bold: true },
-                    { text: [{ text: 'Roof & Wall Cladding:\n', bold: true }, { text: site.cladCustomLine || '', fontSize: 8 }] },
+                    { text: [{ text: 'Roof & Wall Cladding:\n', bold: true }, { text: site.cladCustomLine || '', fontSize: 8 }, { text: `\n[Thickness: ${site.cladThickness || '0.50mm'}]`, background: '#e0f2fe', color: '#0c1e30', bold: true, fontSize: 7 }] },
                     { text: cSq ? cSq.toLocaleString('en-IN') : '-', alignment: 'center', bold: true },
                     { text: site.cladUnit || 'Sq.Ft', alignment: 'center' },
                     { text: cRt ? `₹ ${cRt}` : '-', alignment: 'right' },
@@ -1738,7 +1757,7 @@ function downloadPDFDirectly(mode = 'both') {
             docContent.push({
                 table: { widths: ['7%', '45%', '13%', '10%', '12%', '13%'], body: boqRows },
                 layout: { hLineWidth: () => 1, vLineWidth: () => 1, hLineColor: () => '#000000', vLineColor: () => '#000000' },
-                margin: [0, 0, 0, 4]
+                margin: [0, 0, 0, 0]
             });
         }
 
@@ -1757,7 +1776,7 @@ function downloadPDFDirectly(mode = 'both') {
             },
             fillColor: '#0c1e30',
             layout: 'noBorders',
-            margin: [0, 0, 0, 5]
+            margin: [0, 0, 0, 4]
         });
 
         const pTerms = isSqft ? (appSettings.sqftPaymentTerms || '') : (appSettings.paymentTerms || '');
@@ -1818,7 +1837,7 @@ function downloadPDFDirectly(mode = 'both') {
             });
         }
 
-        // --- STRICT FIX: COMBINED RATE STRIP ONLY IF MODE IS COMBINED & CIVIL VALUED ---
+        // STRICT FIX: COMBINED RATE STRIP NEVER SHOWN IN SHED ONLY
         if (isBothMode && shouldIncludeShed && shouldIncludeCivil && (civilGrandTotal > 0 || civilBasicTotal > 0)) {
             const combTotal = shedGrandTotal + civilGrandTotal;
             financialStack.push({
@@ -1855,14 +1874,15 @@ function downloadPDFDirectly(mode = 'both') {
                                 { text: '2. COMMERCIAL TERMS & CONDITIONS:', bold: true, fontSize: 8 },
                                 { text: gTerms, fontSize: 7, margin: [0, 1, 0, 2] },
                                 { text: appSettings.thankYouText || 'THANK YOU FOR YOUR BUSINESS', bold: true, fontSize: 8, margin: [0, 2, 0, 0] }
-                            ]
+                            ],
+                            margin: [4, 4, 4, 4]
                         },
-                        { stack: financialStack, margin: [6, 0, 0, 0] }
+                        { stack: financialStack, margin: [6, 4, 4, 4] }
                     ]
                 ]
             },
             layout: { hLineWidth: () => 1.5, vLineWidth: () => 0, hLineColor: () => '#000000' },
-            margin: [0, 0, 0, 4]
+            margin: [0, 0, 0, 0]
         });
 
         docContent.push(...buildExactBankBox());
@@ -1871,7 +1891,7 @@ function downloadPDFDirectly(mode = 'both') {
     }
 
     // ==========================================
-    // 2. CIVIL SECTION (PAGE 3 & 4)
+    // CIVIL SECTION (PAGE 3 & 4)
     // ==========================================
     if (shouldIncludeCivil && (!shouldIncludeShed || mode === 'civil')) {
         docContent.push(buildExactHeader(appSettings.civilPdfRibbonTitle || "QUOTATION", site.quoteNo || 'PE/2026/01'));
@@ -1918,7 +1938,7 @@ function downloadPDFDirectly(mode = 'both') {
         docContent.push({
             table: { widths: ['8%', '45%', '13%', '10%', '11%', '13%'], body: civilTableRows },
             layout: { hLineWidth: () => 1, vLineWidth: () => 1, hLineColor: () => '#000000', vLineColor: () => '#000000' },
-            margin: [0, 0, 0, 4]
+            margin: [0, 0, 0, 0]
         });
 
         // Civil Page 2 / Summary
@@ -1935,7 +1955,7 @@ function downloadPDFDirectly(mode = 'both') {
             },
             fillColor: '#0c1e30',
             layout: 'noBorders',
-            margin: [0, 0, 0, 5]
+            margin: [0, 0, 0, 4]
         });
 
         let civTaxRows = [];
@@ -1953,7 +1973,8 @@ function downloadPDFDirectly(mode = 'both') {
                                 { text: 'CIVIL TERMS & CONDITIONS:', bold: true, fontSize: 8.5, margin: [0, 0, 0, 2] },
                                 { text: (appSettings.civilPaymentTerms || '') + '\n' + (appSettings.civilTermsCond || ''), fontSize: 7 },
                                 { text: appSettings.civilThankYouText || 'THANK YOU FOR YOUR CIVIL CONTRACT.', bold: true, fontSize: 8, margin: [0, 3, 0, 0] }
-                            ]
+                            ],
+                            margin: [4, 4, 4, 4]
                         },
                         {
                             stack: [
@@ -1968,13 +1989,13 @@ function downloadPDFDirectly(mode = 'both') {
                                     margin: [0, 3, 0, 2]
                                 }
                             ],
-                            margin: [6, 0, 0, 0]
+                            margin: [6, 4, 4, 4]
                         }
                     ]
                 ]
             },
             layout: { hLineWidth: () => 1.5, vLineWidth: () => 0, hLineColor: () => '#000000' },
-            margin: [0, 0, 0, 4]
+            margin: [0, 0, 0, 0]
         });
 
         docContent.push(...buildExactBankBox());
@@ -1982,11 +2003,26 @@ function downloadPDFDirectly(mode = 'both') {
         docContent.push(buildExactFooter());
     }
 
-    // --- PDFMAKE ENGINE CONFIGURATION (EXACT A4 PAGE) ---
+    // --- 7. EXACT A4 PAGE WITH 2PX BLACK OUTER BORDER ---
     const docDefinition = {
         pageSize: 'A4',
         pageOrientation: 'portrait',
-        pageMargins: [20, 16, 20, 16],
+        pageMargins: [20, 20, 20, 20],
+        background: function(currentPage, pageSize) {
+            return {
+                canvas: [
+                    {
+                        type: 'rect',
+                        x: 18,
+                        y: 18,
+                        w: pageSize.width - 36,
+                        h: pageSize.height - 36,
+                        lineWidth: 2,
+                        lineColor: '#000000'
+                    }
+                ]
+            };
+        },
         content: docContent,
         styles: {
             th: { fillColor: '#0c1e30', color: '#ffffff', bold: true, fontSize: 8, margin: [0, 2, 0, 2] },
