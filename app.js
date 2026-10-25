@@ -1368,9 +1368,9 @@ function renderSqftPrimaryChecklist(list) {
         container.innerHTML += `
             <div class="sqft-prim-spec-card ${!isSelected ? 'disabled-mod' : ''}" id="sqftPrimCard_${idx}">
                 <div class="sqft-prim-spec-top">
-                    <div style="display:flex;align-items:center;gap:8px;flex:1;" onclick="toggleItemTick(${idx})">
+                    <div style="flex:1;display:flex;align-items:center;gap:8px;" onclick="toggleItemTick(${idx})">
                         <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleItemTick(${idx})">${isSelected ? '✓' : ''}</div>
-                        <input type="text" value="${itemName}" onclick="event.stopPropagation()" oninput="updateStandardChecklistItemName(${idx},this.value)" style="border:none;background:transparent;font-size:13px;font-weight:900;color:#0f172a;flex:1;outline:none;">
+                        <input type="text" value="${itemName}" onclick="event.stopPropagation()" oninput="updateStandardChecklistItemName(${idx},this.value)" style="flex:1;border:none;background:transparent;font-size:13px;font-weight:900;color:#0f172a;outline:none;">
                     </div>
                     <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteItemFromModule(${idx})">🗑️</button>
                 </div>
@@ -1396,7 +1396,7 @@ function renderSqftAccessoriesChecklist() {
         container.innerHTML += `
             <div class="tick-item-card ${isSelected ? 'selected' : ''}" onclick="toggleAccessoryTick(${idx})" style="display:flex;align-items:center;gap:6px;">
                 <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleAccessoryTick(${idx})">${isSelected ? '✓' : ''}</div>
-                <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:12.5px;font-weight:800;color:#0f172a;flex:1;outline:none;" placeholder="Accessory Item Name">
+                <input type="text" value="${acc.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="flex:1;border:none;background:transparent;font-size:12.5px;font-weight:800;color:#0f172a;outline:none;" placeholder="Accessory Item Name">
                 <input type="number" inputmode="decimal" value="${acc.qty || ''}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'qty',this.value)" placeholder="Qty" style="width:65px;padding:4px 6px;border:1.5px solid #cbd5e1;border-radius:6px;font-size:11.5px;font-weight:800;outline:none;background:#fff;text-align:center;">
                 <button type="button" class="theme-unit-btn btn-3d-secondary btn-ripple" style="width:65px;height:30px;font-size:11px;padding:2px 4px;" onclick="event.stopPropagation();openThemeUnitPicker('${acc.unit || 'Nos'}',(u)=>{updateAccessoryFieldFast(${idx},'unit',u);renderSqftAccessoriesChecklist();})">${acc.unit || 'Nos'} ▾</button>
                 <button class="btn-del-pro btn-ripple" onclick="event.stopPropagation();deleteAccessoryItem(${idx})">🗑️</button>
@@ -1413,9 +1413,9 @@ function renderAccessoriesChecklist() {
         container.innerHTML += `
             <div class="acc-item-card card-3d ${isSelected ? 'selected' : 'disabled-mod'}" id="kgAccCard_${idx}">
                 <div class="acc-top-row">
-                    <div style="display:flex;align-items:center;gap:8px;flex:1;" onclick="toggleAccessoryTick(${idx})">
+                    <div style="flex:1;display:flex;align-items:center;gap:8px;" onclick="toggleAccessoryTick(${idx})">
                         <div class="tick-box-ui ${isSelected ? 'checked' : ''}" onclick="event.stopPropagation();toggleAccessoryTick(${idx})">${isSelected ? '✓' : ''}</div>
-                        <input type="text" value="${a.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="border:none;background:transparent;font-size:12.5px;font-weight:900;color:#0f172a;flex:1;outline:none;" placeholder="Item Name">
+                        <input type="text" value="${a.name}" onclick="event.stopPropagation()" oninput="updateAccessoryFieldFast(${idx},'name',this.value)" style="flex:1;border:none;background:transparent;font-size:12.5px;font-weight:900;color:#0f172a;outline:none;" placeholder="Item Name">
                     </div>
                     <div style="display:flex;align-items:center;gap:6px;">
                         <span class="acc-total-pill">${lineTot > 0 ? '₹ ' + Math.round(lineTot).toLocaleString('en-IN') : (isSelected ? '-' : 'OFF')}</span>
@@ -2066,7 +2066,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                     const tr = document.createElement('tr'); tr.className = "sortable-item"; tr.dataset.sortIndex = idx;
                     tr.innerHTML = isCivilRateOnly ?
                         `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this,'${secKey}',${idx})" style="font-size:calc(9.5px * var(--pdf-font-scale));">${item.name}</div></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}',${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;font-weight:900;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td>` :
-                        `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this,'${secKey}',${idx})" style="font-size:calc(9.5px * var(--pdf-font-scale));">${item.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}',${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
+                        `<td style="text-align:center;font-weight:900;"><span class="drag-handle" title="Drag to reorder">⋮⋮</span> ${secPrefix}.${sIdx++}</td><td><div class="civil-item-title editable-preview-title" contenteditable="true" onfocus="handlePreviewInputFocus(this)" onblur="syncCivilTitleEdit(this,'${secKey}',${idx})" style="font-size:calc(9.5px * var(--pdf-font-scale));">${item.name}</div></td><td style="text-align:center;font-weight:900;"><span contenteditable="true" inputmode="decimal" onfocus="syncPreviewEdit(this,'civ_${secKey}_${idx}_qty')">${formatRawOrDash(item.qty)}</span></td><td style="text-align:center;"><span class="preview-unit-pill btn-ripple" onclick="openCivilUnitPicker('${secKey}',${idx})">${item.unit || 'Lot'} ▾</span></td><td style="text-align:right;"><span class="rate-prefix">₹ </span><span contenteditable="true" inputmode="decimal" onfocus="handlePreviewInputFocus(this)" onblur="syncPreviewEdit(this,'civ_${secKey}_${idx}_rate')">${formatRawOrDash(item.rate)}</span></td><td class="civil-amt-cell" style="font-weight:900;">${amt > 0 ? '₹ ' + Math.round(amt).toLocaleString('en-IN') : '-'}</td>`;
                     tbody.appendChild(tr); setupUniversalReorder(tr, tr.querySelector('.drag-handle'), 'civil_items', idx, secKey);
                 }
             });
@@ -2388,7 +2388,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR ENGINE (FIXED: DOUBLE PDF & DESKTOP SHRINK) ⭐
+// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR (DESKTOP & APP FIXED) ⭐
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
@@ -2398,14 +2398,14 @@ async function downloadPDFDirectly(mode = 'both') {
     triggerHaptic(50); 
     playAppSound('chime');
 
-    // 1. अगर पहले का कोई पुराना प्रिंट कंटेनर या स्टाइल हो तो हटाएं
+    // 1. पुराने अस्थायी प्रिंट कंटेनर या स्टाइल हटाएं
     document.getElementById('vectorPrintOutputContainer')?.remove();
     document.getElementById('vectorPrintStyleSheet')?.remove();
 
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
 
-    // 2. क्लोन तैयार करें
+    // 2. क्लीन और परफेक्ट स्लाइस्ड पेजेस तैयार करें
     const clone = source.cloneNode(true);
     clone.style.setProperty('--pdf-scale', '1.0');
     clone.querySelectorAll('button, .btn-preview-add-inline, .btn-acc-preview-add, .btn-del-pro, .drag-handle').forEach(el => el.remove());
@@ -2426,7 +2426,7 @@ async function downloadPDFDirectly(mode = 'both') {
     const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
-    // स्लाइसिंग इंजन चलाएं
+    // स्लाइसिंग इंजन
     if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     if (shouldIncludeShed && shouldIncludeCivil) {
         const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
@@ -2437,32 +2437,35 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
-    // ⭐ FIX: स्पेशल प्रिंट CSS इंजेक्ट करें जिससे डेस्कटॉप पर डबल PDF और संकुचित (shrink) होना पूरी तरह बंद हो जाए
+    // ⭐ DESKTOP FIX: स्क्रीन के डैशबोर्ड को छुपाएँ और सिर्फ स्लाइस्ड सेकंड PDF दिखाएँ
     const printStyle = document.createElement('style');
     printStyle.id = 'vectorPrintStyleSheet';
     printStyle.innerHTML = `
         @media print {
-            /* मुख्य बॉडी और डेस्कटॉप डैशबोर्ड को प्रिंट में छिपाएं */
-            body * {
+            body {
+                background: #ffffff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* डेस्कटॉप डैशबोर्ड, बटन्स और ओरिजिनल प्रीव्यू पूरी तरह गायब */
+            body > *:not(#vectorPrintOutputContainer) {
+                display: none !important;
                 visibility: hidden !important;
             }
-            /* सिर्फ और सिर्फ स्लाइस्ड बेस्ट PDF कंटेनर को विज़िबल और फुल-साइज करें */
-            #vectorPrintOutputContainer, #vectorPrintOutputContainer * {
-                visibility: visible !important;
-            }
+            /* सिर्फ बेस्ट स्लाइस्ड कंटेनर दिखेगा */
             #vectorPrintOutputContainer {
+                display: block !important;
+                visibility: visible !important;
                 position: absolute !important;
                 left: 0 !important;
                 top: 0 !important;
                 width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                display: block !important;
-                background: #ffffff !important;
             }
             .pdf-page-slice {
                 width: 746px !important;
-                margin: 0 auto 0 auto !important;
+                margin: 0 auto !important;
                 page-break-after: always !important;
                 break-after: page !important;
                 box-sizing: border-box !important;
@@ -2484,25 +2487,25 @@ async function downloadPDFDirectly(mode = 'both') {
     const originalTitle = document.title;
     document.title = fileName;
 
-    const cleanupPrint = () => {
+    const cleanup = () => {
         document.title = originalTitle;
         document.getElementById('vectorPrintOutputContainer')?.remove();
         document.getElementById('vectorPrintStyleSheet')?.remove();
         fireConfettiCelebration();
     };
 
-    // 1. Android Native Engine Support
+    // 🌟 AIDE APP (PHONE / TAB):
     if (window.PatelNativeEngine?.printNativeVectorPdf) {
         window.PatelNativeEngine.printNativeVectorPdf(fileName);
-        setTimeout(cleanupPrint, 3500);
+        setTimeout(cleanup, 3500);
         return;
     }
 
-    // 2. Standard Browser Print (Desktop Chrome / Safari / Edge)
-    window.onafterprint = cleanupPrint;
+    // 🌟 DESKTOP BROWSER (CHROME / EDGE):
+    window.onafterprint = cleanup;
     setTimeout(() => {
         window.print();
-        setTimeout(cleanupPrint, 2500);
+        setTimeout(cleanup, 2000);
     }, 150);
 }
 
