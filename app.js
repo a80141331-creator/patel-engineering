@@ -2005,7 +2005,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
                 animateNumberRoll('pdfFinBasic', basic, "Rs. "); safeSetHtml('pdfTaxBreakdownRows', renderVerticalTaxRowsHtml(basic, tax));
                 animateNumberRoll('pdfFinGrand', grand, "Rs. "); triggerTotalBarShimmer();
                 const shedAvgBox = document.getElementById('pdfShedAvgRateBox');
-                if (sqft > 0 && !isRateOnly && grand > 0) {
+                if (shedAvgBox) {if (sqft > 0 && !isRateOnly && grand > 0) {
                         safeSetText('pdfShedAvgRateLabel', 'SHED RATE / SQ.FT:');
                         safeSetText('pdfShedAvgRateVal', `₹ ${Math.round(grand / sqft).toLocaleString('en-IN')} / Sq.Ft`);
                         shedAvgBox.style.display = 'flex';
