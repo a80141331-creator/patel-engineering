@@ -2158,7 +2158,7 @@ function refreshLivePdfPreviewSheet(isSoftRefresh = false) {
     if (!isSoftRefresh) setTimeout(autoFitPreview, 35);
 }
 
-// 21. FLOW ENGINE (PAGE SLICES WITH CONTINUATION HEADER)
+// 21. FLOW ENGINE (SLICES MULTI-PAGE DOCUMENT WITH SMALL HEADER BAR)
 function createPageBox(isTest = false) {
     const p = document.createElement('div');
     if (isTest) {
@@ -2236,7 +2236,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
         }
         lockTableBottomBorder(curTable);
 
-        // ⭐ ACCESSORIES DETAILS TABLE (100% FIXED) ⭐
+        // ⭐ ACCESSORIES TABLE DETAILS BUG FIXED ⭐
         if (!isSqft && sec3AccOrig && sec3AccOrig.style.display !== 'none') {
             const accHeadBar = sec3AccOrig.querySelector('.section-header-bar')?.cloneNode(true);
             const accThead = sec3AccOrig.querySelector('table thead')?.cloneNode(true);
@@ -2258,6 +2258,7 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
                     if (accTbody.children.length === 0) curPage.removeChild(accBlockWrap);
                     document.body.removeChild(testStage); appendPageToOutput(outputContainer, curPage, false);
                     pageNum++; curPage = createPageBox(true);
+                    // ⭐ ACCESSORIES NEW PAGE HEADER ⭐
                     const contBar = document.createElement('div'); contBar.className = 'continuation-header-bar';
                     contBar.innerHTML = `<span>PATEL ENGINEERING — ACCESSORIES (PAGE ${pageNum})</span><span class="ref-pill">Quote Ref: ${quoteNo}</span>`;
                     curPage.appendChild(contBar);
@@ -2391,16 +2392,19 @@ function buildSectionPages(sectionEl, outputContainer, quoteNo, sectionType) {
     }
 }
 
-// 22. ⭐ VERCEL BACKEND TRUE VECTOR PDF DOWNLOAD ENGINE ⭐
+// 22. ⭐ TRUE VECTOR DYNAMIC SLICED PDF GENERATOR ENGINE ⭐
 async function downloadPDFDirectly(mode = 'both') {
     const site = getCurrentSite();
     const clientClean = (site?.clientName || 'Client').trim().replace(/[^a-zA-Z0-9]/g, '_');
     const quoteClean = (site?.quoteNo || 'Quote').trim().replace(/[^a-zA-Z0-9]/g, '_');
-    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}.pdf`;
+    const fileName = `Patel_Engineering_${clientClean}_${quoteClean}_${mode.toUpperCase()}`;
     
     triggerHaptic(50); 
     playAppSound('chime');
-    showCorporateToast("Generating 100% True Vector PDF...", "⏳");
+
+    // पुराना कंटेनर साफ़ करें अगर मौजूद हो
+    const oldCont = document.getElementById('vectorPrintOutputContainer');
+    if (oldCont) oldCont.remove();
 
     const source = document.getElementById('printableA4Sheet');
     if (!source) return;
@@ -2416,7 +2420,7 @@ async function downloadPDFDirectly(mode = 'both') {
     clone.querySelector('.page-physical-gap')?.remove();
 
     const outputContainer = document.createElement('div');
-    outputContainer.style.cssText = 'width:746px;margin:0 auto;background:#fff;';
+    outputContainer.id = 'vectorPrintOutputContainer';
 
     const p1 = clone.querySelector('#page1MsStructure');
     const p2 = clone.querySelector('#civilDedicatedPageSheet');
@@ -2426,6 +2430,7 @@ async function downloadPDFDirectly(mode = 'both') {
     const shouldIncludeShed = (isBothMode && (mode === 'shed' || mode === 'both')) || isShedOnly;
     const shouldIncludeCivil = (isBothMode && (mode === 'civil' || mode === 'both')) || (site.quoteType === 'civil');
 
+    // स्लाइसिंग इंजन चलाएं ताकि Page 2 पर छोटी हेडर पट्टी और 0.25 इंच मार्जिन आए
     if (shouldIncludeShed && p1) buildSectionPages(p1, outputContainer, site.quoteNo, 'SHED');
     if (shouldIncludeShed && shouldIncludeCivil) {
         const lastPage = outputContainer.querySelector('.pdf-page-slice:last-child');
@@ -2436,82 +2441,29 @@ async function downloadPDFDirectly(mode = 'both') {
         buildSectionPages(p2, outputContainer, site.quoteNo, 'CIVIL');
     }
 
-    // 2. पूरे CSS स्टाइल्स को निकालें ताकि Vercel बैकएंड पर हुबहू वही डिज़ाइन बने
-    let allCss = '';
-    for (let sheet of document.styleSheets) {
-        try {
-            for (let rule of sheet.cssRules) {
-                allCss += rule.cssText + '\n';
-            }
-        } catch (e) {}
+    // स्लाइस्ड कंटेनर को DOM में जोड़ें और प्रिंट एक्टिव करें
+    document.body.appendChild(outputContainer);
+    document.body.classList.add('is-printing-vector');
+
+    const cleanupPrint = () => {
+        document.body.classList.remove('is-printing-vector');
+        const cont = document.getElementById('vectorPrintOutputContainer');
+        if (cont) cont.remove();
+        fireConfettiCelebration(); // कन्फेटी प्रिंट पूरा होने के बाद ही चलेगी
+    };
+
+    // 🌟 1. ANDROID AIDE VECTOR PRINT (100% TRUE VECTOR TEXT)
+    if (window.PatelNativeEngine?.printNativeVectorPdf) {
+        window.PatelNativeEngine.printNativeVectorPdf(fileName);
+        setTimeout(cleanupPrint, 3500);
+        return;
     }
 
-    const fullHtmlPayload = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@800;900&family=Space+Grotesk:wght@600;700;900&display=swap" rel="stylesheet">
-            <style>
-                ${allCss}
-                body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
-                .pdf-page-slice { margin: 0 auto !important; box-shadow: none !important; }
-                .has-page-break { page-break-after: always !important; break-after: page !important; }
-            </style>
-        </head>
-        <body>
-            ${outputContainer.innerHTML}
-        </body>
-        </html>
-    `;
-
-    try {
-        // 🌟 3. Vercel Backend API को कॉल करें
-        const response = await fetch('/api/generate-pdf', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ html: fullHtmlPayload, fileName: fileName })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server returned status: ${response.status}`);
-        }
-
-        const pdfBlob = await response.blob();
-
-        // 🌟 4. Android AIDE App में सीधे पटेल फोल्डर में सेव करें
-        if (window.PatelNativeEngine?.savePdfToPatelFolder) {
-            const reader = new FileReader();
-            reader.onloadend = function() {
-                const base64Data = reader.result.split(',')[1];
-                window.PatelNativeEngine.savePdfToPatelFolder(base64Data, fileName);
-                fireConfettiCelebration();
-            };
-            reader.readAsDataURL(pdfBlob);
-            return;
-        }
-
-        // 🌟 5. Desktop / Browser में सीधे 1-क्लिक में True Vector PDF डाउनलोड करें
-        const blobUrl = URL.createObjectURL(pdfBlob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = blobUrl;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-            document.body.removeChild(a);
-            URL.revokeObjectURL(blobUrl);
-            fireConfettiCelebration();
-        }, 1200);
-
-        showCorporateToast("✓ True Vector PDF Downloaded!", "📄");
-
-    } catch (err) {
-        console.error("API PDF Error:", err);
-        showCorporateToast("Fallback: Opening Vector Print...", "⚠️");
-        // अगर कभी इंटरनेट या बैकएंड में दिक्कत आए, तो सिस्टम का प्रिंटर सुरक्षित फ़ॉलबैक रहेगा
+    // 🌟 2. BROWSER VECTOR PRINT (SAVE AS PDF - TRUE VECTOR)
+    if (window.print) {
         window.print();
+        setTimeout(cleanupPrint, 1200);
+        return;
     }
 }
 
@@ -2707,11 +2659,18 @@ function saveSignature() {
     closeSigModal(); refreshLivePdfPreviewSheet(); showCorporateToast("Digital Signature Saved Successfully!", "✍️");
 }
 window.onload = function() {
-    checkFirstTimeAuthentication(); initCloudFirstMasterSync(); renderHomeScreen(); loadPhoneSettingsUI();
-    applyScaleToSheet(); autoDetectDeviceMode(); updateHeaderBannersUI();
+    checkFirstTimeAuthentication(); 
+    initCloudFirstMasterSync(); 
+    renderHomeScreen(); 
+    loadPhoneSettingsUI();
+    applyScaleToSheet(); 
+    autoDetectDeviceMode(); 
+    updateHeaderBannersUI();
     if (appSettings.logoData) {
         const fav = document.getElementById('dynamicAppFavicon'), appleFav = document.getElementById('dynamicAppleIcon');
-        if (fav) fav.href = appSettings.logoData; if (appleFav) appleFav.href = appSettings.logoData;
+        if (fav) fav.href = appSettings.logoData; 
+        if (appleFav) appleFav.href = appSettings.logoData;
     }
-    initSamsungBootAnimation(); setTimeout(attachDynamicPreviewObserver, 200);
+    initSamsungBootAnimation(); 
+    setTimeout(attachDynamicPreviewObserver, 200);
 };
